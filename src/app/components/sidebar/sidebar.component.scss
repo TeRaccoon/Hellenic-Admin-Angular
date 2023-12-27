@@ -1,0 +1,11 @@
+$hellenicblue: rgb(0, 140, 255);
+.container {
+    width: 19%;
+    height: 100%;
+    position: fixed;
+    background-color: #fff;
+    .header-section {
+        height: 50px;
+        background-color: $hellenicblue;
+    }
+}

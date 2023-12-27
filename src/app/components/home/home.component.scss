@@ -1,0 +1,25 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 15px 15px 20%;
+    .widget-container {
+        display: flex;
+        justify-content: space-around;
+        gap: 5px;
+        .widget {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            .icon-container {
+                fa-icon {
+                    font-size: 28px;
+                }
+            }
+            .information-container {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    }
+}

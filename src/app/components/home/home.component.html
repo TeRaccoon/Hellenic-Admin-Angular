@@ -1,0 +1,15 @@
+<div class="container">
+    <!-- Implement header section component here -->
+    <h1>Dashboard</h1>
+    <div class="widget-container">
+        <div *ngFor="let widget of widgetData; let i = index" class="widget">
+            <div class="icon-container">
+                <fa-icon [icon]="widgetIcons[i]"></fa-icon>
+            </div>
+            <div class="information-container">
+                <h2>{{ widgetHeaders[i] }}</h2>
+                <p>{{ widget }}</p>
+            </div>
+        </div>
+    </div>
+</div>

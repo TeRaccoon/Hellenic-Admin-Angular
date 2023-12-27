@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="header-section">
+        Hellenic Admin
+    </div>
+    <div class="options-container">
+        <div>
+            <label>Customers</label>
+            <select (change)="changeTable($event)">
+                <option value="customer_address">Addresses</option>
+                <option value="customers">Details</option>
+                <option value="customer_payments">Payments</option>
+            </select>
+        </div>
+        <div>
+            <label>Retail</label>
+            <select>
+                <option>Offers</option>
+                <option>Products</option>
+            </select>
+        </div>
+
+    </div>
+</div>
