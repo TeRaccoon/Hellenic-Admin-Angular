@@ -6,7 +6,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class FormService {
   private isLoginVisible = new BehaviorSubject<boolean>(false);
-  private isCartVisible = new BehaviorSubject<boolean>(false);
+  private isEditFormVisible = new BehaviorSubject<boolean>(false);
+  private editFormData: { [key: string]: { value: any, inputType: string, dataType: string, required: boolean, fields: string } } = {};
+  private selectedTable: string = "";
+  private selectedId: string = "";
 
   constructor() {}
 
@@ -22,13 +25,37 @@ export class FormService {
     return this.isLoginVisible.asObservable();
   }
 
-  showCartForm() {
-    this.isCartVisible.next(true);
+  showEditForm() {
+    this.isEditFormVisible.next(true);
   }
-  hideCartForm() {
-    this.isCartVisible.next(false);
+  hideEditForm() {
+    this.isEditFormVisible.next(false);
   }
-  getCartFormVisibility(): Observable<boolean> {
-    return this.isCartVisible.asObservable();
+  getEditFormVisibility(): Observable<boolean> {
+    return this.isEditFormVisible.asObservable();
+  }
+
+  setEditFormData(editFormData: { [key: string]: { value: any, inputType: string, dataType: string, required: boolean, fields: string } } = {}) {
+    this.editFormData = editFormData;
+  }
+
+  setSelectedTable(selectedTable: string) {
+    this.selectedTable = selectedTable;
+  }
+
+  setSelectedId(selectedId: string) {
+    this.selectedId = selectedId;
+  }
+  
+  getEditFormData() {
+    return this.editFormData;
+  }
+
+  getSelectedTable() {
+    return this.selectedTable;
+  }
+
+  getSelectedId() {
+    return this.selectedId;
   }
 }

@@ -15,8 +15,8 @@ export class DataService {
     }
     return this.http.get<any[]>(url);
   }
-  submitFormData(query:string, userData: any) {
-    const url = 'http://localhost/API/admin_query_handler.php';
-    return this.http.post(url, { query, userData });
+  submitFormData(data: any) {
+    const url = 'http://localhost/API/manage_data.php/';
+    return this.http.post(url, data);
   }
 }

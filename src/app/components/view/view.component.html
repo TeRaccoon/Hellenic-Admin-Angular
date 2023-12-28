@@ -10,12 +10,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of displayData">
+                <tr *ngFor="let item of displayData; let key = index;">
                     <td *ngFor="let column of getColumnHeaders(data[0])">
                         {{ item[column] }}
                     </td>
                     <td>
-                        <a>
+                        <a (click)="editRow(key)">
                             <fa-icon [icon]="faPencil"></fa-icon>
                         </a>
                     </td>
@@ -30,3 +30,4 @@
         <fa-icon [icon]="faSpinner"></fa-icon>
     </div>
 </div>
+<app-edit-form></app-edit-form>

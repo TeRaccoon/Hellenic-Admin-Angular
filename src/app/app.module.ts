@@ -11,6 +11,8 @@ import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ViewComponent } from './components/view/view.component';
+import { AddFormComponent } from './components/add-form/add-form.component';
+import { EditFormComponent } from './components/edit-form/edit-form.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +21,8 @@ import { ViewComponent } from './components/view/view.component';
     HomeComponent,
     SidebarComponent,
     ViewComponent,
+    AddFormComponent,
+    EditFormComponent,
   ],
   imports: [
     BrowserModule,

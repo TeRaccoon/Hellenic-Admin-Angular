@@ -1,0 +1,12 @@
+<div class="container" [class]="formVisible">
+    <h1>Editting...</h1>
+    <ng-container *ngIf="formData">
+        <form [formGroup]="editForm" (ngSubmit)="formSubmit()">
+            <div *ngFor="let data of formData | keyvalue">
+                <label>{{ data.key }}</label>
+                <input [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [value]="data.value.value" [formControlName]="data.value.fields">
+            </div>
+            <button name="action" value="append" type="submit">Submit</button>
+        </form>
+    </ng-container>
+</div>
