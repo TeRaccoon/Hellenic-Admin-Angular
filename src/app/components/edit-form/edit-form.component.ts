@@ -13,7 +13,7 @@ export class EditFormComponent {
   formData: { [key: string]: { value: any, inputType: string, dataType: string, required: boolean, fields: string } } = {};
   tableName: string = "";
   id: string = "";
-  formVisible = 'visible';
+  formVisible = 'hidden';
 
   constructor(private dataService: DataService, private formService: FormService, private fb: FormBuilder) {
     this.editForm = this.fb.group({

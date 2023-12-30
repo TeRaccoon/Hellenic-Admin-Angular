@@ -1,1 +1,15 @@
-<p>add-form works!</p>
+<div class="container" [class]="formVisible">
+    <div class="header-section">
+        <h1>Adding...</h1>
+        <a (click)="hide()">X</a>
+        <ng-container *ngIf="formData">
+            <form [formGroup]="addForm" (ngSubmit)="formSubmit()">
+                <div *ngFor="let data of formData | keyvalue">
+                    <label>{{ data.key }}</label>
+                    <input [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [formControlName]="data.value.fields">
+                </div>
+                <button name="action" value="append" type="submit">Submit</button>
+            </form>
+        </ng-container>
+    </div>
+</div>
