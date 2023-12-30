@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { faBell, faEnvelope, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faBell, faEnvelope, faUser } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-navbar',
@@ -10,4 +10,5 @@ export class NavbarComponent {
   faBell = faBell;
   faEnvelope = faEnvelope;
   faUser = faUser;
+  faSearch = faSearch;
 }
