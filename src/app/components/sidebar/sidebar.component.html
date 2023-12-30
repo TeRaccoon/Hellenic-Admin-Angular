@@ -18,6 +18,13 @@
                 <option>Products</option>
             </select>
         </div>
+        <div>
+            <label>Stock / Items</label>
+            <select (change)="changeTable($event)">
+                <option value=" items ">Items</option>
+                <option value="stocked_items ">Stocked Items</option>
+            </select>
+        </div>
 
     </div>
 </div>
