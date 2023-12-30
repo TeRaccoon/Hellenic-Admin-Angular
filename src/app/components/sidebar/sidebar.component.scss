@@ -5,7 +5,17 @@ $hellenicblue: rgb(0, 140, 255);
     position: fixed;
     background-color: #fff;
     .header-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         height: 50px;
         background-color: $hellenicblue;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        h1 {
+            font-size: 25px;
+        }
     }
+    .options-container {}
 }

@@ -1,3 +1,4 @@
+$hellenicblue: rgb(0, 140, 255);
 .container {
     display: flex;
     margin-left: 15%;
@@ -9,5 +10,30 @@
     .nav-options-container {
         display: flex;
         flex-direction: row;
+        p {
+            margin: 10px;
+        }
+    }
+    .search-container {
+        margin-left: 10px;
+        .search-bar {
+            border-radius: 5px;
+            border-style: solid;
+            border-color: black;
+            border-width: 1px;
+            padding: 6px;
+            button {
+                background-color: transparent;
+                border: none;
+                background: none;
+                outline: none;
+            }
+            input {
+                border: none;
+                &::placeholder {
+                    font-size: 16px;
+                }
+            }
+        }
     }
 }
