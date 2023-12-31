@@ -28,6 +28,9 @@ export class ViewComponent {
   };
 
   entryLimit: number = 10;
+  pageCount: number = 0;
+  currentPage: number = 1;
+
   searchText: string = '';
   filter: string = '';
   setFilter = false;
@@ -52,6 +55,8 @@ export class ViewComponent {
       this.filteredDisplayData = data.display_data;
       this.displayNames = data.display_names;
       this.edittable = data.edittable;
+
+      this.pageCount = Math.floor(this.displayData.length / this.entryLimit);
     });
   }
 
@@ -127,6 +132,9 @@ export class ViewComponent {
   changeEntries(event: Event) {
     const option = event.target as HTMLInputElement;
     this.entryLimit = Number(option.value);
+    this.pageCount = Math.ceil(this.displayData.length / this.entryLimit);
+    this.currentPage = 1;
+    this.loadPage();
   }
 
   itemContainsFilter(item: any) {
@@ -134,7 +142,59 @@ export class ViewComponent {
   }
 
   toggleFilter() {
-    this.filter = this.searchText;
-    
+    var filter = this.searchText;
+    if (filter != '') {
+      this.filteredDisplayData = [];
+    } else {
+      this.filteredDisplayData = this.displayData;
+    }
+    this.displayData.forEach(data => {
+      if (Object.values(data).some(property => String(property).toUpperCase().includes(filter.toUpperCase()))) {
+        this.filteredDisplayData.push(data);
+      }
+    });
+  }
+
+  nextPage() {
+    if (this.currentPage < this.pageCount) {
+      this.currentPage++;
+      this.loadPage();
+    }
+  }
+  previousPage() {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadPage();
+    }
+  }
+  changePage(page: number) {
+    this.currentPage = page;
+    this.loadPage();
+  }
+
+  loadPage() {
+    var start = this.currentPage * this.entryLimit - 1;
+    var end = start + this.entryLimit;
+    this.filteredDisplayData = this.displayData.slice(start, end);
+  }
+
+  getPageRange(): number[] {
+    var start = this.currentPage;
+    if (this.currentPage > this.pageCount -2 && this.pageCount -2 > 0) {
+      start = this.pageCount - 2;
+    }
+    if ((start == 1 || start == 2) && this.pageCount > 1) {
+      start += 2;
+    }
+    const range = [];
+    for (let i = start - 1; i < start + 2 && i < this.pageCount && this.pageCount > 1; i++) {
+      range.push(i);
+    }
+
+    if (this.pageCount > 1) {
+      range.push(this.pageCount);
+    }
+
+    return range;
   }
 }

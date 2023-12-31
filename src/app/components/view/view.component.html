@@ -41,6 +41,15 @@
                 </tr>
             </tbody>
         </table>
+        <div class="table-footer">
+            <p>Showing page {{ currentPage }} out of {{ pageCount }}</p>
+            <div class="page-section">
+                <button (click)="previousPage()">Previous</button>
+                <button (click)="changePage(1)"> {{ 1 }}</button>
+                <button *ngFor="let pageNumber of getPageRange()" (click)="changePage(pageNumber)">{{ pageNumber }}</button>
+                <button (click)="nextPage()">Next</button>
+            </div>
+        </div>
     </div>
     <div *ngIf="data.length === 0">
         <p>No data available for {{ selectedOption }}</p>
