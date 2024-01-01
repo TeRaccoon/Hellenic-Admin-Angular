@@ -8,6 +8,30 @@
         overflow-x: auto;
         height: 800px;
         overflow-y: scroll;
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            button {
+                background-color: white;
+                font-size: 16px;
+                outline: none;
+                border: 2px solid #e5e5e5;
+                border-radius: 5px;
+                margin: 2px;
+                padding: 5px;
+                &:hover {
+                    background-color: #eaeef3;
+                }
+            }
+            .active-page {
+                background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+                color: white;
+            }
+        }
         .options-container {
             display: flex;
             flex-direction: column;
@@ -30,6 +54,12 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                select {
+                    background-color: white;
+                    outline: none;
+                    border: 1px solid black;
+                    border-radius: 5px;
+                }
             }
             .search-container {
                 border-radius: 5px;
