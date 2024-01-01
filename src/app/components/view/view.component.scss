@@ -1,3 +1,77 @@
 .container {
     margin: 15px 15px 15px 16%;
+    .table-container {
+        background-color: white;
+        padding: 10px;
+        margin: 10px;
+        border-radius: 15px;
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            >button {
+                align-self: flex-start;
+                background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+                color: white;
+                border: none;
+                outline: none;
+                border-radius: 5px;
+                padding: 8px;
+                margin-top: 20px;
+                font-weight: bold;
+                font-size: 17px;
+            }
+            div {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .search-container {
+                border-radius: 5px;
+                border-style: solid;
+                border-color: black;
+                border-width: 1px;
+                padding: 6px;
+                button {
+                    background-color: transparent;
+                    border: none;
+                    background: none;
+                    outline: none;
+                }
+                input {
+                    border: none;
+                    &::placeholder {
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        th,
+        td {
+            padding: 24px;
+            text-align: left;
+            font-size: 16px;
+        }
+        thead {
+            background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
+            color: white;
+        }
+        .data-row {
+            background-color: #eaeef3;
+        }
+        tr:nth-child(even) {
+            background-color: white;
+        }
+    }
 }
