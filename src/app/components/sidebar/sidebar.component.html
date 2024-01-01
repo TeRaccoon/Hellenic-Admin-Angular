@@ -6,6 +6,7 @@
         <div>
             <label>Customers</label>
             <select (change)="changeTable($event)">
+                <option>--- Select an option ---</option>
                 <option value="customer_address">Addresses</option>
                 <option value="customers">Details</option>
                 <option value="customer_payments">Payments</option>
@@ -13,15 +14,18 @@
         </div>
         <div>
             <label>Retail</label>
-            <select>
+            <select (change)="changeTable($event)">
+                <option>--- Select an option ---</option>
                 <option>Offers</option>
                 <option>Products</option>
+                <option value=" retail_items ">Items</option>
             </select>
         </div>
         <div>
             <label>Stock / Items</label>
             <select (change)="changeTable($event)">
-                <option value=" items ">Items</option>
+                <option>--- Select an option ---</option>
+                <option value="items ">Items</option>
                 <option value="stocked_items ">Stocked Items</option>
             </select>
         </div>

@@ -18,6 +18,7 @@ export class ViewComponent {
   data: { [key: string]: any }[] = [];
   displayNames: { [key: string]: any }[] = [];
   displayData: any[] = [];
+  dataTypes: any[] = [];
   filteredDisplayData: any[] = [];
   edittable = {
     columns: [],
@@ -41,6 +42,9 @@ export class ViewComponent {
     this.route.queryParams.subscribe((params) => {
       this.selectedOption = params['table'] || null;
       this.loadTable(String(this.selectedOption));
+      this.pageCount = Math.ceil(this.displayData.length / 10);
+      this.currentPage = 1;
+      this.loadPage();
     });
   }
 
@@ -52,6 +56,7 @@ export class ViewComponent {
         this.data = [data.data];
       }
       this.displayData = data.display_data;
+      this.dataTypes = data.types;
       this.filteredDisplayData = data.display_data;
       this.displayNames = data.display_names;
       this.edittable = data.edittable;
@@ -80,6 +85,8 @@ export class ViewComponent {
   }
 
   getColumnHeaders(obj: { [key: string]: any }): string[] {
+    console.log(obj ? Object.keys(obj) : []);
+    console.log(this.displayNames);
     return obj ? Object.keys(obj) : [];
   }
 
@@ -173,9 +180,10 @@ export class ViewComponent {
   }
 
   loadPage() {
-    var start = this.currentPage * this.entryLimit - 1;
+    var start = (this.currentPage - 1) * this.entryLimit;
     var end = start + this.entryLimit;
     this.filteredDisplayData = this.displayData.slice(start, end);
+    console.log(this.edittable.types);
   }
 
   getPageRange(): number[] {
@@ -196,5 +204,23 @@ export class ViewComponent {
     }
 
     return range;
+  }
+
+  isColumnBool(key: number) {
+    if (this.dataTypes[key].includes("enum")) {
+      // var options = [];
+      // var optionsString = String(this.dataTypes[key]).substring(5, String(this.dataTypes[key]).length - 1);
+      // optionsString = optionsString.replace(/'/g, "");
+      // options = optionsString.split(',');
+      // return options;
+      if (String(this.dataTypes[key]) == "enum('Yes','No')") {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  changeCheckBox(event: Event, key: number) {
+
   }
 }
