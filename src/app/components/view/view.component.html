@@ -1,63 +1,66 @@
 <div class="container">
-    <div *ngIf="data && data.length > 0">
+    <ng-container *ngIf="data && data.length > 0">
         <h2>Data for {{ selectedOption }}</h2>
-        <div class="options-container">
-            <button (click)="addRow()">Add New +</button>
-            <p>Show
-                <select (change)="changeEntries($event)">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select> entries
-            </p>
-            <div class="search-container">
-                <p>Search</p>
-                <input type="text" placeholder="Search..." [(ngModel)]="searchText" />
-                <button (click)="toggleFilter()">
-                    <fa-icon [icon]="faSearch"></fa-icon>
-                </button>
+        <div class="table-container">
+            <div class="options-container">
+                <button (click)="addRow()">Add New +</button>
+                <div>
+                    <p>Show
+                        <select (change)="changeEntries($event)">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select> entries
+                    </p>
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." [(ngModel)]="searchText" />
+                        <button (click)="toggleFilter()">
+                            <fa-icon [icon]="faSearch"></fa-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr *ngIf="data[0]">
+                        <th *ngFor="let column of displayNames">{{ column }}</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="data-row" *ngFor="let item of filteredDisplayData.slice(0, entryLimit); let key = index;">
+                        <ng-container *ngIf="itemContainsFilter(item)">
+                            <td *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;">
+                                <ng-container *ngIf="isColumnBool(columnIndex) else elseBlock">
+                                    <div class="checkbox-container">
+                                        <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit)" type="checkbox" class="checkbox">
+                                    </div>
+                                </ng-container>
+                                <ng-template #elseBlock>
+                                    {{ item[column] == null ? '---' : item[column] }}
+                                </ng-template>
+                            </td>
+                            <td>
+                                <a (click)="editRow(key + (currentPage - 1) * entryLimit)">
+                                    <fa-icon [icon]="faPencil"></fa-icon>
+                                </a>
+                            </td>
+                        </ng-container>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="table-footer">
+                <p>Showing page {{ currentPage }} out of {{ pageCount }}</p>
+                <div class="page-section">
+                    <button (click)="previousPage()">Previous</button>
+                    <button (click)="changePage(1)"> {{ 1 }}</button>
+                    <button *ngFor="let pageNumber of getPageRange()" (click)="changePage(pageNumber)">{{ pageNumber }}</button>
+                    <button (click)="nextPage()">Next</button>
+                </div>
             </div>
         </div>
-        <table>
-            <thead>
-                <tr *ngIf="data[0]">
-                    <th *ngFor="let column of displayNames">{{ column }}</th>
-                    <th>Edit</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of filteredDisplayData.slice(0, entryLimit); let key = index;">
-                    <ng-container *ngIf="itemContainsFilter(item)">
-                        <td *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;">
-                            <ng-container *ngIf="isColumnBool(columnIndex) else elseBlock">
-                                <div class="checkbox-container">
-                                    <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit)" type="checkbox" class="checkbox">
-                                </div>
-                            </ng-container>
-                            <ng-template #elseBlock>
-                                {{ item[column] == null ? '---' : item[column] }}
-                            </ng-template>
-                        </td>
-                        <td>
-                            <a (click)="editRow(key + (currentPage - 1) * entryLimit)">
-                                <fa-icon [icon]="faPencil"></fa-icon>
-                            </a>
-                        </td>
-                    </ng-container>
-                </tr>
-            </tbody>
-        </table>
-        <div class="table-footer">
-            <p>Showing page {{ currentPage }} out of {{ pageCount }}</p>
-            <div class="page-section">
-                <button (click)="previousPage()">Previous</button>
-                <button (click)="changePage(1)"> {{ 1 }}</button>
-                <button *ngFor="let pageNumber of getPageRange()" (click)="changePage(pageNumber)">{{ pageNumber }}</button>
-                <button (click)="nextPage()">Next</button>
-            </div>
-        </div>
-    </div>
+    </ng-container>
     <div *ngIf="data.length === 0">
         <p>No data available for {{ selectedOption }}</p>
     </div>

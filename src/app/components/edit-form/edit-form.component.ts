@@ -50,4 +50,8 @@ export class EditFormComponent {
       console.log(this.editForm.value);
     })
   }
+
+  hide() {
+    this.formService.hideAddForm();
+  }  
 }
