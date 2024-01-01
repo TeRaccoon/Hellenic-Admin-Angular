@@ -21,35 +21,37 @@
                     </div>
                 </div>
             </div>
-            <table>
-                <thead>
-                    <tr *ngIf="data[0]">
-                        <th *ngFor="let column of displayNames">{{ column }}</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="data-row" *ngFor="let item of filteredDisplayData.slice(0, entryLimit); let key = index;">
-                        <ng-container *ngIf="itemContainsFilter(item)">
-                            <td *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;">
-                                <ng-container *ngIf="isColumnBool(columnIndex) else elseBlock">
-                                    <div class="checkbox-container">
-                                        <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit)" type="checkbox" class="checkbox">
-                                    </div>
-                                </ng-container>
-                                <ng-template #elseBlock>
-                                    {{ item[column] == null ? '---' : item[column] }}
-                                </ng-template>
-                            </td>
-                            <td>
-                                <a (click)="editRow(key + (currentPage - 1) * entryLimit)">
-                                    <fa-icon [icon]="faPencil"></fa-icon>
-                                </a>
-                            </td>
-                        </ng-container>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr *ngIf="data[0]">
+                            <th *ngFor="let column of displayNames">{{ column }}</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="data-row" *ngFor="let item of filteredDisplayData.slice(0, entryLimit); let key = index;">
+                            <ng-container *ngIf="itemContainsFilter(item)">
+                                <td *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;">
+                                    <ng-container *ngIf="isColumnBool(columnIndex) else elseBlock">
+                                        <div class="checkbox-container">
+                                            <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit)" type="checkbox" class="checkbox">
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #elseBlock>
+                                        {{ item[column] == null ? '---' : item[column] }}
+                                    </ng-template>
+                                </td>
+                                <td>
+                                    <a (click)="editRow(key + (currentPage - 1) * entryLimit)">
+                                        <fa-icon [icon]="faPencil"></fa-icon>
+                                    </a>
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="table-footer">
                 <p>Showing page {{ currentPage }} out of {{ pageCount }}</p>
                 <div class="page-section">
