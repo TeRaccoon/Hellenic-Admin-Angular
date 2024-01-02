@@ -15,6 +15,15 @@ export class DataService {
     }
     return this.http.get<any[]>(url);
   }
+  
+  collectDataComplex(query: string, filter?: any): Observable<any[]> {
+    let url = `http://localhost/API/admin_query_handler.php?query=${query}`;
+    if (filter != null) {
+      url += `&filter=${encodeURIComponent(filter)}`;
+    }
+    return this.http.get<any[]>(url);
+  }
+
   submitFormData(data: any) {
     const url = 'http://localhost/API/manage_data.php/';
     return this.http.post(url, data);
