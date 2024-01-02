@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,8 +8,8 @@ import { Router } from '@angular/router';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-  constructor(private router: Router) {}
-
+  faCaretDown = faCaretDown;
+  
   tables: { [category: string]: any[] } = {
     "Customers": [
       { name: "customer_address", displayName: "Addresses" },
@@ -23,6 +24,8 @@ export class SidebarComponent {
   };
 
   isDropdownVisible: { [key: string]: boolean } = {};
+  
+  constructor(private router: Router) {}
 
   changeTable(tableName: string) {
     this.router.navigate(['/view'], { queryParams: {table: tableName } })

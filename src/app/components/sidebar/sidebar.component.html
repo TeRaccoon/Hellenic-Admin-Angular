@@ -5,7 +5,7 @@
     <div class="options-container">
         <div *ngFor="let category of getTableCategories(tables)">
             <button (click)="toggleDropdown(category)">{{ category }}
-                <i class="fa fa-caret-down"></i>
+                <fa-icon [icon]="faCaretDown"></fa-icon>
               </button>
             <div class="dropdown-container" [ngClass]="{'hidden': !isDropdownVisible[category]}">
                 <a *ngFor="let table of tables[category]" (click)="changeTable(table.name)">{{ table.displayName }}</a>
