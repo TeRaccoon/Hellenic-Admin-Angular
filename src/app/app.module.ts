@@ -13,6 +13,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ViewComponent } from './components/view/view.component';
 import { AddFormComponent } from './components/add-form/add-form.component';
 import { EditFormComponent } from './components/edit-form/edit-form.component';
+import { LedgerWidgetComponent } from './components/ledger-widget/ledger-widget.component'
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { EditFormComponent } from './components/edit-form/edit-form.component';
     ViewComponent,
     AddFormComponent,
     EditFormComponent,
+    LedgerWidgetComponent,
   ],
   imports: [
     BrowserModule,

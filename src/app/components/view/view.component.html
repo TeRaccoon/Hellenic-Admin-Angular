@@ -59,6 +59,9 @@
                     <button (click)="nextPage()">Next</button>
                 </div>
             </div>
+            <ng-container *ngIf="selectedOption == 'general_ledger'">
+                <app-ledger-widget></app-ledger-widget>
+            </ng-container>
         </div>
     </ng-container>
     <div *ngIf="data.length === 0">
