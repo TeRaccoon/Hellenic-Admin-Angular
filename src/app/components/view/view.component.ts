@@ -85,8 +85,6 @@ export class ViewComponent {
   }
 
   getColumnHeaders(obj: { [key: string]: any }): string[] {
-    console.log(obj ? Object.keys(obj) : []);
-    console.log(this.displayNames);
     return obj ? Object.keys(obj) : [];
   }
 
@@ -169,7 +167,7 @@ export class ViewComponent {
     }
   }
   previousPage() {
-    if (this.currentPage > 0) {
+    if (this.currentPage > 1) {
       this.currentPage--;
       this.loadPage();
     }
@@ -183,7 +181,6 @@ export class ViewComponent {
     var start = (this.currentPage - 1) * this.entryLimit;
     var end = start + this.entryLimit;
     this.filteredDisplayData = this.displayData.slice(start, end);
-    console.log(this.edittable.types);
   }
 
   getPageRange(): number[] {
@@ -220,7 +217,14 @@ export class ViewComponent {
     return false;
   }
 
-  changeCheckBox(event: Event, key: number) {
-
+  changeCheckBox(event: Event, key: number, columnName: string) {
+    const option = event.target as HTMLInputElement;
+    let checked = option.checked;
+    let data = { ...this.data[key] };
+    data[columnName] = checked ? "Yes" : "No";
+    data['action'] = 'append';
+    data['table_name'] = String(this.selectedOption);
+    this.dataService.submitFormData(data).subscribe((data: any) => {
+    })
   }
 }
