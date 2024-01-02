@@ -20,6 +20,9 @@ export class SidebarComponent {
       { name: "offers", displayName: "Offers" },
       { name: "page_sections", displayName: "Page Sections" },
       { name: "retail_items", displayName: "Items" }
+    ],
+    "Accounting": [
+      { name: "general_ledger", displayName: "General Ledger" }
     ]
   };
 
