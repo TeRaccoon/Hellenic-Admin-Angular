@@ -16,10 +16,11 @@ export class DataService {
     return this.http.get<any[]>(url);
   }
   
-  collectDataComplex(query: string, filter?: any): Observable<any[]> {
+  collectDataComplex(query: string, filter?: Record<string, any>): Observable<any[]> {
     let url = `http://localhost/API/admin_query_handler.php?query=${query}`;
     if (filter != null) {
-      url += `&filter=${encodeURIComponent(filter)}`;
+      const queryParams = Object.entries(filter).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
+      url += `&${queryParams}`;
     }
     return this.http.get<any[]>(url);
   }

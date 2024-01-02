@@ -6,7 +6,26 @@
         <input type="date" [(ngModel)]="endDate">
         <button (click)="calculateTrialBalance()">Calculate</button>
     </div>
-    <div class="trial-balance-container">
-
-    </div>
+    <ng-container *ngIf="balanceData.length > 0">
+        <div class="trial-balance-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Account</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="data-row" *ngFor="let row of balanceData">
+                        <td>{{ row.account_code }}</td>
+                        <td>{{ row.total_debit | currency:'GBP' }}</td>
+                        <td>{{ row.total_credit | currency:'GBP' }}</td>
+                        <td>{{ row.balance | currency:'GBP' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
 </div>

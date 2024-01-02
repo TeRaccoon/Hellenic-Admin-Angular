@@ -10,11 +10,15 @@ export class LedgerWidgetComponent {
   startDate: string = '';
   endDate: string = '';
 
+  balanceData: any[] = [];
+
   constructor(private dataService: DataService) {}
 
   calculateTrialBalance() {
     if (this.startDate != '' && this.endDate != '') {
       this.dataService.collectDataComplex('account-balances', {'start-date': this.startDate, 'end-date': this.endDate}).subscribe((data: any) => {
+        this.balanceData = data;
+        console.log(data);
       });
     }
   }
