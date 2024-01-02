@@ -3,32 +3,13 @@
         <h1>Hellenic Admin</h1>
     </div>
     <div class="options-container">
-        <div>
-            <label>Customers</label>
-            <select (change)="changeTable($event)">
-                <option>--- Select an option ---</option>
-                <option value="customer_address">Addresses</option>
-                <option value="customers">Details</option>
-                <option value="customer_payments">Payments</option>
-            </select>
+        <div *ngFor="let category of getTableCategories(tables)">
+            <button (click)="toggleDropdown(category)">{{ category }}
+                <i class="fa fa-caret-down"></i>
+              </button>
+            <div class="dropdown-container" [ngClass]="{'hidden': !isDropdownVisible[category]}">
+                <a *ngFor="let table of tables[category]" (click)="changeTable(table.name)">{{ table.displayName }}</a>
+            </div>
         </div>
-        <div>
-            <label>Retail</label>
-            <select (change)="changeTable($event)">
-                <option>--- Select an option ---</option>
-                <option>Offers</option>
-                <option>Products</option>
-                <option value=" retail_items ">Items</option>
-            </select>
-        </div>
-        <div>
-            <label>Stock / Items</label>
-            <select (change)="changeTable($event)">
-                <option>--- Select an option ---</option>
-                <option value="items ">Items</option>
-                <option value="stocked_items ">Stocked Items</option>
-            </select>
-        </div>
-
     </div>
 </div>

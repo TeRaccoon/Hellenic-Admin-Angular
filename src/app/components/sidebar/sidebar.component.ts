@@ -9,9 +9,30 @@ import { Router } from '@angular/router';
 export class SidebarComponent {
   constructor(private router: Router) {}
 
-  changeTable(event: Event) {
-    const option = event.target as HTMLInputElement;
-    let value = option.value;
-    this.router.navigate(['/view'], { queryParams: {table: value } })
+  tables: { [category: string]: any[] } = {
+    "Customers": [
+      { name: "customer_address", displayName: "Addresses" },
+      { name: "customers", displayName: "Details" },
+      { name: "customer_payments", displayName: "Payments" },
+    ],
+    "Retail": [
+      { name: "offers", displayName: "Offers" },
+      { name: "page_sections", displayName: "Page Sections" },
+      { name: "retail_items", displayName: "Items" }
+    ]
+  };
+
+  isDropdownVisible: { [key: string]: boolean } = {};
+
+  changeTable(tableName: string) {
+    this.router.navigate(['/view'], { queryParams: {table: tableName } })
+  }
+
+  getTableCategories(obj: { [key: string]: any }): string[] {
+    return obj ? Object.keys(obj) : [];
+  }
+
+  toggleDropdown(category: string): void {
+    this.isDropdownVisible[category] = !this.isDropdownVisible[category];
   }
 }
