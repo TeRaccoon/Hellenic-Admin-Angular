@@ -1,9 +1,11 @@
 $hellenicblue: rgb(0, 140, 255);
 .container {
-    width: 15%;
-    height: 100%;
+    width: 14%;
+    height: 98%;
     position: fixed;
-    background-color: #fff;
+    background-image: linear-gradient(to left top, #42424a 0%, #191919 100%);
+    margin: 10px;
+    border-radius: 15px;
     .header-section {
         display: flex;
         align-items: center;
@@ -13,6 +15,9 @@ $hellenicblue: rgb(0, 140, 255);
         color: white;
         text-align: center;
         font-weight: bold;
+        border-top-right-radius: 15px;
+        border-top-left-radius: 15px;
+        padding: 15px;
         h1 {
             font-size: 25px;
         }
@@ -22,17 +27,31 @@ $hellenicblue: rgb(0, 140, 255);
             padding-left: 8px;
             display: flex;
             flex-direction: column;
+            a {
+                color: rgb(216, 216, 216);
+                margin-left: 40px;
+                padding: 2px;
+                &:hover {
+                    color: rgb(255, 255, 255);
+                }
+            }
         }
         button {
             text-decoration: none;
             font-size: 20px;
             display: block;
             border: none;
-            background: none;
-            width: 100%;
+            border-radius: 5px;
+            background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+            width: 80%;
             text-align: left;
             cursor: pointer;
             outline: none;
+            margin: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 5px;
+            color: white;
         }
         .hidden {
             display: none;
