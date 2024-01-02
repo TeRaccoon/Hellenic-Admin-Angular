@@ -54,8 +54,8 @@
                 <p>Showing page {{ currentPage }} out of {{ pageCount }}</p>
                 <div class="page-section">
                     <button (click)="previousPage()">Previous</button>
-                    <button (click)="changePage(1)"> {{ 1 }}</button>
-                    <button *ngFor="let pageNumber of getPageRange()" (click)="changePage(pageNumber)">{{ pageNumber }}</button>
+                    <button [class]="currentPage == 1 ? 'active-page' : ''" (click)="changePage(1)"> {{ 1 }}</button>
+                    <button *ngFor="let pageNumber of getPageRange()" (click)="changePage(pageNumber)" [class]="currentPage == pageNumber ? 'active-page' : ''">{{ pageNumber }}</button>
                     <button (click)="nextPage()">Next</button>
                 </div>
             </div>
