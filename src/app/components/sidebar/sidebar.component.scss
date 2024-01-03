@@ -37,14 +37,19 @@ $hellenicblue: rgb(0, 140, 255);
             }
         }
         button {
+            display: flex;
             text-decoration: none;
             font-size: 20px;
-            display: block;
             border: none;
             border-radius: 5px;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
             width: 80%;
             text-align: left;
+            fa-icon {
+                display: flex;
+                margin-left: auto;
+                margin-right: 0;
+            }
             cursor: pointer;
             outline: none;
             margin: 10px;
