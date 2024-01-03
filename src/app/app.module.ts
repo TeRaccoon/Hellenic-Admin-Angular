@@ -13,7 +13,9 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ViewComponent } from './components/view/view.component';
 import { AddFormComponent } from './components/add-form/add-form.component';
 import { EditFormComponent } from './components/edit-form/edit-form.component';
-import { LedgerWidgetComponent } from './components/ledger-widget/ledger-widget.component'
+import { LedgerWidgetComponent } from './components/ledger-widget/ledger-widget.component';
+import { DebtorCreditorWidgetComponent } from './components/debtor-creditor-widget/debtor-creditor-widget.component';
+import { TablelessViewComponent } from './components/tableless-view/tableless-view.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { LedgerWidgetComponent } from './components/ledger-widget/ledger-widget.
     AddFormComponent,
     EditFormComponent,
     LedgerWidgetComponent,
+    DebtorCreditorWidgetComponent,
+    TablelessViewComponent,
   ],
   imports: [
     BrowserModule,

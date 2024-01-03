@@ -22,7 +22,8 @@ export class SidebarComponent {
       { name: "retail_items", displayName: "Items" }
     ],
     "Accounting": [
-      { name: "general_ledger", displayName: "General Ledger" }
+      { name: "general_ledger", displayName: "General Ledger" },
+      { name: "debtor_creditor", displayName: "Aged Debtors/ Creditors" }
     ]
   };
 
@@ -31,7 +32,11 @@ export class SidebarComponent {
   constructor(private router: Router) {}
 
   changeTable(tableName: string) {
-    this.router.navigate(['/view'], { queryParams: {table: tableName } })
+    if (tableName != "debtor_creditor") {
+      this.router.navigate(['/view'], { queryParams: {table: tableName } })
+    } else {
+      this.router.navigate(['/page'], { queryParams: {table: tableName } });
+    }
   }
 
   getTableCategories(obj: { [key: string]: any }): string[] {
