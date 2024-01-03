@@ -33,6 +33,10 @@ $hellenicblue: rgb(0, 140, 255);
             }
             input {
                 border: none;
+                &:active,
+                &:focus-visible {
+                    outline: none;
+                }
                 &::placeholder {
                     font-size: 16px;
                 }

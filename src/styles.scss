@@ -1,5 +1,11 @@
 body {
     margin: 0px;
     background-color: #eaeef3;
+    font-family: 'Barlow Condensed', sans-serif;
     font-family: 'Poppins', sans-serif;
+    font-family: 'Titillium Web', sans-serif;
+     ::selection {
+        background-color: rgb(66, 66, 200);
+        color: white;
+    }
 }
