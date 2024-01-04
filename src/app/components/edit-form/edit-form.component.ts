@@ -51,6 +51,6 @@ export class EditFormComponent {
   }
 
   hide() {
-    this.formService.hideAddForm();
+    this.formService.hideEditForm();
   }  
 }
