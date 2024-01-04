@@ -28,7 +28,7 @@ export class DataService {
     return this.http.get<any[]>(url);
   }
 
-  submitFormData(data: any) {
+  submitFormData(data: any): Observable<any> {
     const url = 'http://localhost/API/manage_data.php/';
     return this.http.post(url, data);
   }

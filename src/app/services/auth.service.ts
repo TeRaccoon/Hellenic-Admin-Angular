@@ -10,7 +10,7 @@ export class AuthService {
 
     constructor() {}
 
-    login(userID: number) {
+    login(userID: number | null) {
         this.isAuthenticated.next(true);
         this.userID.next(userID);
     }
