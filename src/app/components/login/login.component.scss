@@ -1,7 +1,38 @@
 .container {
-    margin: 15px 15px 15px 16%;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #ebebeb;
+    background-color: white;
+    flex-direction: column;
+    width: 30%;
+    margin: 30px auto;
+    border-radius: 15px;
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        button {
+            font-size: 18px;
+            outline: none;
+            padding: 10px;
+            background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+            border: none;
+            color: white;
+            margin: 20px;
+            border-radius: 5px;
+            font-size: 20px;
+            &:hover {
+                font-style: italic;
+            }
+        }
+    }
+    input {
+        background-color: white;
+        outline: none;
+        border: 1px solid #cacfd4;
+        border-radius: 5px;
+        padding: 5px;
+        font-size: 20px;
+        margin: 20px;
+    }
 }
