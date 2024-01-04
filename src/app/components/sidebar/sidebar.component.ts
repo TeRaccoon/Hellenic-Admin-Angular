@@ -33,7 +33,7 @@ export class SidebarComponent {
 
   changeTable(tableName: string) {
     if (tableName != "debtor_creditor") {
-      this.router.navigate(['/view'], { queryParams: {table: tableName } })
+      this.router.navigate(['/view'], { queryParams: {table: tableName } });
     } else {
       this.router.navigate(['/page'], { queryParams: {table: tableName } });
     }
@@ -45,5 +45,9 @@ export class SidebarComponent {
 
   toggleDropdown(category: string): void {
     this.isDropdownVisible[category] = !this.isDropdownVisible[category];
+  }
+
+  goHome() {
+    this.router.navigate(['/home']);
   }
 }
