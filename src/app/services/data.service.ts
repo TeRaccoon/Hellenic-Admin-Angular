@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataService {
+  private dataSubject = new Subject<any[]>();
+  tableData: any = {};
+
   constructor(private http: HttpClient) {}
 
   collectData(query: string, filter?: string): Observable<any[]> {
@@ -28,5 +31,18 @@ export class DataService {
   submitFormData(data: any) {
     const url = 'http://localhost/API/manage_data.php/';
     return this.http.post(url, data);
+  }
+
+  storeData(data: any) {
+    this.tableData = data;
+    this.dataSubject.next(data);
+  }
+
+  retrieveData() {
+    return this.tableData;
+  }
+
+  getDataObservable(): Observable<any[]> {
+    return this.dataSubject.asObservable();
   }
 }

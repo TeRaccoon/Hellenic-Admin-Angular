@@ -10,6 +10,8 @@ import { FormService } from '../../services/form.service';
 })
 export class TablelessViewComponent {
   tableName = '';
+  tableData: any[] = [];
+  tableHeaders: any = [];
 
   constructor(private formService: FormService, private route: ActivatedRoute, private dataService: DataService) {}
 
@@ -17,7 +19,15 @@ export class TablelessViewComponent {
     this.route.queryParams.subscribe((params) => {
       this.tableName = params['table'];
     });
+    this.dataService.getDataObservable().subscribe((data) => {
+      var retrievedData = this.dataService.retrieveData();
+      this.tableData = retrievedData.Data;
+      this.tableHeaders = retrievedData.Headers;
+      console.log(this.tableData);
+    });
   }
-
-
+  
+  getObjectKeys(obj: object): string[] {
+    return Object.keys(obj);
+  }
 }

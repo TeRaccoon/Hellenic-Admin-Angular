@@ -1,16 +1,16 @@
 <div class="container">
     <div class="widget-container">
         <h1>Debtors</h1>
-        <button>0-30 Days</button>
-        <button>31-60 Days</button>
-        <button>61-90 Days</button>
-        <button>90+ Days</button>
+        <button (click)="submitQuery('debtor', 0, 30)">0-30 Days</button>
+        <button (click)="submitQuery('debtor', 31, 60)">31-60 Days</button>
+        <button (click)="submitQuery('debtor', 61, 90)">61-90 Days</button>
+        <button (click)="submitQuery('debtor', 90, null)">90+ Days</button>
     </div>
     <div class="widget-container">
         <h1>Creditors</h1>
-        <button>0-30 Days</button>
-        <button>31-60 Days</button>
-        <button>61-90 Days</button>
-        <button>90+ Days</button>
+        <button (click)="submitQuery('creditor', 0, 30)">0-30 Days</button>
+        <button (click)="submitQuery('creditor', 31, 60)">31-60 Days</button>
+        <button (click)="submitQuery('creditor', 61, 90)">61-90 Days</button>
+        <button (click)="submitQuery('creditor', 90, null)">90+ Days</button>
     </div>
 </div>
