@@ -1,5 +1,5 @@
-<div class="container">
-    <ng-container *ngIf="tableHeaders && tableData">
+<ng-container *ngIf="tableHeaders && tableData">
+    <div class="container">
         <div class="table-container">
             <table>
                 <thead>
@@ -16,10 +16,10 @@
                 </tbody>
             </table>
         </div>
-    </ng-container>
+    </div>
     <ng-container ng-switch="tableName">
         <div ng-switch-when="debtor_creditor">
             <app-debtor-creditor-widget></app-debtor-creditor-widget>
         </div>
     </ng-container>
-</div>
+</ng-container>
