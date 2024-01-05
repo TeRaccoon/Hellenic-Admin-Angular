@@ -18,8 +18,10 @@
             <fa-icon [icon]="faUser"></fa-icon>
         </p>
         <div [class]="'notification-dropdown-container ' + (dropDownVisible ? '' : 'hidden')">
-            <p>Welcome!</p>
-            <p>This is a notification and it is really long</p>
+            <div class="section" *ngFor="let notification of notifications">
+                <h2>{{ notification.header }}</h2>
+                <p *ngFor="let dataItem of notification.data">{{ dataItem }}</p>
+            </div>
         </div>
     </div>
 </div>

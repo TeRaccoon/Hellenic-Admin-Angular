@@ -15,7 +15,7 @@ export class NavbarComponent {
 
   dropDownVisible = false;
 
-  notifications = [];
+  notifications: { header: string; data: any[] }[] = [];
 
   constructor(private dataService: DataService) {}
 
@@ -28,8 +28,18 @@ export class NavbarComponent {
   }
 
   getNotifications() {
-    this.dataService.collectData('invoices-due-today', '0').subscribe((data: any) => {
-      this.notifications = data;
+    this.dataService.collectData('invoices-due', '1').subscribe((data: any) => {
+      if (data.length != 0) {
+        var invoicesDue = data;
+        if (!Array.isArray(invoicesDue)) {
+          invoicesDue = [invoicesDue];
+        }
+        var invoiceDataArray: any[] = [];
+        invoicesDue.forEach((invoiceData: any) => {
+          invoiceDataArray.push(`Invoice: ${ invoiceData.title }`)
+        });
+        this.notifications.push({ header: 'Invoices Due Today', data: invoiceDataArray });
+      }
     });
   }
 }
