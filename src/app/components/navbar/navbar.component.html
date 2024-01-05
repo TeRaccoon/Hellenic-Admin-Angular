@@ -9,7 +9,7 @@
     </div>
     <div class="nav-options-container">
         <p>
-            <fa-icon [icon]="faBell"></fa-icon>
+            <fa-icon (click)="toggleNotificationDropdown()" [icon]="faBell"></fa-icon>
         </p>
         <p>
             <fa-icon [icon]="faEnvelope"></fa-icon>
@@ -17,5 +17,9 @@
         <p>
             <fa-icon [icon]="faUser"></fa-icon>
         </p>
+        <div [class]="'notification-dropdown-container ' + (dropDownVisible ? '' : 'hidden')">
+            <p>Welcome!</p>
+            <p>This is a notification and it is really long</p>
+        </div>
     </div>
 </div>
