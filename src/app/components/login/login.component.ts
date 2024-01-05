@@ -29,6 +29,7 @@ export class LoginComponent {
       this.dataService.submitFormData(this.loginForm.value).subscribe((response: any) => {
         if (response.success) {
           this.authService.login(null);
+          this.router.navigate(['/home'])
         } else {
           this.error = response.message;
           console.log(response);
