@@ -19,6 +19,13 @@ export class ProfitLossWidgetComponent {
         if (!Array.isArray(retrievedData)) {
           retrievedData = [retrievedData];
         }
+        console.log(retrievedData);
+        retrievedData.forEach((item: any) => {
+          for (const key in item) {
+            item[key] = item[key].toLocaleString('en-US', { style: 'currency', currency: 'GBP' });
+          }
+        });
+        console.log(retrievedData);
         this.dataService.storeData({'Data': retrievedData,
         'Headers': ['Sales Revenue', 'Cost of Sales', 'Gross Profit', 'Expenses', 'Net Profit']});
       });
