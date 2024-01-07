@@ -18,6 +18,8 @@ import { DebtorCreditorWidgetComponent } from './components/debtor-creditor-widg
 import { TablelessViewComponent } from './components/tableless-view/tableless-view.component';
 import { LoginComponent } from './components/login/login.component';
 import { ProfitLossWidgetComponent } from './components/profit-loss-widget/profit-loss-widget.component';
+import { StatisticsComponent } from './components/statistics/statistics.component';
+import { InvoiceBreakdownWidgetComponent } from './components/invoice-breakdown-widget/invoice-breakdown-widget.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { ProfitLossWidgetComponent } from './components/profit-loss-widget/profi
     DebtorCreditorWidgetComponent,
     TablelessViewComponent,
     LoginComponent,
-    ProfitLossWidgetComponent
+    ProfitLossWidgetComponent,
+    StatisticsComponent,
+    InvoiceBreakdownWidgetComponent,
   ],
   imports: [
     BrowserModule,

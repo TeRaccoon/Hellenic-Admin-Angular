@@ -1,5 +1,5 @@
-<ng-container *ngIf="tableHeaders && tableData">
-    <div class="container">
+<div class="container">
+    <ng-container *ngIf="tableHeaders && tableData.length > 0">
         <div class="table-container">
             <table>
                 <thead>
@@ -16,12 +16,11 @@
                 </tbody>
             </table>
         </div>
-    </div>
-    <ng-container *ngIf="tableName === 'debtor_creditor'">
-        <app-debtor-creditor-widget></app-debtor-creditor-widget>
     </ng-container>
-
-    <ng-container *ngIf="tableName === 'profit_loss'">
-        <app-profit-loss-widget></app-profit-loss-widget>
-    </ng-container>
+</div>
+<ng-container *ngIf="tableName === 'debtor_creditor'">
+    <app-debtor-creditor-widget></app-debtor-creditor-widget>
+</ng-container>
+<ng-container *ngIf="tableName === 'profit_loss'">
+    <app-profit-loss-widget></app-profit-loss-widget>
 </ng-container>
