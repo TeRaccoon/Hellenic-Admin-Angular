@@ -1,7 +1,9 @@
 <div class="container">
-    <label>Start date:</label>
-    <input type="date" [(ngModel)]="startDate">
-    <label>End date:</label>
-    <input type="date" [(ngModel)]="endDate">
-    <button (click)="calculateProfitLoss()">Calculate</button>
+    <div class="widget-container">
+        <label>Start date:</label>
+        <input type="date" [(ngModel)]="startDate">
+        <label>End date:</label>
+        <input type="date" [(ngModel)]="endDate">
+        <button (click)="calculateProfitLoss()">Calculate</button>
+    </div>
 </div>
