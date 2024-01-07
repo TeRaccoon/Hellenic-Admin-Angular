@@ -24,7 +24,8 @@ export class SidebarComponent {
     ],
     "Accounting": [
       { name: "general_ledger", displayName: "General Ledger" },
-      { name: "debtor_creditor", displayName: "Aged Debtors/ Creditors" }
+      { name: "debtor_creditor", displayName: "Aged Debtors/ Creditors" },
+      { name: "profit_loss", displayName: "Profit Loss" }
     ]
   };
 
@@ -33,7 +34,7 @@ export class SidebarComponent {
   constructor(private router: Router) {}
 
   changeTable(tableName: string) {
-    if (tableName != "debtor_creditor") {
+    if (tableName != "debtor_creditor" && tableName != "profit_loss") {
       this.router.navigate(['/view'], { queryParams: {table: tableName } });
     } else {
       this.router.navigate(['/page'], { queryParams: {table: tableName } });

@@ -17,9 +17,11 @@
             </table>
         </div>
     </div>
-    <ng-container ng-switch="tableName">
-        <div ng-switch-when="debtor_creditor">
-            <app-debtor-creditor-widget></app-debtor-creditor-widget>
-        </div>
+    <ng-container *ngIf="tableName === 'debtor_creditor'">
+        <app-debtor-creditor-widget></app-debtor-creditor-widget>
+    </ng-container>
+
+    <ng-container *ngIf="tableName === 'profit_loss'">
+        <app-profit-loss-widget></app-profit-loss-widget>
     </ng-container>
 </ng-container>
