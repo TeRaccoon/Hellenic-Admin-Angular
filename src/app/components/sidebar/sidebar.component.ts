@@ -17,6 +17,7 @@ export class SidebarComponent {
       { name: "customer_payments", displayName: "Payments" },
     ],
     "Retail": [
+      { name: "invoices", displayName: "Invoices" },
       { name: "offers", displayName: "Offers" },
       { name: "page_sections", displayName: "Page Sections" },
       { name: "retail_items", displayName: "Items" }
