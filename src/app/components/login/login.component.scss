@@ -4,9 +4,12 @@
     align-items: center;
     background-color: white;
     flex-direction: column;
-    width: 30%;
+    width: 26%;
     margin: 30px auto;
     border-radius: 15px;
+    h2 {
+        margin: 40px;
+    }
     form {
         display: flex;
         flex-direction: column;
@@ -14,12 +17,12 @@
         button {
             font-size: 18px;
             outline: none;
-            padding: 10px;
+            padding: 20px;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
             border: none;
             color: white;
             margin: 20px;
-            border-radius: 5px;
+            border-radius: 12px;
             font-size: 20px;
             &:hover {
                 font-style: italic;
@@ -30,8 +33,8 @@
         background-color: white;
         outline: none;
         border: 1px solid #cacfd4;
-        border-radius: 5px;
-        padding: 5px;
+        border-radius: 12px;
+        padding: 10px;
         font-size: 20px;
         margin: 20px;
     }
