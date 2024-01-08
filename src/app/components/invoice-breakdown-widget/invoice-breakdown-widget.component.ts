@@ -45,17 +45,20 @@ export class InvoiceBreakdownWidgetComponent {
       'November',
       'December'],
       datasets: [{
-        label: 'My First dataset',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
+        
+        // Put all styles here but instead 'border-radius' do 'borderRadius' so get rid of the dash and do the next word uppercase
+
+        backgroundColor: 'blue', //Colour of the bar itself
+        borderColor: 'blue', //Border colour of the tooltip when you hover over the bar
         data: this.chartData,
+        borderRadius: 15, //Border radius for the bar
       }]
     };
     const options = {
       scales: {
         y: {
           beginAtZero: true,
-          display: false
+          display: false,
         }
       }
     };
