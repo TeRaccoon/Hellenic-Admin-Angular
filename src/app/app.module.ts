@@ -45,7 +45,7 @@ import { InvoiceBreakdownWidgetComponent } from './components/invoice-breakdown-
     HttpClientModule,
     FontAwesomeModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [
   ],

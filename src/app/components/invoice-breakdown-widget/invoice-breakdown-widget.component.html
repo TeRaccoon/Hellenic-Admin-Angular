@@ -1,7 +1,11 @@
 <div class="container">
     <div class="graph-view-container">
         <label>Select Year</label>
-        <input (change)="changeYear($event)" type="number" min="2000" max="2099" step="1" value="2024" />
+        <input (change)="changeYear($event)" type="number" min="2000" max="2099" step="1" value="2023" />
+        <div class="bar-graph">
+            <canvas id="my-chart">
+            </canvas>
+        </div>
     </div>
     <div class="section">
         <div class="pie-chart-container">
