@@ -5,16 +5,19 @@
             <input (change)="changeYear($event)" type="number" min="2000" max="2099" step="1" value="2023" />
         </div>
         <div class="bar-graph">
-            <canvas id="my-chart">
-            </canvas>
+            <canvas id="bar-chart"></canvas>
         </div>
     </div>
     <div class="section">
         <div class="pie-chart-container">
-
+            <canvas id="pie-chart"></canvas>
         </div>
         <div class="values-container">
-
+            <ng-container *ngIf="listData.length > 0">
+                <ul>
+                    <li *ngFor="let data of listData; let key = index">{{ listHeaders[key] + data }}</li>
+                </ul>
+            </ng-container>
         </div>
     </div>
 </div>
