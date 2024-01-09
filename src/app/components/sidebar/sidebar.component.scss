@@ -11,13 +11,14 @@ $hellenicblue: rgb(0, 140, 255);
         align-items: center;
         justify-content: center;
         height: 50px;
-        background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
         color: white;
         text-align: center;
         font-weight: bold;
         border-top-right-radius: 15px;
         border-top-left-radius: 15px;
+        border-bottom: 5px solid #404048;
         padding: 15px;
+        margin-bottom: 20px;
         h1 {
             font-size: 25px;
         }
@@ -29,7 +30,7 @@ $hellenicblue: rgb(0, 140, 255);
             flex-direction: column;
             a {
                 color: rgb(216, 216, 216);
-                margin-left: 40px;
+                margin-left: 25px;
                 padding: 2px;
                 &:hover {
                     color: rgb(255, 255, 255);
@@ -43,7 +44,7 @@ $hellenicblue: rgb(0, 140, 255);
             border: none;
             border-radius: 5px;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
-            width: 80%;
+            width: 90%;
             text-align: left;
             fa-icon {
                 display: flex;
