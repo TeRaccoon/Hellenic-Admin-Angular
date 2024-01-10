@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
-import { faSpinner, faPencil, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencil, faSearch, faPrint } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-view',
@@ -13,6 +13,7 @@ export class ViewComponent {
   faSpinner = faSpinner;
   faPencil = faPencil;
   faSearch = faSearch;
+  faPrint = faPrint;
   
   selectedOption: string | null = null;
   data: { [key: string]: any }[] = [];
@@ -28,6 +29,8 @@ export class ViewComponent {
     fields: [],
   };
 
+  selectedRows: number[] = [];
+
   entryLimit: number = 10;
   pageCount: number = 0;
   currentPage: number = 1;
@@ -36,7 +39,7 @@ export class ViewComponent {
   filter: string = '';
   setFilter = false;
 
-  constructor(private formService: FormService, private route: ActivatedRoute, private dataService: DataService) {}
+  constructor(private router: Router, private formService: FormService, private route: ActivatedRoute, private dataService: DataService) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
@@ -205,11 +208,6 @@ export class ViewComponent {
 
   isColumnBool(key: number) {
     if (this.dataTypes[key].includes("enum")) {
-      // var options = [];
-      // var optionsString = String(this.dataTypes[key]).substring(5, String(this.dataTypes[key]).length - 1);
-      // optionsString = optionsString.replace(/'/g, "");
-      // options = optionsString.split(',');
-      // return options;
       if (String(this.dataTypes[key]) == "enum('Yes','No')") {
         return true;
       }
@@ -226,5 +224,21 @@ export class ViewComponent {
     data['table_name'] = String(this.selectedOption);
     this.dataService.submitFormData(data).subscribe((data: any) => {
     })
+  }
+
+  selectRow(event: Event, rowId: number) {
+    const option = event.target as HTMLInputElement;
+    let checked = option.checked;
+    if (checked) {
+      this.selectedRows.push(rowId);
+    } else {
+      this.selectedRows = this.selectedRows.filter(function (item) { return item !== rowId; })
+    }
+    console.log(this.selectedRows);
+  }
+
+  print() {
+    this.dataService.storePrintInvoiceIds(this.selectedRows);
+    this.router.navigate(['/print/invoice']);
   }
 }

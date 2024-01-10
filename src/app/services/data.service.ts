@@ -8,6 +8,7 @@ import { Observable, Subject } from 'rxjs';
 export class DataService {
   private dataSubject = new Subject<any[]>();
   tableData: any = {};
+  invoiceIds: any[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -44,5 +45,12 @@ export class DataService {
 
   getDataObservable(): Observable<any[]> {
     return this.dataSubject.asObservable();
+  }
+
+  storePrintInvoiceIds(data: any) {
+    this.invoiceIds = data;
+  }
+  retrievePrintInvoiceIds() {
+    return this.invoiceIds;
   }
 }

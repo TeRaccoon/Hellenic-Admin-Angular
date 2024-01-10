@@ -38,17 +38,23 @@
             width: 90%;
             margin-left: auto;
             margin-right: auto;
-            >button {
-                align-self: flex-start;
-                background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
-                color: white;
-                border: none;
-                outline: none;
-                border-radius: 5px;
-                padding: 8px;
-                margin-top: 20px;
-                font-weight: bold;
-                font-size: 17px;
+            .row {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 8px;
+                >button {
+                    align-self: flex-start;
+                    background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+                    color: white;
+                    border: none;
+                    outline: none;
+                    border-radius: 5px;
+                    padding: 8px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                    font-size: 17px;
+                }
             }
             div {
                 display: flex;

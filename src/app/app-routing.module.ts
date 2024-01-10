@@ -18,7 +18,6 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'statistics', component: StatisticsComponent },
   { path: 'print',
-  outlet: 'print',
     component: PrintLayoutComponent,
     children: [
       { path: 'invoice', component: InvoiceViewComponent }

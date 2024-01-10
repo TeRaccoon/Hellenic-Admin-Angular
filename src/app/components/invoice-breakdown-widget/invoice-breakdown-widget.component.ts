@@ -158,6 +158,7 @@ export class InvoiceBreakdownWidgetComponent {
   handleBarClick(event: MouseEvent, elements: any[]) {
     this.pieChartData = [];
     this.pieChartLabel = [];
+    this.listData = [];
     if (elements.length > 0) {
       var index = elements[0].index + 1;
       this.selectedMonth = index;

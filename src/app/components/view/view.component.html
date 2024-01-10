@@ -3,7 +3,10 @@
         <h2>Data for {{ selectedOption }}</h2>
         <div class="table-container">
             <div class="options-container">
-                <button (click)="addRow()">Add New +</button>
+                <div class="row">
+                    <button (click)="addRow()">Add New +</button>
+                    <button (click)="print()"><fa-icon [icon]="faPrint"/></button>
+                </div>
                 <div>
                     <p>Show
                         <select (change)="changeEntries($event)">
@@ -25,6 +28,7 @@
                 <table>
                     <thead>
                         <tr *ngIf="data[0]">
+                            <th>Select</th>
                             <th *ngFor="let column of displayNames">{{ column }}</th>
                             <th>Edit</th>
                         </tr>
@@ -32,6 +36,9 @@
                     <tbody>
                         <tr class="data-row" *ngFor="let item of filteredDisplayData.slice(0, entryLimit); let key = index;">
                             <ng-container *ngIf="itemContainsFilter(item)">
+                                <td>
+                                    <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox">
+                                </td>
                                 <td *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;">
                                     <ng-container *ngIf="isColumnBool(columnIndex) else elseBlock">
                                         <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes' ? true : false">
