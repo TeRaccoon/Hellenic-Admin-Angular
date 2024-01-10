@@ -20,7 +20,8 @@ import { LoginComponent } from './components/login/login.component';
 import { ProfitLossWidgetComponent } from './components/profit-loss-widget/profit-loss-widget.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { InvoiceBreakdownWidgetComponent } from './components/invoice-breakdown-widget/invoice-breakdown-widget.component';
-
+import { PrintLayoutComponent } from './components/print-layout/print-layout.component';
+import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,6 +38,8 @@ import { InvoiceBreakdownWidgetComponent } from './components/invoice-breakdown-
     ProfitLossWidgetComponent,
     StatisticsComponent,
     InvoiceBreakdownWidgetComponent,
+    PrintLayoutComponent,
+    InvoiceViewComponent,
   ],
   imports: [
     BrowserModule,

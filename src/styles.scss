@@ -9,3 +9,12 @@ body {
         color: white;
     }
 }
+
+@media print {
+    app-root>* {
+        display: none;
+    }
+    app-root app-print-layout {
+        display: block;
+    }
+}
