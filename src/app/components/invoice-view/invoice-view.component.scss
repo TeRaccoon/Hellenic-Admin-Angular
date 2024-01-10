@@ -1,18 +1,43 @@
 .container {
+    width: 21cm;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    .header-section {
+        width: 100%;
+        .row {
+            display: flex;
+            justify-content: space-between;
+            .image-container {
+                margin: 50px;
+            }
+        }
+        h2 {
+            padding: 30px 0px 30px 20px;
+        }
+    }
     .invoice-container {
         display: flex;
         flex-direction: column;
+        margin: 10px;
+        padding: 10px;
         .row {
             display: flex;
         }
         .section {
             display: flex;
             flex-direction: column;
-            border: 3px solid black;
             width: 100%;
+            margin: 5px;
+            padding: 10px;
+            h1 {
+                font-size: 18px;
+                margin-top: 1px;
+            }
         }
         .card {
-            background-color: white;
+            border-radius: 5px;
+            border: 2px solid rgb(227, 227, 227);
         }
     }
 }
