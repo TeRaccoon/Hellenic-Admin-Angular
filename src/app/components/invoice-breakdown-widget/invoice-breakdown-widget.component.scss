@@ -18,4 +18,17 @@
             }
         }
     }
+    .section {
+        display: flex;
+        margin: 30px 10px 10px 20px;
+        .values-container {
+            ul {
+                text-align: left;
+                color: #797979;
+                li {
+                    margin: 5px;
+                }
+            }
+        }
+    }
 }

@@ -58,7 +58,7 @@ export class InvoiceBreakdownWidgetComponent {
 
         // Put all styles here but instead 'border-radius' do 'borderRadius' so get rid of the dash and do the next word uppercase
 
-        backgroundColor: 'blue', //Colour of the bar itself
+        backgroundColor: '#2281fe', //Colour of the bar itself
         borderColor: 'blue', //Border colour of the tooltip when you hover over the bar
         data: this.barChartData,
         borderRadius: 15, //Border radius for the bar
@@ -89,10 +89,10 @@ export class InvoiceBreakdownWidgetComponent {
       labels: this.pieChartLabel,
       datasets: [{
         backgroundColor: [
-          "#915db1",
-          "#e59f3c",
-          "#5397d6",
-          "#4cc790",
+          "#0740a9",
+          "#2281fe",
+          "#3f3f46",
+          "#0098ff",
         ],
         data: this.pieChartData,
         borderRadius: 15,
