@@ -7,6 +7,7 @@
     width: 26%;
     margin: 30px auto;
     border-radius: 15px;
+    box-shadow: 0px 30px 50px 0px rgba(0, 0, 0, 0.2);
     h2 {
         margin: 40px;
     }
@@ -25,7 +26,7 @@
             border-radius: 12px;
             font-size: 20px;
             &:hover {
-                font-style: italic;
+                background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
             }
         }
     }
@@ -33,6 +34,10 @@
         background-color: white;
         outline: none;
         border: 1px solid #cacfd4;
+        transition: border-color 0.3s;
+        &:hover {
+            border-color: #2180fc;
+        }
         border-radius: 12px;
         padding: 10px;
         font-size: 20px;
