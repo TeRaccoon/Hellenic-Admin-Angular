@@ -72,10 +72,10 @@
                         <span class="item-header-details">VAT</span>
                     </div>
                     <div *ngFor="let item of invoiceItems[key]" class="row">
-                        <p>{{ item['item_name'] | currency:'GBP' }}</p>
+                        <p>{{ item['item_name'] }}</p>
                         <p>{{ item['quantity'] | currency:'GBP' }}</p>
                         <p>{{ item['price'] | currency:'GBP'}}</p>
-                        <p>{{ (item['quantity'] + invoice['price']) | currency:'GBP' }}</p>
+                        <p>{{ (item['quantity'] + item['price']) | currency:'GBP' }}</p>
                         <p>{{ item['vat_charge'] }}</p>
                     </div>
                 </div>
@@ -83,22 +83,22 @@
             <div class="row">
                 <div class="balance section card">
                     <h1>Previous Outstanding Balance</h1>
-                    <p></p>
+                    <p>{{ invoice['outstanding_balance'] - invoice['total'] | currency:'GBP' }}</p>
                     <h1>Current Outstanding Balance</h1>
-                    <p></p>
+                    <p>{{ invoice['outstanding_balance'] | currency:'GBP' }}</p>
                 </div>
                 <div class="section card">
                     <div class="row">
                         <span class="label">Net Value:</span>
-                        <span class="value">£</span>
+                        <span class="value">{{ invoice['net_value'] | currency:'GBP' }}</span>
                     </div>
                     <div class="row">
                         <span class="label">VAT Value:</span>
-                        <span class="value">£</span><br>
+                        <span class="value">{{ invoice['vat'] | currency:'GBP' }}</span><br>
                     </div>
                     <div class="row">
                         <span class="label">Total:</span>
-                        <span class="value">£</span>
+                        <span class="value">{{ invoice['total'] | currency:'GBP' }}</span>
                     </div>
                 </div>
             </div>
