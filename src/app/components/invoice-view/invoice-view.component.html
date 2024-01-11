@@ -1,111 +1,122 @@
-<div class="container">
-    <div class="header-section">
-        <div class="row">
-            <span class="label">
-                <h2>Sales Invoice / Delivery</h2>
-            </span>
-            <span class="image-container">
-                <img style="width:100px;height:100px;" src="images/logo.jpg" alt="Logo">
-            </span>
+<ng-container *ngIf="invoiceData.length > 0">
+    <div *ngFor="let invoice of invoiceData; let key = index" class="container">
+        <div class="header-section">
+            <div class="row">
+                <span class="label">
+                    <h2>Sales Invoice / Delivery</h2>
+                </span>
+                <span class="image-container">
+                    <img style="width:100px;height:100px;" src="images/logo.jpg" alt="Logo">
+                </span>
+            </div>
+        </div>
+        <div class="invoice-container">
+            <div class="row">
+                <div class="section">
+                    <div class="row">
+                        <span class="label">Invoice Title: </span>
+                        <span class="value">{{ invoice['title'] }}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Invoice Date: </span>
+                        <span class="value">{{ date | date: 'dd/mm/yyyy' }}</span>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="row">
+                        <span class="label">Estimated Delivery Date:</span>
+                        <span class="value">{{ invoice['delivery_date'] }}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Created At:</span>
+                        <span class="value">{{ invoice['created_at'] }}</span><br>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="section card">
+                    <p> Unit 15<br> Hilsea Industrial Estate<br> Limberline Spur<br> Portsmouth
+                        <br> PO3 5JW</p>
+                </div>
+                <div class="section card">
+                    <p>Tel.: 023 9250 2120<br> Email: accounts.hellenicgrocery.co.uk<br> Company No.: 8603006<br> VAT No.: 171817403<br> AWRS: XRAW00000106442<br> EORI No.: GB171817403000</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="section card">
+                    <h1>Invoice Address:</h1>
+                    <p>{{ invoice['invoice_address_one'] }}</p>
+                    <p>{{ invoice['invoice_address_two'] }}</p>
+                    <p>{{ invoice['invoice_address_three'] }}</p>
+                    <p>{{ invoice['invoice_postcode'] }}</p>
+                </div>
+                <div class="section card">
+                    <h1>Delivery Address:</h1>
+                    <p>{{ invoice['delivery_address_one'] }}</p>
+                    <p>{{ invoice['delivery_address_two'] }}</p>
+                    <p>{{ invoice['delivery_address_three'] }}</p>
+                    <p>{{ invoice['delivery_postcode'] }}</p>
+                </div>
+                <div class="section card">
+                    <h1>Payment Details:</h1>
+                    <p><u>Hellenic Grocery Ltd</u><br> Account No: 63868745<br> Sort Code: 20-69-40<br><br> Please use this account for any payment</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="items section card">
+                    <div class="row">
+                        <span class="item-header-name">Item Name</span>
+                        <span class="item-header-details">Quantity</span>
+                        <span class="item-header-details">Unit Price</span>
+                        <span class="item-header-details">Net Amount</span>
+                        <span class="item-header-details">VAT</span>
+                    </div>
+                    <div *ngFor="let item of invoiceItems[key]" class="row">
+                        <p>{{ item['item_name'] | currency:'GBP' }}</p>
+                        <p>{{ item['quantity'] | currency:'GBP' }}</p>
+                        <p>{{ item['price'] | currency:'GBP'}}</p>
+                        <p>{{ (item['quantity'] + invoice['price']) | currency:'GBP' }}</p>
+                        <p>{{ item['vat_charge'] }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="balance section card">
+                    <h1>Previous Outstanding Balance</h1>
+                    <p></p>
+                    <h1>Current Outstanding Balance</h1>
+                    <p></p>
+                </div>
+                <div class="section card">
+                    <div class="row">
+                        <span class="label">Net Value:</span>
+                        <span class="value">£</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">VAT Value:</span>
+                        <span class="value">£</span><br>
+                    </div>
+                    <div class="row">
+                        <span class="label">Total:</span>
+                        <span class="value">£</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="agreement section card">
+                    <h1>Agreement:</h1>
+                    <p>This serves as an acknowledgment that I have received my order in its entirety, with no missing or damaged products. I have verified that all items listed on the invoice are accounted for. Additionally, I confirm that all products
+                        have been delivered at the appropriate temperature, meeting the necessary requirements.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="section card">
+                    <h1>Customer Signature:</h1>
+                </div>
+                <div class="section card">
+                    <h1>Driver Signature:</h1>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="invoice-container">
-        <div class="row">
-            <div class="section">
-                <div class="row">
-                    <span class="label">Invoice Title:</span>
-                    <span class="value"></span>
-                </div>
-                <div class="row">
-                    <span class="label">Invoice Date:</span>
-                    <span class="value"></span>
-                </div>
-            </div>
-            <div class="section">
-                <div class="row">
-                    <span class="label">Estimated Delivery Date:</span>
-                    <span class="value"></span>
-                </div>
-                <div class="row">
-                    <span class="label">Created At:</span>
-                    <span class="value"></span><br>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="section card">
-                <p> Unit 15<br> Hilsea Industrial Estate<br> Limberline Spur<br> Portsmouth
-                    <br> PO3 5JW</p>
-            </div>
-            <div class="section card">
-                <p>Tel.: 023 9250 2120<br> Email: accounts.hellenicgrocery.co.uk<br> Company No.: 8603006<br> VAT No.: 171817403<br> AWRS: XRAW00000106442<br> EORI No.: GB171817403000</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="section card">
-                <h1>Invoice Address:</h1>
-                <p></p>
-            </div>
-            <div class="section card">
-                <h1>Delivery Address:</h1>
-                <p></p>
-            </div>
-            <div class="section card">
-                <h1>Payment Details:</h1>
-                <p><u>Hellenic Grocery Ltd</u><br> Account No: 63868745<br> Sort Code: 20-69-40<br><br> Please use this account for any payment</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="items section card">
-                <div class="row">
-                    <span class="item-header-name">Item Name</span>
-                    <span class="item-header-details">Quantity</span>
-                    <span class="item-header-details">Unit Price</span>
-                    <span class="item-header-details">Net Amount</span>
-                    <span class="item-header-details">VAT</span>
-                </div>
-                <div class="row">
-                    <!-- ngFor here loop through invoice items -->
-
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="balance section card">
-                <h1>Previous Outstanding Balance</h1>
-                <p></p>
-                <h1>Current Outstanding Balance</h1>
-                <p></p>
-            </div>
-            <div class="section card">
-                <div class="row">
-                    <span class="label">Net Value:</span>
-                    <span class="value">£</span>
-                </div>
-                <div class="row">
-                    <span class="label">VAT Value:</span>
-                    <span class="value">£</span><br>
-                </div>
-                <div class="row">
-                    <span class="label">Total:</span>
-                    <span class="value">£</span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="agreement section card">
-                <h1>Agreement:</h1>
-                <p>This serves as an acknowledgment that I have received my order in its entirety, with no missing or damaged products. I have verified that all items listed on the invoice are accounted for. Additionally, I confirm that all products have
-                    been delivered at the appropriate temperature, meeting the necessary requirements.</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="section card">
-                <h1>Customer Signature:</h1>
-            </div>
-            <div class="section card">
-                <h1>Driver Signature:</h1>
-            </div>
-        </div>
-    </div>
-</div>
+</ng-container>
