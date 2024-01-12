@@ -8,8 +8,10 @@ export class FormService {
   private isLoginVisible = new BehaviorSubject<boolean>(false);
   private isEditFormVisible = new BehaviorSubject<boolean>(false);
   private isAddFormVisible = new BehaviorSubject<boolean>(false);
+  private isDeleteFormVisible = new BehaviorSubject<boolean>(false);
   private editFormData: { [key: string]: { value: any, inputType: string, dataType: string, required: boolean, fields: string } } = {};
   private addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string } } = {};
+  private deleteFormIds: string[] = [];
   private selectedTable: string = "";
   private selectedId: string = "";
 
@@ -41,6 +43,13 @@ export class FormService {
     this.isAddFormVisible.next(false);
   }
 
+  showDeleteForm() {
+    this.isDeleteFormVisible.next(true);
+  }
+  hideDeleteForm() {
+    this.isDeleteFormVisible.next(false);
+  }
+
   getEditFormVisibility(): Observable<boolean> {
     return this.isEditFormVisible.asObservable();
   }
@@ -49,12 +58,20 @@ export class FormService {
     return this.isAddFormVisible.asObservable();
   }
 
+  getDeleteFormVisibility(): Observable<boolean> {
+    return this.isDeleteFormVisible.asObservable();
+  }
+
   setEditFormData(editFormData: { [key: string]: { value: any, inputType: string, dataType: string, required: boolean, fields: string } }) {
     this.editFormData = editFormData;
   }
 
   setAddFormData(addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string } }) {
     this.addFormData = addFormData;
+  }
+
+  setDeleteFormIds(deleteFormIds: string[]) {
+    this.deleteFormIds = deleteFormIds;
   }
 
   setSelectedTable(selectedTable: string) {
@@ -71,6 +88,10 @@ export class FormService {
 
   getAddFormData() {
     return this.addFormData;
+  }
+
+  getDeleteFormIds() {
+    return this.deleteFormIds;
   }
 
   getSelectedTable() {

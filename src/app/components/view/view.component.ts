@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
-import { faSpinner, faPencil, faSearch, faPrint } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencil, faSearch, faPrint, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-view',
@@ -14,6 +14,7 @@ export class ViewComponent {
   faPencil = faPencil;
   faSearch = faSearch;
   faPrint = faPrint;
+  faTrashCan = faTrashCan;
   
   selectedOption: string | null = null;
   data: { [key: string]: any }[] = [];
@@ -234,7 +235,11 @@ export class ViewComponent {
     } else {
       this.selectedRows = this.selectedRows.filter(function (item) { return item !== rowId; })
     }
-    console.log(this.selectedRows);
+  }
+
+  deleteRow(rowId: number) {
+    this.formService.setDeleteFormIds([rowId.toString()]);
+    this.formService.showDeleteForm();
   }
 
   print() {

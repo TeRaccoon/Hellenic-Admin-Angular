@@ -22,6 +22,7 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
 import { InvoiceBreakdownWidgetComponent } from './components/invoice-breakdown-widget/invoice-breakdown-widget.component';
 import { PrintLayoutComponent } from './components/print-layout/print-layout.component';
 import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
+import { DeleteFormComponent } from './components/delete-form/delete-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,6 +41,7 @@ import { InvoiceViewComponent } from './components/invoice-view/invoice-view.com
     InvoiceBreakdownWidgetComponent,
     PrintLayoutComponent,
     InvoiceViewComponent,
+    DeleteFormComponent,
   ],
   imports: [
     BrowserModule,

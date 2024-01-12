@@ -148,6 +148,9 @@
             }
             .data-row {
                 background-color: #eaeef3;
+                .bin {
+                    text-align: center;
+                }
             }
             tr:nth-child(even) {
                 background-color: white;

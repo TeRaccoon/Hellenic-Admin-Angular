@@ -47,7 +47,7 @@ export class EditFormComponent {
 
   formSubmit() {
     this.dataService.submitFormData(this.editForm.value).subscribe((data: any) => {
-    })
+    });
   }
 
   hide() {

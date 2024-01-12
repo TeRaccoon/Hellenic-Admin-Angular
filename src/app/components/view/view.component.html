@@ -31,6 +31,7 @@
                             <th>Select</th>
                             <th *ngFor="let column of displayNames">{{ column }}</th>
                             <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,6 +51,11 @@
                                 <td>
                                     <a (click)="editRow(key + (currentPage - 1) * entryLimit)">
                                         <fa-icon [icon]="faPencil"></fa-icon>
+                                    </a>
+                                </td>
+                                <td class="bin">
+                                    <a (click)="deleteRow(key + (currentPage - 1) * entryLimit)">
+                                        <fa-icon [icon]="faTrashCan"></fa-icon>
                                     </a>
                                 </td>
                             </ng-container>
@@ -80,3 +86,4 @@
 </div>
 <app-edit-form></app-edit-form>
 <app-add-form></app-add-form>
+<app-delete-form></app-delete-form>
