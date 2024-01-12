@@ -64,26 +64,26 @@
             </div>
             <div class="row">
                 <div class="items section card">
-                    <div class="row">
-                        <span class="item-header-name">Item Name</span>
-                        <span class="item-header-details">Quantity</span>
-                        <span class="item-header-details">Unit Price</span>
-                        <span class="item-header-details">Net Amount</span>
-                        <span class="item-header-details">VAT</span>
+                    <div class="row item-headers">
+                        <span style="width: 40%;">Item Name</span>
+                        <span style="width: 15%;">Quantity</span>
+                        <span style="width: 15%;">Unit Price</span>
+                        <span style="width: 15%;">Net Amount</span>
+                        <span style="width: 15%;">VAT</span>
                     </div>
                     <div *ngFor="let item of invoiceItems[key]" class="row">
-                        <p>{{ item['item_name'] }}</p>
-                        <p>{{ item['quantity'] | currency:'GBP' }}</p>
-                        <p>{{ item['price'] | currency:'GBP'}}</p>
-                        <p>{{ (item['quantity'] + item['price']) | currency:'GBP' }}</p>
-                        <p>{{ item['vat_charge'] }}</p>
+                        <p style="width: 40%;">{{ item['item_name'] }}</p>
+                        <p style="width: 15%;">{{ item['quantity'] | currency:'GBP' }}</p>
+                        <p style="width: 15%;">{{ item['price'] | currency:'GBP'}}</p>
+                        <p style="width: 15%;">{{ (item['quantity'] + item['price']) | currency:'GBP' }}</p>
+                        <p style="width: 15%;">{{ item['vat_charge'] }}</p>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="balance section card">
                     <h1>Previous Outstanding Balance</h1>
-                    <p>{{ invoice['outstanding_balance'] - invoice['total'] | currency:'GBP' }}</p>
+                    <p>{{ invoice['outstanding_balance'] + invoice['total'] | currency:'GBP' }}</p>
                     <h1>Current Outstanding Balance</h1>
                     <p>{{ invoice['outstanding_balance'] | currency:'GBP' }}</p>
                 </div>

@@ -43,4 +43,12 @@
             border: 2px solid rgb(227, 227, 227);
         }
     }
+    .items {
+        .item-headers {
+            border-bottom: 2px solid black;
+        }
+        .row {
+            justify-content: space-between;
+        }
+    }
 }
