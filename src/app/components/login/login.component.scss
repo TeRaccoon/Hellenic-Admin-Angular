@@ -1,3 +1,4 @@
+@import '../variables';
 .container {
     display: flex;
     justify-content: center;
@@ -16,12 +17,7 @@
         flex-direction: column;
         width: 100%;
         button {
-            font-size: 18px;
-            outline: none;
             padding: 20px;
-            background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
-            border: none;
-            color: white;
             margin: 20px;
             border-radius: 12px;
             font-size: 20px;

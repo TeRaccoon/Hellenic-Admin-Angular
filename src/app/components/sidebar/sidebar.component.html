@@ -4,7 +4,7 @@
     </div>
     <div class="options-container">
         <div *ngFor="let category of getTableCategories(tables)">
-            <button (click)="toggleDropdown(category)">{{ category }}
+            <button class="sidebar-button" (click)="toggleDropdown(category)">{{ category }}
                 <fa-icon [icon]="faCaretDown"></fa-icon>
               </button>
             <div class="dropdown-container" [ngClass]="{'hidden': !isDropdownVisible[category]}">

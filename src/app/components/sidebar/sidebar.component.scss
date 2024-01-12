@@ -39,17 +39,6 @@
             }
         }
         button {
-            display: flex;
-            text-decoration: none;
-            font-size: 20px;
-            border: none;
-            border-radius: 5px;
-            background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
-            width: 90%;
-            text-align: left;
-            &:hover {
-                background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
-            }
             fa-icon {
                 display: flex;
                 margin-left: auto;
