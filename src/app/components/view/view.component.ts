@@ -59,9 +59,9 @@ export class ViewComponent {
       } else {
         this.data = [data.data];
       }
-      this.displayData = data.display_data;
+      this.displayData = Array.isArray(data.display_data) ? data.display_data : [data.display_data];
       this.dataTypes = data.types;
-      this.filteredDisplayData = data.display_data;
+      this.filteredDisplayData = this.displayData;
       this.displayNames = data.display_names;
       this.edittable = data.edittable;
 
@@ -238,7 +238,9 @@ export class ViewComponent {
   }
 
   deleteRow(rowId: number) {
-    this.formService.setDeleteFormIds([rowId.toString()]);
+    console.log(this.data[rowId]['id'])
+    this.formService.setSelectedTable(String(this.selectedOption));
+    this.formService.setDeleteFormIds([this.data[rowId]['id']]);
     this.formService.showDeleteForm();
   }
 
