@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,19 @@ export class DataService {
 
   submitFormData(data: any): Observable<any> {
     const url = 'http://localhost/API/manage_data.php/';
-    return this.http.post(url, data);
+    return this.http.post(url, data).pipe(
+      map((response: any) => {
+        if (response && response.success) {
+          return response;
+        } else {
+          throw new Error('Unexpected response format');
+        }
+      }),
+      catchError((error: any) => {
+        console.error('HTTP error occurred:', error);
+        return throwError(error);
+      })
+    );
   }
 
   storeData(data: any) {

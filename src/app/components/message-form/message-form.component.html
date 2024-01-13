@@ -1,0 +1,12 @@
+<div class="container" [class]="formVisible">
+    <div class="content">
+        <div class="header-section">
+            <h1>Editting...</h1>
+            <a (click)="hide()">X</a>
+        </div>
+        <div class="content-section">
+            <h1>{{ formData.title }}</h1>
+            <p>{{ formData.message }}</p>
+        </div>
+    </div>
+</div>

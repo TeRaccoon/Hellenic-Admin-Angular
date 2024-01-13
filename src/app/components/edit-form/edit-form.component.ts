@@ -47,10 +47,13 @@ export class EditFormComponent {
 
   formSubmit() {
     this.dataService.submitFormData(this.editForm.value).subscribe((data: any) => {
+      this.formService.setMessageFormData({title: data.success ? 'Success!' : 'Error!', message: data.message});
+      this.formService.showMessageForm();
+      this.hide();
     });
   }
 
   hide() {
     this.formService.hideEditForm();
-  }  
+  } 
 }

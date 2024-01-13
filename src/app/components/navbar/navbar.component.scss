@@ -16,9 +16,6 @@ $hellenicblue: rgb(0, 140, 255);
             margin: 10px;
             font-size: 22px;
         }
-        .hidden {
-            display: none;
-        }
         .notification-dropdown-container {
             position: absolute;
             top: 85px;
@@ -65,5 +62,8 @@ $hellenicblue: rgb(0, 140, 255);
                 }
             }
         }
+    }
+    .hidden {
+        display: none;
     }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BarElement } from 'chart.js';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -9,9 +10,12 @@ export class FormService {
   private isEditFormVisible = new BehaviorSubject<boolean>(false);
   private isAddFormVisible = new BehaviorSubject<boolean>(false);
   private isDeleteFormVisible = new BehaviorSubject<boolean>(false);
+  private isMessageFormVisible = new BehaviorSubject<boolean>(false);
+
   private editFormData: { [key: string]: { value: any, inputType: string, dataType: string, required: boolean, fields: string } } = {};
   private addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string } } = {};
   private deleteFormIds: string[] = [];
+  private messageFormData: { title: string, message: string } = { title: '', message: '' };
   private selectedTable: string = "";
   private selectedId: string = "";
 
@@ -50,6 +54,13 @@ export class FormService {
     this.isDeleteFormVisible.next(false);
   }
 
+  showMessageForm() {
+    this.isMessageFormVisible.next(true);
+  }
+  hideMessageForm() {
+    this.isMessageFormVisible.next(false);
+  }
+
   getEditFormVisibility(): Observable<boolean> {
     return this.isEditFormVisible.asObservable();
   }
@@ -62,6 +73,10 @@ export class FormService {
     return this.isDeleteFormVisible.asObservable();
   }
 
+  getMessageFormVisibility(): Observable<boolean> {
+    return this.isMessageFormVisible.asObservable();
+  }
+
   setEditFormData(editFormData: { [key: string]: { value: any, inputType: string, dataType: string, required: boolean, fields: string } }) {
     this.editFormData = editFormData;
   }
@@ -72,6 +87,10 @@ export class FormService {
 
   setDeleteFormIds(deleteFormIds: string[]) {
     this.deleteFormIds = deleteFormIds;
+  }
+
+  setMessageFormData(messageFormData: { title:string, message: string}) {
+    this.messageFormData = messageFormData;
   }
 
   setSelectedTable(selectedTable: string) {
@@ -92,6 +111,10 @@ export class FormService {
 
   getDeleteFormIds() {
     return this.deleteFormIds;
+  }
+
+  getMessageFormData() {
+    return this.messageFormData;
   }
 
   getSelectedTable() {

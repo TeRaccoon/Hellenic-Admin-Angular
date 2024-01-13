@@ -1,10 +1,15 @@
 <div class="container">
     <div class="search-container">
         <div class="search-bar">
-            <input type="text" placeholder="Search..." />
+            <input [(ngModel)]="searchInput" (input)="searchTables()" type="text" placeholder="Search..." />
             <button>
                 <fa-icon [icon]="faSearch"></fa-icon>
             </button>
+        </div>
+        <div [class]="'search-dropdown-container ' + (searchInput.length === 0 ? 'hidden' : '')">
+            <div *ngFor="let table of tableOptions" class="search-option">
+                <p (click)="changeTable(table)">{{ table }}</p>
+            </div>
         </div>
     </div>
     <div class="nav-options-container">

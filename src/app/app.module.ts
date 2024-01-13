@@ -23,6 +23,7 @@ import { InvoiceBreakdownWidgetComponent } from './components/invoice-breakdown-
 import { PrintLayoutComponent } from './components/print-layout/print-layout.component';
 import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
 import { DeleteFormComponent } from './components/delete-form/delete-form.component';
+import { MessageFormComponent } from './components/message-form/message-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,6 +43,7 @@ import { DeleteFormComponent } from './components/delete-form/delete-form.compon
     PrintLayoutComponent,
     InvoiceViewComponent,
     DeleteFormComponent,
+    MessageFormComponent,
   ],
   imports: [
     BrowserModule,
