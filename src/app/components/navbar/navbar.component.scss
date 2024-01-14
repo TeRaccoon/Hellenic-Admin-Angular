@@ -65,6 +65,20 @@ $hellenicblue: rgb(0, 140, 255);
         }
         .search-dropdown-container {
             position: absolute;
+            margin-top: 32px;
+            border-radius: 0 0 5px 5px;
+            border: 1px solid black;
+            width: 210px;
+            background-color: white;
+            .search-option {
+                padding: 2px 0 2px 0;
+                p {
+                    margin: 5px;
+                }
+                &:hover {
+                    background-color: #eaeef3;
+                }
+            }
         }
     }
     .hidden {
