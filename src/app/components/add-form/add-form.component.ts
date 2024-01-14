@@ -47,9 +47,15 @@ export class AddFormComponent {
   }
 
   formSubmit() {
-    console.log(this.addForm.value);
     this.dataService.submitFormData(this.addForm.value).subscribe((data: any) => {
-      console.log(data);
+      this.formService.setMessageFormData({title: data.success ? 'Success!' : 'Error!', message: data.message});
+      this.formService.showMessageForm();
+      this.hide();
+      this.formService.requestReload();
     })
+  }
+
+  deriveEnumOptions(field: any) {
+    
   }
 }

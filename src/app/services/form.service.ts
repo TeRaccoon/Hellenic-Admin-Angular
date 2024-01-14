@@ -19,7 +19,21 @@ export class FormService {
   private selectedTable: string = "";
   private selectedId: string = "";
 
+  private waitingToReload = new BehaviorSubject<boolean>(false);
+
   constructor() {}
+
+  getReloadRequest(): Observable<boolean> {
+    return this.waitingToReload.asObservable();
+  }
+
+  performReload() {
+    this.waitingToReload.next(false);
+  }
+
+  requestReload() {
+    this.waitingToReload.next(true);
+  }
 
   showLoginForm() {
     this.isLoginVisible.next(true);

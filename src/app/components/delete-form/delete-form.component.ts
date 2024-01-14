@@ -37,8 +37,12 @@ export class DeleteFormComponent {
     else {
       idString = this.ids[0];
     }
+    
     this.dataService.submitFormData({action: 'delete', id: idString, table_name: this.tableName}).subscribe((data: any) => {
-
+      this.formService.setMessageFormData({title: data.success ? 'Success!' : 'Error!', message: data.message});
+      this.formService.showMessageForm();
+      this.hide();
+      this.formService.requestReload();
     });
   }
 }

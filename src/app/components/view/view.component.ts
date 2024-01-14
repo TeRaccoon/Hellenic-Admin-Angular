@@ -50,6 +50,14 @@ export class ViewComponent {
       this.currentPage = 1;
       this.loadPage();
     });
+
+    this.formService.getReloadRequest().subscribe((reloadRequested: boolean) => {
+      if (reloadRequested) {
+        this.loadTable(String(this.selectedOption));
+        this.loadPage();
+        this.formService.performReload();
+      }
+    });
   }
 
   async loadTable(table: string) {
@@ -94,7 +102,7 @@ export class ViewComponent {
 
   async editRow(id: number) {
     var editFormData = this.getEditFormData(id);
-
+    console.log(editFormData);
     this.formService.setEditFormData(editFormData);
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.setSelectedId(this.data[id]['id']);
@@ -135,6 +143,7 @@ export class ViewComponent {
         fields: this.edittable.fields[index],
       };
     });
+    console.log(addFormData);
     return addFormData;
   }
 
@@ -224,7 +233,7 @@ export class ViewComponent {
     data['action'] = 'append';
     data['table_name'] = String(this.selectedOption);
     this.dataService.submitFormData(data).subscribe((data: any) => {
-    })
+    });
   }
 
   selectRow(event: Event, rowId: number) {
