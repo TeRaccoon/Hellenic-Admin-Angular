@@ -18,8 +18,8 @@ export class NavbarComponent {
   faEnvelope = faEnvelope;
   faUser = faUser;
   faSearch = faSearch;
-  tableOptions: string[] = [];
-  tablelessOptions = [
+  tablelessOptions: string[] = [];
+  tableOptions = [
     { display: 'Allergen Information', actual: 'allergen_information' },
     { display: 'Customer Address', actual: 'customer_address' },
     { display: 'Customer Payments', actual: 'customer_payments' },
@@ -44,7 +44,8 @@ export class NavbarComponent {
     { display: 'Suppliers', actual: 'suppliers' },
     { display: 'Users', actual: 'users' },
     { display: 'Warehouse', actual: 'warehouse' }
-];
+  ];
+  filteredTableOptions = this.tableOptions;
 
   searchInput: string = '';
 
@@ -56,13 +57,6 @@ export class NavbarComponent {
 
   ngOnInit() {
     this.getNotifications();
-    this.getTables();
-  }
-
-  getTables() {
-    this.dataService.collectData('tables').subscribe((data: any) => {
-      this.tableOptions = data;
-    });
   }
 
   toggleNotificationDropdown() {
@@ -88,8 +82,10 @@ export class NavbarComponent {
     });
   }
 
-  searchTables() {
-
+  searchTables(event: Event) {
+    const filter = String((event.target as HTMLInputElement).value);
+    this.filteredTableOptions = this.tableOptions.filter((option) => option.display && option.display.toUpperCase().includes(filter.toUpperCase()));
+    console.log(this.filteredTableOptions);
   }
 
   changeTable(table: string) {

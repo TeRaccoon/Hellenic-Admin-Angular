@@ -39,6 +39,7 @@ $hellenicblue: rgb(0, 140, 255);
     }
     .search-container {
         margin-left: 10px;
+        display: flex;
         .search-bar {
             border-radius: 5px;
             border-style: solid;
@@ -61,6 +62,9 @@ $hellenicblue: rgb(0, 140, 255);
                     font-size: 16px;
                 }
             }
+        }
+        .search-dropdown-container {
+            position: absolute;
         }
     }
     .hidden {
