@@ -6,11 +6,13 @@
                 <fa-icon [icon]="faSearch"></fa-icon>
             </button>
         </div>
-        <div [class]="'search-dropdown-container ' + (searchInput.length === 0 ? 'hidden' : '')">
-            <div *ngFor="let table of filteredTableOptions" class="search-option">
-                <p (click)="changeTable(table.actual)">{{ table.display }}</p>
+        <ng-container *ngIf="filteredTableOptions.length > 0">
+            <div [class]="'search-dropdown-container ' + (searchInput.length === 0 ? 'hidden' : '')">
+                <div *ngFor="let table of filteredTableOptions" class="search-option">
+                    <p (click)="changeTable(table.actual)">{{ table.display }}</p>
+                </div>
             </div>
-        </div>
+        </ng-container>
     </div>
     <div class="nav-options-container">
         <p>
