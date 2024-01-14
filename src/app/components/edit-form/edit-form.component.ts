@@ -15,6 +15,8 @@ export class EditFormComponent {
   id: string = "";
   formVisible = 'hidden';
 
+  selectData: {key: string, data: string[] }[] = []; 
+
   constructor(private dataService: DataService, private formService: FormService, private fb: FormBuilder) {
     this.editForm = this.fb.group({
     });
@@ -43,6 +45,11 @@ export class EditFormComponent {
     for (const key in this.formData) {
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];
+
+        if (field.inputType == 'select' && field.dataType.startsWith('enum')) {
+          const options = this.deriveEnumOptions(field);
+          this.selectData.push({key: key, data: options});
+        }
         const validators = field.required ? [Validators.required] : [];
   
         if (this.editForm.contains(field.fields)) {
@@ -71,5 +78,24 @@ export class EditFormComponent {
 
   hide() {
     this.formService.hideEditForm();
-  } 
+  }
+
+  deriveEnumOptions(field: any) {
+    return field.dataType
+    .replace('enum(', '')
+    .replace(')', '')
+    .split(',')
+    .map((option: any) => option.replace(/'/g, '').trim());
+  }
+
+  selectDataFromKey(key: string) {
+    const matchingData = this.selectData.find(data => data.key === key);
+  
+    if (matchingData) {
+      console.log(matchingData.data);
+      return matchingData.data;
+    }
+  
+    return [];
+  }
 }

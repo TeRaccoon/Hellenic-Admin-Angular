@@ -9,7 +9,17 @@
                 <form [formGroup]="editForm" (ngSubmit)="formSubmit()">
                     <div class="input-container" *ngFor="let data of formData | keyvalue">
                         <label>{{ data.key }}</label>
-                        <input [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [value]="data.value.value" [formControlName]="data.value.fields">
+                        <ng-container *ngIf="data.value.inputType != 'select'; else elseBlock">
+                            <input [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [value]="data.value.value" [formControlName]="data.value.fields">
+                        </ng-container>
+                        <ng-template #elseBlock>
+                            <select [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
+                                <ng-container *ngFor="let option of selectDataFromKey(data.key)">
+                                    <option [value]="option" [selected]="data.value.value == option">{{ option }}</option>
+                                </ng-container>
+                                <option *ngFor="let data of selectDataFromKey(data.key)">{{ data }}</option>
+                            </select>
+                        </ng-template>
                     </div>
                     <div class="form-footer">
                         <button name="action" value="append" type="submit">Submit</button>

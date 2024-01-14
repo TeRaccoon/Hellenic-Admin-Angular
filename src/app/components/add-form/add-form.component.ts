@@ -14,6 +14,8 @@ export class AddFormComponent {
   formData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string } } = {};
   tableName: string = "";
 
+  selectData: {key: string, data: string[] }[] = []; 
+
   constructor(private dataService: DataService, private formService: FormService, private fb: FormBuilder) {
     this.addForm = this.fb.group({
     });
@@ -31,11 +33,18 @@ export class AddFormComponent {
   }
 
   buildForm() {
+    let index = 0;
     for (const key in this.formData){
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];
+
+        if (field.inputType == 'select' && field.dataType.startsWith('enum')) {
+          const options = this.deriveEnumOptions(field);
+          this.selectData.push({key: key, data: options});
+        }
         const validators = field.required ? [Validators.required] : [];
         this.addForm.addControl(field.fields, this.fb.control({ value: '', disabled: false }, validators));
+        index++;
       }
     }
     this.addForm.addControl('action', this.fb.control('add'));
@@ -56,6 +65,21 @@ export class AddFormComponent {
   }
 
   deriveEnumOptions(field: any) {
-    
+    return field.dataType
+    .replace('enum(', '')
+    .replace(')', '')
+    .split(',')
+    .map((option: any) => option.replace(/'/g, '').trim());
+  }
+
+  selectDataFromKey(key: string) {
+    const matchingData = this.selectData.find(data => data.key === key);
+  
+    if (matchingData) {
+      console.log(matchingData.data);
+      return matchingData.data;
+    }
+  
+    return [];
   }
 }

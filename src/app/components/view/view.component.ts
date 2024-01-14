@@ -102,7 +102,6 @@ export class ViewComponent {
 
   async editRow(id: number) {
     var editFormData = this.getEditFormData(id);
-    console.log(editFormData);
     this.formService.setEditFormData(editFormData);
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.setSelectedId(this.data[id]['id']);
@@ -143,7 +142,6 @@ export class ViewComponent {
         fields: this.edittable.fields[index],
       };
     });
-    console.log(addFormData);
     return addFormData;
   }
 
@@ -247,7 +245,6 @@ export class ViewComponent {
   }
 
   deleteRow(rowId: number) {
-    console.log(this.data[rowId]['id'])
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.setDeleteFormIds([this.data[rowId]['id']]);
     this.formService.showDeleteForm();
