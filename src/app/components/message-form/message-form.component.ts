@@ -13,13 +13,13 @@ export class MessageFormComponent {
   constructor(private formService: FormService) {}
 
   ngOnInit() {
-    this.formService.getEditFormVisibility().subscribe((visible) => {
+    this.formService.getMessageFormVisibility().subscribe((visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
       this.formData = this.formService.getMessageFormData();
     });
   }
 
   hide() {
-    this.formService.hideDeleteForm();
+    this.formService.hideMessageForm();
   }  
 }
