@@ -23,13 +23,20 @@ export class EditFormComponent {
   ngOnInit() {
     this.formService.getEditFormVisibility().subscribe((visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
+      if (visible) {
+        this.loadForm();
+      }
+    });
+  }
+
+  loadForm() {
+    if (this.formService.getSelectedId() != "") {
+      this.editForm.reset();
       this.formData = this.formService.getEditFormData();
       this.tableName = this.formService.getSelectedTable();
       this.id = this.formService.getSelectedId();
-      if (this.id != "") {
-        this.buildForm();
-      }
-    });
+      this.buildForm();
+    }
   }
 
   buildForm() {
@@ -37,7 +44,15 @@ export class EditFormComponent {
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];
         const validators = field.required ? [Validators.required] : [];
-        this.editForm.addControl(field.fields, this.fb.control({ value: field.value, disabled: false }, validators));
+  
+        if (this.editForm.contains(field.fields)) {
+          this.editForm.get(field.fields)?.setValue(field.value);
+        } else {
+          this.editForm.addControl(
+            field.fields,
+            this.fb.control({ value: field.value, disabled: false }, validators)
+          );
+        }
       }
     }
     this.editForm.addControl('action', this.fb.control('append'));
@@ -50,6 +65,7 @@ export class EditFormComponent {
       this.formService.setMessageFormData({title: data.success ? 'Success!' : 'Error!', message: data.message});
       this.formService.showMessageForm();
       this.hide();
+      this.formService.requestReload();
     });
   }
 
