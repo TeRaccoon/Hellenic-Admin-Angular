@@ -41,34 +41,37 @@ $hellenicblue: rgb(0, 140, 255);
         margin-left: 10px;
         display: flex;
         .search-bar {
-            border-radius: 5px;
-            border-style: solid;
-            border-color: black;
-            border-width: 1px;
-            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid rgb(215, 215, 215);
+            padding: 10px;
             button {
                 background-color: transparent;
+                color: #7b7b7b;
                 border: none;
                 background: none;
                 outline: none;
+                font-size: 15px;
             }
             input {
                 border: none;
+                font-size: 20px;
                 &:active,
                 &:focus-visible {
                     outline: none;
                 }
                 &::placeholder {
-                    font-size: 16px;
+                    font-size: 20px;
                 }
             }
         }
         .search-dropdown-container {
+            z-index: 1;
             position: absolute;
-            margin-top: 32px;
-            border-radius: 0 0 5px 5px;
-            border: 1px solid black;
-            width: 210px;
+            margin-top: 47px;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid rgb(215, 215, 215);
+            border-top: none;
+            width: 306px;
             background-color: white;
             .search-option {
                 padding: 2px 0 2px 0;
