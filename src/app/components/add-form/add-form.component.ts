@@ -76,7 +76,6 @@ export class AddFormComponent {
     const matchingData = this.selectData.find(data => data.key === key);
   
     if (matchingData) {
-      console.log(matchingData.data);
       return matchingData.data;
     }
   
