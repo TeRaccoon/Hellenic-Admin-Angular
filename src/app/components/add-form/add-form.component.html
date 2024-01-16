@@ -13,7 +13,7 @@
                             <input [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [formControlName]="data.value.fields">
                         </ng-container>
                         <ng-template #elseBlock>
-                            <select [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
+                            <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
                                 <option *ngFor="let option of selectDataFromKey(data.key)" [value]="option">{{ option }}</option>
                             </select>
                         </ng-template>

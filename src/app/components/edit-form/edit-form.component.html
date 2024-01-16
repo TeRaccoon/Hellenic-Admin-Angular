@@ -14,12 +14,12 @@
                         </ng-container>
                         <ng-template #elseBlock>
                             <ng-container *ngIf="data.value.inputType == 'replacement'; else secondElse">
-                                <select [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
+                                <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
                                     <option *ngFor="let option of getReplacementDataFromKey(data.key)" [value]="option.id">{{ option.name }}</option>
                                 </select>
                             </ng-container>
                             <ng-template #secondElse>
-                                <select [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
+                                <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
                                     <ng-container *ngFor="let option of selectDataFromKey(data.key)">
                                         <option [value]="option" [selected]="data.value.value == option">{{ option }}</option>
                                     </ng-container>
