@@ -18,8 +18,21 @@ export class SidebarComponent {
     ],
     "Retail": [
       { name: "offers", displayName: "Offers" },
+      { name: "discount_codes", displayName: "Discount Codes" },
       { name: "page_sections", displayName: "Page Sections" },
-      { name: "retail_items", displayName: "Items" }
+      { name: "page_section_text", displayName: "Page Section Text"},
+      { name: "retail_items", displayName: "Items" },
+      { name: "retail_item_images", displayName: "Item Images" },
+    ],
+    "Supplies": [
+      { name: "stocked_items", displayNames: "Stocked Items" },
+      { name: "supplier_invoices", displayNames: "Supplier Invoices" },
+      { name: "suppliers", displayNames: "Suppliers" },
+    ],
+    "Products": [
+      { name: "items", displayName: "Items" },
+      { name: "allergen_information", displayName: "Allergen Information" },
+      { name: "nutrition_information", displayName: "Nutrition Information" },
     ],
     "Invoices": [
       { name: "invoices", displayName: "Invoices" },
@@ -28,10 +41,12 @@ export class SidebarComponent {
     "Accounting": [
       { name: "general_ledger", displayName: "General Ledger" },
       { name: "debtor_creditor", displayName: "Aged Debtors/ Creditors" },
-      { name: "profit_loss", displayName: "Profit Loss" }
+      { name: "profit_loss", displayName: "Profit Loss" },
+      { name: "payments", displayName: "Payments" },
     ],
     "Admin": [
-      { name: "statistics", displayName: "Statistics" }
+      { name: "statistics", displayName: "Statistics" },
+      { name: "image_locations", displayName: "Image Location" },
     ]
   };
 
