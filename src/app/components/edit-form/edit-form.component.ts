@@ -50,8 +50,8 @@ export class EditFormComponent {
   }
 
   primeImage(event: any) {
+    console.log("Here");
     const file: File = event.target.files[0];
-    console.log(file);
     if (file) {
       this.fileName = file.name;
 
@@ -110,7 +110,7 @@ export class EditFormComponent {
         } else {
           this.editForm.addControl(
             field.fields,
-            this.fb.control({ value: field.value, disabled: false }, validators)
+            this.fb.control({ value: field.inputType == 'file' ? null : field.value, disabled: false }, validators)
           );
         }
       }
