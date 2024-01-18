@@ -9,24 +9,21 @@
                 <form [formGroup]="editForm" (ngSubmit)="formSubmit()">
                     <div class="input-container" *ngFor="let data of formData | keyvalue">
                         <label>{{ data.key }}</label>
-                        <ng-container *ngIf="data.value.inputType != 'select' && data.value.inputType != 'replacement'; else elseBlock">
-                            <input [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [value]="data.value.value" [formControlName]="data.value.fields">
-                        </ng-container>
-                        <ng-template #elseBlock>
-                            <ng-container *ngIf="data.value.inputType == 'replacement'; else secondElse">
-                                <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
-                                    <option *ngFor="let option of getReplacementDataFromKey(data.key)" [value]="option.id">{{ option.name }}</option>
-                                </select>
-                            </ng-container>
-                            <ng-template #secondElse>
+                        <ng-container [ngSwitch]="data.value.inputType">
+                            <label *ngSwitchCase="'file'" class="file-upload">
+                                <input [attr.required]="data.value.required ? true : null" accept="image/*" [type]="data.value.inputType" [formControlName]="data.value.fields" (change)="primeImage($event)">
+                                <fa-icon [icon]="faCloudUpload" /> Upload Image
+                            </label>
+                            <ng-container *ngSwitchCase="'select'">
                                 <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
                                     <ng-container *ngFor="let option of selectDataFromKey(data.key)">
                                         <option [value]="option" [selected]="data.value.value == option">{{ option }}</option>
                                     </ng-container>
                                     <option *ngFor="let data of selectDataFromKey(data.key)">{{ data }}</option>
                                 </select>
-                            </ng-template>
-                        </ng-template>
+                            </ng-container>
+                            <input *ngSwitchDefault [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [formControlName]="data.value.fields" [value]="data.value.value">
+                        </ng-container>
                     </div>
                     <div class="form-footer">
                         <button name="action" value="append" type="submit">Submit</button>

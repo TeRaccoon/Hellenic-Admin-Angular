@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { faCloudUpload } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-edit-form',
@@ -9,6 +10,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./edit-form.component.scss'],
 })
 export class EditFormComponent {
+  faCloudUpload = faCloudUpload;
+
   editForm: FormGroup;
   formData: {
     [key: string]: {
@@ -23,6 +26,8 @@ export class EditFormComponent {
   id: string = '';
   formVisible = 'hidden';
 
+  fileName = '';
+  
   selectData: { key: string; data: string[] }[] = [];
 
   replacementData: { key: string; data: { id: Number, name: String }[] }[] = [];
@@ -42,6 +47,20 @@ export class EditFormComponent {
         this.loadForm();
       }
     });
+  }
+
+  primeImage(event: any) {
+    const file: File = event.target.files[0];
+    console.log(file);
+    if (file) {
+      this.fileName = file.name;
+
+      const formData = new FormData();
+
+      formData.append('image', file);
+
+      this.dataService.uploadImage(formData);
+    }
   }
 
   loadForm() {
