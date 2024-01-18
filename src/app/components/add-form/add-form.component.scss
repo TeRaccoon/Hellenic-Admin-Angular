@@ -59,12 +59,28 @@
                     font-weight: bold;
                 }
                 input {
+                    background-color: #ffffff;
                     border-radius: 8px;
                     outline: none;
                     border: 1px solid rgb(215, 215, 215);
                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
                     font-size: 20px;
                     padding: 10px;
+                }
+                .file-upload {
+                    border: 1px solid #ccc;
+                    border-radius: 10px;
+                    background-color: #FFF;
+                    display: inline-block;
+                    padding: 12px 20px!important;
+                    cursor: pointer;
+                    margin: 10px 0 10px 0;
+                    box-sizing: border-box;
+                    width: 100%;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+                    input {
+                        display: none;
+                    }
                 }
             }
         }

@@ -61,7 +61,6 @@ export class EditFormComponent {
         var data = await this.getIdReplacementData('items_id_name');
         this.formData['Item ID'].inputType = "replacement";
         this.replacementData.push({key: 'Item ID', data: data});
-        console.log(this.formData);
         break;
     }
   }
@@ -71,14 +70,12 @@ export class EditFormComponent {
       this.dataService.collectData(query).subscribe(
         (data: any) => {
           resolve(data);
-          console.log(data);
         },
       );
     });
   }
 
   buildForm() {
-    console.log(this.formData);
     for (const key in this.formData) {
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];
@@ -142,7 +139,6 @@ export class EditFormComponent {
 
   getReplacementDataFromKey(key: string) {
     const replacementData = this.replacementData.find((data) => data.key === key);
-    console.log(replacementData);
     if (replacementData) {
       return replacementData.data;
     }

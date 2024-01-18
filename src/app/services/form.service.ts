@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BarElement } from 'chart.js';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { DataService } from './data.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FormService {
   private isLoginVisible = new BehaviorSubject<boolean>(false);
@@ -12,12 +13,30 @@ export class FormService {
   private isDeleteFormVisible = new BehaviorSubject<boolean>(false);
   private isMessageFormVisible = new BehaviorSubject<boolean>(false);
 
-  private editFormData: { [key: string]: { value: any, inputType: string, dataType: string, required: boolean, fields: string } } = {};
-  private addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string } } = {};
+  private editFormData: {
+    [key: string]: {
+      value: any;
+      inputType: string;
+      dataType: string;
+      required: boolean;
+      fields: string;
+    };
+  } = {};
+  private addFormData: {
+    [key: string]: {
+      inputType: string;
+      dataType: string;
+      required: boolean;
+      fields: string;
+    };
+  } = {};
   private deleteFormIds: string[] = [];
-  private messageFormData: { title: string, message: string } = { title: '', message: '' };
-  private selectedTable: string = "";
-  private selectedId: string = "";
+  private messageFormData: { title: string; message: string } = {
+    title: '',
+    message: '',
+  };
+  private selectedTable: string = '';
+  private selectedId: string = '';
 
   private waitingToReload = new BehaviorSubject<boolean>(false);
 
@@ -91,11 +110,26 @@ export class FormService {
     return this.isMessageFormVisible.asObservable();
   }
 
-  setEditFormData(editFormData: { [key: string]: { value: any, inputType: string, dataType: string, required: boolean, fields: string } }) {
+  setEditFormData(editFormData: {
+    [key: string]: {
+      value: any;
+      inputType: string;
+      dataType: string;
+      required: boolean;
+      fields: string;
+    };
+  }) {
     this.editFormData = editFormData;
   }
 
-  setAddFormData(addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string } }) {
+  setAddFormData(addFormData: {
+    [key: string]: {
+      inputType: string;
+      dataType: string;
+      required: boolean;
+      fields: string;
+    };
+  }) {
     this.addFormData = addFormData;
   }
 
@@ -103,7 +137,7 @@ export class FormService {
     this.deleteFormIds = deleteFormIds;
   }
 
-  setMessageFormData(messageFormData: { title:string, message: string}) {
+  setMessageFormData(messageFormData: { title: string; message: string }) {
     this.messageFormData = messageFormData;
   }
 
@@ -114,7 +148,7 @@ export class FormService {
   setSelectedId(selectedId: string) {
     this.selectedId = selectedId;
   }
-  
+
   getEditFormData() {
     return this.editFormData;
   }
@@ -137,5 +171,36 @@ export class FormService {
 
   getSelectedId() {
     return this.selectedId;
+  }
+
+  async replaceAmbiguousData(
+    tableName: string,
+    formData: {
+      [key: string]: {
+        inputType: string;
+        dataType: string;
+        required: boolean;
+        fields: string;
+      };
+    },
+    replacementData: { key: string; data: { id: Number; name: String }[] }[],
+    dataService: DataService
+  ) {
+    switch (tableName) {
+      case 'retail_items':
+        var data = await this.getIdReplacementData('items_id_name', dataService);
+        formData['Item ID'].inputType = 'replacement';
+        replacementData.push({ key: 'Item ID', data: data });
+        break;
+    }
+    return { formData, replacementData };
+  }
+
+  async getIdReplacementData(query: string, dataService: DataService): Promise<any> {
+    return new Promise((resolve, reject) => {
+      dataService.collectData(query).subscribe((data: any) => {
+        resolve(data);
+      });
+    });
   }
 }

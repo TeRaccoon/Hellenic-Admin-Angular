@@ -31,7 +31,8 @@ export class DataService {
   }
 
   submitFormData(data: any): Observable<any> {
-    const url = 'http://localhost/API/manage_data.php/';
+    console.log(data);
+    const url = 'http://localhost/API/manage_data.php';
     return this.http.post(url, data).pipe(
       map((response: any) => {
         if (response && response.success) {
@@ -45,6 +46,11 @@ export class DataService {
         return throwError(error);
       })
     );
+  }
+
+  uploadImage(formData: FormData) {
+    const upload$ = this.http.post('http://localhost/API/image_upload.php', formData);
+    upload$.subscribe();
   }
 
   storeData(data: any) {

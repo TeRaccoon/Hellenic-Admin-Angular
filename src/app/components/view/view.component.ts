@@ -45,6 +45,7 @@ export class ViewComponent {
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       this.selectedOption = params['table'] || null;
+      this.formService.setSelectedTable(String(this.selectedOption));
       this.loadTable(String(this.selectedOption));
       this.pageCount = Math.ceil(this.displayData.length / 10);
       this.currentPage = 1;
@@ -83,6 +84,10 @@ export class ViewComponent {
       switch(dataType) {
         case "date":
           inputTypes.push("date");
+          break;
+        
+        case "file":
+          inputTypes.push("file");
           break;
 
         default:
@@ -142,6 +147,7 @@ export class ViewComponent {
         fields: this.edittable.fields[index],
       };
     });
+    console.log(addFormData);
     return addFormData;
   }
 
