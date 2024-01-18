@@ -1,6 +1,9 @@
 @import '../variables';
 .container {
     margin: 15px 15px 15px 16%;
+    h2 {
+        margin-left: 15px;
+    }
     .table-container {
         background-color: white;
         padding: 10px;
