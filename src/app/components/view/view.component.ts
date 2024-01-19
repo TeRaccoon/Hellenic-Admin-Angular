@@ -261,7 +261,12 @@ export class ViewComponent {
   }
 
   print() {
-    this.dataService.storePrintInvoiceIds(this.selectedRows);
-    this.router.navigate(['/print/invoice']);
+    if (this.selectedRows.length > 0) {
+      this.dataService.storePrintInvoiceIds(this.selectedRows);
+      this.router.navigate(['/print/invoice']);
+    } else {
+      this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before trying to print!"});
+      this.formService.showMessageForm();
+    }
   }
 }

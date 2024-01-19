@@ -5,7 +5,7 @@
             <div class="options-container">
                 <div class="row">
                     <button class="button" (click)="addRow()">Add New +</button>
-                    <button class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
+                    <button *ngIf="selectedOption == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
                 </div>
                 <div>
                     <p>Show
