@@ -22,12 +22,19 @@
             <fa-icon [icon]="faEnvelope"></fa-icon>
         </p>
         <p>
-            <fa-icon [icon]="faUser"></fa-icon>
+            <fa-icon (click)="toggleUserOptions()" [icon]="faUser"></fa-icon>
         </p>
         <div [class]="'notification-dropdown-container ' + (dropDownVisible ? '' : 'hidden')">
             <div class="section" *ngFor="let notification of notifications">
                 <h2>{{ notification.header }}</h2>
                 <p *ngFor="let dataItem of notification.data">{{ dataItem }}</p>
+            </div>
+        </div>
+        <div [class]="'user-dropdown-container ' + (userOptionsVisible ? '' : 'hidden')">
+            <div class="section">
+                <h2>Options</h2>
+                <button (click)="logout()">Logout</button>
+                <button>Change Password</button>
             </div>
         </div>
     </div>

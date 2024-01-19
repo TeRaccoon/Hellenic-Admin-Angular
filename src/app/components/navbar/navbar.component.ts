@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -50,10 +51,11 @@ export class NavbarComponent {
   searchInput: string = '';
 
   dropDownVisible = false;
+  userOptionsVisible = false;
 
   notifications: { header: string; data: any[] }[] = [];
 
-  constructor(private dataService: DataService, private router: Router) {}
+  constructor(private dataService: DataService, private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
     this.getNotifications();
@@ -61,6 +63,10 @@ export class NavbarComponent {
 
   toggleNotificationDropdown() {
     this.dropDownVisible = !this.dropDownVisible;
+  }
+
+  toggleUserOptions() {
+    this.userOptionsVisible = !this.userOptionsVisible;
   }
 
   getNotifications() {
@@ -90,5 +96,10 @@ export class NavbarComponent {
 
   changeTable(table: string) {
     this.router.navigate(['/view'], { queryParams: {table: table } });
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
