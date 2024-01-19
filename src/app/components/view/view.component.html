@@ -45,7 +45,12 @@
                                         <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes' ? true : false">
                                     </ng-container>
                                     <ng-template #elseBlock>
-                                        {{ item[column] == null ? '---' : item[column] }}
+                                        <ng-container *ngIf="isColumnImage(columnIndex) else notImage">
+                                            <img [src]="'http://localhost/uploads/' + item[column]">
+                                        </ng-container>
+                                        <ng-template #notImage>
+                                            {{ item[column] == null ? '---' : item[column] }}
+                                        </ng-template>
                                     </ng-template>
                                 </td>
                                 <td>

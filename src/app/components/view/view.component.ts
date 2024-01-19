@@ -229,6 +229,10 @@ export class ViewComponent {
     return false;
   }
 
+  isColumnImage(key: number) {
+    return this.dataTypes[key] == "file";
+  }
+
   changeCheckBox(event: Event, key: number, columnName: string) {
     const option = event.target as HTMLInputElement;
     let checked = option.checked;
