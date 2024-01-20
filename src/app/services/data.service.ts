@@ -31,7 +31,6 @@ export class DataService {
   }
 
   submitFormData(data: any): Observable<any> {
-    console.log(data);
     const url = 'http://localhost/API/manage_data.php';
     return this.http.post(url, data).pipe(
       map((response: any) => {
