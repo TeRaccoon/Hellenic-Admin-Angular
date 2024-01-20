@@ -25,9 +25,9 @@ export class SidebarComponent {
       { name: "retail_item_images", displayName: "Item Images" },
     ],
     "Supplies": [
-      { name: "stocked_items", displayNames: "Stocked Items" },
-      { name: "supplier_invoices", displayNames: "Supplier Invoices" },
-      { name: "suppliers", displayNames: "Suppliers" },
+      { name: "stocked_items", displayName: "Stocked Items" },
+      { name: "supplier_invoices", displayName: "Supplier Invoices" },
+      { name: "suppliers", displayName: "Suppliers" },
     ],
     "Products": [
       { name: "items", displayName: "Items" },
@@ -47,6 +47,7 @@ export class SidebarComponent {
     "Admin": [
       { name: "statistics", displayName: "Statistics" },
       { name: "image_locations", displayName: "Image Location" },
+      { name: "users", displayName: "Users" },
     ]
   };
 
