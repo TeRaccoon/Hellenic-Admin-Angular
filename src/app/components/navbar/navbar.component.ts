@@ -102,4 +102,9 @@ export class NavbarComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  changePassword() {
+    this.router.navigate(['/view'], { queryParams: {table: 'users' } });
+    this.userOptionsVisible = false;
+  }
 }
