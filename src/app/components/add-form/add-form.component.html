@@ -16,9 +16,6 @@
                             </label>
                             <ng-container *ngSwitchCase="'select'">
                                 <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
-                                    <ng-container *ngFor="let option of selectDataFromKey(data.key)">
-                                        <option>{{ option }}</option>
-                                    </ng-container>
                                     <option *ngFor="let data of selectDataFromKey(data.key)">{{ data }}</option>
                                 </select>
                             </ng-container>

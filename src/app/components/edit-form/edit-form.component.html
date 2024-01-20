@@ -19,7 +19,6 @@
                                     <ng-container *ngFor="let option of selectDataFromKey(data.key)">
                                         <option [value]="option" [selected]="data.value.value == option">{{ option }}</option>
                                     </ng-container>
-                                    <option *ngFor="let data of selectDataFromKey(data.key)">{{ data }}</option>
                                 </select>
                             </ng-container>
                             <input *ngSwitchDefault [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [formControlName]="data.value.fields" [value]="data.value.value">
