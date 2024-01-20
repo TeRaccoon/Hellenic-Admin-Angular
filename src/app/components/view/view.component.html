@@ -82,8 +82,10 @@
             </ng-container>
         </div>
     </ng-container>
-    <div *ngIf="data.length === 0">
-        <p>No data available for {{ selectedOption }}</p>
+    <div *ngIf="data.length === 0" class="404-container">
+        <h1>Whoops! No data was found for {{ selectedOption }}!</h1>
+        <p>Could this be an error? If so, try refreshing the page otherwise add new data below!</p>
+        <button class="button" (click)="addRow()">Add New +</button>
     </div>
     <div *ngIf="!data">
         <fa-icon [icon]="faSpinner"></fa-icon>
