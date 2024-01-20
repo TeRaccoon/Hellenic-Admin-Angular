@@ -47,7 +47,7 @@ export class ViewComponent {
       this.selectedOption = params['table'] || null;
       this.formService.setSelectedTable(String(this.selectedOption));
       this.loadTable(String(this.selectedOption));
-      this.pageCount = Math.ceil(this.displayData.length / 10);
+      this.pageCount = 0;
       this.currentPage = 1;
       this.loadPage();
     });
@@ -74,7 +74,7 @@ export class ViewComponent {
       this.displayNames = data.display_names;
       this.edittable = data.edittable;
 
-      this.pageCount = Math.floor(this.displayData.length / this.entryLimit);
+      this.pageCount = Math.floor(this.displayData.length / this.entryLimit) + 1;
     });
   }
 
@@ -201,14 +201,18 @@ export class ViewComponent {
   }
 
   getPageRange(): number[] {
+    const range = [];
     var start = this.currentPage;
+    
     if (this.currentPage > this.pageCount -2 && this.pageCount -2 > 0) {
       start = this.pageCount - 2;
     }
-    if ((start == 1 || start == 2) && this.pageCount > 1) {
+    if (start == 1 && this.pageCount > 1) {
       start += 2;
     }
-    const range = [];
+    else if (start == 2 && this.pageCount > 1) {
+      start += 1;
+    }
     for (let i = start - 1; i < start + 2 && i < this.pageCount && this.pageCount > 1; i++) {
       range.push(i);
     }
