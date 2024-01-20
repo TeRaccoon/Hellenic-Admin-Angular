@@ -17,6 +17,8 @@ export class ViewComponent {
   faTrashCan = faTrashCan;
   
   selectedOption: string | null = null;
+  displayName: string = "";
+
   data: { [key: string]: any }[] = [];
   displayNames: { [key: string]: any }[] = [];
   displayData: any[] = [];
@@ -45,11 +47,14 @@ export class ViewComponent {
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       this.selectedOption = params['table'] || null;
-      this.formService.setSelectedTable(String(this.selectedOption));
-      this.loadTable(String(this.selectedOption));
-      this.pageCount = 0;
-      this.currentPage = 1;
-      this.loadPage();
+      if (this.selectedOption != null) {
+        this.displayName = this.selectedOption.replace("_", " ");
+        this.formService.setSelectedTable(String(this.selectedOption));
+        this.loadTable(String(this.selectedOption));
+        this.pageCount = 0;
+        this.currentPage = 1;
+        this.loadPage();
+      }
     });
 
     this.formService.getReloadRequest().subscribe((reloadRequested: boolean) => {

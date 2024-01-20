@@ -1,6 +1,6 @@
 <div class="container">
     <ng-container *ngIf="data && data.length > 0">
-        <h2>Data for {{ selectedOption }}</h2>
+        <h2>Data for {{ displayName }}</h2>
         <div class="table-container">
             <div class="options-container">
                 <div class="row">
@@ -83,7 +83,7 @@
         </div>
     </ng-container>
     <div *ngIf="data.length === 0" class="404-container">
-        <h1>Whoops! No data was found for {{ selectedOption }}!</h1>
+        <h1>Whoops! No data was found for {{ displayName }}!</h1>
         <p>Could this be an error? If so, try refreshing the page otherwise add new data below!</p>
         <button class="button" (click)="addRow()">Add New +</button>
     </div>
