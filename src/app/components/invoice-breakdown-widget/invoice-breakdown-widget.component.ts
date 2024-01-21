@@ -24,9 +24,7 @@ export class InvoiceBreakdownWidgetComponent {
   listData: any[] = [];
   listHeaders = ["Month Total: ", "Invoices: ", "Profit: "];
 
-  constructor(private dataService: DataService) {
-
-  }
+  constructor(private dataService: DataService) {}
 
   ngOnInit() {
     this.getData();
