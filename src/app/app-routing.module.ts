@@ -16,11 +16,11 @@ const routes: Routes = [
   { path: 'view', component: ViewComponent, canActivate: [AuthGuard] },
   { path: 'page', component: TablelessViewComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-  { path: 'statistics', component: StatisticsComponent },
+  { path: 'statistics', component: StatisticsComponent, canActivate: [AuthGuard] },
   { path: 'print',
     component: PrintLayoutComponent,
     children: [
-      { path: 'invoice', component: InvoiceViewComponent }
+      { path: 'invoice', component: InvoiceViewComponent, canActivate: [AuthGuard] }
     ]
   }
 ];
