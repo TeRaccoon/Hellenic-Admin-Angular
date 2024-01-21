@@ -24,6 +24,8 @@ export class ItemBreakdownWidgetComponent {
   async getData() {
     await this.getTopSelling();
     await this.getLeastPurchased();
+    await this.getMostIncome();
+    await this.getLeastIncome();
   }
 
   async getTopSelling() {
@@ -37,9 +39,13 @@ export class ItemBreakdownWidgetComponent {
     });
   }
   async getMostIncome() {
-
+    this.dataService.collectData("most-income-item").subscribe((data: any) => {
+      this.itemData[2] = data;
+    });
   }
   async getLeastIncome() {
-
+    this.dataService.collectData("least-income-item").subscribe((data: any) => {
+      this.itemData[3] = data;
+    });
   }
 }

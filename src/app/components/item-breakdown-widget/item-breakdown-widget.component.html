@@ -11,6 +11,7 @@
         <p>Wholesale Margin: {{ data["wholesale_margin"] == null ? '---' : data["wholesale_margin"] | number : '1.2-2' }}</p>
         <p>Unit Cost: {{ data["unit_cost"] == null ? '---' : data["unit_cost"] | currency:'GBP'}}</p>
         <p>Retail Price: {{ data["retail_price"] == null ? '---' : data["retail_price"] | currency:'GBP'}}</p>
-        <p>Wholesale Price: {{ data["wholesale_price"] == null ? '---' : data["wholdesale_price"] | currency:'GBP'}}</p>
+        <p>Wholesale Price: {{ data["wholesale_price"] == null ? '---' : data["wholesale_price"] | currency:'GBP'}}</p>
+        <p>Total Income: {{ data["total_income"] == null ? '---' : data["total_income"] | currency:'GBP'}} </p>
     </div>
 </div>
