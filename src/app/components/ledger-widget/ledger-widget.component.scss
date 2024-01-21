@@ -51,14 +51,16 @@
         }
     }
     button {
-        background-color: rgb(255, 255, 255);
         outline: none;
+        background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
         border: none;
-        border-radius: 5px;
-        padding: 5px;
-        margin: 10px;
+        color: white;
+        padding: 10px;
+        margin: 20px;
+        border-radius: 12px;
+        font-size: 18px;
         &:hover {
-            background-color: #d1d6db;
+            background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
         }
     }
 }
