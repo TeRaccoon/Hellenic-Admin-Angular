@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {Chart, ChartConfiguration, ChartItem, registerables} from 'chart.js';
+import { Chart, ChartConfiguration, ChartItem, registerables } from 'chart.js';
 import { DataService } from '../../services/data.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class InvoiceBreakdownWidgetComponent {
   monthData: any[] = [];
 
   listData: any[] = [];
-  listHeaders = ["Month Total: ", "Invoices: ", "Profit: "];
+  listHeaders = ['Month Total: ', 'Invoices: ', 'Profit: '];
 
   constructor(private dataService: DataService) {}
 
@@ -40,33 +40,46 @@ export class InvoiceBreakdownWidgetComponent {
     Chart.register(...registerables);
 
     const data = {
-      labels: ['January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'],
-      datasets: [{
-
-        // Put all styles here but instead 'border-radius' do 'borderRadius' so get rid of the dash and do the next word uppercase
-
-        backgroundColor: '#2281fe', //Colour of the bar itself
-        borderColor: 'blue', //Border colour of the tooltip when you hover over the bar
-        data: this.barChartData,
-        borderRadius: 15, //Border radius for the bar
-      }]
+      labels: [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ],
+      datasets: [
+        {
+          backgroundColor: '#2281fe', //Colour of the bar itself
+          borderColor: 'blue', //Border colour of the tooltip when you hover over the bar
+          data: this.barChartData,
+          borderRadius: 15, //Border radius for the bar
+        },
+      ],
     };
     const options = {
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
       scales: {
         y: {
           beginAtZero: true,
-          display: false,
+          title: {
+            text: 'Income (£)',
+            display: true,
+            color: 'black',
+            font: {
+              size: '20',
+            },
+          },
         },
       },
       onClick: this.handleBarClick.bind(this) as any,
@@ -74,9 +87,11 @@ export class InvoiceBreakdownWidgetComponent {
     const config: ChartConfiguration = {
       type: 'bar',
       data: data,
-      options: options
-    }
-    const chartItem: ChartItem = document.getElementById('bar-chart') as ChartItem;
+      options: options,
+    };
+    const chartItem: ChartItem = document.getElementById(
+      'bar-chart'
+    ) as ChartItem;
     this.barChart = new Chart(chartItem, config);
   }
 
@@ -85,16 +100,13 @@ export class InvoiceBreakdownWidgetComponent {
 
     const data = {
       labels: this.pieChartLabel,
-      datasets: [{
-        backgroundColor: [
-          "#0740a9",
-          "#2281fe",
-          "#3f3f46",
-          "#0098ff",
-        ],
-        data: this.pieChartData,
-        borderRadius: 15,
-      }]
+      datasets: [
+        {
+          backgroundColor: ['#0740a9', '#2281fe', '#3f3f46', '#0098ff'],
+          data: this.pieChartData,
+          borderRadius: 15,
+        },
+      ],
     };
     const options = {
       scales: {
@@ -107,50 +119,74 @@ export class InvoiceBreakdownWidgetComponent {
     const config: ChartConfiguration = {
       type: 'pie',
       data: data,
-      options: options
-    }
-    const chartItem: ChartItem = document.getElementById('pie-chart') as ChartItem;
+      options: options,
+    };
+    const chartItem: ChartItem = document.getElementById(
+      'pie-chart'
+    ) as ChartItem;
     this.pieChart = new Chart(chartItem, config);
   }
 
   getData() {
     if (this.selectedYear != null) {
-      this.dataService.collectData("invoice-month-totals", this.selectedYear.toString()).subscribe((data: any) => {
-        var invoiceData = data;
-        if (!Array.isArray(invoiceData)) {
-          invoiceData = [invoiceData];
-        }
-        for (const item of invoiceData) {
-          this.barChartData[item.month - 1] = item.total_amount;
-        }
-        this.createBarChart();
-      });
+      this.dataService
+        .collectData('invoice-month-totals', this.selectedYear.toString())
+        .subscribe((data: any) => {
+          var invoiceData = data;
+          if (!Array.isArray(invoiceData)) {
+            invoiceData = [invoiceData];
+          }
+          for (const item of invoiceData) {
+            this.barChartData[item.month - 1] = item.total_amount;
+          }
+          this.createBarChart();
+        });
     }
   }
 
   getPieData() {
     if (this.selectedMonth != null) {
-      this.dataService.collectDataComplex("invoiced-item-month-totals", {'month': this.selectedMonth, 'year': this.selectedYear}).subscribe((data: any) => {
-        var itemTotalData = data;
-        if (!Array.isArray(itemTotalData)) {
-          itemTotalData = [itemTotalData];
-        }
-        itemTotalData.forEach((item: any) => {
-          this.pieChartData.push(item.total_quantity);
-          this.pieChartLabel.push(item.item_name);
+      this.dataService
+        .collectDataComplex('invoiced-item-month-totals', {
+          month: this.selectedMonth,
+          year: this.selectedYear,
+        })
+        .subscribe((data: any) => {
+          var itemTotalData = data;
+          if (!Array.isArray(itemTotalData)) {
+            itemTotalData = [itemTotalData];
+          }
+          itemTotalData.forEach((item: any) => {
+            this.pieChartData.push(item.total_quantity);
+            this.pieChartLabel.push(item.item_name);
+          });
+          this.createPieChart();
         });
-        this.createPieChart();
-      });
     }
   }
 
   getListData() {
-    this.dataService.collectDataComplex("total-invoices-month-profit", {'month': this.selectedMonth, 'year': this.selectedYear}).subscribe((data: any) => {
-      var invoiceData = data;
-      this.listData.push(invoiceData['month_total'].toLocaleString('en-US', { style: 'currency', currency: 'GBP' }));
-      this.listData.push(invoiceData['total_invoices']);
-      this.listData.push(invoiceData['invoice_profit'].toLocaleString('en-US', { style: 'currency', currency: 'GBP' }));
-    });
+    this.dataService
+      .collectDataComplex('total-invoices-month-profit', {
+        month: this.selectedMonth,
+        year: this.selectedYear,
+      })
+      .subscribe((data: any) => {
+        var invoiceData = data;
+        this.listData.push(
+          invoiceData['month_total'].toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'GBP',
+          })
+        );
+        this.listData.push(invoiceData['total_invoices']);
+        this.listData.push(
+          invoiceData['invoice_profit'].toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'GBP',
+          })
+        );
+      });
   }
 
   handleBarClick(event: MouseEvent, elements: any[]) {
@@ -173,7 +209,7 @@ export class InvoiceBreakdownWidgetComponent {
     this.selectedYear = Number(year.value);
     this.barChartData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     this.getData();
-    
+
     if (this.barChart) {
       this.barChart.destroy();
     }
