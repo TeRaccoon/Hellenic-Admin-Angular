@@ -289,4 +289,20 @@ export class ViewComponent {
   clearFilter() {
     this.filterService.clearFilter();
   }
+
+  shouldColourCell(data: any) {
+    switch(this.selectedOption) {
+      case "invoices":
+        switch(data) {
+          case "Overdue":
+            return "red";
+          case "Complete":
+            return "green";
+          case "Pending":
+            return "orange";
+        }
+        break;        
+    }
+    return null;
+  }
 }

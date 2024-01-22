@@ -45,7 +45,7 @@
                                 <td>
                                     <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox">
                                 </td>
-                                <td *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;">
+                                <td *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;" [ngClass]="shouldColourCell(item[column])">
                                     <ng-container *ngIf="isColumnBool(columnIndex) else elseBlock">
                                         <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes' ? true : false">
                                     </ng-container>
