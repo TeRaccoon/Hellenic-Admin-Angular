@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,6 +9,7 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 })
 export class SidebarComponent {
   faCaretDown = faCaretDown;
+  faCaretRight = faCaretRight;
   
   tables: { [category: string]: any[] } = {
     "Customers": [
