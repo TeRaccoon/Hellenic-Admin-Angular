@@ -157,4 +157,26 @@
             }
         }
     }
+    .alternate-container {
+        background-color: white;
+        padding: 10px;
+        margin: 10px;
+        border-radius: 15px;
+        width: 30%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 40px;
+        button {
+            border-radius: 5px;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 17px;
+            margin: 10px;
+        }
+    }
 }
