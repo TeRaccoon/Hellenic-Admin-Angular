@@ -1,23 +1,20 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class FilterService {
-    private maxPrice: (number | null) = null;
-    private minPrice: (number | null) = null;
+    private tableFilter: string | null = null;
 
-    getMaxPrice() {
-        return this.maxPrice;
+    setTableFilter(filter: string) {
+        this.tableFilter = filter;
     }
-    getMinPrice() {
-        return this.minPrice;
+
+    getTableFilter() {
+        return this.tableFilter;
     }
-    setMaxPrice(maxPrice: number) {
-        this.maxPrice = maxPrice;
-    }
-    setMinPrice(minPrice: number) {
-        this.minPrice = minPrice;
+
+    clearFilter() {
+        this.tableFilter = null;
     }
 }

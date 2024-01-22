@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
+import { FilterService } from '../../services/filter.service';
 import { faSpinner, faPencil, faSearch, faPrint, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -18,6 +19,7 @@ export class ViewComponent {
   
   selectedOption: string | null = null;
   displayName: string = "";
+  queryFilter: string | null = null;
 
   data: { [key: string]: any }[] = [];
   displayNames: { [key: string]: any }[] = [];
@@ -42,7 +44,7 @@ export class ViewComponent {
   filter: string = '';
   setFilter = false;
 
-  constructor(private router: Router, private formService: FormService, private route: ActivatedRoute, private dataService: DataService) {}
+  constructor(private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
@@ -67,7 +69,12 @@ export class ViewComponent {
   }
 
   async loadTable(table: string) {
-    this.dataService.collectData("table", table).subscribe((data: any) => {
+    this.queryFilter = this.filterService.getTableFilter();
+    var queryString = this.queryFilter == null ? "table" : this.queryFilter;
+    if (this.filterService.getTableFilter() != null) {
+      queryString = "table"
+    }
+    this.dataService.collectData(queryString, table).subscribe((data: any) => {
       if (Array.isArray(data.data)) {
         this.data = data.data;
       } else {
@@ -277,5 +284,9 @@ export class ViewComponent {
       this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before trying to print!"});
       this.formService.showMessageForm();
     }
+  }
+
+  clearFilter() {
+    this.filterService.clearFilter();
   }
 }

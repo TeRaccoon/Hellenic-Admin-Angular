@@ -16,11 +16,16 @@
                             <option value="100">100</option>
                         </select> entries
                     </p>
-                    <div class="search-container">
-                        <input type="text" placeholder="Search..." [(ngModel)]="searchText" />
-                        <button (click)="toggleFilter()">
-                            <fa-icon [icon]="faSearch"></fa-icon>
-                        </button>
+                    <div class="filter-container">
+                        <div *ngIf="queryFilter != null" class="filter">
+                            <p (click)="clearFilter()">{{ queryFilter }}</p>
+                        </div>
+                        <div class="search-container">
+                            <input type="text" placeholder="Search..." [(ngModel)]="searchText" />
+                            <button (click)="toggleFilter()">
+                                <fa-icon [icon]="faSearch"></fa-icon>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
