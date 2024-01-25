@@ -1,0 +1,20 @@
+<div class="container" [class]="formVisible">
+    <div class="content">
+        <div class="header-section">
+            <h1>Advanced Filter</h1>
+            <a (click)="hide()">X</a>
+        </div>
+        <div class="content-section">
+            <label>Select Column</label>
+            <select [(ngModel)]="columnInput">
+                <option *ngFor="let column of tableColumns.columnNames; let i = index;" [value]="tableColumns.columns[i]">{{column}}</option>
+            </select>
+            <div class="search-bar">
+                <input [(ngModel)]="searchInput" type="text" placeholder="Search..." />
+                <button (click)="search()">
+                    <fa-icon [icon]="faSearch"></fa-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

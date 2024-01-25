@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { faSpinner, faPencil, faSearch, faPrint, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faF } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-view',
@@ -16,10 +16,12 @@ export class ViewComponent {
   faSearch = faSearch;
   faPrint = faPrint;
   faTrashCan = faTrashCan;
+  faFilter = faFilter;
   
   selectedOption: string | null = null;
   displayName: string = "";
   queryFilter: string | null = null;
+  columnFilter: string | null = null;
 
   data: { [key: string]: any }[] = [];
   displayNames: { [key: string]: any }[] = [];
@@ -71,9 +73,10 @@ export class ViewComponent {
   async loadTable(table: string) {
     this.queryFilter = this.filterService.getTableFilter();
     var queryString = this.queryFilter == null ? "table" : this.queryFilter;
-    if (this.filterService.getTableFilter() != null) {
+    if (this.filterService.getTableFilter() == null) {
       queryString = "table"
     }
+
     this.dataService.collectData(queryString, table).subscribe((data: any) => {
       if (Array.isArray(data.data)) {
         this.data = data.data;
@@ -86,8 +89,28 @@ export class ViewComponent {
       this.displayNames = data.display_names;
       this.edittable = data.edittable;
 
-      this.pageCount = Math.floor(this.displayData.length / this.entryLimit) + 1;
+      var columnFilter = this.filterService.getColumnFilter();
+      if (columnFilter != null) {
+        this.filterColumns(columnFilter);
+      }
+
+      this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit) + 1;
     });
+  }
+
+  filterColumns(columnFilter: any) {
+    var column = columnFilter.column;
+    this.columnFilter = columnFilter.filter;
+
+    console.log(columnFilter);
+    console.log(column);
+
+    this.displayData = this.displayData.filter((data) => {
+      if (this.columnFilter != null && String(data[column]).includes(this.columnFilter)) {
+        return data;
+      }
+    });
+    this.filteredDisplayData = this.displayData;
   }
 
   dataTypeToInputType(dataTypes: any[]) {
@@ -159,7 +182,6 @@ export class ViewComponent {
         fields: this.edittable.fields[index],
       };
     });
-    console.log(addFormData);
     return addFormData;
   }
 
@@ -172,7 +194,7 @@ export class ViewComponent {
   }
 
   itemContainsFilter(item: any) {
-    return Object.values(item).some(value => String(value).includes(this.filter))
+    return this.filter != null && item != null && Object.values(item).some(value => String(value).includes(this.filter))
   }
 
   toggleFilter() {
@@ -290,6 +312,11 @@ export class ViewComponent {
     this.filterService.clearFilter();
   }
 
+  clearColumnFilter() {
+    this.filterService.clearColumnFilter();
+    this.loadTable(String(this.selectedOption));    
+  }
+
   shouldColourCell(data: any) {
     switch(this.selectedOption) {
       case "invoices":
@@ -304,5 +331,11 @@ export class ViewComponent {
         break;        
     }
     return null;
+  }
+
+  showAdvancedFilter() {
+    var columns = Object.keys(this.displayData[0]);
+    this.filterService.setTableColumns(this.displayNames, columns);
+    this.formService.showFilterForm();
   }
 }

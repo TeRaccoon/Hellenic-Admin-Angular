@@ -1,20 +1,44 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class FilterService {
-    private tableFilter: string | null = null;
+  private tableFilter: string | null = null;
+  private columnFilter: { column: string, filter: string } | null = null
+  private tableColumns: { columnNames: { [key: string]: any }[], columns: string[] } = {
+    columnNames: [],
+    columns: [],
+  };
 
-    setTableFilter(filter: string) {
-        this.tableFilter = filter;
-    }
+  setColumnFilter(columnFilter: { column: string, filter: string }) {
+    this.columnFilter = columnFilter;
+  }
+  getColumnFilter() {
+    return this.columnFilter;
+  }
 
-    getTableFilter() {
-        return this.tableFilter;
-    }
+  setTableFilter(filter: string) {
+    this.tableFilter = filter;
+  }
 
-    clearFilter() {
-        this.tableFilter = null;
-    }
+  getTableFilter() {
+    return this.tableFilter;
+  }
+
+  clearFilter() {
+    this.tableFilter = null;
+  }
+
+  clearColumnFilter() {
+    this.columnFilter = null;
+  }
+
+  setTableColumns(columnNames: { [key: string]: any }[], columns: string[]) {
+    this.tableColumns = {columnNames, columns};
+  }
+
+  getTableColumns() {
+    return this.tableColumns;
+  }
 }

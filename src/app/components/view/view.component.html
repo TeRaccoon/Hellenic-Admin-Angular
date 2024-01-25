@@ -20,6 +20,12 @@
                         <div *ngIf="queryFilter != null" class="filter">
                             <p (click)="clearFilter()">{{ queryFilter }}</p>
                         </div>
+                        <div *ngIf="columnFilter != null" class="filter">
+                            <p (click)="clearColumnFilter()">{{ columnFilter }}</p>
+                        </div>
+                        <div class="advanced-filter-container">
+                            <button (click)="showAdvancedFilter()"><fa-icon [icon]="faFilter" /></button>
+                        </div>
                         <div class="search-container">
                             <input type="text" placeholder="Search..." [(ngModel)]="searchText" />
                             <button (click)="toggleFilter()">
@@ -100,3 +106,4 @@
 <app-add-form></app-add-form>
 <app-delete-form></app-delete-form>
 <app-message-form></app-message-form>
+<app-filter-form></app-filter-form>

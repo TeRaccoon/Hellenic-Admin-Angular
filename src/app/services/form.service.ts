@@ -12,6 +12,7 @@ export class FormService {
   private isAddFormVisible = new BehaviorSubject<boolean>(false);
   private isDeleteFormVisible = new BehaviorSubject<boolean>(false);
   private isMessageFormVisible = new BehaviorSubject<boolean>(false);
+  private isFilterFormVisible = new BehaviorSubject<boolean>(false);
 
   private editFormData: {
     [key: string]: {
@@ -94,6 +95,13 @@ export class FormService {
     this.isMessageFormVisible.next(false);
   }
 
+  showFilterForm() {
+    this.isFilterFormVisible.next(true);
+  }
+  hideFilterForm() {
+    this.isFilterFormVisible.next(false);
+  }
+
   getEditFormVisibility(): Observable<boolean> {
     return this.isEditFormVisible.asObservable();
   }
@@ -108,6 +116,10 @@ export class FormService {
 
   getMessageFormVisibility(): Observable<boolean> {
     return this.isMessageFormVisible.asObservable();
+  }
+
+  getFilterFormVisibility(): Observable<boolean> {
+    return this.isFilterFormVisible.asObservable();
   }
 
   setEditFormData(editFormData: {

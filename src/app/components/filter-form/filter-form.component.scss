@@ -1,0 +1,57 @@
+@import '../variables';
+.container {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 60px;
+    height: 90%;
+    .content {
+        background-color: #ebebeb;
+        border: none;
+        border-radius: 15px;
+        margin: 5px auto;
+        width: 40%;
+        .header-section {
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            color: white;
+            background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+            h1 {
+                text-align: center;
+                width: 100%;
+            }
+        }
+        .content-section {
+            .input-container {
+                padding: 15px;
+                display: flex;
+                flex-direction: column;
+                label {
+                    padding: 5px;
+                    font-weight: bold;
+                }
+                input {
+                    background-color: #ffffff;
+                    border-radius: 8px;
+                    outline: none;
+                    border: 1px solid rgb(215, 215, 215);
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+                    font-size: 20px;
+                    padding: 10px;
+                }
+            }
+        }
+    }
+}
+
+.hidden {
+    display: none;
+}

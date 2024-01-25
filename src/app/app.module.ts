@@ -25,6 +25,7 @@ import { InvoiceViewComponent } from './components/invoice-view/invoice-view.com
 import { DeleteFormComponent } from './components/delete-form/delete-form.component';
 import { MessageFormComponent } from './components/message-form/message-form.component';
 import { ItemBreakdownWidgetComponent } from './components/item-breakdown-widget/item-breakdown-widget.component';
+import { FilterFormComponent } from './components/filter-form/filter-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,6 +47,7 @@ import { ItemBreakdownWidgetComponent } from './components/item-breakdown-widget
     DeleteFormComponent,
     MessageFormComponent,
     ItemBreakdownWidgetComponent,
+    FilterFormComponent,
   ],
   imports: [
     BrowserModule,
