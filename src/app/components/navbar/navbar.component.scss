@@ -1,4 +1,4 @@
-$hellenicblue: rgb(0, 140, 255);
+@import '../variables';
 .container {
     display: flex;
     margin: 10px 25px 10px calc(16% + 10px);
@@ -12,6 +12,30 @@ $hellenicblue: rgb(0, 140, 255);
     .nav-options-container {
         display: flex;
         flex-direction: row;
+        .user-dropdown-container {
+            position: absolute;
+            top: 85px;
+            right: 25px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            flex-direction: column;
+            display: flex;
+            text-align: center;
+            width: 15%;
+            .button {
+                color: white;
+                padding: 10px;
+                margin: 10px;
+                border-radius: 12px;
+                font-size: 18px;
+                &:hover {
+                    background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
+                }
+            }
+        }
         p {
             margin: 10px;
             font-size: 22px;
@@ -35,6 +59,9 @@ $hellenicblue: rgb(0, 140, 255);
                     background-color: #eaeef3;
                 }
             }
+        }
+        .hidden {
+            display: none;
         }
     }
     .search-container {

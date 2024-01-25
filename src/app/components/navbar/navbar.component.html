@@ -40,11 +40,9 @@
             </ng-template>
         </div>
         <div [class]="'user-dropdown-container ' + (userOptionsVisible ? '' : 'hidden')">
-            <div class="section">
-                <h2>Options</h2>
-                <button (click)="logout()">Logout</button>
-                <button (click)="changePassword()">Change Password</button>
-            </div>
+            <h2>Options</h2>
+            <button class="button" (click)="logout()">Logout</button>
+            <button class="button" (click)="changePassword()">Change Password</button>
         </div>
     </div>
 </div>
