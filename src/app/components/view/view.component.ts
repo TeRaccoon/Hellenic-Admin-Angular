@@ -43,6 +43,8 @@ export class ViewComponent {
   pageCount: number = 0;
   currentPage: number = 1;
 
+  loaded = false;
+
   searchText: string = '';
   filter: string = '';
   setFilter = false;
@@ -72,8 +74,10 @@ export class ViewComponent {
   }
 
   async loadTable(table: string) {
+    this.loaded = false;
     this.queryFilter = this.filterService.getTableFilter();
     var queryString = this.queryFilter == null ? "table" : this.queryFilter;
+
     if (this.filterService.getTableFilter() == null) {
       queryString = "table"
     }
@@ -96,6 +100,8 @@ export class ViewComponent {
       }
 
       this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit) + 1;
+
+      this.loaded = true;
     });
   }
 

@@ -1,5 +1,5 @@
 <div class="container">
-    <ng-container *ngIf="data && data.length > 0">
+    <ng-container *ngIf="data && data.length > 0 && loaded else loading">
         <h2>Data for {{ displayName }}</h2>
         <div class="table-container">
             <div class="options-container">
@@ -95,13 +95,15 @@
             </ng-container>
         </div>
     </ng-container>
-    <div *ngIf="data.length === 0" class="alternate-container">
+    <ng-template #loading>
+        <div class="loading-container">
+            <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true"></fa-icon>
+        </div>
+    </ng-template>
+    <div *ngIf="data.length === 0 && loaded" class="alternate-container">
         <h1>Whoops! No data was found for {{ displayName }}!</h1>
         <p>Could this be an error? If so, try refreshing the page otherwise add new data below!</p>
         <button class="button" (click)="addRow()">Add New +</button>
-    </div>
-    <div *ngIf="!data">
-        <fa-icon [icon]="faSpinner"></fa-icon>
     </div>
 </div>
 <app-edit-form></app-edit-form>
