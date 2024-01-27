@@ -19,6 +19,7 @@ export class FilterFormComponent {
 
   searchInput: string = '';
   columnInput: string = '';
+  caseSensitive: boolean = false;
 
   constructor(private formService: FormService, private filterService: FilterService) {}
 
@@ -35,6 +36,7 @@ export class FilterFormComponent {
 
   search() {
     this.filterService.setColumnFilter({column: this.columnInput, filter: this.searchInput })
+    this.filterService.setCaseSensitive(this.caseSensitive);
     this.formService.requestReload();
     this.hide();
   }

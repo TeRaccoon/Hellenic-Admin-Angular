@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faF } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-view',
@@ -17,6 +17,7 @@ export class ViewComponent {
   faPrint = faPrint;
   faTrashCan = faTrashCan;
   faFilter = faFilter;
+  faX = faX;
   
   selectedOption: string | null = null;
   displayName: string = "";
@@ -99,14 +100,13 @@ export class ViewComponent {
   }
 
   filterColumns(columnFilter: any) {
-    var column = columnFilter.column;
-    this.columnFilter = columnFilter.filter;
+    var isCaseSensitive = this.filterService.getCaseSensitive();
 
-    console.log(columnFilter);
-    console.log(column);
+    var column = columnFilter.column;
+    this.columnFilter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
 
     this.displayData = this.displayData.filter((data) => {
-      if (this.columnFilter != null && String(data[column]).includes(this.columnFilter)) {
+      if (this.columnFilter != null && data[column] != null && String(isCaseSensitive ? data[column] : data[column].toLowerCase()).includes(this.columnFilter)) {
         return data;
       }
     });

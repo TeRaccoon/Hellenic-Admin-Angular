@@ -10,12 +10,21 @@ export class FilterService {
     columnNames: [],
     columns: [],
   };
+  private caseSensitive = false;
 
   setColumnFilter(columnFilter: { column: string, filter: string }) {
     this.columnFilter = columnFilter;
   }
   getColumnFilter() {
     return this.columnFilter;
+  }
+
+  setCaseSensitive(caseSensitive: boolean) {
+    this.caseSensitive = caseSensitive;
+  }
+
+  getCaseSensitive() {
+    return this.caseSensitive;
   }
 
   setTableFilter(filter: string) {

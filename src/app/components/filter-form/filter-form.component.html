@@ -11,6 +11,10 @@
             </select>
             <div class="search-bar">
                 <input [(ngModel)]="searchInput" type="text" placeholder="Search..." />
+                <div>
+                    <label>Case Sensitive?</label>
+                    <input [(ngModel)]="caseSensitive" type="checkbox" />
+                </div>
                 <button (click)="search()">
                     <fa-icon [icon]="faSearch"></fa-icon>
                 </button>
