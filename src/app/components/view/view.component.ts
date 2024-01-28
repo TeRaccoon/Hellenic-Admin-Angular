@@ -4,6 +4,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX } from '@fortawesome/free-solid-svg-icons';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-view',
@@ -21,6 +22,7 @@ export class ViewComponent {
   
   selectedOption: string | null = null;
   displayName: string = "";
+  tableFilter: string | null = null;
   queryFilter: string | null = null;
   columnFilter: string | null = null;
 
@@ -208,14 +210,14 @@ export class ViewComponent {
   }
 
   toggleFilter() {
-    var filter = this.searchText;
-    if (filter != '') {
+    this.tableFilter = this.searchText;
+    if (this.tableFilter != '') {
       this.filteredDisplayData = [];
     } else {
       this.filteredDisplayData = this.displayData;
     }
     this.displayData.forEach(data => {
-      if (Object.values(data).some(property => String(property).toUpperCase().includes(filter.toUpperCase()))) {
+      if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.tableFilter).toUpperCase()))) {
         this.filteredDisplayData.push(data);
       }
     });
@@ -312,7 +314,12 @@ export class ViewComponent {
     }
   }
 
-  clearFilter() {
+  clearTableFilter() {
+    this.tableFilter = null;
+    this.loadTable(String(this.selectedOption));
+  }
+
+  clearQueryFilter() {
     this.filterService.clearFilter();
     this.queryFilter = null;
     this.loadTable(String(this.selectedOption));    
