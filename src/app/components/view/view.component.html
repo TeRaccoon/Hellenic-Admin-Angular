@@ -102,9 +102,11 @@
         </div>
     </ng-container>
     <ng-template #loading>
-        <div class="loading-container">
-            <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true"></fa-icon>
-        </div>
+        <ng-container *ngIf="!loaded">
+            <div class="loading-container">
+                <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true"></fa-icon>
+            </div>
+        </ng-container>
     </ng-template>
     <div *ngIf="data.length === 0 && loaded" class="alternate-container">
         <h1>Whoops! No data was found for {{ displayName }}!</h1>
