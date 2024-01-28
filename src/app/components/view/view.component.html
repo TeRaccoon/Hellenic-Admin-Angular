@@ -29,10 +29,12 @@
                             <button (click)="showAdvancedFilter()"><fa-icon [icon]="faFilter" /></button>
                         </div>
                         <div class="search-container">
-                            <input type="text" placeholder="Search..." [(ngModel)]="searchText" />
-                            <button (click)="toggleFilter()">
-                                <fa-icon [icon]="faSearch"></fa-icon>
-                            </button>
+                            <form>
+                                <input type="text" placeholder="Search..." [(ngModel)]="searchText" name="searchText" />
+                                <button type="submit" (click)="toggleFilter()">
+                                    <fa-icon [icon]="faSearch"></fa-icon>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
