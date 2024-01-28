@@ -66,7 +66,7 @@ export class HomeComponent {
 
   getProductsExpiring() {
     this.dataService.collectData("product-expiring-soon").subscribe((data: any) => {
-      if (data != null) {
+      if (data == null) {
         this.formService.setMessageFormData({title: "Information", message: "There are no products expiring soon!"});
         this.formService.showMessageForm();
       } else {
