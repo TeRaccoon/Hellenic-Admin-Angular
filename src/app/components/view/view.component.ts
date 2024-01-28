@@ -83,12 +83,9 @@ export class ViewComponent {
     }
 
     this.dataService.collectData(queryString, table).subscribe((data: any) => {
-      if (Array.isArray(data.data)) {
-        this.data = data.data;
-      } else {
-        this.data = [data.data];
-      }
+      this.data = Array.isArray(data.data) ? data.data : [data.data];
       this.displayData = Array.isArray(data.display_data) ? data.display_data : [data.display_data];
+
       this.dataTypes = data.types;
       this.filteredDisplayData = this.displayData;
       this.displayNames = data.display_names;
@@ -146,11 +143,12 @@ export class ViewComponent {
     return obj ? Object.keys(obj) : [];
   }
 
-  async editRow(id: number) {
+  async editRow(id: any) {
     var editFormData = this.getEditFormData(id);
+    console.log(editFormData);
     this.formService.setEditFormData(editFormData);
     this.formService.setSelectedTable(String(this.selectedOption));
-    this.formService.setSelectedId(this.data[id]['id']);
+    this.formService.setSelectedId(id);
     this.formService.showEditForm();
   }
 
@@ -161,9 +159,15 @@ export class ViewComponent {
     this.formService.showAddForm();
   }
 
+  deleteRow(id: string) {
+    this.formService.setSelectedTable(String(this.selectedOption));
+    this.formService.setDeleteFormIds([id]);
+    this.formService.showDeleteForm();
+  }
+
   getEditFormData(id: number) {
     var editFormData: { [key: string]: { value: any, inputType: string, dataType: string , required: boolean, fields: string } } = {};
-    var row = this.data[id];
+    var row = this.data.filter((row: any) => row.id == id)[0];
     var inputDataTypes: string[] = this.dataTypeToInputType(this.edittable.types);
     this.edittable.columns.forEach((columnName, index) => {
       editFormData[this.edittable.names[index]] = {
@@ -298,12 +302,6 @@ export class ViewComponent {
     }
   }
 
-  deleteRow(rowId: number) {
-    this.formService.setSelectedTable(String(this.selectedOption));
-    this.formService.setDeleteFormIds([this.data[rowId]['id']]);
-    this.formService.showDeleteForm();
-  }
-
   print() {
     if (this.selectedRows.length > 0) {
       this.dataService.storePrintInvoiceIds(this.selectedRows);
@@ -316,10 +314,13 @@ export class ViewComponent {
 
   clearFilter() {
     this.filterService.clearFilter();
+    this.queryFilter = null;
+    this.loadTable(String(this.selectedOption));    
   }
 
   clearColumnFilter() {
     this.filterService.clearColumnFilter();
+    this.columnFilter = null;
     this.loadTable(String(this.selectedOption));    
   }
 

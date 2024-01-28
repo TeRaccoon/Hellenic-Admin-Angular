@@ -67,12 +67,12 @@
                                     </ng-template>
                                 </td>
                                 <td>
-                                    <a (click)="editRow(key + (currentPage - 1) * entryLimit)">
+                                    <a (click)="editRow(item.id)">
                                         <fa-icon [icon]="faPencil"></fa-icon>
                                     </a>
                                 </td>
                                 <td class="bin">
-                                    <a (click)="deleteRow(key + (currentPage - 1) * entryLimit)">
+                                    <a (click)="deleteRow(item.id)">
                                         <fa-icon [icon]="faTrashCan"></fa-icon>
                                     </a>
                                 </td>
