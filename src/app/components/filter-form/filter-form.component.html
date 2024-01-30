@@ -9,15 +9,17 @@
             <select [(ngModel)]="columnInput">
                 <option *ngFor="let column of tableColumns.columnNames; let i = index;" [value]="tableColumns.columns[i]">{{column}}</option>
             </select>
-            <div class="search-bar">
+            <div class="input-container">
                 <input [(ngModel)]="searchInput" type="text" placeholder="Search..." />
-                <div>
+                <div class="case-option-container">
                     <label>Case Sensitive?</label>
                     <input [(ngModel)]="caseSensitive" type="checkbox" />
                 </div>
-                <button (click)="search()">
-                    <fa-icon [icon]="faSearch"></fa-icon>
-                </button>
+                <div class="button-container">
+                    <button class="button" (click)="search()">
+                        <fa-icon [icon]="faSearch"></fa-icon>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
