@@ -19,7 +19,7 @@
                     <div class="filter-container">
                         <div *ngIf="queryFilter != null" class="filter" (click)="clearQueryFilter()">
                             <p>{{ queryFilter }}</p>
-                            <fa-icon [icon]="faX" />
+                            <fa-icon class="filter-close-icon" [icon]="faX" />
                         </div>
                         <div *ngIf="columnFilter != null" class="filter" (click)="clearColumnFilter()">
                             <p>{{ columnFilter }}</p>
@@ -30,7 +30,7 @@
                             <fa-icon [icon]="faX" />
                         </div>
                         <div class="advanced-filter-container">
-                            <button (click)="showAdvancedFilter()"><fa-icon [icon]="faFilter" /></button>
+                            <button class="button" (click)="showAdvancedFilter()"><fa-icon [icon]="faFilter" /></button>
                         </div>
                         <div class="search-container">
                             <form>
