@@ -1,4 +1,28 @@
-@import '../variables';
+@import "../variables";
+.filter-container {
+    .filter {
+        background-color: white;
+        font-size: 16px;
+        outline: none;
+        border: 1px solid #000000;
+        border-radius: 5px;
+        margin: 5px;
+        padding: 6px;
+        .filter-close-icon {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+        p {
+            margin: 0;
+        }
+        &:hover {
+            .filter-close-icon {
+                color: #0740a9;
+            }
+        }
+    }
+}
+
 .container {
     margin: 15px 15px 15px 16%;
     h2 {
@@ -32,7 +56,7 @@
                 }
             }
             .active-page {
-                background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+                background-image: linear-gradient( to right, rgb(34, 130, 255), rgb(6, 63, 167));
                 color: white;
             }
         }
@@ -121,10 +145,10 @@
                     background-color: #c6c6c6;
                     outline: none;
                     border-radius: 20px;
-                    box-shadow: inset 0 0 5px rgba(0, 0, 0, .2);
+                    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
                 }
                 input[type="checkbox"]:before {
-                    content: '';
+                    content: "";
                     position: absolute;
                     width: 20px;
                     height: 20px;
@@ -133,7 +157,7 @@
                     left: 0;
                     background-color: #fff;
                     transform: scale(1.1);
-                    box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
                 }
                 input:checked[type="checkbox"] {
                     background-color: #03a9f4;
