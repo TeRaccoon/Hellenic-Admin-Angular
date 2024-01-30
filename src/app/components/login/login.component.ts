@@ -26,9 +26,6 @@ export class LoginComponent {
       if (response.success) {
         this.authService.login(null);
         this.router.navigate(['/home'])
-      } else {
-        this.error = response.message;
-        console.log(response);
       }
       this.loaded = true;
     });

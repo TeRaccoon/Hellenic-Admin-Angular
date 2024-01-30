@@ -19,15 +19,7 @@ export class AuthService {
         
         return this.http.post(url, {action: "check-login"}, {withCredentials: true}).pipe(
             map((response: any) => {
-                if (response && response.success) {
-                    return response;
-                } else {
-                    throw new Error('Unexpected response format');
-                }
-            }),
-            catchError((error: any) => {
-                console.error('HTTP error occurred:', error);
-                return throwError(error);
+                return response;
             })
         );
     }
