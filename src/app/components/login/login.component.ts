@@ -40,7 +40,6 @@ export class LoginComponent {
           this.router.navigate(['/home'])
         } else {
           this.error = response.message;
-          console.log(response);
         }
       });
     }
