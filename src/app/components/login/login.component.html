@@ -1,4 +1,4 @@
-<div class="container">
+<div *ngIf="loaded" class="container">
     <h2>Login</h2>
     <ng-container>
         <form [formGroup]="loginForm" (ngSubmit)="formSubmit()">

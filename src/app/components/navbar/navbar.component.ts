@@ -58,7 +58,7 @@ export class NavbarComponent {
   constructor(private dataService: DataService, private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
-    this.getNotifications();
+    // this.getNotifications();
   }
 
   toggleNotificationDropdown() {

@@ -32,7 +32,7 @@ export class DataService {
 
   submitFormData(data: any): Observable<any> {
     const url = 'http://localhost/API/manage_data.php';
-    return this.http.post(url, data).pipe(
+    return this.http.post(url, data, {withCredentials: true}).pipe(
       map((response: any) => {
         if (response && response.success) {
           return response;

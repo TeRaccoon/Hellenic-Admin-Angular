@@ -4,7 +4,6 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX } from '@fortawesome/free-solid-svg-icons';
-import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-view',

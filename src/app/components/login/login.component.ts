@@ -12,6 +12,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class LoginComponent {
   loginForm: FormGroup;
   error: string | null = null;
+  loaded = false;
 
   constructor(private router: Router, private authService: AuthService, private dataService: DataService, private fb: FormBuilder) { 
     this.loginForm = this.fb.group({
@@ -21,6 +22,16 @@ export class LoginComponent {
   }
 
   ngOnInit() {
+    this.authService.checkLogin().subscribe((response: any) => {
+      if (response.success) {
+        this.authService.login(null);
+        this.router.navigate(['/home'])
+      } else {
+        this.error = response.message;
+        console.log(response);
+      }
+      this.loaded = true;
+    });
     this.loginForm.addControl('action', this.fb.control('login'));
   }
 
