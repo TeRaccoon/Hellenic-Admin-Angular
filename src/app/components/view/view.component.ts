@@ -210,18 +210,7 @@ export class ViewComponent {
 
   setTableFilter() {
     this.tableFilter = this.searchText;
-    this.applyTableFilter();
     this.loadPage();
-  }
-
-  applyTableFilter() {
-    this.filteredDisplayData = this.displayData;
-    
-    this.displayData.forEach(data => {
-      if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.tableFilter).toUpperCase()))) {
-        this.filteredDisplayData.push(data);
-      }
-    });
   }
 
   applyTemporaryFilter() {
