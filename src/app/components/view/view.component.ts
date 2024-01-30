@@ -208,18 +208,30 @@ export class ViewComponent {
     return this.filter != null && item != null && Object.values(item).some(value => String(value).includes(this.filter))
   }
 
-  toggleFilter() {
+  setTableFilter() {
     this.tableFilter = this.searchText;
-    if (this.tableFilter != '') {
-      this.filteredDisplayData = [];
-    } else {
-      this.filteredDisplayData = this.displayData;
-    }
+    this.applyTableFilter();
+    this.loadPage();
+  }
+
+  applyTableFilter() {
+    this.filteredDisplayData = this.displayData;
+    
     this.displayData.forEach(data => {
       if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.tableFilter).toUpperCase()))) {
         this.filteredDisplayData.push(data);
       }
     });
+  }
+
+  applyTemporaryFilter() {
+    var temporaryData: any[] = [];
+    this.displayData.forEach(data => {
+      if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.tableFilter).toUpperCase()))) {
+        temporaryData.push(data);
+      }
+    });
+    return temporaryData;
   }
 
   nextPage() {
@@ -242,7 +254,13 @@ export class ViewComponent {
   loadPage() {
     var start = (this.currentPage - 1) * this.entryLimit;
     var end = start + this.entryLimit;
-    this.filteredDisplayData = this.displayData.slice(start, end);
+    if (this.tableFilter == null) {
+      this.filteredDisplayData = this.displayData.slice(start, end);
+    } else {
+      this.filteredDisplayData = this.applyTemporaryFilter();
+      this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit) + 1;
+      this.filteredDisplayData = this.filteredDisplayData.slice(start, end);
+    }
   }
 
   getPageRange(): number[] {
@@ -316,18 +334,21 @@ export class ViewComponent {
   clearTableFilter() {
     this.tableFilter = null;
     this.loadTable(String(this.selectedOption));
+    this.changePage(1);
   }
 
   clearQueryFilter() {
     this.filterService.clearFilter();
     this.queryFilter = null;
-    this.loadTable(String(this.selectedOption));    
+    this.loadTable(String(this.selectedOption)); 
+    this.changePage(1);
   }
 
   clearColumnFilter() {
     this.filterService.clearColumnFilter();
     this.columnFilter = null;
     this.loadTable(String(this.selectedOption));    
+    this.changePage(1);
   }
 
   shouldColourCell(data: any) {
