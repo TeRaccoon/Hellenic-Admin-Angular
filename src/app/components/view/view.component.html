@@ -19,7 +19,7 @@
                     <div class="filter-container">
                         <div *ngIf="queryFilter != null" class="filter" (click)="clearQueryFilter()">
                             <p>{{ queryFilter }}</p>
-                            <fa-icon class="filter-close-icon" [icon]="faX" />
+                            <fa-icon [icon]="faX" />
                         </div>
                         <div *ngIf="columnFilter != null" class="filter" (click)="clearColumnFilter()">
                             <p>{{ columnFilter }}</p>
