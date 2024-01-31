@@ -56,6 +56,7 @@ export class ViewComponent {
     this.route.queryParams.subscribe((params) => {
       this.selectedOption = params['table'] || null;
       if (this.selectedOption != null) {
+        this.resetTable();
         this.displayName = this.selectedOption.replace("_", " ");
         this.formService.setSelectedTable(String(this.selectedOption));
         this.loadTable(String(this.selectedOption));
@@ -110,7 +111,8 @@ export class ViewComponent {
     this.columnFilter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
 
     this.displayData = this.displayData.filter((data) => {
-      if (this.columnFilter != null && data[column] != null && String(isCaseSensitive ? data[column] : data[column].toLowerCase()).includes(this.columnFilter)) {
+      console.log(data[column]);
+      if (this.columnFilter != null && data[column] != null && String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(this.columnFilter)) {
         return data;
       }
     });
@@ -250,6 +252,12 @@ export class ViewComponent {
       this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit) + 1;
       this.filteredDisplayData = this.filteredDisplayData.slice(start, end);
     }
+  }
+
+  resetTable() {
+    this.clearQueryFilter();
+    this.clearColumnFilter();
+    this.clearTableFilter();
   }
 
   getPageRange(): number[] {
