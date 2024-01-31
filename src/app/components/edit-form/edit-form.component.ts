@@ -44,6 +44,7 @@ export class EditFormComponent {
     this.formService.getEditFormVisibility().subscribe((visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
       if (visible) {
+        this.clearForm();
         this.loadForm();
       }
     });
@@ -63,9 +64,13 @@ export class EditFormComponent {
     }
   }
 
+  clearForm() {
+    this.editForm = this.fb.group({});
+    this.editForm.reset();
+  }
+
   loadForm() {
     if (this.formService.getSelectedId() != '') {
-      this.editForm.reset();
       this.formData = this.formService.getEditFormData();
       this.tableName = this.formService.getSelectedTable();
       this.id = this.formService.getSelectedId();
