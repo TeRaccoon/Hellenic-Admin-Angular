@@ -1,4 +1,19 @@
-$hellenicblue: rgb(0, 140, 255);
+@import '../variables';
+.quick-view-container {
+    .button {
+        border-radius: 5px;
+        padding: 8px;
+        margin: 5px;
+        font-weight: bold;
+        font-size: 18px;
+        cursor: pointer;
+        &:hover {
+            background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
+            color: white;
+        }
+    }
+}
+
 .container {
     display: flex;
     flex-direction: column;
