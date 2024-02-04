@@ -33,11 +33,16 @@
             a {
                 color: rgb(216, 216, 216);
                 margin-left: 25px;
-                padding: 2px;
+                margin-right: 15px;
+                margin-bottom: 4px;
+                border: 1px solid $hellenicblue;
+                border-radius: 5px;
+                padding: 4px;
                 transition: color 0.3s;
                 cursor: pointer;
                 &:hover {
                     color: rgb(255, 255, 255);
+                    background-color: #404047;
                 }
             }
         }
