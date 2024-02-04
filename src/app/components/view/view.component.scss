@@ -183,6 +183,11 @@
                 input:checked[type="checkbox"]:before {
                     left: 20px;
                 }
+                img {
+                    border: 1px solid transparent;
+                    border-radius: 5px;
+                    width: 150px;
+                }
             }
             thead {
                 background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
