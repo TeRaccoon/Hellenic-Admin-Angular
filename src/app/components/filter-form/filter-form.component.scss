@@ -18,6 +18,7 @@
         margin: 5px auto;
         width: 40%;
         .header-section {
+            height: 50px;
             border-radius: 15px 15px 0 0;
             display: flex;
             justify-content: space-between;
@@ -30,6 +31,8 @@
             h1 {
                 text-align: center;
                 width: 100%;
+                font-size: 25px;
+                margin: auto;
             }
         }
         .content-section {
@@ -64,7 +67,6 @@
                         border-radius: 12px;
                         padding: 10px;
                         font-size: 20px;
-                        cursor: pointer;
                         &:hover {
                             background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
                             color: white;

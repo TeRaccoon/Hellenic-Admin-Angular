@@ -27,6 +27,7 @@
     margin: 5px auto;
     width: 25%;
     .header-section {
+        height: 50px;
         border-radius: 15px 15px 0 0;
         display: flex;
         justify-content: space-between;
@@ -40,6 +41,8 @@
             text-align: center;
             width: 100%;
             margin: 5px;
+            font-size: 25px;
+            margin: auto;
         }
     }
     .content-section {
