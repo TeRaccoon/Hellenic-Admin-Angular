@@ -1,4 +1,8 @@
 @import '../variables';
+.select {
+    cursor: pointer;
+}
+
 .container {
     position: fixed;
     z-index: 1;
@@ -26,6 +30,7 @@
             background: none;
             border: none;
             color: white;
+            cursor: pointer;
             &:hover {
                 font-style: italic;
             }
@@ -44,6 +49,9 @@
             padding: 12px;
             color: white;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+            a {
+                cursor: pointer;
+            }
             h1 {
                 text-align: center;
                 width: 100%;

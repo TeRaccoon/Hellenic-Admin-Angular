@@ -33,6 +33,9 @@
         padding: 12px;
         color: white;
         background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+        a {
+            cursor: pointer;
+        }
         h1 {
             text-align: center;
             width: 100%;
