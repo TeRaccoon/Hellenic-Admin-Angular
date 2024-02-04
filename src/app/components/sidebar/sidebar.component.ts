@@ -33,7 +33,7 @@ export class SidebarComponent {
     "Products": [
       { name: "items", displayName: "Items" },
       { name: "allergen_information", displayName: "Allergen Information" },
-      { name: "nutrition_information", displayName: "Nutrition Information" },
+      { name: "nutrition_info", displayName: "Nutrition Information" },
     ],
     "Invoices": [
       { name: "invoices", displayName: "Invoices" },
