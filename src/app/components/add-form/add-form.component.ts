@@ -29,7 +29,7 @@ export class AddFormComponent {
 
   selectData: { key: string; data: string[] }[] = [];
 
-  replacementData: { key: string; data: { id: Number; name: String }[] }[] = [];
+  replacementData: { key: string; data: { id: Number; replacement: String }[] }[] = [];
 
   constructor(
     private dataService: DataService,
@@ -61,6 +61,7 @@ export class AddFormComponent {
     );
     this.formData = data.formData;
     this.replacementData = data.replacementData;
+    console.log(this.formData);
   }
 
   buildForm() {

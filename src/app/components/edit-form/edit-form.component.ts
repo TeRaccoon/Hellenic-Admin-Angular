@@ -30,7 +30,7 @@ export class EditFormComponent {
   
   selectData: { key: string; data: string[] }[] = [];
 
-  replacementData: { key: string; data: { id: Number, name: String }[] }[] = [];
+  replacementData: { key: string; data: { id: Number, replacement: String }[] }[] = [];
 
   constructor(
     private dataService: DataService,

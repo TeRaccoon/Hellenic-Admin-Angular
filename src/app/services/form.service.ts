@@ -188,22 +188,37 @@ export class FormService {
   async replaceAmbiguousData(
     tableName: string,
     formData: any,
-    replacementData: { key: string; data: { id: Number; name: String }[] }[],
+    replacementData: { key: string; data: { id: Number; replacement: String }[] }[],
     dataService: DataService,
   ) {
     switch (tableName) {
       case 'retail_items':
-        var data = await this.getIdReplacementData('items_id_name', dataService);
-        formData['Item ID'].inputType = 'replacement';
-        replacementData.push({ key: 'Item ID', data: data });
-        break;
-
       case 'invoiced_items':
         var data = await this.getIdReplacementData('items_id_name', dataService);
         formData['Item ID'].inputType = 'replacement';
         replacementData.push({ key: 'Item ID', data: data });
         break;
+
+      case 'customer_payments':
+      case 'customer_address':
+        var data = await this.getIdReplacementData('customers_id_name', dataService);
+        formData['Customer ID'].inputType = 'replacement';
+        replacementData.push({ key: 'Customer ID', data: data });
+        break;
+
+      case 'page_section_text':
+        var data = await this.getIdReplacementData('page_section_id_name', dataService);
+        formData['Page Section ID'].inputType = 'replacement';
+        replacementData.push({ key: 'Page Section ID', data: data });
+        break;
+
+      case 'retail_item_images':
+        var data = await this.getIdReplacementData('retail_item_id_name', dataService);
+        formData['Retail Item ID'].inputType = 'replacement';
+        replacementData.push({ key: 'Page Section ID', data: data });
+        break;
     }
+    console.log(replacementData);
     return { formData, replacementData };
   }
 
