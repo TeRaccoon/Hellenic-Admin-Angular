@@ -215,7 +215,7 @@ export class FormService {
       case 'retail_item_images':
         var data = await this.getIdReplacementData('retail_item_id_name', dataService);
         formData['Retail Item ID'].inputType = 'replacement';
-        replacementData.push({ key: 'Page Section ID', data: data });
+        replacementData.push({ key: 'Retail Item ID', data: data });
         break;
     }
     console.log(replacementData);
