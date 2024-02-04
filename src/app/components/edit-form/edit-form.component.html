@@ -22,7 +22,7 @@
                                 </select>
                             </ng-container>
                             <ng-container *ngSwitchCase="'replacement'">
-                                <select class="select" [attr.required]="data.value.required ? true : null">
+                                <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
                                     <option *ngFor="let option of getReplacementDataFromKey(data.key)" [selected]="data.value.value == option.id" [value]="option.id">{{ option.name }}</option>
                                 </select>
                             </ng-container>
