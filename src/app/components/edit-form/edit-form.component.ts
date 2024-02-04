@@ -50,53 +50,17 @@ export class EditFormComponent {
     });
   }
 
-  primeImage(event: any) {
-    console.log("Here");
-    const file: File = event.target.files[0];
-    if (file) {
-      this.fileName = file.name;
-
-      const formData = new FormData();
-
-      formData.append('image', file);
-
-      this.dataService.uploadImage(formData);
-    }
-  }
-
-  clearForm() {
-    this.editForm = this.fb.group({});
-    this.editForm.reset();
-  }
-
-  loadForm() {
-    if (this.formService.getSelectedId() != '') {
-      this.formData = this.formService.getEditFormData();
-      this.tableName = this.formService.getSelectedTable();
-      this.id = this.formService.getSelectedId();
-      this.replaceAmiguousData();
-      this.buildForm();
-    }
-  }
-
   async replaceAmiguousData() {
-    switch (this.tableName) {
-      case 'retail_items':
-        var data = await this.getIdReplacementData('items_id_name');
-        this.formData['Item ID'].inputType = "replacement";
-        this.replacementData.push({key: 'Item ID', data: data});
-        break;
-    }
-  }
-
-  async getIdReplacementData(query: string): Promise<any>  {
-    return new Promise((resolve, reject) => {
-      this.dataService.collectData(query).subscribe(
-        (data: any) => {
-          resolve(data);
-        },
+    if (Object.keys(this.formData).length != 0) {
+      const data = await this.formService.replaceAmbiguousData(
+        this.tableName,
+        this.formData,
+        this.replacementData,
+        this.dataService
       );
-    });
+      this.formData = data.formData;
+      this.replacementData = data.replacementData;
+    }
   }
 
   buildForm() {
@@ -125,6 +89,44 @@ export class EditFormComponent {
     this.editForm.addControl('table_name', this.fb.control(this.tableName));
   }
 
+  primeImage(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.fileName = file.name;
+
+      const formData = new FormData();
+
+      formData.append('image', file);
+
+      this.dataService.uploadImage(formData);
+    }
+  }
+
+  clearForm() {
+    this.editForm = this.fb.group({});
+    this.editForm.reset();
+  }
+
+  loadForm() {
+    if (this.formService.getSelectedId() != '') {
+      this.formData = this.formService.getEditFormData();
+      this.tableName = this.formService.getSelectedTable();
+      this.id = this.formService.getSelectedId();
+      this.replaceAmiguousData();
+      this.buildForm();
+    }
+  }
+
+  async getIdReplacementData(query: string): Promise<any>  {
+    return new Promise((resolve, reject) => {
+      this.dataService.collectData(query).subscribe(
+        (data: any) => {
+          resolve(data);
+        },
+      );
+    });
+  }
+
   formSubmit() {
     this.dataService
       .submitFormData(this.editForm.value)
@@ -137,10 +139,6 @@ export class EditFormComponent {
         this.hide();
         this.formService.requestReload();
       });
-  }
-
-  hide() {
-    this.formService.hideEditForm();
   }
 
   deriveEnumOptions(field: any) {
@@ -167,5 +165,9 @@ export class EditFormComponent {
       return replacementData.data;
     }
     return [];
+  }
+
+  hide() {
+    this.formService.hideEditForm();
   }
 }

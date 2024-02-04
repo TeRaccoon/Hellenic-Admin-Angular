@@ -187,19 +187,18 @@ export class FormService {
 
   async replaceAmbiguousData(
     tableName: string,
-    formData: {
-      [key: string]: {
-        inputType: string;
-        dataType: string;
-        required: boolean;
-        fields: string;
-      };
-    },
+    formData: any,
     replacementData: { key: string; data: { id: Number; name: String }[] }[],
-    dataService: DataService
+    dataService: DataService,
   ) {
     switch (tableName) {
       case 'retail_items':
+        var data = await this.getIdReplacementData('items_id_name', dataService);
+        formData['Item ID'].inputType = 'replacement';
+        replacementData.push({ key: 'Item ID', data: data });
+        break;
+
+      case 'invoiced_items':
         var data = await this.getIdReplacementData('items_id_name', dataService);
         formData['Item ID'].inputType = 'replacement';
         replacementData.push({ key: 'Item ID', data: data });

@@ -45,9 +45,9 @@ export class AddFormComponent {
       this.formVisible = visible ? 'visible' : 'hidden';
       this.formData = this.formService.getAddFormData();
       this.tableName = this.formService.getSelectedTable();
-      if (this.tableName !== '') {
-        await this.replaceAmbiguousData();
+      if (this.tableName !== '' && Object.keys(this.formData).length != 0) {
         this.buildForm();
+        await this.replaceAmbiguousData();
       }
     });
   }
@@ -85,12 +85,7 @@ export class AddFormComponent {
     this.addForm.addControl('table_name', this.fb.control(this.tableName));
   }
 
-  hide() {
-    this.formService.hideAddForm();
-  }
-
   formSubmit() {
-    console.log(this.tableName);
     this.dataService
       .submitFormData(this.addForm.value)
       .subscribe((data: any) => {
@@ -106,7 +101,6 @@ export class AddFormComponent {
 
   primeImage(event: any) {
     const file: File = event.target.files[0];
-    console.log(file);
     if (file) {
       this.fileName = file.name;
 
@@ -137,12 +131,14 @@ export class AddFormComponent {
   }
 
   getReplacementDataFromKey(key: string) {
-    const replacementData = this.replacementData.find(
-      (data) => data.key === key
-    );
+    const replacementData = this.replacementData.find((data) => data.key === key);
     if (replacementData) {
       return replacementData.data;
     }
     return [];
+  }
+
+  hide() {
+    this.formService.hideAddForm();
   }
 }
