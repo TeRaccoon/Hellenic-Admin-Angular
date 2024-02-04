@@ -7,7 +7,15 @@
     background-color: rgb(255, 255, 255);
     text-align: center;
     padding: 10px 0;
+    .pie-chart-container {
+        #pie-chart {
+            cursor: pointer;
+        }
+    }
     .graph-view-container {
+        #bar-chart {
+            cursor: pointer;
+        }
         .input-container {
             input {
                 border-radius: 5px;
