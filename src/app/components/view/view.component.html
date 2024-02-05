@@ -29,6 +29,12 @@
                             <p>{{ tableFilter }}</p>
                             <fa-icon [icon]="faX" />
                         </div>
+                        <div *ngIf="columnDateFilter != null" class="filter" (click)="clearColumnDateFilter(true)">
+                            <p>{{ columnDateFilter.start }}</p>
+                            <fa-icon [icon]="faArrowsLeftRight" />
+                            <p>{{ columnDateFilter.end }}</p>
+                            <fa-icon [icon]="faX" />
+                        </div>
                         <div class="advanced-filter-container">
                             <button class="button" (click)="showAdvancedFilter()"><fa-icon [icon]="faFilter" /></button>
                         </div>

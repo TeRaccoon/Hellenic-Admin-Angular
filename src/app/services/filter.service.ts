@@ -53,6 +53,10 @@ export class FilterService {
     this.columnFilter = null;
   }
 
+  clearColumnDateFilter() {
+    this.columnDateFilter = null;
+  }
+
   setTableColumns(columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[]) {
     this.tableColumns = {columnNames, columns, dataTypes};
   }

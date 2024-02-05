@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-view',
@@ -18,13 +18,14 @@ export class ViewComponent {
   faTrashCan = faTrashCan;
   faFilter = faFilter;
   faX = faX;
+  faArrowsLeftRight = faArrowsLeftRight
   
   selectedOption: string | null = null;
   displayName: string = "";
   tableFilter: string | null = null;
   queryFilter: string | null = null;
   columnFilter: string | null = null;
-  columnDateFilter: string | null = null;
+  columnDateFilter: {start: string, end: string} | null = null;
 
   data: { [key: string]: any }[] = [];
   displayNames: { [key: string]: any }[] = [];
@@ -110,15 +111,22 @@ export class ViewComponent {
     });
   }
 
-  filterDateColumns(columnDateFilter: any) {
+  filterDateColumns(columnDateFilter: { column: any; startDate: Date; endDate: Date; }) {
     var column = columnDateFilter.column;
     this.displayData = this.displayData.filter((data) => {
-      if (this.columnFilter != null && data[column] != null && (new Date(data[column]) >= columnDateFilter.startDate && new Date(data[column]) <= columnDateFilter.endDate)) {
-        return data;
+      if (columnDateFilter != null && data[column] != null) {
+        let dataDate = new Date(data[column]);
+        let startDate = new Date(columnDateFilter.startDate);
+        let endDate = new Date(columnDateFilter.endDate);
+
+        this.columnDateFilter = {start: startDate.toLocaleDateString(), end: endDate.toLocaleDateString()};
+
+        return dataDate >= startDate && dataDate <= endDate;
       }
-    });
+      return false;
+    }); 
     this.filteredDisplayData = this.displayData;
-  }
+}
 
   filterColumns(columnFilter: any) {
     var isCaseSensitive = this.filterService.getCaseSensitive();
@@ -357,6 +365,12 @@ export class ViewComponent {
 
   clearColumnFilter(reload: boolean) {
     this.filterService.clearColumnFilter();
+    this.columnFilter = null;
+    reload && this.reloadTable;
+  }
+
+  clearColumnDateFilter(reload: boolean) {
+    this.filterService.clearColumnDateFilter();
     this.columnFilter = null;
     reload && this.reloadTable;
   }
