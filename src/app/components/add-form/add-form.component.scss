@@ -1,4 +1,10 @@
 @import '../variables';
+.select {
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+}
+
 .container {
     position: fixed;
     z-index: 1;
@@ -26,6 +32,7 @@
             background: none;
             border: none;
             color: white;
+            cursor: pointer;
             &:hover {
                 font-style: italic;
             }
@@ -38,15 +45,21 @@
         margin: 5px auto;
         width: 40%;
         .header-section {
+            height: 50px;
             border-radius: 15px 15px 0 0;
             display: flex;
             justify-content: space-between;
             padding: 12px;
             color: white;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+            a {
+                cursor: pointer;
+            }
             h1 {
                 text-align: center;
                 width: 100%;
+                font-size: 25px;
+                margin: auto;
             }
         }
         .content-section {
@@ -64,17 +77,17 @@
                     outline: none;
                     border: 1px solid rgb(215, 215, 215);
                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
-                    font-size: 20px;
-                    padding: 10px;
+                    font-size: 16px;
+                    padding: 5px;
                 }
                 .file-upload {
                     border: 1px solid #ccc;
                     border-radius: 10px;
                     background-color: #FFF;
                     display: inline-block;
-                    padding: 12px 20px!important;
+                    padding: 5px!important;
                     font-weight: normal;
-                    font-size: 20px;
+                    font-size: 16px;
                     cursor: pointer;
                     margin: 10px 0 10px 0;
                     box-sizing: border-box;

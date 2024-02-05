@@ -18,15 +18,21 @@
         margin: 5px auto;
         width: 40%;
         .header-section {
+            height: 50px;
             border-radius: 15px 15px 0 0;
             display: flex;
             justify-content: space-between;
             padding: 12px;
             color: white;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+            a {
+                cursor: pointer;
+            }
             h1 {
                 text-align: center;
                 width: 100%;
+                font-size: 25px;
+                margin: auto;
             }
         }
         .content-section {
@@ -47,6 +53,7 @@
                 padding: 10px;
                 margin-left: 15px;
                 margin-right: 15px;
+                cursor: pointer;
             }
             .input-container {
                 padding: 15px;

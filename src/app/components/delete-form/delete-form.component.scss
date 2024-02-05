@@ -23,6 +23,7 @@
             border-radius: 12px;
             padding: 0px 10px 0px 10px;
             font-size: 20px;
+            cursor: pointer;
             &:hover {
                 background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
                 color: white;
@@ -36,15 +37,21 @@
         margin: 5px auto;
         width: 30%;
         .header-section {
+            height: 50px;
             border-radius: 15px 15px 0 0;
             display: flex;
             justify-content: space-between;
             padding: 12px;
             color: white;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+            a {
+                cursor: pointer;
+            }
             h1 {
                 text-align: center;
                 width: 100%;
+                font-size: 25px;
+                margin: auto;
             }
         }
         .content-section {
