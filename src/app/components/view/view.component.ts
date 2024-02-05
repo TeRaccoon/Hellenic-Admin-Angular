@@ -308,19 +308,6 @@ export class ViewComponent {
     return range;
   }
 
-  isColumnBool(key: number) {
-    if (this.dataTypes[key].includes("enum")) {
-      if (String(this.dataTypes[key]) == "enum('Yes','No')") {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  isColumnImage(key: number) {
-    return this.dataTypes[key] == "file";
-  }
-
   changeCheckBox(event: Event, key: number, columnName: string) {
     const option = event.target as HTMLInputElement;
     let checked = option.checked;
