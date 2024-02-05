@@ -12,14 +12,18 @@ export class FilterFormComponent {
   faSearch = faSearch;
 
   formVisible = 'hidden';
-  tableColumns: { columnNames: { [key: string]: any }[], columns: string[] } = {
+  tableColumns: { columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[] } = {
     columnNames: [],
     columns: [],
+    dataTypes: [],
   };
 
   searchInput: string = '';
   columnInput: string = '';
+  columnType: string = '';
   caseSensitive: boolean = false;
+  startDate: Date = new Date();
+  endDate: Date = new Date();
 
   constructor(private formService: FormService, private filterService: FilterService) {}
 
@@ -35,9 +39,19 @@ export class FilterFormComponent {
   }
 
   search() {
-    this.filterService.setColumnFilter({column: this.columnInput, filter: this.searchInput })
-    this.filterService.setCaseSensitive(this.caseSensitive);
+    if (this.columnType == 'date') {
+      this.filterService.setColumnDateFilter({column: this.columnInput, startDate: this.startDate, endDate: this.endDate})
+    } else {
+      this.filterService.setColumnFilter({column: this.columnInput, filter: this.searchInput })
+      this.filterService.setCaseSensitive(this.caseSensitive);
+    }
     this.formService.requestReload();
     this.hide();
+  }
+
+  getColumnType() {
+    console.log(this.tableColumns);
+    var index = this.tableColumns.columns.indexOf(this.columnInput);
+    this.columnType = this.tableColumns.dataTypes[index];
   }
 }

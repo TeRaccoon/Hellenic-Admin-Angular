@@ -6,15 +6,23 @@
         </div>
         <div class="content-section">
             <label>Select Column</label>
-            <select [(ngModel)]="columnInput">
+            <select (change)="getColumnType()" [(ngModel)]="columnInput">
                 <option *ngFor="let column of tableColumns.columnNames; let i = index;" [value]="tableColumns.columns[i]">{{column}}</option>
             </select>
             <div class="input-container">
-                <input [(ngModel)]="searchInput" type="text" placeholder="Search..." />
-                <div class="case-option-container">
-                    <label>Case Sensitive?</label>
-                    <input [(ngModel)]="caseSensitive" type="checkbox" />
-                </div>
+                <ng-container *ngIf="columnType == 'date' else elseBlock">
+                    <label>Start date:</label>
+                    <input type="date" [(ngModel)]="startDate">
+                    <label>End date:</label>
+                    <input type="date" [(ngModel)]="endDate">
+                </ng-container>
+                <ng-template #elseBlock>
+                    <input [(ngModel)]="searchInput" type="text" placeholder="Search..." />
+                    <div class="case-option-container">
+                        <label>Case Sensitive?</label>
+                        <input [(ngModel)]="caseSensitive" type="checkbox" />
+                    </div>
+                </ng-template>
                 <div class="button-container">
                     <button class="button" (click)="search()">
                         <fa-icon [icon]="faSearch"></fa-icon>

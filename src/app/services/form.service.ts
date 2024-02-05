@@ -198,9 +198,10 @@ export class FormService {
         formData['Item ID'].inputType = 'replacement';
         replacementData.push({ key: 'Item ID', data: data });
         break;
-
+        
       case 'customer_payments':
       case 'customer_address':
+      case 'invoices':
         var data = await this.getIdReplacementData('customers_id_name', dataService);
         formData['Customer ID'].inputType = 'replacement';
         replacementData.push({ key: 'Customer ID', data: data });

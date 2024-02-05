@@ -24,6 +24,7 @@ export class ViewComponent {
   tableFilter: string | null = null;
   queryFilter: string | null = null;
   columnFilter: string | null = null;
+  columnDateFilter: string | null = null;
 
   data: { [key: string]: any }[] = [];
   displayNames: { [key: string]: any }[] = [];
@@ -87,7 +88,7 @@ export class ViewComponent {
     this.dataService.collectData(queryString, table).subscribe((data: any) => {
       this.data = Array.isArray(data.data) ? data.data : [data.data];
       this.displayData = Array.isArray(data.display_data) ? data.display_data : [data.display_data];
-
+      console.log(data);
       this.dataTypes = data.types;
       this.filteredDisplayData = this.displayData;
       this.displayNames = data.display_names;
@@ -98,10 +99,25 @@ export class ViewComponent {
         this.filterColumns(columnFilter);
       }
 
+      var columnDateFilter = this.filterService.getColumnDateFilter();
+      if (columnDateFilter != null) {
+        this.filterDateColumns(columnDateFilter);
+      }
+
       this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit) + 1;
 
       this.loaded = true;
     });
+  }
+
+  filterDateColumns(columnDateFilter: any) {
+    var column = columnDateFilter.column;
+    this.displayData = this.displayData.filter((data) => {
+      if (this.columnFilter != null && data[column] != null && (new Date(data[column]) >= columnDateFilter.startDate && new Date(data[column]) <= columnDateFilter.endDate)) {
+        return data;
+      }
+    });
+    this.filteredDisplayData = this.displayData;
   }
 
   filterColumns(columnFilter: any) {
@@ -111,7 +127,6 @@ export class ViewComponent {
     this.columnFilter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
 
     this.displayData = this.displayData.filter((data) => {
-      console.log(data[column]);
       if (this.columnFilter != null && data[column] != null && String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(this.columnFilter)) {
         return data;
       }
@@ -255,9 +270,10 @@ export class ViewComponent {
   }
 
   resetTable() {
-    this.clearQueryFilter();
-    this.clearColumnFilter();
-    this.clearTableFilter();
+    this.clearQueryFilter(false);
+    this.clearColumnFilter(false);
+    this.clearTableFilter(true);
+    this.filterService.clearFilter();
   }
 
   getPageRange(): number[] {
@@ -328,25 +344,28 @@ export class ViewComponent {
     }
   }
 
-  clearTableFilter() {
+  clearTableFilter(reload: boolean) {
     this.tableFilter = null;
-    this.loadTable(String(this.selectedOption));
-    this.changePage(1);
+    reload && this.reloadTable;
   }
 
-  clearQueryFilter() {
+  clearQueryFilter(reload: boolean) {
     this.filterService.clearFilter();
     this.queryFilter = null;
-    this.loadTable(String(this.selectedOption)); 
-    this.changePage(1);
+    reload && this.reloadTable;
   }
 
-  clearColumnFilter() {
+  clearColumnFilter(reload: boolean) {
     this.filterService.clearColumnFilter();
     this.columnFilter = null;
+    reload && this.reloadTable;
+  }
+
+  reloadTable() {
     this.loadTable(String(this.selectedOption));    
     this.changePage(1);
   }
+
 
   shouldColourCell(data: any) {
     switch(this.selectedOption) {
@@ -365,8 +384,8 @@ export class ViewComponent {
   }
 
   showAdvancedFilter() {
-    var columns = Object.keys(this.displayData[0]);
-    this.filterService.setTableColumns(this.displayNames, columns);
+    var columns = Object.keys(this.data[0]);
+    this.filterService.setTableColumns(this.displayNames, columns, this.dataTypes);
     this.formService.showFilterForm();
   }
 }

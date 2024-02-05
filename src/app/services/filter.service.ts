@@ -5,10 +5,12 @@ import { Injectable } from '@angular/core';
 })
 export class FilterService {
   private tableFilter: string | null = null;
-  private columnFilter: { column: string, filter: string } | null = null
-  private tableColumns: { columnNames: { [key: string]: any }[], columns: string[] } = {
+  private columnFilter: { column: string, filter: string } | null = null;
+  private columnDateFilter: { column: string, startDate: Date, endDate: Date } | null = null;
+  private tableColumns: { columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[] } = {
     columnNames: [],
     columns: [],
+    dataTypes: [],
   };
   private caseSensitive = false;
 
@@ -17,6 +19,14 @@ export class FilterService {
   }
   getColumnFilter() {
     return this.columnFilter;
+  }
+
+  setColumnDateFilter(columnDateFilter: { column: string, startDate: Date, endDate: Date }) {
+    this.columnDateFilter = columnDateFilter;
+  }
+
+  getColumnDateFilter() {
+    return this.columnDateFilter;
   }
 
   setCaseSensitive(caseSensitive: boolean) {
@@ -43,8 +53,8 @@ export class FilterService {
     this.columnFilter = null;
   }
 
-  setTableColumns(columnNames: { [key: string]: any }[], columns: string[]) {
-    this.tableColumns = {columnNames, columns};
+  setTableColumns(columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[]) {
+    this.tableColumns = {columnNames, columns, dataTypes};
   }
 
   getTableColumns() {

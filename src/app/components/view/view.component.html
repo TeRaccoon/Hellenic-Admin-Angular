@@ -17,15 +17,15 @@
                         </select> entries
                     </p>
                     <div class="filter-container">
-                        <div *ngIf="queryFilter != null" class="filter" (click)="clearQueryFilter()">
+                        <div *ngIf="queryFilter != null" class="filter" (click)="clearQueryFilter(true)">
                             <p>{{ queryFilter }}</p>
                             <fa-icon [icon]="faX" />
                         </div>
-                        <div *ngIf="columnFilter != null" class="filter" (click)="clearColumnFilter()">
+                        <div *ngIf="columnFilter != null" class="filter" (click)="clearColumnFilter(true)">
                             <p>{{ columnFilter }}</p>
                             <fa-icon [icon]="faX" />
                         </div>
-                        <div *ngIf="tableFilter != null" class="filter" (click)="clearTableFilter()">
+                        <div *ngIf="tableFilter != null" class="filter" (click)="clearTableFilter(true)">
                             <p>{{ tableFilter }}</p>
                             <fa-icon [icon]="faX" />
                         </div>

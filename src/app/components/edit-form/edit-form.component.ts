@@ -103,6 +103,8 @@ export class EditFormComponent {
   }
 
   clearForm() {
+    this.formData = {};
+    this.replacementData = [];
     this.editForm = this.fb.group({});
     this.editForm.reset();
   }
