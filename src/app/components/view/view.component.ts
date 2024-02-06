@@ -70,7 +70,11 @@ export class ViewComponent {
 
     this.formService.getReloadRequest().subscribe((reloadRequested: boolean) => {
       if (reloadRequested) {
-        this.loadTable(String(this.selectedOption));
+        if (this.formService.getReloadType() == "hard") {
+          this.loadTable(String(this.selectedOption));
+        } else if (this.formService.getReloadType() == "widget") {
+          this.invoiceSearch();
+        }
         this.loadPage();
         this.formService.performReload();
       }
@@ -175,6 +179,7 @@ export class ViewComponent {
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.setSelectedId(id);
     this.formService.showEditForm();
+    this.formService.setReloadType("hard");
   }
 
   async addRow() {
@@ -182,12 +187,14 @@ export class ViewComponent {
     this.formService.setAddFormData(addFormData);
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.showAddForm();
+    this.formService.setReloadType("hard");
   }
 
   deleteRow(id: string) {
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.setDeleteFormIds([id]);
     this.formService.showDeleteForm();
+    this.formService.setReloadType("hard");
   }
 
   getEditFormData(id: number) {

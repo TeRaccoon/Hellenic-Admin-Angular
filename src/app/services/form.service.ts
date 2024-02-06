@@ -38,6 +38,7 @@ export class FormService {
   };
   private selectedTable: string = '';
   private selectedId: string = '';
+  private reloadType: string = '';
 
   private waitingToReload = new BehaviorSubject<boolean>(false);
 
@@ -229,5 +230,13 @@ export class FormService {
         resolve(data);
       });
     });
+  }
+
+  setReloadType(reloadType: string) {
+    this.reloadType = reloadType;
+  }
+
+  getReloadType() {
+    return this.reloadType;
   }
 }
