@@ -14,15 +14,14 @@
                 </tr>
             </tbody>
         </table>
-        <div>
-            <p>Need to add more?</p>
-            <button (click)="addInvoicedItem()">Add more</button>
+        <div class="widget-footer">
+            <button class="button" (click)="addInvoicedItem()">Add more</button>
         </div>
     </div>
     <ng-template #elseBlock>
         <div>
             <p>There are no invoiced items for this invoice. Would you like to add some?</p>
-            <button (click)="addInvoicedItem()">Add new</button>
+            <button class="button" (click)="addInvoicedItem()">Add new</button>
         </div>
     </ng-template>
 </div>
