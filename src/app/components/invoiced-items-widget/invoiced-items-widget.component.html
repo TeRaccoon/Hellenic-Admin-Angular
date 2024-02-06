@@ -1,0 +1,28 @@
+<div class="container">
+    <div *ngIf="data != null && data?.length > 0 else elseBlock" class="table-container">
+        <table>
+            <thead>
+                <th>Invoice Title</th>
+                <th>Item Name</th>
+                <th>Quantity</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of data">
+                    <td>{{ row.title }}</td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.quantity }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <p>Need to add more?</p>
+            <button (click)="addInvoicedItem()">Add more</button>
+        </div>
+    </div>
+    <ng-template #elseBlock>
+        <div>
+            <p>There are no invoiced items for this invoice. Would you like to add some?</p>
+            <button (click)="addInvoicedItem()">Add new</button>
+        </div>
+    </ng-template>
+</div>

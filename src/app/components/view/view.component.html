@@ -6,6 +6,7 @@
                 <div class="row">
                     <button class="button" (click)="addRow()">Add New +</button>
                     <button *ngIf="selectedOption == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
+                    <button *ngIf="selectedOption == 'invoices'" class="button" (click)="invoiceSearch()"><fa-icon [icon]="faSearch"/></button>
                 </div>
                 <div>
                     <p>Show
@@ -106,8 +107,13 @@
                     <button (click)="nextPage()">Next</button>
                 </div>
             </div>
-            <ng-container *ngIf="selectedOption == 'general_ledger'">
-                <app-ledger-widget></app-ledger-widget>
+            <ng-container [ngSwitch]="selectedOption">
+                <ng-container *ngSwitchCase="'general_ledger'">
+                    <app-ledger-widget></app-ledger-widget>
+                </ng-container>
+                <ng-container *ngSwitchCase="'invoices'">
+                    <app-invoiced-items-widget></app-invoiced-items-widget>
+                </ng-container>
             </ng-container>
         </div>
     </ng-container>

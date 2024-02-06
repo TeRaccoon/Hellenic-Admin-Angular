@@ -44,6 +44,7 @@ export class AddFormComponent {
     this.formService.getAddFormVisibility().subscribe(async (visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
       this.formData = this.formService.getAddFormData();
+      console.log(this.formData);
       this.tableName = this.formService.getSelectedTable();
       if (this.tableName !== '' && Object.keys(this.formData).length != 0) {
         this.buildForm();
@@ -61,7 +62,6 @@ export class AddFormComponent {
     );
     this.formData = data.formData;
     this.replacementData = data.replacementData;
-    console.log(this.formData);
   }
 
   buildForm() {

@@ -89,7 +89,6 @@ export class ViewComponent {
     this.dataService.collectData(queryString, table).subscribe((data: any) => {
       this.data = Array.isArray(data.data) ? data.data : [data.data];
       this.displayData = Array.isArray(data.display_data) ? data.display_data : [data.display_data];
-      console.log(data);
       this.dataTypes = data.types;
       this.filteredDisplayData = this.displayData;
       this.displayNames = data.display_names;
@@ -336,6 +335,23 @@ export class ViewComponent {
     } else {
       this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before trying to print!"});
       this.formService.showMessageForm();
+    }
+  }
+
+  invoiceSearch() {
+    if (this.selectedRows.length == 1) {
+      this.dataService.collectData("invoiced-items-basic-id", this.selectedRows[0].toString()).subscribe((data: any) => {
+        this.dataService.storeWidgetData(data);
+      });
+    } else {
+      if (this.selectedRows.length > 1) {
+        this.dataService.collectDataComplex("invoiced-items-basic-ids", {ids: this.selectedRows}).subscribe((data: any) => {
+          this.dataService.storeWidgetData(data);
+        });
+      } else {
+        this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before searching for items!"});
+        this.formService.showMessageForm();
+      }
     }
   }
 

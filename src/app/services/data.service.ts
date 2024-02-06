@@ -9,6 +9,8 @@ import { catchError, map } from 'rxjs/operators';
 export class DataService {
   private dataSubject = new Subject<any[]>();
   tableData: any = {};
+  private widgetData = new Subject<{}>();
+  altTableData: any = {};
   invoiceIds: any[] = [];
 
   constructor(private http: HttpClient) {}
@@ -61,6 +63,14 @@ export class DataService {
     return this.tableData;
   }
 
+  storeWidgetData(data: any) {
+    this.widgetData.next(data);
+  }
+
+  retrieveWidgetData() {
+    return this.widgetData;
+  }
+
   getDataObservable(): Observable<any[]> {
     return this.dataSubject.asObservable();
   }
@@ -70,5 +80,12 @@ export class DataService {
   }
   retrievePrintInvoiceIds() {
     return this.invoiceIds;
+  }
+
+  setAlternativeTableData(data: any) {
+    this.altTableData = data;
+  }
+  getAlternativeTableData() {
+    return this.altTableData;
   }
 }
