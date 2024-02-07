@@ -102,6 +102,9 @@
                     font-weight: bold;
                     font-size: 17px;
                     cursor: pointer;
+                    &:hover {
+                        background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
+                    }
                 }
             }
             div {
