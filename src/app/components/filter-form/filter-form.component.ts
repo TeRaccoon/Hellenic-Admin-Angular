@@ -42,10 +42,9 @@ export class FilterFormComponent {
     if (this.columnType == 'date') {
       this.filterService.setColumnDateFilter({column: this.columnInput, startDate: this.startDate, endDate: this.endDate})
     } else {
-      this.filterService.setColumnFilter({column: this.columnInput, filter: this.searchInput })
-      this.filterService.setCaseSensitive(this.caseSensitive);
+      this.filterService.setColumnFilter({column: this.columnInput, filter: this.searchInput, caseSensitive: this.caseSensitive })
     }
-    this.formService.setReloadType("hard");
+    this.formService.setReloadType("filter");
     this.formService.requestReload();
     this.hide();
   }

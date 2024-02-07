@@ -26,7 +26,8 @@ export class ViewComponent {
   displayName: string = "";
   tableFilter: string | null = null;
   queryFilter: string | null = null;
-  columnFilter: string | null = null;
+  displayColumnFilters: string[] = [];
+  columnFilters: { column: string, filter: string, caseSensitive: boolean }[] = [];
   columnDateFilter: {start: string, end: string} | null = null;
 
   data: { [key: string]: any }[] = [];
@@ -82,6 +83,8 @@ export class ViewComponent {
           this.loadTable(String(this.selectedOption));
         } else if (this.formService.getReloadType() == "widget") {
           this.invoiceSearch();
+        } else if (this.formService.getReloadType() == "filter") {
+          this.applyFilter();
         }
         this.loadPage();
         this.formService.performReload();
@@ -97,6 +100,21 @@ export class ViewComponent {
     } else {
       this.router.navigate(['/page'], { queryParams: {table: tableName } });
     }
+  }
+  
+  applyFilter() {
+    this.columnFilters = this.filterService.getColumnFilter();
+    this.displayColumnFilters = [];    
+    this.columnFilters.forEach((filter: any) => {
+      if (filter != null) {
+        this.filterColumns(filter);
+      }
+
+      // var columnDateFilter = this.filterService.getColumnDateFilter();
+      // if (columnDateFilter != null) {
+      //   this.filterDateColumns(columnDateFilter);
+      // }
+    });
   }
 
   async loadTable(table: string) {
@@ -116,15 +134,7 @@ export class ViewComponent {
       this.displayNames = data.display_names;
       this.edittable = data.edittable;
 
-      var columnFilter = this.filterService.getColumnFilter();
-      if (columnFilter != null) {
-        this.filterColumns(columnFilter);
-      }
-
-      var columnDateFilter = this.filterService.getColumnDateFilter();
-      if (columnDateFilter != null) {
-        this.filterDateColumns(columnDateFilter);
-      }
+      this.applyFilter();
 
       this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit) + 1;
 
@@ -150,13 +160,12 @@ export class ViewComponent {
 }
 
   filterColumns(columnFilter: any) {
-    var isCaseSensitive = this.filterService.getCaseSensitive();
-
+    var isCaseSensitive = columnFilter.caseSensitive;
     var column = columnFilter.column;
-    this.columnFilter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
-
-    this.displayData = this.displayData.filter((data) => {
-      if (this.columnFilter != null && data[column] != null && String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(this.columnFilter)) {
+    var filter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
+    this.displayColumnFilters.push(this.displayNames[Object.keys(this.data[0]).indexOf(column)] + ": " + columnFilter.filter);
+    this.displayData = this.filteredDisplayData.filter((data) => {
+      if (filter != null && data[column] != null && String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(filter)) {
         return data;
       }
     });
@@ -192,7 +201,6 @@ export class ViewComponent {
 
   async editRow(id: any) {
     var editFormData = this.getEditFormData(id);
-    console.log(editFormData);
     this.formService.setEditFormData(editFormData);
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.setSelectedId(id);
@@ -387,25 +395,33 @@ export class ViewComponent {
 
   clearTableFilter(reload: boolean) {
     this.tableFilter = null;
-    reload && this.reloadTable;
+    reload && this.reloadTable();
   }
 
   clearQueryFilter(reload: boolean) {
     this.filterService.clearFilter();
     this.queryFilter = null;
-    reload && this.reloadTable;
+    reload && this.reloadTable();
   }
 
   clearColumnFilter(reload: boolean) {
     this.filterService.clearColumnFilter();
-    this.columnFilter = null;
-    reload && this.reloadTable;
+    this.displayColumnFilters = [];
+    this.columnDateFilter = null;
+    reload && this.reloadTable();
+  }
+
+  removeColumnFilter(columnFilterIndex: number) {
+    this.displayColumnFilters = this.displayColumnFilters.filter((filter) => filter != this.displayColumnFilters[columnFilterIndex]);
+    this.filterService.removeColumnFilter(this.columnFilters[columnFilterIndex].filter);
+    this.columnFilters = this.filterService.getColumnFilter();
+    this.reloadTable();
   }
 
   clearColumnDateFilter(reload: boolean) {
     this.filterService.clearColumnDateFilter();
-    this.columnFilter = null;
-    reload && this.reloadTable;
+    this.columnDateFilter = null;
+    reload && this.reloadTable();
   }
 
   reloadTable() {

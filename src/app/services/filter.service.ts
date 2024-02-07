@@ -5,17 +5,20 @@ import { Injectable } from '@angular/core';
 })
 export class FilterService {
   private tableFilter: string | null = null;
-  private columnFilter: { column: string, filter: string } | null = null;
+  private columnFilter: { column: string, filter: string, caseSensitive: boolean }[] = [];
   private columnDateFilter: { column: string, startDate: Date, endDate: Date } | null = null;
   private tableColumns: { columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[] } = {
     columnNames: [],
     columns: [],
     dataTypes: [],
   };
-  private caseSensitive = false;
 
-  setColumnFilter(columnFilter: { column: string, filter: string }) {
-    this.columnFilter = columnFilter;
+  setColumnFilter(columnFilter: { column: string, filter: string, caseSensitive: boolean }) {
+    if (this.columnFilter && this.columnFilter.length > 0) {
+      this.columnFilter.push(columnFilter);
+    } else {
+      this.columnFilter = [columnFilter];
+    }
   }
   getColumnFilter() {
     return this.columnFilter;
@@ -27,14 +30,6 @@ export class FilterService {
 
   getColumnDateFilter() {
     return this.columnDateFilter;
-  }
-
-  setCaseSensitive(caseSensitive: boolean) {
-    this.caseSensitive = caseSensitive;
-  }
-
-  getCaseSensitive() {
-    return this.caseSensitive;
   }
 
   setTableFilter(filter: string) {
@@ -50,7 +45,15 @@ export class FilterService {
   }
 
   clearColumnFilter() {
-    this.columnFilter = null;
+    this.columnFilter = [];
+  }
+
+  removeColumnFilter(columnFilter: string) {
+    if (this.columnFilter) {
+      console.log(this.columnFilter);
+      this.columnFilter = this.columnFilter.filter((filter: any) => filter.filter != columnFilter);
+      console.log(this.columnFilter);
+    }
   }
 
   clearColumnDateFilter() {
