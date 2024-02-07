@@ -62,10 +62,12 @@ export class NavbarComponent {
   }
 
   toggleNotificationDropdown() {
+    this.userOptionsVisible = false;
     this.dropDownVisible = !this.dropDownVisible;
   }
 
   toggleUserOptions() {
+    this.dropDownVisible = false;
     this.userOptionsVisible = !this.userOptionsVisible;
   }
 
