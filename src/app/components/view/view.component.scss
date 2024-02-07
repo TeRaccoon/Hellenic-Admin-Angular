@@ -247,6 +247,18 @@
         align-items: center;
         text-align: center;
         padding: 40px;
+        .header {
+            display: flex;
+            width: 100%;
+            fa-icon {
+                cursor: pointer;
+                font-size: 20px;
+                &:hover {
+                    color: #0e52c1;
+                    transition: color 0.3s;
+                }
+            }
+        }
         button {
             border-radius: 5px;
             padding: 8px;
