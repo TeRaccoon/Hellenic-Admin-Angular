@@ -439,4 +439,16 @@ export class ViewComponent {
   back() {
     this._location.back()
   }
+
+  canDisplayColumn(column: string) {
+    console.log(column);
+    switch (this.selectedOption) {
+      case "customers":
+        if (column == "password") {
+          return false;
+        }
+        break;
+    }
+    return true;
+  }
 }

@@ -72,19 +72,21 @@
                                     <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox">
                                 </td>
                                 <td *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;" [ngClass]="shouldColourCell(item[column])">
-                                    <ng-container [ngSwitch]="dataTypes[columnIndex]">
-                                        <img *ngSwitchCase="'file'" [src]="'http://localhost/uploads/' + item[column]" />
-                                        <ng-container *ngSwitchCase="'enum(\'Yes\',\'No\')'">
-                                            <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes' ? true : false">
-                                        </ng-container>
-                                        <ng-container *ngSwitchCase="'float'">
-                                            {{ item[column] == null ? '---' : item[column] | currency:'GBP' }}
-                                        </ng-container>
-                                        <ng-container *ngSwitchCase="'double'">
-                                            {{ item[column] == null ? '---' : item[column] + '%' }}
-                                        </ng-container>
-                                        <ng-container *ngSwitchDefault>
-                                            {{ item[column] == null ? '---' : item[column] }}
+                                    <ng-container *ngIf="canDisplayColumn(column)">
+                                        <ng-container [ngSwitch]="dataTypes[columnIndex]">
+                                            <img *ngSwitchCase="'file'" [src]="'http://localhost/uploads/' + item[column]" />
+                                            <ng-container *ngSwitchCase="'enum(\'Yes\',\'No\')'">
+                                                <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes' ? true : false">
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'float'">
+                                                {{ item[column] == null ? '---' : item[column] | currency:'GBP' }}
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'double'">
+                                                {{ item[column] == null ? '---' : item[column] + '%' }}
+                                            </ng-container>
+                                            <ng-container *ngSwitchDefault>
+                                                {{ item[column] == null ? '---' : item[column] }}
+                                            </ng-container>
                                         </ng-container>
                                     </ng-container>
                                 </td>
