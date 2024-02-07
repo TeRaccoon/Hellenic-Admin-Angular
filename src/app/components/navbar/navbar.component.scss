@@ -12,6 +12,12 @@
     .nav-options-container {
         display: flex;
         flex-direction: row;
+        fa-icon {
+            &:hover {
+                color: #0e52c1;
+                transition: color 0.3s;
+            }
+        }
         .user-dropdown-container {
             position: absolute;
             top: 85px;
