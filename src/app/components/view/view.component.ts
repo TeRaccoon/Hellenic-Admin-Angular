@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-view',
@@ -18,7 +19,8 @@ export class ViewComponent {
   faTrashCan = faTrashCan;
   faFilter = faFilter;
   faX = faX;
-  faArrowsLeftRight = faArrowsLeftRight
+  faArrowsLeftRight = faArrowsLeftRight;
+  faArrowLeft = faArrowLeft;
   
   selectedOption: string | null = null;
   displayName: string = "";
@@ -52,7 +54,9 @@ export class ViewComponent {
   filter: string = '';
   setFilter = false;
 
-  constructor(private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService) {}
+  tabs: {displayName: string, tableName: string}[] = [];
+
+  constructor(private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
@@ -65,6 +69,7 @@ export class ViewComponent {
         this.pageCount = 0;
         this.currentPage = 1;
         this.loadPage();
+        this.tabs = this.dataService.getTabs();
       }
     });
 
@@ -79,6 +84,16 @@ export class ViewComponent {
         this.formService.performReload();
       }
     });
+  }
+
+  changeTab(tableName: string) {
+    if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics") {
+      this.router.navigate(['/view'], { queryParams: {table: tableName } });
+    } else if (tableName == "statistics") {
+      this.router.navigate(['/statistics'])
+    } else {
+      this.router.navigate(['/page'], { queryParams: {table: tableName } });
+    }
   }
 
   async loadTable(table: string) {
@@ -411,5 +426,9 @@ export class ViewComponent {
     var columns = Object.keys(this.data[0]);
     this.filterService.setTableColumns(this.displayNames, columns, this.dataTypes);
     this.formService.showFilterForm();
+  }
+
+  back() {
+    this._location.back()
   }
 }

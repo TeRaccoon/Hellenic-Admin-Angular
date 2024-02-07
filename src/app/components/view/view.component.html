@@ -51,6 +51,11 @@
                 </div>
             </div>
             <div class="table-wrapper">
+                <div *ngIf="tabs.length > 0">
+                    <div *ngFor="let tab of tabs" (click)="changeTab(tab.tableName)" [class]="'tab' + selectedOption == tab.tableName ? 'active-tab' : ''">
+                        {{tab.displayName}}
+                    </div>
+                </div>
                 <table>
                     <thead>
                         <tr *ngIf="data[0]">
@@ -122,14 +127,19 @@
     <ng-template #loading>
         <ng-container *ngIf="!loaded">
             <div class="loading-container">
-                <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true"></fa-icon>
+                <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true" />
             </div>
         </ng-container>
     </ng-template>
     <div *ngIf="data.length === 0 && loaded" class="alternate-container">
-        <h1>Whoops! No data was found for {{ displayName }}!</h1>
-        <p>Could this be an error? If so, try refreshing the page otherwise add new data below!</p>
-        <button class="button" (click)="addRow()">Add New +</button>
+        <div class="header">
+            <fa-icon (click)="back()" [icon]="faArrowLeft" />
+        </div>
+        <div class="content">
+            <h1>Whoops! No data was found for {{ displayName }}!</h1>
+            <p>Could this be an error? If so, try refreshing the page otherwise add new data below!</p>
+            <button class="button" (click)="addRow()">Add New +</button>
+        </div>
     </div>
 </div>
 <app-edit-form></app-edit-form>

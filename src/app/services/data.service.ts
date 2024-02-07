@@ -12,6 +12,7 @@ export class DataService {
   private widgetData = new Subject<{}>();
   altTableData: any = {};
   invoiceIds: any[] = [];
+  tabs: {displayName: string, tableName: string}[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -87,5 +88,12 @@ export class DataService {
   }
   getAlternativeTableData() {
     return this.altTableData;
+  }
+
+  setTabs(tabs: {displayName: string, tableName: string}[]) {
+    this.tabs = tabs;
+  }
+  getTabs() {
+    return this.tabs;
   }
 }
