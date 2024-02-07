@@ -148,6 +148,22 @@
             overflow-x: auto;
             margin: 0 auto;
             border-radius: 15px;
+            .tab-parent {
+                display: flex;
+                .tab,
+                .active-tab {
+                    background-image: linear-gradient(to top, #42424a, #191919);
+                    color: white;
+                    padding: 15px;
+                    font-weight: bold;
+                    border-radius: 10px 30px 0px 0px;
+                    width: 150px;
+                    cursor: pointer;
+                }
+                .active-tab {
+                    background-image: linear-gradient(to top, rgb(34, 130, 255), rgb(6, 63, 167));
+                }
+            }
             table {
                 border-collapse: collapse;
                 border-radius: 15px;
