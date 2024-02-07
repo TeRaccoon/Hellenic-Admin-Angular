@@ -28,7 +28,7 @@ export class ViewComponent {
   queryFilter: string | null = null;
   displayColumnFilters: string[] = [];
   columnFilters: { column: string, filter: string, caseSensitive: boolean }[] = [];
-  columnDateFilter: {start: string, end: string} | null = null;
+  columnDateFilters: { column: string, startDate: Date, endDate: Date }[] = [];
 
   data: { [key: string]: any }[] = [];
   displayNames: { [key: string]: any }[] = [];
@@ -106,14 +106,12 @@ export class ViewComponent {
     this.columnFilters = this.filterService.getColumnFilter();
     this.displayColumnFilters = [];    
     this.columnFilters.forEach((filter: any) => {
-      if (filter != null) {
-        this.filterColumns(filter);
-      }
+      this.filterColumns(filter);
+    });
 
-      // var columnDateFilter = this.filterService.getColumnDateFilter();
-      // if (columnDateFilter != null) {
-      //   this.filterDateColumns(columnDateFilter);
-      // }
+    this.columnDateFilters = this.filterService.getColumnDateFilter();
+    this.columnDateFilters.forEach((filter: any) => {
+      this.filterDateColumns(filter);
     });
   }
 
@@ -397,7 +395,7 @@ export class ViewComponent {
 
     var filter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
     this.displayColumnFilters.push(this.displayNames[Object.keys(this.data[0]).indexOf(column)] + ": " + columnFilter.filter);
-    
+
     this.displayData = this.filteredDisplayData.filter((data) => {
       if (filter != null && data[column] != null && String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(filter)) {
         return data;
@@ -415,8 +413,6 @@ export class ViewComponent {
         let startDate = new Date(columnDateFilter.startDate);
         let endDate = new Date(columnDateFilter.endDate);
 
-        this.columnDateFilter = {start: startDate.toLocaleDateString(), end: endDate.toLocaleDateString()};
-
         return dataDate >= startDate && dataDate <= endDate;
       }
       return false;
@@ -427,7 +423,7 @@ export class ViewComponent {
   clearFilter(filter: string, reload: boolean) {
     if (filter === "all" || filter === "column-date") {
       this.filterService.clearColumnDateFilter();
-      this.columnDateFilter = null;
+      this.columnDateFilters = [];
     }
   
     if (filter === "all" || filter === "column") {
@@ -453,6 +449,12 @@ export class ViewComponent {
     this.displayColumnFilters = this.displayColumnFilters.filter((filter) => filter != this.displayColumnFilters[columnFilterIndex]);
     this.filterService.removeColumnFilter(this.columnFilters[columnFilterIndex].filter);
     this.columnFilters = this.filterService.getColumnFilter();
+    this.reloadTable();
+  }
+
+  removeColumnDateFilter(columnFilterIndex: number) {
+    this.filterService.removeColumnDateFilter(this.columnDateFilters[columnFilterIndex]);
+    this.columnDateFilters = this.filterService.getColumnDateFilter();
     this.reloadTable();
   }
 
