@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="table-wrapper">
-                <div *ngIf="tabs.length > 0">
+                <div *ngIf="tabs.length > 0" class="tab-parent">
                     <div *ngFor="let tab of tabs" (click)="changeTab(tab.tableName)" [class]="selectedOption == tab.tableName ? 'active-tab' : 'tab'">
                         {{tab.displayName}}
                     </div>
