@@ -142,36 +142,6 @@ export class ViewComponent {
     });
   }
 
-  filterDateColumns(columnDateFilter: { column: any; startDate: Date; endDate: Date; }) {
-    var column = columnDateFilter.column;
-    this.displayData = this.displayData.filter((data) => {
-      if (columnDateFilter != null && data[column] != null) {
-        let dataDate = new Date(data[column]);
-        let startDate = new Date(columnDateFilter.startDate);
-        let endDate = new Date(columnDateFilter.endDate);
-
-        this.columnDateFilter = {start: startDate.toLocaleDateString(), end: endDate.toLocaleDateString()};
-
-        return dataDate >= startDate && dataDate <= endDate;
-      }
-      return false;
-    }); 
-    this.filteredDisplayData = this.displayData;
-}
-
-  filterColumns(columnFilter: any) {
-    var isCaseSensitive = columnFilter.caseSensitive;
-    var column = columnFilter.column;
-    var filter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
-    this.displayColumnFilters.push(this.displayNames[Object.keys(this.data[0]).indexOf(column)] + ": " + columnFilter.filter);
-    this.displayData = this.filteredDisplayData.filter((data) => {
-      if (filter != null && data[column] != null && String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(filter)) {
-        return data;
-      }
-    });
-    this.filteredDisplayData = this.displayData;
-  }
-
   dataTypeToInputType(dataTypes: any[]) {
     var inputTypes: any[] = [];
     dataTypes.forEach((dataType: string) => {
@@ -265,21 +235,6 @@ export class ViewComponent {
     return this.filter != null && item != null && Object.values(item).some(value => String(value).includes(this.filter))
   }
 
-  setTableFilter() {
-    this.tableFilter = this.searchText;
-    this.loadPage();
-  }
-
-  applyTemporaryFilter() {
-    var temporaryData: any[] = [];
-    this.displayData.forEach(data => {
-      if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.tableFilter).toUpperCase()))) {
-        temporaryData.push(data);
-      }
-    });
-    return temporaryData;
-  }
-
   nextPage() {
     if (this.currentPage < this.pageCount) {
       this.currentPage++;
@@ -310,9 +265,7 @@ export class ViewComponent {
   }
 
   resetTable() {
-    this.clearQueryFilter(false);
-    this.clearColumnFilter(false);
-    this.clearTableFilter(true);
+    this.clearFilter("all", true);
     this.filterService.clearFilter();
   }
 
@@ -393,37 +346,6 @@ export class ViewComponent {
     }
   }
 
-  clearTableFilter(reload: boolean) {
-    this.tableFilter = null;
-    reload && this.reloadTable();
-  }
-
-  clearQueryFilter(reload: boolean) {
-    this.filterService.clearFilter();
-    this.queryFilter = null;
-    reload && this.reloadTable();
-  }
-
-  clearColumnFilter(reload: boolean) {
-    this.filterService.clearColumnFilter();
-    this.displayColumnFilters = [];
-    this.columnDateFilter = null;
-    reload && this.reloadTable();
-  }
-
-  removeColumnFilter(columnFilterIndex: number) {
-    this.displayColumnFilters = this.displayColumnFilters.filter((filter) => filter != this.displayColumnFilters[columnFilterIndex]);
-    this.filterService.removeColumnFilter(this.columnFilters[columnFilterIndex].filter);
-    this.columnFilters = this.filterService.getColumnFilter();
-    this.reloadTable();
-  }
-
-  clearColumnDateFilter(reload: boolean) {
-    this.filterService.clearColumnDateFilter();
-    this.columnDateFilter = null;
-    reload && this.reloadTable();
-  }
-
   reloadTable() {
     this.loadTable(String(this.selectedOption));    
     this.changePage(1);
@@ -465,5 +387,87 @@ export class ViewComponent {
         break;
     }
     return true;
+  }
+
+  //Filter
+
+  filterColumns(columnFilter: any) {
+    var isCaseSensitive = columnFilter.caseSensitive;
+    var column = columnFilter.column;
+
+    var filter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
+    this.displayColumnFilters.push(this.displayNames[Object.keys(this.data[0]).indexOf(column)] + ": " + columnFilter.filter);
+    
+    this.displayData = this.filteredDisplayData.filter((data) => {
+      if (filter != null && data[column] != null && String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(filter)) {
+        return data;
+      }
+    });
+    this.filteredDisplayData = this.displayData;
+  }
+
+  filterDateColumns(columnDateFilter: { column: any; startDate: Date; endDate: Date; }) {
+    var column = columnDateFilter.column;
+
+    this.displayData = this.displayData.filter((data) => {
+      if (columnDateFilter != null && data[column] != null) {
+        let dataDate = new Date(data[column]);
+        let startDate = new Date(columnDateFilter.startDate);
+        let endDate = new Date(columnDateFilter.endDate);
+
+        this.columnDateFilter = {start: startDate.toLocaleDateString(), end: endDate.toLocaleDateString()};
+
+        return dataDate >= startDate && dataDate <= endDate;
+      }
+      return false;
+    }); 
+    this.filteredDisplayData = this.displayData;
+  }
+
+  clearFilter(filter: string, reload: boolean) {
+    if (filter === "all" || filter === "column-date") {
+      this.filterService.clearColumnDateFilter();
+      this.columnDateFilter = null;
+    }
+  
+    if (filter === "all" || filter === "column") {
+      this.filterService.clearColumnFilter();
+      this.displayColumnFilters = [];
+    }
+  
+    if (filter === "all" || filter === "query") {
+      this.filterService.clearFilter();
+      this.queryFilter = null;
+    }
+  
+    if (filter === "all" || filter === "table") {
+      this.tableFilter = null;
+    }
+  
+    if (reload) {
+      this.reloadTable();
+    }
+  }
+
+  removeColumnFilter(columnFilterIndex: number) {
+    this.displayColumnFilters = this.displayColumnFilters.filter((filter) => filter != this.displayColumnFilters[columnFilterIndex]);
+    this.filterService.removeColumnFilter(this.columnFilters[columnFilterIndex].filter);
+    this.columnFilters = this.filterService.getColumnFilter();
+    this.reloadTable();
+  }
+
+  setTableFilter() {
+    this.tableFilter = this.searchText;
+    this.loadPage();
+  }
+
+  applyTemporaryFilter() {
+    var temporaryData: any[] = [];
+    this.displayData.forEach(data => {
+      if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.tableFilter).toUpperCase()))) {
+        temporaryData.push(data);
+      }
+    });
+    return temporaryData;
   }
 }

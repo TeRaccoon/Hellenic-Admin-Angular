@@ -18,7 +18,7 @@
                         </select> entries
                     </p>
                     <div class="filter-container">
-                        <div *ngIf="queryFilter != null" class="filter" (click)="clearQueryFilter(true)">
+                        <div *ngIf="queryFilter != null" class="filter" (click)="clearFilter('query', true)">
                             <p>{{ queryFilter }}</p>
                             <fa-icon [icon]="faX" />
                         </div>
@@ -28,11 +28,11 @@
                                 <fa-icon [icon]="faX" />
                             </div>
                         </ng-container>
-                        <div *ngIf="tableFilter != null" class="filter" (click)="clearTableFilter(true)">
+                        <div *ngIf="tableFilter != null" class="filter" (click)="clearFilter('table', true)">
                             <p>{{ tableFilter }}</p>
                             <fa-icon [icon]="faX" />
                         </div>
-                        <div *ngIf="columnDateFilter != null" class="filter" (click)="clearColumnDateFilter(true)">
+                        <div *ngIf="columnDateFilter != null" class="filter" (click)="clearFilter('column-date', true)">
                             <p>{{ columnDateFilter.start }}</p>
                             <fa-icon [icon]="faArrowsLeftRight" />
                             <p>{{ columnDateFilter.end }}</p>
