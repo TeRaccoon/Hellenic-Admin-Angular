@@ -16,27 +16,15 @@ export class SidebarComponent {
   
   tables: { [category: string]: any[] } = {
     "Customers": [
-      { name: "customers", displayName: "Details" },
+      { name: "customers", displayName: "Overview" },
       { name: "invoices", displayName: "Invoices" },
     ],
     "Retail": [
       { name: "items", displayName: "Products" },
-      { name: "offers", displayName: "Offers" },
-      { name: "discount_codes", displayName: "Discount Codes" },
-      { name: "page_sections", displayName: "Page Sections" },
-      { name: "page_section_text", displayName: "Page Section Text"},
-      { name: "retail_items", displayName: "Items" },
-      { name: "retail_item_images", displayName: "Item Images" },
+      { name: "retail_items", displayName: "Retail Listings" },
     ],
     "Supplies": [
-      { name: "stocked_items", displayName: "Stocked Items" },
-      { name: "supplier_invoices", displayName: "Supplier Invoices" },
-      { name: "suppliers", displayName: "Suppliers" },
-    ],
-    "Products": [
-      { name: "items", displayName: "Items" },
-      { name: "allergen_information", displayName: "Allergen Information" },
-      { name: "nutrition_info", displayName: "Nutrition Information" },
+      { name: "stocked_items", displayName: "Stock" },
     ],
     "Accounting": [
       { name: "general_ledger", displayName: "General Ledger" },
@@ -77,8 +65,19 @@ export class SidebarComponent {
           {"displayName": "Page Sections", "tableName": "page_sections"},
           {"displayName": "Page Section Text", "tableName": "page_section_text"},
           {"displayName": "Items", "tableName": "retail_items"},
-          {"displayName": "Item Images", "tableName": "retail_item_images"}
-      ])
+          {"displayName": "Item Images", "tableName": "retail_item_images"},
+          {"displayName": "Allergen Information", "tableName": "allergen_information"},
+          {"displayName": "Nutrition Information", "tableName": "nutrition_info"}
+          ])
+        break;
+
+      case "stocked_items":
+        this.dataService.setTabs([
+          {"displayName": "Stocked Items", "tableName": "stocked_items"},
+          {"displayName": "Supplier Invoices", "tableName": "supplier_invoices"},
+          {"displayName": "Suppliers", "tableName": "suppliers"},
+          {"displayName": "Warehouses", "tableName": "warehouse"}
+          ])
         break;
     }
     if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics") {

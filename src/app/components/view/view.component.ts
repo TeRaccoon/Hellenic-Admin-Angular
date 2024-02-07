@@ -56,12 +56,15 @@ export class ViewComponent {
 
   tabs: {displayName: string, tableName: string}[] = [];
 
+  widgetVisible = false;
+
   constructor(private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       this.selectedOption = params['table'] || null;
       if (this.selectedOption != null) {
+        this.widgetVisible = false;
         this.resetTable();
         this.displayName = this.selectedOption.replace("_", " ");
         this.formService.setSelectedTable(String(this.selectedOption));
@@ -348,6 +351,10 @@ export class ViewComponent {
     } else {
       this.selectedRows = this.selectedRows.filter(function (item) { return item !== rowId; })
     }
+
+    if (this.selectedRows.length == 0) {
+      this.widgetVisible = false;
+    }
   }
 
   print() {
@@ -361,6 +368,7 @@ export class ViewComponent {
   }
 
   invoiceSearch() {
+    this.widgetVisible = true;
     if (this.selectedRows.length == 1) {
       this.dataService.collectData("invoiced-items-basic-id", this.selectedRows[0].toString()).subscribe((data: any) => {
         this.dataService.storeWidgetData(data);
