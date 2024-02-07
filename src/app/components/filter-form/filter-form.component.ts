@@ -45,6 +45,7 @@ export class FilterFormComponent {
       this.filterService.setColumnFilter({column: this.columnInput, filter: this.searchInput })
       this.filterService.setCaseSensitive(this.caseSensitive);
     }
+    this.formService.setReloadType("hard");
     this.formService.requestReload();
     this.hide();
   }
