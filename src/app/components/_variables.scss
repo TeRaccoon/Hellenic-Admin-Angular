@@ -5,6 +5,9 @@ $hellenicblue: rgb(0, 140, 255);
     border: none;
     color: white;
     cursor: pointer;
+    &:hover {
+        background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
+    }
 }
 
 .sidebar-button {
