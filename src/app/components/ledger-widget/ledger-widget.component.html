@@ -4,7 +4,7 @@
         <input type="date" [(ngModel)]="startDate">
         <label>End date:</label>
         <input type="date" [(ngModel)]="endDate">
-        <button (click)="calculateTrialBalance()">Calculate</button>
+        <button class="button" (click)="calculateTrialBalance()">Calculate</button>
     </div>
     <ng-container *ngIf="balanceData.length > 0">
         <div class="trial-balance-container">

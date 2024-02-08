@@ -12,6 +12,12 @@
     .nav-options-container {
         display: flex;
         flex-direction: row;
+        fa-icon {
+            &:hover {
+                color: #0e52c1;
+                transition: color 0.3s;
+            }
+        }
         .user-dropdown-container {
             position: absolute;
             top: 85px;
@@ -31,10 +37,6 @@
                 margin: 10px;
                 border-radius: 12px;
                 font-size: 18px;
-                cursor: pointer;
-                &:hover {
-                    background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
-                }
             }
         }
         p {

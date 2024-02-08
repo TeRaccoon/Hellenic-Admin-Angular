@@ -63,14 +63,10 @@
                     display: flex;
                     justify-content: right;
                     button {
-                        margin: 2px;
+                        margin: 10px 2px 2px 2px;
                         border-radius: 12px;
                         padding: 10px;
                         font-size: 20px;
-                        &:hover {
-                            background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
-                            color: white;
-                        }
                     }
                 }
                 .case-option-container {

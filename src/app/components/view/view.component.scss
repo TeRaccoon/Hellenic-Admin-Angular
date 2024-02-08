@@ -15,11 +15,8 @@
         .button {
             padding: 6px;
             margin-right: 5px;
-            outline: none;
-            border: none;
             border-radius: 5px;
             font-size: 16px;
-            cursor: pointer;
         }
     }
     .filter {
@@ -101,7 +98,6 @@
                     margin-top: 20px;
                     font-weight: bold;
                     font-size: 17px;
-                    cursor: pointer;
                 }
             }
             div {
@@ -244,6 +240,18 @@
         align-items: center;
         text-align: center;
         padding: 40px;
+        .header {
+            display: flex;
+            width: 100%;
+            fa-icon {
+                cursor: pointer;
+                font-size: 20px;
+                &:hover {
+                    color: #0e52c1;
+                    transition: color 0.3s;
+                }
+            }
+        }
         button {
             border-radius: 5px;
             padding: 8px;
