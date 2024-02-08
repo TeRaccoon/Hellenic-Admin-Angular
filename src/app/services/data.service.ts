@@ -50,9 +50,20 @@ export class DataService {
     );
   }
 
-  uploadImage(formData: FormData) {
-    const upload$ = this.http.post('http://localhost/API/image_upload.php', formData);
-    upload$.subscribe();
+  uploadImage(formData: FormData): Observable<any> {
+    return this.http.post('http://localhost/API/image_upload.php', formData).pipe(
+      map((response: any) => {
+        if (response && response.success) {
+          return response;
+        } else {
+          throw new Error('Unexpected response format');
+        }
+      }),
+      catchError((error: any) => {
+        console.error('HTTP error occurred:', error);
+        return throwError(error);
+      })
+    );
   }
 
   storeData(data: any) {

@@ -25,6 +25,7 @@ export class AddFormComponent {
   } = {};
   tableName: string = '';
 
+  file: File | null = null;
   fileName = '';
 
   selectData: { key: string; data: string[] }[] = [];
@@ -86,33 +87,47 @@ export class AddFormComponent {
   }
 
   formSubmit() {
-    if (this.fileName != "") {
-      this.addForm.value['image_file_name'] = this.fileName;
-    }
-    this.dataService
-      .submitFormData(this.addForm.value)
-      .subscribe((data: any) => {
-        this.formService.setMessageFormData({
-          title: data.success ? 'Success!' : 'Error!',
-          message: data.message,
-        });
-        this.formService.showMessageForm();
-        this.hide();
-        this.formService.requestReload();
+    if (this.file != null && this.addForm.value['retail_item_id']) {
+      this.dataService.collectData("image-count-from-item-id", this.addForm.value['retail_item_id']).subscribe((data: any) => {
+        if (this.file) {
+          if (data != null) {
+            this.fileName = (data + 1) + "_" + this.file.name;
+          } else {
+            this.fileName = this.file.name;
+          }
+          this.addForm.value['image_file_name'] = this.fileName;
+
+          const formData = new FormData();
+  
+          formData.append('image', this.file, this.fileName);
+
+          this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
+            if (uploadResponse.success) {
+              this.dataService
+              .submitFormData(this.addForm.value)
+              .subscribe((data: any) => {
+                this.formService.setMessageFormData({
+                  title: data.success ? 'Success!' : 'Error!',
+                  message: data.message,
+                });
+                this.formService.setReloadType("hard");
+                this.formService.requestReload();
+              });
+            } else {
+              this.formService.setMessageFormData({title: 'Error!', message: uploadResponse.message})
+            }
+            this.formService.showMessageForm();
+            this.hide();
+          });
+
+
+        }
       });
+    }
   }
 
   primeImage(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.fileName = file.name;
-
-      const formData = new FormData();
-
-      formData.append('image', file);
-
-      this.dataService.uploadImage(formData);
-    }
+    this.file = event.target.files[0];
   }
 
   deriveEnumOptions(field: any) {
