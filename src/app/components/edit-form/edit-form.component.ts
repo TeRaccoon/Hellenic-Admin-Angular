@@ -27,6 +27,8 @@ export class EditFormComponent {
   formVisible = 'hidden';
 
   fileName = '';
+  imageReplacements: string[] = [];
+  selectedImage: string = "";
   
   selectData: { key: string; data: string[] }[] = [];
 
@@ -42,6 +44,8 @@ export class EditFormComponent {
 
   ngOnInit() {
     this.formService.getEditFormVisibility().subscribe((visible) => {
+      this.selectedImage = "";
+      this.imageReplacements = [];
       this.formVisible = visible ? 'visible' : 'hidden';
       if (visible) {
         this.clearForm();
@@ -115,7 +119,24 @@ export class EditFormComponent {
       this.tableName = this.formService.getSelectedTable();
       this.id = this.formService.getSelectedId();
       this.replaceAmiguousData();
+      this.handleImages();
       this.buildForm();
+    }
+  }
+
+  handleImages() {
+    switch(this.tableName) {
+      case "retail_items":
+        var id = this.formData['Item ID'].value;
+        if (id != null) {
+          this.dataService.collectData("images-from-item-id", id).subscribe((data: any) => {
+            this.imageReplacements = Array.isArray(data) ? data : [data];
+            if (this.formData['Image'].value != null) {
+              this.imageReplacements.push(this.formData['Image'].value);
+            }
+          });
+        }
+        break;
     }
   }
 
@@ -130,6 +151,9 @@ export class EditFormComponent {
   }
 
   formSubmit() {
+    if (this.fileName != "") {
+      this.editForm.value['image_file_name'] = this.fileName;
+    }
     this.dataService
       .submitFormData(this.editForm.value)
       .subscribe((data: any) => {

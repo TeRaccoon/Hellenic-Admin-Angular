@@ -44,7 +44,6 @@ export class AddFormComponent {
     this.formService.getAddFormVisibility().subscribe(async (visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
       this.formData = this.formService.getAddFormData();
-      console.log(this.formData);
       this.tableName = this.formService.getSelectedTable();
       if (this.tableName !== '' && Object.keys(this.formData).length != 0) {
         this.buildForm();
@@ -87,6 +86,9 @@ export class AddFormComponent {
   }
 
   formSubmit() {
+    if (this.fileName != "") {
+      this.addForm.value['image_file_name'] = this.fileName;
+    }
     this.dataService
       .submitFormData(this.addForm.value)
       .subscribe((data: any) => {

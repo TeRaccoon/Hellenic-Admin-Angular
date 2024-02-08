@@ -10,10 +10,20 @@
                     <div class="input-container" *ngFor="let data of formData | keyvalue">
                         <label>{{ data.key }}</label>
                         <ng-container [ngSwitch]="data.value.inputType">
-                            <label *ngSwitchCase="'file'" class="file-upload">
-                                <input [attr.required]="data.value.required ? true : null" accept="image/*" [type]="data.value.inputType" [formControlName]="data.value.fields" (change)="primeImage($event)">
-                                <fa-icon [icon]="faCloudUpload" /> Upload Image
-                            </label>
+                            <ng-container *ngSwitchCase="'file'">
+                                <ng-container *ngIf="data.value.value != null else elseBlock">
+                                    <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields" [(ngModel)]="selectedImage">
+                                        <option *ngFor="let image of imageReplacements" [selected]="data.value.value == image" [value]="image">{{ image }}</option>
+                                    </select>
+                                    <img *ngIf="selectedImage != ''" [src]="'http://localhost/uploads/' + selectedImage">
+                                </ng-container>
+                                <ng-template #elseBlock>
+                                    <label class="file-upload">
+                                        <input [attr.required]="data.value.required ? true : null" accept="image/*" [type]="data.value.inputType" [formControlName]="data.value.fields" (change)="primeImage($event)">
+                                        <fa-icon [icon]="faCloudUpload" /> Upload Image
+                                    </label>
+                                </ng-template>
+                            </ng-container>
                             <ng-container *ngSwitchCase="'select'">
                                 <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
                                     <ng-container *ngFor="let option of selectDataFromKey(data.key)">
