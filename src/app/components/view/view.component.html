@@ -18,26 +18,28 @@
                         </select> entries
                     </p>
                     <div class="filter-container">
-                        <div *ngIf="queryFilter != null" class="filter" (click)="clearQueryFilter(true)">
+                        <div *ngIf="queryFilter != null" class="filter" (click)="clearFilter('query', true)">
                             <p>{{ queryFilter }}</p>
                             <fa-icon [icon]="faX" />
                         </div>
-                        <ng-container *ngIf="displayColumnFilters != []">
+                        <ng-container *ngIf="displayColumnFilters.length > 0">
                             <div *ngFor="let filter of displayColumnFilters; let i = index" class="filter" (click)="removeColumnFilter(i)">
                                 <p>{{ filter }}</p>
                                 <fa-icon [icon]="faX" />
                             </div>
                         </ng-container>
-                        <div *ngIf="tableFilter != null" class="filter" (click)="clearTableFilter(true)">
+                        <div *ngIf="tableFilter != null" class="filter" (click)="clearFilter('table', true)">
                             <p>{{ tableFilter }}</p>
                             <fa-icon [icon]="faX" />
                         </div>
-                        <div *ngIf="columnDateFilter != null" class="filter" (click)="clearColumnDateFilter(true)">
-                            <p>{{ columnDateFilter.start }}</p>
-                            <fa-icon [icon]="faArrowsLeftRight" />
-                            <p>{{ columnDateFilter.end }}</p>
-                            <fa-icon [icon]="faX" />
-                        </div>
+                        <ng-container *ngIf="columnDateFilters.length > 0">
+                            <div *ngFor="let filter of columnDateFilters; let i = index" class="filter" (click)="removeColumnDateFilter(i)">
+                                <p>{{ filter.startDate }}</p>
+                                <fa-icon [icon]="faArrowsLeftRight" />
+                                <p>{{ filter.endDate }}</p>
+                                <fa-icon [icon]="faX" />
+                            </div>
+                        </ng-container>
                         <div class="advanced-filter-container">
                             <button class="button" (click)="showAdvancedFilter()"><fa-icon [icon]="faFilter" /></button>
                         </div>

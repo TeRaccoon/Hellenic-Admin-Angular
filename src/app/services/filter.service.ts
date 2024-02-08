@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class FilterService {
   private tableFilter: string | null = null;
   private columnFilter: { column: string, filter: string, caseSensitive: boolean }[] = [];
-  private columnDateFilter: { column: string, startDate: Date, endDate: Date } | null = null;
+  private columnDateFilter: { column: string, startDate: Date, endDate: Date }[] = [];
   private tableColumns: { columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[] } = {
     columnNames: [],
     columns: [],
@@ -25,7 +25,11 @@ export class FilterService {
   }
 
   setColumnDateFilter(columnDateFilter: { column: string, startDate: Date, endDate: Date }) {
-    this.columnDateFilter = columnDateFilter;
+    if (this.columnDateFilter && this.columnDateFilter.length > 0) {
+      this.columnDateFilter.push(columnDateFilter);
+    } else {
+      this.columnDateFilter = [columnDateFilter];
+    }
   }
 
   getColumnDateFilter() {
@@ -50,14 +54,18 @@ export class FilterService {
 
   removeColumnFilter(columnFilter: string) {
     if (this.columnFilter) {
-      console.log(this.columnFilter);
       this.columnFilter = this.columnFilter.filter((filter: any) => filter.filter != columnFilter);
-      console.log(this.columnFilter);
+    }
+  }
+
+  removeColumnDateFilter(columnDateFilter: { column: string, startDate: Date, endDate: Date }) {
+    if (columnDateFilter) {
+      this.columnDateFilter = this.columnDateFilter.filter((filter: any) => filter != columnDateFilter);
     }
   }
 
   clearColumnDateFilter() {
-    this.columnDateFilter = null;
+    this.columnDateFilter = [];
   }
 
   setTableColumns(columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[]) {
