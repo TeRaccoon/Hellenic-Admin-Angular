@@ -220,7 +220,6 @@ export class FormService {
         replacementData.push({ key: 'Retail Item ID', data: data });
         break;
     }
-    console.log(replacementData);
     return { formData, replacementData };
   }
 
