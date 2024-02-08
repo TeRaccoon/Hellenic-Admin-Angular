@@ -67,6 +67,11 @@
                 padding: 15px;
                 display: flex;
                 flex-direction: column;
+                img {
+                    border-radius: 10px;
+                    margin: 15px 2px 0 2px;
+                    background-color: white;
+                }
                 label {
                     padding: 5px;
                     font-weight: bold;
