@@ -33,12 +33,6 @@ export class FilterFormComponent {
     this.formService.getFilterFormVisibility().subscribe(async (visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
       this.tableColumns = this.filterService.getTableColumns();
-      this.searchInput = '';
-      this.columnInput = '';
-      this.columnType = '';
-      this.startDate = null;
-      this.endDate = null;
-      this.errorMsg = null;
     });
   }
 
@@ -56,7 +50,7 @@ export class FilterFormComponent {
       this.formService.setReloadType("filter");
       this.formService.requestReload();
       this.hide();
-      
+      this.resetForm();      
     } else {
       this.errorMsg = "Please fill in all required fields!";
     }
@@ -66,5 +60,14 @@ export class FilterFormComponent {
     console.log(this.tableColumns);
     var index = this.tableColumns.columns.indexOf(this.columnInput);
     this.columnType = this.tableColumns.dataTypes[index];
+  }
+
+  resetForm() {
+    this.searchInput = '';
+    this.columnInput = '';
+    this.columnType = '';
+    this.startDate = null;
+    this.endDate = null;
+    this.errorMsg = null;
   }
 }

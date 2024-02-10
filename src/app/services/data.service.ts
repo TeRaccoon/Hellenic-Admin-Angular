@@ -37,7 +37,7 @@ export class DataService {
     const url = 'http://localhost/API/manage_data.php';
     return this.http.post(url, data, {withCredentials: true}).pipe(
       map((response: any) => {
-        if (response && response.success) {
+        if (response) {
           return response;
         } else {
           throw new Error('Unexpected response format');
