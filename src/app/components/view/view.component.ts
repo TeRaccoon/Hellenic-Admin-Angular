@@ -184,9 +184,16 @@ export class ViewComponent {
     this.formService.setReloadType("hard");
   }
 
-  deleteRow(id: string) {
+  deleteRow(id: number) {
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.setDeleteFormIds([id]);
+    this.formService.showDeleteForm();
+    this.formService.setReloadType("hard");
+  }
+
+  deleteRows() {
+    this.formService.setSelectedTable(String(this.selectedOption));
+    this.formService.setDeleteFormIds(this.selectedRows);
     this.formService.showDeleteForm();
     this.formService.setReloadType("hard");
   }

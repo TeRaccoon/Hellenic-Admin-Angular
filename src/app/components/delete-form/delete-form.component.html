@@ -5,7 +5,12 @@
             <a (click)="hide()">X</a>
         </div>
         <div class="content-section">
-            <p>Are you sure you want to delete this row?</p>
+            <ng-container *ngIf="ids.length == 1 else elseBlock">
+                <p>Are you sure you want to delete this row?</p>
+            </ng-container>
+            <ng-template #elseBlock>
+                <p>Are you sure you want to delete these rows?</p>
+            </ng-template>
         </div>
         <div class="form-footer">
             <button class="button" (click)="deleteRow()">Delete</button>

@@ -31,7 +31,7 @@ export class FormService {
       fields: string;
     };
   } = {};
-  private deleteFormIds: string[] = [];
+  private deleteFormIds: number[] = [];
   private messageFormData: { title: string; message: string } = {
     title: '',
     message: '',
@@ -146,7 +146,7 @@ export class FormService {
     this.addFormData = addFormData;
   }
 
-  setDeleteFormIds(deleteFormIds: string[]) {
+  setDeleteFormIds(deleteFormIds: number[]) {
     this.deleteFormIds = deleteFormIds;
   }
 
