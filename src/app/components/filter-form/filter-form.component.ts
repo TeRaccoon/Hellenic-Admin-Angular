@@ -22,8 +22,10 @@ export class FilterFormComponent {
   columnInput: string = '';
   columnType: string = '';
   caseSensitive: boolean = false;
-  startDate: Date = new Date();
-  endDate: Date = new Date();
+  startDate: Date | null = null;
+  endDate: Date | null = null;
+
+  errorMsg: string | null = null;
 
   constructor(private formService: FormService, private filterService: FilterService) {}
 
@@ -31,6 +33,12 @@ export class FilterFormComponent {
     this.formService.getFilterFormVisibility().subscribe(async (visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
       this.tableColumns = this.filterService.getTableColumns();
+      this.searchInput = '';
+      this.columnInput = '';
+      this.columnType = '';
+      this.startDate = null;
+      this.endDate = null;
+      this.errorMsg = null;
     });
   }
 
@@ -39,14 +47,19 @@ export class FilterFormComponent {
   }
 
   search() {
-    if (this.columnType == 'date') {
-      this.filterService.setColumnDateFilter({column: this.columnInput, startDate: this.startDate, endDate: this.endDate})
+    if (this.columnInput != '' && ((this.columnType == 'date' && this.startDate != null && this.endDate != null) || (this.columnType != 'date' && this.searchInput != ''))) {
+      if (this.columnType == 'date' && this.startDate != null && this.endDate != null) {
+        this.filterService.setColumnDateFilter({column: this.columnInput, startDate: this.startDate, endDate: this.endDate});
+      } else {
+        this.filterService.setColumnFilter({column: this.columnInput, filter: this.searchInput, caseSensitive: this.caseSensitive });
+      }
+      this.formService.setReloadType("filter");
+      this.formService.requestReload();
+      this.hide();
+      
     } else {
-      this.filterService.setColumnFilter({column: this.columnInput, filter: this.searchInput, caseSensitive: this.caseSensitive })
+      this.errorMsg = "Please fill in all required fields!";
     }
-    this.formService.setReloadType("filter");
-    this.formService.requestReload();
-    this.hide();
   }
 
   getColumnType() {
