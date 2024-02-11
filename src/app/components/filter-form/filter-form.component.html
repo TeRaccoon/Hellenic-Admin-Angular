@@ -9,18 +9,18 @@
         </div>
         <div class="content-section">
             <label>Select Column</label>
-            <select [class]="columnInput == '' && errorMsg != null && 'error'" (change)="getColumnType()" [(ngModel)]="columnInput">
+            <select [class]="columnInput == '' && errorMsg != null ? 'error' : ''" (change)="getColumnType()" [(ngModel)]="columnInput">
                 <option *ngFor="let column of tableColumns.columnNames; let i = index;" [value]="tableColumns.columns[i]">{{column}}</option>
             </select>
             <div class="input-container">
                 <ng-container *ngIf="columnType == 'date' else elseBlock">
                     <label>Start date:</label>
-                    <input [class]="startDate == null && errorMsg != null && 'error'" requried type="date" [(ngModel)]="startDate">
+                    <input [class]="startDate == null && errorMsg != null ? 'error' : ''" requried type="date" [(ngModel)]="startDate">
                     <label>End date:</label>
-                    <input [class]="endDate == null && errorMsg != null && 'error'" requried type="date" [(ngModel)]="endDate">
+                    <input [class]="endDate == null && errorMsg != null ? 'error' : ''" requried type="date" [(ngModel)]="endDate">
                 </ng-container>
                 <ng-template #elseBlock>
-                    <input [class]="searchInput == '' && errorMsg != null && 'error'" [(ngModel)]="searchInput" required type="text" placeholder="Search..." />
+                    <input [class]="searchInput == '' && errorMsg != null ? 'error' : ''" [(ngModel)]="searchInput" required type="text" placeholder="Search..." />
                     <div class="case-option-container">
                         <label>Case Sensitive?</label>
                         <input [(ngModel)]="caseSensitive" type="checkbox" />
