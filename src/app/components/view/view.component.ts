@@ -199,6 +199,7 @@ export class ViewComponent {
         return 0;
       });
     }
+    this.changePage(1);
   }
 
   async editRow(id: any) {
