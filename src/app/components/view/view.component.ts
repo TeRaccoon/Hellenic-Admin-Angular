@@ -71,7 +71,7 @@ export class ViewComponent {
       if (this.selectedOption != null) {
         this.widgetVisible = false;
         this.resetTable();
-        this.displayName = this.selectedOption.replace("_", " ");
+        this.convertTableName();
         this.formService.setSelectedTable(String(this.selectedOption));
         this.loadTable(String(this.selectedOption));
         this.loadPage();
@@ -94,6 +94,83 @@ export class ViewComponent {
     });
   }
 
+  convertTableName() {
+    switch (this.selectedOption) {
+      case 'allergen_information':
+        this.displayName = 'Allergen Information';
+        break;
+      case 'customer_address':
+          this.displayName = 'Customer Address';
+          break;
+      case 'customer_payments':
+          this.displayName = 'Customer Payments';
+          break;
+      case 'customers':
+          this.displayName = 'Customers';
+          break;
+      case 'discount_codes':
+          this.displayName = 'Discount Codes';
+          break;
+      case 'general_ledger':
+          this.displayName = 'General Ledger';
+          break;
+      case 'image_locations':
+          this.displayName = 'Image Locations';
+          break;
+      case 'interest_charges':
+          this.displayName = 'Interest Charges';
+          break;
+      case 'invoiced_items':
+          this.displayName = 'Invoiced Items';
+          break;
+      case 'invoices':
+          this.displayName = 'Invoices';
+          break;
+      case 'items':
+          this.displayName = 'Items';
+          break;
+      case 'nutrition_info':
+          this.displayName = 'Nutrition Information';
+          break;
+      case 'offers':
+          this.displayName = 'Offers';
+          break;
+      case 'page_section_text':
+          this.displayName = 'Page Section Text';
+          break;
+      case 'page_sections':
+          this.displayName = 'Page Sections';
+          break;
+      case 'payments':
+          this.displayName = 'Payments';
+          break;
+      case 'retail_item_images':
+          this.displayName = 'Retail Item Images';
+          break;
+      case 'retail_items':
+          this.displayName = 'Retail Items';
+          break;
+      case 'retail_users':
+          this.displayName = 'Retail Users';
+          break;
+      case 'stocked_items':
+          this.displayName = 'Stocked Items';
+          break;
+      case 'supplier_invoices':
+          this.displayName = 'Supplier Invoices';
+          break;
+      case 'suppliers':
+          this.displayName = 'Suppliers';
+          break;
+      case 'users':
+          this.displayName = 'Users';
+          break;
+      case 'warehouse':
+          this.displayName = 'Warehouse';
+          break;
+    }
+  }
+
   changeTab(tableName: string) {
     if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics") {
       this.router.navigate(['/view'], { queryParams: {table: tableName } });
@@ -104,19 +181,6 @@ export class ViewComponent {
     }
   }
   
-  applyFilter() {
-    this.columnFilters = this.filterService.getColumnFilter();
-    this.displayColumnFilters = [];    
-    this.columnFilters.forEach((filter: any) => {
-      this.filterColumns(filter);
-    });
-
-    this.columnDateFilters = this.filterService.getColumnDateFilter();
-    this.columnDateFilters.forEach((filter: any) => {
-      this.filterDateColumns(filter);
-    });
-  }
-
   async loadTable(table: string) {
     this.loaded = false;
     this.queryFilter = this.filterService.getTableFilter();
@@ -421,6 +485,19 @@ export class ViewComponent {
   }
 
   //Filter
+  
+  applyFilter() {
+    this.columnFilters = this.filterService.getColumnFilter();
+    this.displayColumnFilters = [];    
+    this.columnFilters.forEach((filter: any) => {
+      this.filterColumns(filter);
+    });
+
+    this.columnDateFilters = this.filterService.getColumnDateFilter();
+    this.columnDateFilters.forEach((filter: any) => {
+      this.filterDateColumns(filter);
+    });
+  }
 
   filterColumns(columnFilter: any) {
     var isCaseSensitive = columnFilter.caseSensitive;
