@@ -9,6 +9,8 @@ import { DataService } from '../../services/data.service';
 export class LedgerWidgetComponent {
   startDate: string = '';
   endDate: string = '';
+  searched = false;
+  hasError = false;
 
   balanceData: any[] = [];
 
@@ -18,8 +20,11 @@ export class LedgerWidgetComponent {
     if (this.startDate != '' && this.endDate != '') {
       this.dataService.collectDataComplex('account-balances', {'start-date': this.startDate, 'end-date': this.endDate}).subscribe((data: any) => {
         this.balanceData = data;
-        console.log(data);
+        this.searched = true;
       });
+    }
+    else {
+      this.hasError = true;
     }
   }
 }

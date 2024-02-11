@@ -25,11 +25,15 @@ export class AddFormComponent {
   } = {};
   tableName: string = '';
 
+  file: File | null = null;
   fileName = '';
 
   selectData: { key: string; data: string[] }[] = [];
 
-  replacementData: { key: string; data: { id: Number; replacement: String }[] }[] = [];
+  replacementData: {
+    key: string;
+    data: { id: Number; replacement: String }[];
+  }[] = [];
 
   constructor(
     private dataService: DataService,
@@ -86,33 +90,80 @@ export class AddFormComponent {
   }
 
   formSubmit() {
-    if (this.fileName != "") {
-      this.addForm.value['image_file_name'] = this.fileName;
+    if (this.file != null && this.addForm.value['retail_item_id']) {
+      this.dataService
+        .collectData(
+          'image-count-from-item-id',
+          this.addForm.value['retail_item_id']
+        )
+        .subscribe((data: any) => {
+          if (this.file) {
+            if (data != null) {
+              this.fileName = data + 1 + '_' + this.file.name;
+            } else {
+              this.fileName = this.file.name;
+            }
+            this.addForm.value['image_file_name'] = this.fileName;
+
+            const formData = new FormData();
+
+            formData.append('image', this.file, this.fileName);
+            this.sumbissionWithImage(formData);
+          }
+        });
+    } else {
+      this.sumbissionWithoutImage();
     }
-    this.dataService
-      .submitFormData(this.addForm.value)
-      .subscribe((data: any) => {
+  }
+
+  sumbissionWithoutImage() {
+    this.dataService.submitFormData(this.addForm.value).subscribe((data: any) => {
         this.formService.setMessageFormData({
           title: data.success ? 'Success!' : 'Error!',
           message: data.message,
         });
+        this.endSumbission(data.success);
+    });
+  }
+
+  sumbissionWithImage(formData: FormData) {
+    this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
+      if (uploadResponse.success) {
+        this.dataService
+          .submitFormData(this.addForm.value)
+          .subscribe((data: any) => {
+            this.formService.setMessageFormData({
+              title: data.success ? 'Success!' : 'Error!',
+              message: data.message,
+            });
+          });
+      } else {
+        this.formService.setMessageFormData({
+          title: 'Error!',
+          message: uploadResponse.message,
+        });
         this.formService.showMessageForm();
         this.hide();
-        this.formService.requestReload();
-      });
+      }
+    });
+  }
+
+  endSumbission(reset: boolean) {
+    this.formService.showMessageForm();
+    this.hide();
+    if (reset) {
+      this.formService.setReloadType('hard');
+      this.formService.requestReload();
+      this.resetForm();
+    }
+  }
+
+  resetForm() {
+
   }
 
   primeImage(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.fileName = file.name;
-
-      const formData = new FormData();
-
-      formData.append('image', file);
-
-      this.dataService.uploadImage(formData);
-    }
+    this.file = event.target.files[0];
   }
 
   deriveEnumOptions(field: any) {
@@ -134,7 +185,9 @@ export class AddFormComponent {
   }
 
   getReplacementDataFromKey(key: string) {
-    const replacementData = this.replacementData.find((data) => data.key === key);
+    const replacementData = this.replacementData.find(
+      (data) => data.key === key
+    );
     if (replacementData) {
       return replacementData.data;
     }

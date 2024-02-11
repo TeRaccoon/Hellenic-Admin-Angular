@@ -9,7 +9,7 @@ import { FormService } from '../../services/form.service';
 })
 export class DeleteFormComponent {
   formVisible = 'hidden';
-  ids: string[] = [];
+  ids: number[] = [];
   tableName: string = "";
 
   constructor(private dataService: DataService, private formService: FormService) {  }
@@ -35,7 +35,7 @@ export class DeleteFormComponent {
       idString = idString.substring(0, idString.length - 2);
     }
     else {
-      idString = this.ids[0];
+      idString = String(this.ids[0]);
     }
     
     this.dataService.submitFormData({action: 'delete', id: idString, table_name: this.tableName}).subscribe((data: any) => {

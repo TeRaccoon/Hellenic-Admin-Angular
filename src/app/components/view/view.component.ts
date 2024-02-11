@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import {Location} from '@angular/common';
 
 @Component({
@@ -21,6 +21,8 @@ export class ViewComponent {
   faX = faX;
   faArrowsLeftRight = faArrowsLeftRight;
   faArrowLeft = faArrowLeft;
+  faArrowUp = faArrowUp;
+  faArrowDown = faArrowDown;
   
   selectedOption: string | null = null;
   displayName: string = "";
@@ -59,6 +61,8 @@ export class ViewComponent {
 
   widgetVisible = false;
 
+  sortedColumn: { columnName: string, ascending: boolean } = {columnName: '', ascending: false};
+
   constructor(private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {}
 
   ngOnInit() {
@@ -70,8 +74,6 @@ export class ViewComponent {
         this.displayName = this.selectedOption.replace("_", " ");
         this.formService.setSelectedTable(String(this.selectedOption));
         this.loadTable(String(this.selectedOption));
-        this.pageCount = 0;
-        this.currentPage = 1;
         this.loadPage();
         this.tabs = this.dataService.getTabs();
       }
@@ -167,6 +169,39 @@ export class ViewComponent {
     return obj ? Object.keys(obj) : [];
   }
 
+  sortColumn(column: any) {
+    this.filteredDisplayData = this.displayData;
+    let dataName = this.edittable.columns.filter((_, index) => this.edittable.names[index] == column)[0];
+    if (this.sortedColumn.columnName == column) {
+      this.sortedColumn.ascending = !this.sortedColumn.ascending;
+    } else {
+      this.sortedColumn = { columnName: column, ascending: false };
+    }
+    if (this.sortedColumn.ascending) {
+      this.filteredDisplayData.sort((a: any, b: any) => {
+        if (a[dataName] < b[dataName]) {
+            return -1;
+        }
+        if (a[dataName] > b[dataName]) {
+            return 1;
+        }
+        return 0;
+      });
+    }
+    else {
+      this.filteredDisplayData.sort((a: any, b: any) => {
+        if (a[dataName] < b[dataName]) {
+            return 1;
+        }
+        if (a[dataName] > b[dataName]) {
+            return -1;
+        }
+        return 0;
+      });
+    }
+    this.changePage(1);
+  }
+
   async editRow(id: any) {
     var editFormData = this.getEditFormData(id);
     this.formService.setEditFormData(editFormData);
@@ -184,9 +219,16 @@ export class ViewComponent {
     this.formService.setReloadType("hard");
   }
 
-  deleteRow(id: string) {
+  deleteRow(id: number) {
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.setDeleteFormIds([id]);
+    this.formService.showDeleteForm();
+    this.formService.setReloadType("hard");
+  }
+
+  deleteRows() {
+    this.formService.setSelectedTable(String(this.selectedOption));
+    this.formService.setDeleteFormIds(this.selectedRows);
     this.formService.showDeleteForm();
     this.formService.setReloadType("hard");
   }
@@ -265,6 +307,9 @@ export class ViewComponent {
   resetTable() {
     this.clearFilter("all", true);
     this.filterService.clearFilter();
+    this.pageCount = 0;
+    this.currentPage = 1;
+    this.selectedRows = [];
   }
 
   getPageRange(): number[] {
@@ -344,12 +389,6 @@ export class ViewComponent {
     }
   }
 
-  reloadTable() {
-    this.loadTable(String(this.selectedOption));    
-    this.changePage(1);
-  }
-
-
   shouldColourCell(data: any) {
     switch(this.selectedOption) {
       case "invoices":
@@ -364,12 +403,6 @@ export class ViewComponent {
         break;        
     }
     return null;
-  }
-
-  showAdvancedFilter() {
-    var columns = Object.keys(this.data[0]);
-    this.filterService.setTableColumns(this.displayNames, columns, this.dataTypes);
-    this.formService.showFilterForm();
   }
 
   back() {
@@ -471,5 +504,16 @@ export class ViewComponent {
       }
     });
     return temporaryData;
+  }
+
+  showAdvancedFilter() {
+    var columns = Object.keys(this.data[0]);
+    this.filterService.setTableColumns(this.displayNames, columns, this.dataTypes);
+    this.formService.showFilterForm();
+  }
+
+  reloadTable() {
+    this.loadTable(String(this.selectedOption));    
+    this.changePage(1);
   }
 }
