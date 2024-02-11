@@ -1,12 +1,12 @@
 <div class="container">
     <div class="date-select-container">
         <label>Start date:</label>
-        <input type="date" [(ngModel)]="startDate">
+        <input type="date" [(ngModel)]="startDate" [class]="hasError && this.startDate == '' ? 'error' : ''">
         <label>End date:</label>
-        <input type="date" [(ngModel)]="endDate">
+        <input type="date" [(ngModel)]="endDate" [class]="hasError && this.startDate == '' ? 'error' : ''">
         <button class="button" (click)="calculateTrialBalance()">Calculate</button>
     </div>
-    <ng-container *ngIf="balanceData.length > 0">
+    <ng-container *ngIf="balanceData.length > 0 else noData">
         <div class="trial-balance-container">
             <table>
                 <thead>
@@ -28,4 +28,9 @@
             </table>
         </div>
     </ng-container>
+    <ng-template #noData>
+        <div *ngIf="searched" class="no-data">
+            <p>Whoops! There was no data found for the date range you entered!</p>
+        </div>
+    </ng-template>
 </div>
