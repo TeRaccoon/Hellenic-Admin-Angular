@@ -70,8 +70,6 @@ export class ViewComponent {
         this.displayName = this.selectedOption.replace("_", " ");
         this.formService.setSelectedTable(String(this.selectedOption));
         this.loadTable(String(this.selectedOption));
-        this.pageCount = 0;
-        this.currentPage = 1;
         this.loadPage();
         this.tabs = this.dataService.getTabs();
       }
@@ -272,6 +270,9 @@ export class ViewComponent {
   resetTable() {
     this.clearFilter("all", true);
     this.filterService.clearFilter();
+    this.pageCount = 0;
+    this.currentPage = 1;
+    this.selectedRows = [];
   }
 
   getPageRange(): number[] {
