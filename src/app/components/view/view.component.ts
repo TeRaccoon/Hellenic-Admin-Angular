@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import {Location} from '@angular/common';
 
 @Component({
@@ -21,6 +21,8 @@ export class ViewComponent {
   faX = faX;
   faArrowsLeftRight = faArrowsLeftRight;
   faArrowLeft = faArrowLeft;
+  faArrowUp = faArrowUp;
+  faArrowDown = faArrowDown;
   
   selectedOption: string | null = null;
   displayName: string = "";
@@ -58,6 +60,8 @@ export class ViewComponent {
   tabs: {displayName: string, tableName: string}[] = [];
 
   widgetVisible = false;
+
+  sortedColumn: { columnName: string, ascending: boolean } = {columnName: '', ascending: false};
 
   constructor(private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {}
 
@@ -163,6 +167,38 @@ export class ViewComponent {
 
   getColumnHeaders(obj: { [key: string]: any }): string[] {
     return obj ? Object.keys(obj) : [];
+  }
+
+  sortColumn(column: any) {
+    this.filteredDisplayData = this.displayData;
+    let dataName = this.edittable.columns.filter((_, index) => this.edittable.names[index] == column)[0];
+    if (this.sortedColumn.columnName == column) {
+      this.sortedColumn.ascending = !this.sortedColumn.ascending;
+    } else {
+      this.sortedColumn = { columnName: column, ascending: false };
+    }
+    if (this.sortedColumn.ascending) {
+      this.filteredDisplayData.sort((a: any, b: any) => {
+        if (a[dataName] < b[dataName]) {
+            return -1;
+        }
+        if (a[dataName] > b[dataName]) {
+            return 1;
+        }
+        return 0;
+      });
+    }
+    else {
+      this.filteredDisplayData.sort((a: any, b: any) => {
+        if (a[dataName] < b[dataName]) {
+            return 1;
+        }
+        if (a[dataName] > b[dataName]) {
+            return -1;
+        }
+        return 0;
+      });
+    }
   }
 
   async editRow(id: any) {
@@ -352,12 +388,6 @@ export class ViewComponent {
     }
   }
 
-  reloadTable() {
-    this.loadTable(String(this.selectedOption));    
-    this.changePage(1);
-  }
-
-
   shouldColourCell(data: any) {
     switch(this.selectedOption) {
       case "invoices":
@@ -372,12 +402,6 @@ export class ViewComponent {
         break;        
     }
     return null;
-  }
-
-  showAdvancedFilter() {
-    var columns = Object.keys(this.data[0]);
-    this.filterService.setTableColumns(this.displayNames, columns, this.dataTypes);
-    this.formService.showFilterForm();
   }
 
   back() {
@@ -479,5 +503,16 @@ export class ViewComponent {
       }
     });
     return temporaryData;
+  }
+
+  showAdvancedFilter() {
+    var columns = Object.keys(this.data[0]);
+    this.filterService.setTableColumns(this.displayNames, columns, this.dataTypes);
+    this.formService.showFilterForm();
+  }
+
+  reloadTable() {
+    this.loadTable(String(this.selectedOption));    
+    this.changePage(1);
   }
 }

@@ -65,7 +65,10 @@
                     <thead>
                         <tr *ngIf="data[0]">
                             <th>Select</th>
-                            <th *ngFor="let column of displayNames">{{ column }}</th>
+                            <th *ngFor="let column of displayNames" (click)="sortColumn(column)">
+                                {{ column }}
+                                <fa-icon *ngIf="this.sortedColumn.columnName == column.toString()" [icon]="this.sortedColumn.ascending ? faArrowUp : faArrowDown" />
+                            </th>
                             <th>Edit</th>
                             <th>Delete</th>
                         </tr>
