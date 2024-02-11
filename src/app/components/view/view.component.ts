@@ -476,6 +476,7 @@ export class ViewComponent {
   canDisplayColumn(column: string) {
     switch (this.selectedOption) {
       case "customers":
+      case "users":
         if (column == "password") {
           return false;
         }
