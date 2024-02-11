@@ -215,10 +215,19 @@ export class FormService {
         break;
 
       case 'retail_item_images':
+      case 'allergen_information':
+      case 'nutrition_information':
         var data = await this.getIdReplacementData('retail_item_id_name', dataService);
         formData['Retail Item ID'].inputType = 'replacement';
         replacementData.push({ key: 'Retail Item ID', data: data });
         break;
+
+      case 'supplier_invoices':
+        var data = await this.getIdReplacementData('supplier_id_name', dataService);
+        formData['Supplier ID'].inputType = 'replacement';
+        replacementData.push({ key: 'Supplier ID', data: data });
+        break;
+        
     }
     return { formData, replacementData };
   }
