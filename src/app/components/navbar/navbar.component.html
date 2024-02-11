@@ -1,16 +1,25 @@
 <div class="container">
     <div class="search-container">
         <div class="search-bar">
-            <input [(ngModel)]="searchInput" (input)="searchTables($event)" type="text" placeholder="Search..." />
+            <input [(ngModel)]="searchInput" (input)="searchTables($event)" (focus)="searchDropdownVisible = true" type="text" placeholder="Search..." />
             <button>
                 <fa-icon [icon]="faSearch"></fa-icon>
             </button>
         </div>
-        <ng-container *ngIf="filteredTableOptions.length > 0">
-            <div [class]="'search-dropdown-container ' + (searchInput.length === 0 ? 'hidden' : '')">
-                <div *ngFor="let table of filteredTableOptions" class="search-option">
-                    <p (click)="changeTable(table.actual)">{{ table.display }}</p>
-                </div>
+        <ng-container *ngIf="searchDropdownVisible">
+            <div [class]="'search-dropdown-container'">
+                <ng-container *ngIf="filteredTableOptions.length > 0 else searchEmpty">
+                    <div *ngFor="let table of filteredTableOptions" class="search-option" (click)="changeTable(table.actual)">
+                        <p>{{ table.display }}</p>
+                    </div>
+                </ng-container>
+                <ng-template #searchEmpty>
+                    <div class="serach-option">
+                        <p>There were no results
+                            <fa-icon [icon]="faFileCircleXmark" />
+                        </p>
+                    </div>
+                </ng-template>
             </div>
         </ng-container>
     </div>

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import {
   faSearch,
   faBell,
   faEnvelope,
   faUser,
+  faFileCircleXmark
 } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
@@ -19,6 +20,8 @@ export class NavbarComponent {
   faEnvelope = faEnvelope;
   faUser = faUser;
   faSearch = faSearch;
+  faFileCircleXmark = faFileCircleXmark
+
   tablelessOptions: string[] = [];
   tableOptions = [
     { display: 'Allergen Information', actual: 'allergen_information' },
@@ -52,6 +55,8 @@ export class NavbarComponent {
 
   dropDownVisible = false;
   userOptionsVisible = false;
+  searchDropdownVisible = false;
+  searchDropdownFocus = false;
 
   notifications: { header: string; data: any[] }[] = [];
 
@@ -93,11 +98,12 @@ export class NavbarComponent {
   searchTables(event: Event) {
     const filter = String((event.target as HTMLInputElement).value);
     this.filteredTableOptions = this.tableOptions.filter((option) => option.display && option.display.toUpperCase().includes(filter.toUpperCase()));
-    console.log(this.filteredTableOptions);
   }
 
   changeTable(table: string) {
+    this.searchDropdownFocus = true;
     this.router.navigate(['/view'], { queryParams: {table: table } });
+    this.searchDropdownVisible = false;
   }
 
   logout() {
@@ -108,5 +114,24 @@ export class NavbarComponent {
   changePassword() {
     this.router.navigate(['/view'], { queryParams: {table: 'users' } });
     this.userOptionsVisible = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: MouseEvent) {
+    const clickedElement = event.target as HTMLElement;
+    if (!this.isDescendantOfSearchContainer(clickedElement)) {
+      this.searchDropdownVisible = false;
+    }
+  }
+
+  private isDescendantOfSearchContainer(element: HTMLElement): boolean {
+    let currentElement: HTMLElement | null = element;
+    while (currentElement) {
+      if (currentElement.classList.contains('search-container')) {
+        return true;
+      }
+      currentElement = currentElement?.parentElement;
+    }
+    return false;
   }
 }
