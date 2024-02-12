@@ -1,4 +1,12 @@
 @import '../variables';
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
 .container {
     display: flex;
     margin: 10px 25px 10px calc(16% + 10px);
@@ -83,7 +91,6 @@
                 border: none;
                 background: none;
                 outline: none;
-                font-size: 15px;
                 cursor: pointer;
             }
             input {
@@ -105,7 +112,7 @@
             border-radius: 0 0 8px 8px;
             border: 1px solid rgb(215, 215, 215);
             border-top: none;
-            width: 306px;
+            width: 295px;
             background-color: white;
             .search-option {
                 padding: 2px 0 2px 0;
