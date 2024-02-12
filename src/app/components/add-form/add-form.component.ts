@@ -154,12 +154,7 @@ export class AddFormComponent {
     if (reset) {
       this.formService.setReloadType('hard');
       this.formService.requestReload();
-      this.resetForm();
     }
-  }
-
-  resetForm() {
-
   }
 
   primeImage(event: any) {

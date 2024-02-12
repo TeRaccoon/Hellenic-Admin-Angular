@@ -27,6 +27,7 @@ import { MessageFormComponent } from './components/message-form/message-form.com
 import { ItemBreakdownWidgetComponent } from './components/item-breakdown-widget/item-breakdown-widget.component';
 import { FilterFormComponent } from './components/filter-form/filter-form.component';
 import { InvoicedItemsWidgetComponent } from './components/invoiced-items-widget/invoiced-items-widget.component';
+import { ChangePasswordFormComponent } from './components/change-password-form/change-password-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,6 +51,7 @@ import { InvoicedItemsWidgetComponent } from './components/invoiced-items-widget
     ItemBreakdownWidgetComponent,
     FilterFormComponent,
     InvoicedItemsWidgetComponent,
+    ChangePasswordFormComponent,
   ],
   imports: [
     BrowserModule,

@@ -9,6 +9,7 @@ import {
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { FormService } from '../../services/form.service';
 
 @Component({
   selector: 'app-navbar',
@@ -60,7 +61,7 @@ export class NavbarComponent {
 
   notifications: { header: string; data: any[] }[] = [];
 
-  constructor(private dataService: DataService, private router: Router, private authService: AuthService) {}
+  constructor(private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService) {}
 
   ngOnInit() {
     // this.getNotifications();
@@ -112,8 +113,7 @@ export class NavbarComponent {
   }
 
   changePassword() {
-    this.router.navigate(['/view'], { queryParams: {table: 'users' } });
-    this.userOptionsVisible = false;
+    this.formService.showChangePasswordForm();
   }
 
   @HostListener('document:click', ['$event'])
