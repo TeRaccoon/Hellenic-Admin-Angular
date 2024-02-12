@@ -53,7 +53,7 @@ export class FilterFormComponent {
       this.hide();
       this.resetForm();      
     } else {
-      this.errorMsg = "Please fill in all required fields!";
+      this.errorMsg = "Please fill in all required fields";
     }
   }
 
