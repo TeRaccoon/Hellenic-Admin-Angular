@@ -33,6 +33,7 @@ export class FilterFormComponent {
     this.formService.getFilterFormVisibility().subscribe(async (visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
       this.tableColumns = this.filterService.getTableColumns();
+      this.errorMsg = null;
     });
   }
 
