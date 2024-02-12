@@ -11,7 +11,8 @@ import { faWarning } from '@fortawesome/free-solid-svg-icons';
 export class ItemBreakdownWidgetComponent {
   faWarning = faWarning;
 
-  itemData: { [key: string]: any }[] = [];
+  itemDataRowA: { [key: string]: any }[] = [];
+  itemDataRowB: { [key: string]: any }[] = [];
   
   headers = ["Top Selling", "Least Purchased", "Most Income", "Least Income"];
 
@@ -30,22 +31,22 @@ export class ItemBreakdownWidgetComponent {
 
   async getTopSelling() {
     this.dataService.collectData("top-selling-item").subscribe((data: any) => {
-      this.itemData[0] = data;
+      this.itemDataRowA[0] = data;
     });
   }
   async getLeastPurchased() {
     this.dataService.collectData("least-purchased-item").subscribe((data: any) => {
-      this.itemData[1] = data;
+      this.itemDataRowA[1] = data;
     });
   }
   async getMostIncome() {
     this.dataService.collectData("most-income-item").subscribe((data: any) => {
-      this.itemData[2] = data;
+      this.itemDataRowB[0] = data;
     });
   }
   async getLeastIncome() {
     this.dataService.collectData("least-income-item").subscribe((data: any) => {
-      this.itemData[3] = data;
+      this.itemDataRowB[1] = data;
     });
   }
 }

@@ -1,9 +1,13 @@
 .container {
-    .section {
-        background-color: white;
-        padding: 10px;
-        margin: 10px;
-        border-radius: 15px;
-        width: 35%;
+    .row {
+        display: flex;
+        flex-direction: row;
+        .section {
+            background-color: white;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 15px;
+            width: 100%;
+        }
     }
 }
