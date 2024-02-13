@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { urlBase } from './data.service';
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,7 @@ export class AuthService {
     }
 
     checkLogin() {
-        const url = 'http://localhost/API/manage_data.php';
+        const url = urlBase + 'API/manage_data.php';
         
         return this.http.post(url, {action: "check-login"}, {withCredentials: true}).pipe(
             map((response: any) => {
@@ -37,7 +38,7 @@ export class AuthService {
     }
 
     clearSession() {
-        const url = 'http://localhost/API/manage_data.php';
+        const url = urlBase + 'API/manage_data.php';
         return this.http.post(url, {action: "logout"}, {withCredentials: true}).pipe(
             map((response: any) => {
                 if (response && response.success) {
