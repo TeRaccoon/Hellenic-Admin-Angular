@@ -130,3 +130,10 @@
         display: none;
     }
 }
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        width: 70%;
+        margin: 10px 25px 10px calc(23% + 10px);
+    }
+}
