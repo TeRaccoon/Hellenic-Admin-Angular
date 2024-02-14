@@ -69,6 +69,10 @@
                                 {{ column }}
                                 <fa-icon *ngIf="this.sortedColumn.columnName == column.toString()" [icon]="this.sortedColumn.ascending ? faArrowUp : faArrowDown" />
                             </th>
+                            <ng-container *ngIf="selectedOption == 'items' || selectedOption == 'retail_items'">
+                                <th>Allergen Information</th>
+                                <th>Nutrition Information</th>
+                            </ng-container>
                             <th>Edit</th>
                             <th>Delete</th>
                         </tr>
@@ -98,6 +102,14 @@
                                         </ng-container>
                                     </ng-container>
                                 </td>
+                                <ng-container *ngIf="selectedOption == 'items' || selectedOption == 'retail_items'">
+                                    <td>
+                                        <fa-icon [icon]="faBookMedical" />
+                                    </td>
+                                    <td>
+                                        <fa-icon [icon]="faBookOpen" />
+                                    </td>
+                                </ng-container>
                                 <td>
                                     <a (click)="editRow(item.id)">
                                         <fa-icon [icon]="faPencil"></fa-icon>

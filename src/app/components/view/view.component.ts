@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 import {Location} from '@angular/common';
 
 @Component({
@@ -23,6 +23,8 @@ export class ViewComponent {
   faArrowLeft = faArrowLeft;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
+  faBookMedical = faBookMedical;
+  faBookOpen = faBookOpen;
   
   selectedOption: string | null = null;
   displayName: string = "";
