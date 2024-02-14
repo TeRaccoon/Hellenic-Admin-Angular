@@ -21,7 +21,6 @@ export class SidebarComponent {
     ],
     "Retail": [
       { name: "items", displayName: "Products" },
-      { name: "retail_items", displayName: "Retail Listings" },
     ],
     "Supplies": [
       { name: "stocked_items", displayName: "Stock" },
@@ -31,6 +30,12 @@ export class SidebarComponent {
       { name: "debtor_creditor", displayName: "Aged Debtors/ Creditors" },
       { name: "profit_loss", displayName: "Profit Loss" },
       { name: "payments", displayName: "Payments" },
+    ],
+    "Website": [
+      { name: "discount_codes", displayName: "Discount Codes" },
+      { name: "retail_items", displayName: "Retail Items" },
+      { name: "page_section_text", displayName: "Page Section Text"},
+      { name: "page_sections", displayName: "Page Sections" },
     ],
     "Admin": [
       { name: "statistics", displayName: "Statistics" },
@@ -57,7 +62,6 @@ export class SidebarComponent {
         break;
 
       case "items":
-      case "retail_items":
         this.dataService.setTabs([
           {"displayName": "Products", "tableName": "items"},
           {"displayName": "Offers", "tableName": "offers"},
@@ -79,6 +83,20 @@ export class SidebarComponent {
           {"displayName": "Warehouses", "tableName": "warehouse"}
           ])
         break;
+      
+      case "discount_codes":
+      case "retail_items":
+      case "page_section_text":
+      case "page_sections":
+        this.dataService.setTabs([
+          {"displayName": "Discount Codes", "tableName": "discount_codes"},
+          {"displayName": "Retail Items", "tableName": "retail_items"},
+          {"displayName": "Page Section Text", "tableName": "page_section_text"},
+          {"displayName": "Page Sections", "tableName": "page_sections"},
+          {"displayName": "Page Section Images", "tableName": "image_locations"},
+          {"displayName": "Offers", "tableName": "offers"},
+          ])
+          break;
 
       default:
         this.dataService.setTabs([]);
