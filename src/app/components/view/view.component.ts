@@ -439,19 +439,21 @@ export class ViewComponent {
 
   invoiceSearch() {
     this.widgetVisible = true;
-    if (this.selectedRows.length == 1) {
-      this.dataService.collectData("invoiced-items-basic-id", this.selectedRows[0].toString()).subscribe((data: any) => {
-        this.dataService.storeWidgetData(data);
+    if (this.selectedRows.length > 0) {
+      this.dataService.collectDataComplex("invoiced-items-basic-ids", {ids: this.selectedRows}).subscribe((data: any) => {
+        var groupedData: { [key: string]: { name: string, quantity: number}[]} = {};
+        data.map((dataItem: any) => {
+          if (!groupedData[dataItem.title]) {
+            groupedData[dataItem.title] = [];
+          }
+          groupedData[dataItem.title].push({name: dataItem.name, quantity: dataItem.quantity})
+        });
+        console.log(groupedData);
+        this.dataService.storeWidgetData(groupedData);
       });
     } else {
-      if (this.selectedRows.length > 1) {
-        this.dataService.collectDataComplex("invoiced-items-basic-ids", {ids: this.selectedRows}).subscribe((data: any) => {
-          this.dataService.storeWidgetData(data);
-        });
-      } else {
         this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before searching for items!"});
         this.formService.showMessageForm();
-      }
     }
   }
 
