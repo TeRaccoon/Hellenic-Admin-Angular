@@ -35,6 +35,10 @@ export class AddFormComponent {
     data: { id: Number; replacement: String }[];
   }[] = [];
 
+  selectedReplacementData: { [key:string]: {selectData: String, selectDataId: Number | null } | null} = {};
+
+  selectOpen: {[key: string]: {opened: boolean}} = {};
+
   constructor(
     private dataService: DataService,
     private formService: FormService,
@@ -65,6 +69,10 @@ export class AddFormComponent {
     );
     this.formData = data.formData;
     this.replacementData = data.replacementData;
+    this.replacementData.forEach((data) => {
+      this.selectedReplacementData[data.key] = null;
+      this.selectOpen[data.key] = {opened: false};
+    });
   }
 
   buildForm() {
@@ -191,5 +199,10 @@ export class AddFormComponent {
 
   hide() {
     this.formService.hideAddForm();
+  }
+
+  updateSelectedReplacementDataFromKey(dataId: Number, dataValue: String, key: string) {
+    this.selectedReplacementData[key] = {selectData: dataValue, selectDataId: dataId};
+    
   }
 }
