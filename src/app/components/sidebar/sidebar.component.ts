@@ -79,6 +79,10 @@ export class SidebarComponent {
           {"displayName": "Warehouses", "tableName": "warehouse"}
           ])
         break;
+
+      default:
+        this.dataService.setTabs([]);
+        break;
     }
     if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics") {
       this.router.navigate(['/view'], { queryParams: {table: tableName } });
