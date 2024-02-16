@@ -53,7 +53,6 @@
         margin: 10px;
         border-radius: 15px;
         overflow-x: auto;
-        height: 800px;
         overflow-y: scroll;
         .table-footer {
             display: flex;
@@ -141,6 +140,8 @@
             width: 90%;
             border-collapse: collapse;
             border-radius: 15px;
+            max-height: 600px;
+            overflow-y: auto;
             overflow-x: auto;
             margin: 0 auto;
             border-radius: 15px;
