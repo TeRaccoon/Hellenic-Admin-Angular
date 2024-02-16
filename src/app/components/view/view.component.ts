@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 import {Location} from '@angular/common';
 
 @Component({
@@ -12,6 +12,7 @@ import {Location} from '@angular/common';
   styleUrls: ['./view.component.scss'],
 })
 export class ViewComponent {
+  faBasketShopping = faBasketShopping;
   faSpinner = faSpinner;
   faPencil = faPencil;
   faSearch = faSearch;
@@ -23,6 +24,8 @@ export class ViewComponent {
   faArrowLeft = faArrowLeft;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
+  faBookMedical = faBookMedical;
+  faBookOpen = faBookOpen;
   
   selectedOption: string | null = null;
   displayName: string = "";
@@ -437,19 +440,21 @@ export class ViewComponent {
 
   invoiceSearch() {
     this.widgetVisible = true;
-    if (this.selectedRows.length == 1) {
-      this.dataService.collectData("invoiced-items-basic-id", this.selectedRows[0].toString()).subscribe((data: any) => {
-        this.dataService.storeWidgetData(data);
+    if (this.selectedRows.length > 0) {
+      this.dataService.collectDataComplex("invoiced-items-basic-ids", {ids: this.selectedRows}).subscribe((data: any) => {
+        var groupedData: { [key: string]: { name: string, quantity: number}[]} = {};
+        data.map((dataItem: any) => {
+          if (!groupedData[dataItem.title]) {
+            groupedData[dataItem.title] = [];
+          }
+          groupedData[dataItem.title].push({name: dataItem.name, quantity: dataItem.quantity})
+        });
+        console.log(groupedData);
+        this.dataService.storeWidgetData(groupedData);
       });
     } else {
-      if (this.selectedRows.length > 1) {
-        this.dataService.collectDataComplex("invoiced-items-basic-ids", {ids: this.selectedRows}).subscribe((data: any) => {
-          this.dataService.storeWidgetData(data);
-        });
-      } else {
         this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before searching for items!"});
         this.formService.showMessageForm();
-      }
     }
   }
 

@@ -8,15 +8,14 @@ import { FormService } from '../../services/form.service';
   styleUrls: ['./invoiced-items-widget.component.scss']
 })
 export class InvoicedItemsWidgetComponent {
-  data: any | null = null;
+  data: { [key: string]: { name: string, quantity: number}[]} = {};
   formData: any | null = null;
 
   constructor(private dataService: DataService, private formService: FormService) {}
 
   ngOnInit() {
     this.dataService.retrieveWidgetData().subscribe((data: any) => {
-      this.data = Array.isArray(data) ? data : [data];
-      console.log(this.data);
+      this.data = data;
     });
   }
 
@@ -27,7 +26,6 @@ export class InvoicedItemsWidgetComponent {
   getAddFormData() {
     this.dataService.collectData("table", "invoiced_items").subscribe((data: any) => {
       this.formData = data.edittable;
-      console.log(this.formData);
       var addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string } } = {};
       var inputDataTypes: string[] = this.dataTypeToInputType(this.formData.types);
       this.formData.columns.forEach((_: any, index: number) => {

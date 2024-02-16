@@ -11,7 +11,7 @@ export const urlBase = "http://localhost/";
 export class DataService {
   private dataSubject = new Subject<any[]>();
   tableData: any = {};
-  private widgetData = new Subject<{}>();
+  private widgetData = new Subject<{ [key: string]: { name: string, quantity: number}[]}>();
   altTableData: any = {};
   invoiceIds: any[] = [];
   tabs: {displayName: string, tableName: string}[] = [];
@@ -78,7 +78,7 @@ export class DataService {
     return this.tableData;
   }
 
-  storeWidgetData(data: any) {
+  storeWidgetData(data: { [key: string]: { name: string, quantity: number}[]}) {
     this.widgetData.next(data);
   }
 

@@ -1,25 +1,29 @@
 <div class="container">
-    <div *ngIf="data != null && data?.length > 0 else elseBlock" class="table-container">
-        <table>
-            <thead>
-                <th>Invoice Title</th>
-                <th>Item Name</th>
-                <th>Quantity</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of data">
-                    <td>{{ row.title }}</td>
-                    <td>{{ row.name }}</td>
-                    <td>{{ row.quantity }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="widget-footer">
-            <button class="button" (click)="addInvoicedItem()">Add more</button>
+    <ng-container *ngIf="data != null else elseBlock">
+        <div *ngFor="let dataItem of data | keyvalue" class="widget-container">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <th>Invoice ID</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let values of dataItem.value">
+                            <td>{{ dataItem.key }}</td>
+                            <td>{{ values.name }}</td>
+                            <td>{{ values.quantity }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="widget-footer">
+                    <button class="button" (click)="addInvoicedItem()">Add more</button>
+                </div>
+            </div>
         </div>
-    </div>
+    </ng-container>
     <ng-template #elseBlock>
-        <div>
+        <div class="widget-container">
             <p>There are no invoiced items for this invoice. Would you like to add some?</p>
             <button class="button" (click)="addInvoicedItem()">Add new</button>
         </div>
