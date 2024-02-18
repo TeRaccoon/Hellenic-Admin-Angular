@@ -24,3 +24,12 @@
         }
     }
 }
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        margin: 15px 15px 15px 23%;
+        .widget-container {
+            width: 50%;
+        }
+    }
+}

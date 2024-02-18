@@ -273,3 +273,10 @@
 .active-tab {
     color: pink;
 }
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        width: 75%;
+        margin: 15px 15px 15px 23%;
+    }
+}
