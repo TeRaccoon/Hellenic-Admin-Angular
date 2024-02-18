@@ -145,6 +145,41 @@ export class AddFormComponent {
     }
   }
 
+  submitImageOnly() {
+    if (this.file != null && this.tableName == 'retail_items') {
+      if (this.addForm.value['retail_item_id'] == null) {
+        // Show message asking to select an item first
+      }
+      this.dataService.collectData('image-count-from-item-id', this.addForm.value['retail_item_id']).subscribe((data: any) => {
+        if (this.file) {
+          if (data != null) {
+            this.fileName = data + 1 + '_' + this.file.name;
+          } else {
+            this.fileName = this.file.name;
+          }
+
+          const formData = new FormData();
+
+          formData.append('image', this.file, this.fileName);
+          this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
+            if (uploadResponse.success) {
+              this.formService.setMessageFormData({
+                title: 'Success!',
+                message: 'Image uploaded successfully as ' + this.fileName,
+              });
+            } else {
+              this.formService.setMessageFormData({
+                title: 'Error!',
+                message: uploadResponse.message,
+              });
+              this.formService.showMessageForm();
+            }
+          })
+        }
+      });
+    }
+  }
+
   sumbissionWithoutImage() {
     this.dataService.submitFormData(this.addForm.value).subscribe((data: any) => {
         this.formService.setMessageFormData({
@@ -186,8 +221,9 @@ export class AddFormComponent {
     }
   }
 
-  primeImage(event: any) {
+  primeImage(event: any, submit: boolean) {
     this.file = event.target.files[0];
+    submit && this.submitImageOnly();
   }
 
   deriveEnumOptions(field: any) {

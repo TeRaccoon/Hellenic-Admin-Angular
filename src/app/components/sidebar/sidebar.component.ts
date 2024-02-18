@@ -69,7 +69,6 @@ export class SidebarComponent {
           {"displayName": "Page Sections", "tableName": "page_sections"},
           {"displayName": "Page Section Text", "tableName": "page_section_text"},
           {"displayName": "Items", "tableName": "retail_items"},
-          {"displayName": "Item Images", "tableName": "retail_item_images"}
           ]);
         break;
 
