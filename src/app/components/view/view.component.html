@@ -103,15 +103,15 @@
                                     </ng-container>
                                 </td>
                                 <ng-container *ngIf="selectedOption == 'items' || selectedOption == 'retail_items'">
-                                    <td>
+                                    <td (click)="editRow(item.id, 'allergen_information')">
                                         <fa-icon [icon]="faBookMedical" />
                                     </td>
-                                    <td>
+                                    <td (click)="editRow(item.id, 'nutrition_info')">
                                         <fa-icon [icon]="faBookOpen" />
                                     </td>
                                 </ng-container>
                                 <td>
-                                    <a (click)="editRow(item.id)">
+                                    <a (click)="editRow(item.id, '')">
                                         <fa-icon [icon]="faPencil"></fa-icon>
                                     </a>
                                 </td>

@@ -209,29 +209,6 @@ export class ViewComponent {
     });
   }
 
-  dataTypeToInputType(dataTypes: any[]) {
-    var inputTypes: any[] = [];
-    dataTypes.forEach((dataType: string) => {
-      switch(dataType) {
-        case "date":
-          inputTypes.push("date");
-          break;
-        
-        case "file":
-          inputTypes.push("file");
-          break;
-
-        default:
-          if (!dataType.includes("enum")) {
-            inputTypes.push("text");
-          } else {
-            inputTypes.push("select");
-          }
-      }
-    });
-    return inputTypes;
-  }
-
   getColumnHeaders(obj: { [key: string]: any }): string[] {
     return obj ? Object.keys(obj) : [];
   }
@@ -269,18 +246,69 @@ export class ViewComponent {
     this.changePage(1);
   }
 
-  async editRow(id: any) {
-    var editFormData = this.getEditFormData(id);
-    this.formService.setEditFormData(editFormData);
-    this.formService.setSelectedTable(String(this.selectedOption));
+  async editRow(id: any, table: string) {
+    var row = this.data.filter((row: any) => row.id == id)[0];
+
+    if (table != '') {
+      this.dataService.collectData("edit-form-data", table).subscribe((data: any) => {
+        this.edittable = data;
+
+        switch (table) {
+          case "allergen_information":
+          case "nutrition_info":
+            switch (this.selectedOption) {
+              case "retail_items":
+                row['retail_item_id'] = id;
+                this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'retail_item_id' }).subscribe((data: any) => {
+                  console.log(data);
+                  if (data.id) {
+                    row = data;
+                    this.formService.processEditFormData(id, row, this.edittable);
+                    this.prepareEditFormService(id, table);
+                  } else {
+                    this.formService.processAddFormData(this.edittable);
+                    this.prepareAddFormService(table);
+                  }
+                });
+                break;
+
+              case "items":
+                this.dataService.collectData("reverse-item-id", id).subscribe((id: any) => {
+                  row['retail_item_id'] = id;
+                  this.formService.processEditFormData(id, row, this.edittable);
+                  this.prepareEditFormService(id, table);
+                });
+                break;
+            }
+            break;
+
+          default:
+            this.formService.processEditFormData(id, row, this.edittable);
+            this.prepareEditFormService(id, table);
+            break;
+        }
+      });
+    } else {
+      this.formService.processEditFormData(id, row, this.edittable)
+      this.prepareEditFormService(id, table);
+    }
+  }
+
+  prepareEditFormService(id: any, table: string) {
+    this.formService.setSelectedTable(table == '' ? String(this.selectedOption) : table);
     this.formService.setSelectedId(id);
     this.formService.showEditForm();
     this.formService.setReloadType("hard");
   }
 
+  prepareAddFormService(table: string) {
+    this.formService.setSelectedTable(table == '' ? String(this.selectedOption) : table);
+    this.formService.showAddForm();
+    this.formService.setReloadType("hard");
+  }
+
   async addRow() {
-    var addFormData = this.getAddFormData();
-    this.formService.setAddFormData(addFormData);
+    this.formService.processAddFormData(this.edittable);
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.showAddForm();
     this.formService.setReloadType("hard");
@@ -298,36 +326,6 @@ export class ViewComponent {
     this.formService.setDeleteFormIds(this.selectedRows);
     this.formService.showDeleteForm();
     this.formService.setReloadType("hard");
-  }
-
-  getEditFormData(id: number) {
-    var editFormData: { [key: string]: { value: any, inputType: string, dataType: string , required: boolean, fields: string } } = {};
-    var row = this.data.filter((row: any) => row.id == id)[0];
-    var inputDataTypes: string[] = this.dataTypeToInputType(this.edittable.types);
-    this.edittable.columns.forEach((columnName, index) => {
-      editFormData[this.edittable.names[index]] = {
-        value: row[columnName],
-        inputType: inputDataTypes[index],
-        dataType: this.edittable.types[index],
-        required: this.edittable.required[index],
-        fields: this.edittable.fields[index],
-      };
-    });
-    return editFormData;
-  }
-
-  getAddFormData() {
-    var addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string } } = {};
-    var inputDataTypes: string[] = this.dataTypeToInputType(this.edittable.types);
-    this.edittable.columns.forEach((_, index) => {
-      addFormData[this.edittable.names[index]] = {
-        inputType: inputDataTypes[index],
-        dataType: this.edittable.types[index],
-        required: this.edittable.required[index],
-        fields: this.edittable.fields[index],
-      };
-    });
-    return addFormData;
   }
 
   changeEntries(event: Event) {

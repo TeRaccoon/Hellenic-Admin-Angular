@@ -259,4 +259,54 @@ export class FormService {
   getReloadType() {
     return this.reloadType;
   }
+
+  processEditFormData(id: number, row: any, edittableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[]}) {
+    this.editFormData = {};
+    var inputDataTypes = this.dataTypeToInputType(edittableData.types);
+    edittableData.columns.forEach((columnName, index) => {
+      this.editFormData[edittableData.names[index]] = {
+        value: row[columnName],
+        inputType: inputDataTypes[index],
+        dataType: edittableData.types[index],
+        required: edittableData.required[index],
+        fields: edittableData.fields[index],
+      };
+    });
+  }
+
+  processAddFormData(edittableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[]}) {
+    this.addFormData = {};
+    var inputDataTypes: string[] = this.dataTypeToInputType(edittableData.types);
+    edittableData.columns.forEach((_, index) => {
+      this.addFormData[edittableData.names[index]] = {
+        inputType: inputDataTypes[index],
+        dataType: edittableData.types[index],
+        required: edittableData.required[index],
+        fields: edittableData.fields[index],
+      };
+    });
+  }
+
+  dataTypeToInputType(dataTypes: any[]) {
+    var inputTypes: any[] = [];
+    dataTypes.forEach((dataType: string) => {
+      switch(dataType) {
+        case "date":
+          inputTypes.push("date");
+          break;
+        
+        case "file":
+          inputTypes.push("file");
+          break;
+
+        default:
+          if (!dataType.includes("enum")) {
+            inputTypes.push("text");
+          } else {
+            inputTypes.push("select");
+          }
+      }
+    });
+    return inputTypes;
+  }
 }
