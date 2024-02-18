@@ -58,7 +58,7 @@ export class SidebarComponent {
           {"displayName": "Payments", "tableName": "customer_payments"},
           {"displayName": "Invoices", "tableName": "invoices"},
           {"displayName": "Invoiced Items", "tableName": "invoiced_items"}
-          ])
+          ]);
         break;
 
       case "items":
@@ -69,10 +69,8 @@ export class SidebarComponent {
           {"displayName": "Page Sections", "tableName": "page_sections"},
           {"displayName": "Page Section Text", "tableName": "page_section_text"},
           {"displayName": "Items", "tableName": "retail_items"},
-          {"displayName": "Item Images", "tableName": "retail_item_images"},
-          {"displayName": "Allergen Information", "tableName": "allergen_information"},
-          {"displayName": "Nutrition Information", "tableName": "nutrition_info"}
-          ])
+          {"displayName": "Item Images", "tableName": "retail_item_images"}
+          ]);
         break;
 
       case "stocked_items":
@@ -81,7 +79,7 @@ export class SidebarComponent {
           {"displayName": "Supplier Invoices", "tableName": "supplier_invoices"},
           {"displayName": "Suppliers", "tableName": "suppliers"},
           {"displayName": "Warehouses", "tableName": "warehouse"}
-          ])
+          ]);
         break;
       
       case "discount_codes":
@@ -95,7 +93,7 @@ export class SidebarComponent {
           {"displayName": "Page Sections", "tableName": "page_sections"},
           {"displayName": "Page Section Images", "tableName": "image_locations"},
           {"displayName": "Offers", "tableName": "offers"},
-          ])
+          ]);
           break;
 
       default:
