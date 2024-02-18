@@ -32,11 +32,29 @@ export class EditFormComponent {
   
   selectData: { key: string; data: string[] }[] = [];
 
+  filteredReplacementData: {
+    [key: string]: {
+      data: { id: Number; replacement: String }[];
+    }
+  } = {};
+
   replacementData: {
     [key: string]: {
       data: { id: Number; replacement: String }[];
     }
   } = {};
+
+  alternativeSelectData: {
+    [key: string]: {
+      data: {value: string}[]
+    }
+  } = {};
+  
+  alternativeSelectedData: { [key: string]: {selectData: string} } = {};
+  selectedReplacementData: { [key:string]: {selectData: String, selectDataId: Number | null } | null} = {};
+  selectedReplacementFilter: { [key:string]: {selectFilter: string } } = {};
+  selectOpen: {[key: string]: {opened: boolean}} = {};
+
 
   constructor(
     private dataService: DataService,
@@ -67,7 +85,17 @@ export class EditFormComponent {
         this.dataService
       );
       this.formData = data.formData;
+      this.filteredReplacementData = data.replacementData;
       this.replacementData = data.replacementData;
+      this.alternativeSelectData = this.formService.getAlternativeSelectData();
+      Object.keys(this.alternativeSelectData).forEach((key) => {
+        this.alternativeSelectedData[key] = { selectData: this.formData[key]?.value };
+      });
+      Object.keys(this.replacementData).forEach((key) => {
+        this.selectedReplacementData[key] = null;
+        this.selectedReplacementFilter[key] = { selectFilter: ''};
+        this.selectOpen[key] = {opened: false};
+      });
     }
   }
 
@@ -117,14 +145,14 @@ export class EditFormComponent {
     this.editForm.reset();
   }
 
-  loadForm() {
+  async loadForm() {
     if (this.formService.getSelectedId() != '') {
       this.formData = this.formService.getEditFormData();
       this.tableName = this.formService.getSelectedTable();
       this.id = this.formService.getSelectedId();
-      this.replaceAmiguousData();
-      this.handleImages();
       this.buildForm();
+      await this.replaceAmiguousData();
+      this.handleImages();
     }
   }
 
@@ -191,5 +219,28 @@ export class EditFormComponent {
 
   hide() {
     this.formService.hideEditForm();
+  }
+
+  updateSelectedReplacementDataFromKey(dataId: Number, dataValue: String, key: string, field: string) {
+    this.selectedReplacementData[key] = {selectData: dataValue, selectDataId: dataId};
+    this.editForm.get(field)?.setValue(dataId);
+    this.selectOpen[key].opened = false;
+  }
+
+  filterDropSelect(key: string, event: any, field: string | null) {
+    this.filteredReplacementData = JSON.parse(JSON.stringify(this.replacementData));
+    var filter = event.target.value;
+    this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
+      return data.replacement.includes(filter);
+    });
+    if (field) {
+      this.editForm.get(field)?.setValue(filter);
+    }
+  }
+
+  updateAlternativeSelectData(field: string, data: any, key: string) {
+    this.alternativeSelectedData[key] = { selectData: data };
+    this.editForm.get(field)?.setValue(data);
+    this.selectOpen[key].opened = false;
   }
 }

@@ -24,6 +24,12 @@
                                     </label>
                                 </ng-template>
                             </ng-container>
+                            <ng-container *ngSwitchCase="'alternative-select'">
+                                <input (input)="filterDropSelect(data.key, $event, data.value.fields)" type="text" (focus)="selectOpen[data.key] = {opened: true}" [value]="alternativeSelectedData[data.key]?.selectData">
+                                <div class="drop-select" [ngClass]="selectOpen[data.key]?.opened ? '' : 'hidden'" [attr.required]="data.value.required ? true : null">
+                                    <p *ngFor="let option of alternativeSelectData[data.key].data" (click)="updateAlternativeSelectData(data.value.fields, option, data.key)">{{ option }}</p>
+                                </div>
+                            </ng-container>
                             <ng-container *ngSwitchCase="'select'">
                                 <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
                                     <ng-container *ngFor="let option of selectDataFromKey(data.key)">
@@ -32,9 +38,10 @@
                                 </select>
                             </ng-container>
                             <ng-container *ngSwitchCase="'replacement'">
-                                <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
-                                    <option *ngFor="let option of replacementData[data.key].data" [selected]="data.value.value == option.id" [value]="option.id">{{ option.replacement }}</option>
-                                </select>
+                                <input (input)="filterDropSelect(data.key, $event, null)" type="text" (focus)="selectOpen[data.key] = {opened: true}" [value]="selectedReplacementData[data.key]?.selectData">
+                                <div class="drop-select" [ngClass]="selectOpen[data.key]?.opened ? '' : 'hidden'" [attr.required]="data.value.required ? true : null">
+                                    <p *ngFor="let option of filteredReplacementData[data.key].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, data.key, data.value.fields)">{{ option.replacement }}</p>
+                                </div>
                             </ng-container>
                             <input *ngSwitchDefault [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [formControlName]="data.value.fields" [value]="data.value.value">
                         </ng-container>
