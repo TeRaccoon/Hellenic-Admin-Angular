@@ -32,7 +32,11 @@ export class EditFormComponent {
   
   selectData: { key: string; data: string[] }[] = [];
 
-  replacementData: { key: string; data: { id: Number, replacement: String }[] }[] = [];
+  replacementData: {
+    [key: string]: {
+      data: { id: Number; replacement: String }[];
+    }
+  } = {};
 
   constructor(
     private dataService: DataService,
@@ -108,7 +112,7 @@ export class EditFormComponent {
 
   clearForm() {
     this.formData = {};
-    this.replacementData = [];
+    this.replacementData = {};
     this.editForm = this.fb.group({});
     this.editForm.reset();
   }
@@ -182,14 +186,6 @@ export class EditFormComponent {
       return matchingData.data;
     }
 
-    return [];
-  }
-
-  getReplacementDataFromKey(key: string) {
-    const replacementData = this.replacementData.find((data) => data.key === key);
-    if (replacementData) {
-      return replacementData.data;
-    }
     return [];
   }
 

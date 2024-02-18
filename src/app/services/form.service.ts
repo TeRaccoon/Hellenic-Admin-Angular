@@ -201,15 +201,28 @@ export class FormService {
   async replaceAmbiguousData(
     tableName: string,
     formData: any,
-    replacementData: { key: string; data: { id: Number; replacement: String }[] }[],
+    replacementData: {
+      [key: string]: {
+        data: { id: Number; replacement: String }[];
+      }
+    },
     dataService: DataService,
   ) {
     switch (tableName) {
       case 'retail_items':
+        var data = await this.getIdReplacementData('items_id_name', dataService);
+        formData['Item ID'].inputType = 'replacement';
+        replacementData['Item ID'] = { data: data };
+        break;
+
       case 'invoiced_items':
         var data = await this.getIdReplacementData('items_id_name', dataService);
         formData['Item ID'].inputType = 'replacement';
-        replacementData.push({ key: 'Item ID', data: data });
+        replacementData['Item ID'] = { data: data };
+
+        data = await this.getIdReplacementData('invoice_id_title', dataService);
+        formData['Invoice ID'].inputType = 'replacement';
+        replacementData['Invoice ID'] = { data: data };
         break;
         
       case 'customer_payments':
@@ -217,13 +230,13 @@ export class FormService {
       case 'invoices':
         var data = await this.getIdReplacementData('customers_id_name', dataService);
         formData['Customer ID'].inputType = 'replacement';
-        replacementData.push({ key: 'Customer ID', data: data });
+        replacementData['Customer ID'] = { data: data };
         break;
 
       case 'page_section_text':
         var data = await this.getIdReplacementData('page_section_id_name', dataService);
         formData['Page Section ID'].inputType = 'replacement';
-        replacementData.push({ key: 'Page Section ID', data: data });
+        replacementData['Page Section ID'] = { data: data };
         break;
 
       case 'retail_item_images':
@@ -231,13 +244,13 @@ export class FormService {
       case 'nutrition_information':
         var data = await this.getIdReplacementData('retail_item_id_name', dataService);
         formData['Retail Item ID'].inputType = 'replacement';
-        replacementData.push({ key: 'Retail Item ID', data: data });
+        replacementData['Retail Item ID'] = { data: data };
         break;
 
       case 'supplier_invoices':
         var data = await this.getIdReplacementData('supplier_id_name', dataService);
         formData['Supplier ID'].inputType = 'replacement';
-        replacementData.push({ key: 'Supplier ID', data: data });
+        replacementData['Supplier ID'] = { data: data };
         break;
         
     }

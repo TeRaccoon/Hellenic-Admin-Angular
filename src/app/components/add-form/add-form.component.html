@@ -24,9 +24,9 @@
                                     </select>
                                 </ng-container>
                                 <ng-container *ngSwitchCase="'replacement'">
-                                    <input [formControlName]="data.value.fields" (focus)="selectOpen[data.key] = {opened: true}" type="text" [attr.required]="data.value.required ? true : null" [value]="selectedReplacementData[data.key]?.selectDataId">
-                                    <div class="drop-select" [ngClass]="selectOpen[data.key].opened ? '' : 'hidden'" [attr.required]="data.value.required ? true : null">
-                                        <p *ngFor="let option of getReplacementDataFromKey(data.key)" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, data.key)">{{ option.replacement }}</p>
+                                    <input (input)="filterDropSelect(data.key, $event)" type="text" (focus)="selectOpen[data.key] = {opened: true}" [value]="selectedReplacementData[data.key]?.selectData">
+                                    <div class="drop-select" [ngClass]="selectOpen[data.key]?.opened ? '' : 'hidden'" [attr.required]="data.value.required ? true : null">
+                                        <p *ngFor="let option of filteredReplacementData[data.key].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, data.key, data.value.fields)">{{ option.replacement }}</p>
                                     </div>
                                 </ng-container>
                                 <input *ngSwitchDefault [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [formControlName]="data.value.fields">

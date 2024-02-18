@@ -33,7 +33,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'replacement'">
                                 <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
-                                    <option *ngFor="let option of getReplacementDataFromKey(data.key)" [selected]="data.value.value == option.id" [value]="option.id">{{ option.replacement }}</option>
+                                    <option *ngFor="let option of replacementData[data.key].data" [selected]="data.value.value == option.id" [value]="option.id">{{ option.replacement }}</option>
                                 </select>
                             </ng-container>
                             <input *ngSwitchDefault [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [formControlName]="data.value.fields" [value]="data.value.value">
