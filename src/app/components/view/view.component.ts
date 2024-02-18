@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
+import { urlBase } from '../../services/data.service';
 import { faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 import {Location} from '@angular/common';
 
@@ -12,6 +13,7 @@ import {Location} from '@angular/common';
   styleUrls: ['./view.component.scss'],
 })
 export class ViewComponent {
+  urlBase = urlBase;
   faBasketShopping = faBasketShopping;
   faSpinner = faSpinner;
   faPencil = faPencil;
