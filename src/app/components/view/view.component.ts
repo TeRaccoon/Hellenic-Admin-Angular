@@ -260,7 +260,6 @@ export class ViewComponent {
               case "retail_items":
                 row['retail_item_id'] = id;
                 this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'retail_item_id' }).subscribe((data: any) => {
-                  console.log(data);
                   if (data.id) {
                     row = data;
                     this.formService.processEditFormData(id, row, this.edittable);
@@ -275,8 +274,16 @@ export class ViewComponent {
               case "items":
                 this.dataService.collectData("reverse-item-id", id).subscribe((id: any) => {
                   row['retail_item_id'] = id;
-                  this.formService.processEditFormData(id, row, this.edittable);
-                  this.prepareEditFormService(id, table);
+                  this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'retail_item_id' }).subscribe((data: any) => {
+                    if (data.id) {
+                      row = data;
+                      this.formService.processEditFormData(id, row, this.edittable);
+                      this.prepareEditFormService(id, table);
+                    } else {
+                      this.formService.processAddFormData(this.edittable);
+                      this.prepareAddFormService(table);
+                    }
+                  });
                 });
                 break;
             }
