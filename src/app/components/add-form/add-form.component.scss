@@ -1,10 +1,4 @@
 @import '../variables';
-.select {
-    cursor: pointer;
-    font-size: 16px;
-    padding: 5px;
-}
-
 .container {
     position: fixed;
     z-index: 1;
@@ -43,7 +37,8 @@
         border: none;
         border-radius: 15px;
         margin: 5px auto;
-        width: 35%;
+        width: 82.5%;
+        margin: 30px 15px 15px 285px;
         .header-section {
             height: 50px;
             border-radius: 15px 15px 0 0;
@@ -63,10 +58,21 @@
             }
         }
         .content-section {
+            .form-container {
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+            }
             .input-container {
-                padding: 15px;
+                padding: 10px;
                 display: flex;
                 flex-direction: column;
+                flex: 1 0 48%;
+                .select {
+                    cursor: pointer;
+                    font-size: 16px;
+                    padding: 10px;
+                }
                 label {
                     padding: 5px;
                     font-weight: bold;
@@ -78,18 +84,17 @@
                     border: 1px solid rgb(215, 215, 215);
                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
                     font-size: 16px;
-                    padding: 5px;
+                    padding: 10px;
                 }
                 .file-upload {
                     border: 1px solid #ccc;
                     border-radius: 10px;
                     background-color: #FFF;
                     display: inline-block;
-                    padding: 5px!important;
+                    padding: 10px!important;
                     font-weight: normal;
                     font-size: 16px;
                     cursor: pointer;
-                    margin: 10px 0 10px 0;
                     box-sizing: border-box;
                     width: 100%;
                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
