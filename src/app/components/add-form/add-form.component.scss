@@ -58,6 +58,23 @@
             }
         }
         .content-section {
+            .image-upload-container {
+                width: 100%;
+                border: 2px dashed rgb(154, 154, 154);
+                margin: 10px;
+                height: 100px;
+                align-items: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                cursor: pointer;
+                input {
+                    display: none;
+                }
+                fa-icon {
+                    font-size: 25px;
+                }
+            }
             .form-container {
                 display: flex;
                 flex-wrap: wrap;
