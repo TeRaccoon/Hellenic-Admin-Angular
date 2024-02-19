@@ -6,7 +6,7 @@
         </div>
         <div class="content-section">
             <ng-container *ngIf="formData">
-                <form [formGroup]="editForm" (ngSubmit)="formSubmit()">
+                <form [formGroup]="editForm" (ngSubmit)="formSubmit()" class="form-container">
                     <div class="input-container" *ngFor="let data of formData | keyvalue">
                         <label>{{ data.key }}</label>
                         <ng-container [ngSwitch]="data.value.inputType">
