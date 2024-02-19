@@ -212,7 +212,7 @@ export class FormService {
     formData: any,
     replacementData: {
       [key: string]: {
-        data: { id: Number; replacement: String }[];
+        data: { id: Number; replacement: string }[];
       }
     },
     dataService: DataService,

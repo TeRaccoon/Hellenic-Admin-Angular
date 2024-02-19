@@ -46,6 +46,12 @@
                             <input *ngSwitchDefault [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [formControlName]="data.value.fields" [value]="data.value.value">
                         </ng-container>
                     </div>
+                    <ng-container *ngIf="tableName == 'retail_items'">
+                        <div class="image-upload-container">
+                            <input accept="image/*" type="file" (change)="primeImage($event)">
+                            <fa-icon [icon]="faCloudUpload" /> Upload Image
+                        </div>
+                    </ng-container>
                     <div class="form-footer">
                         <button name="action" value="append" type="submit">Submit</button>
                     </div>

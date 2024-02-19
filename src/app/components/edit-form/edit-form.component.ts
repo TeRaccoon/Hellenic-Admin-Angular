@@ -34,13 +34,13 @@ export class EditFormComponent {
 
   filteredReplacementData: {
     [key: string]: {
-      data: { id: Number; replacement: String }[];
+      data: { id: Number; replacement: string }[];
     }
   } = {};
 
   replacementData: {
     [key: string]: {
-      data: { id: Number; replacement: String }[];
+      data: { id: Number; replacement: string }[];
     }
   } = {};
 
@@ -51,7 +51,7 @@ export class EditFormComponent {
   } = {};
   
   alternativeSelectedData: { [key: string]: {selectData: string} } = {};
-  selectedReplacementData: { [key:string]: {selectData: String, selectDataId: Number | null } | null} = {};
+  selectedReplacementData: { [key:string]: {selectData: string, selectDataId: Number | null } | null} = {};
   selectedReplacementFilter: { [key:string]: {selectFilter: string } } = {};
   selectOpen: {[key: string]: {opened: boolean}} = {};
 
@@ -221,7 +221,7 @@ export class EditFormComponent {
     this.formService.hideEditForm();
   }
 
-  updateSelectedReplacementDataFromKey(dataId: Number, dataValue: String, key: string, field: string) {
+  updateSelectedReplacementDataFromKey(dataId: Number, dataValue: string, key: string, field: string) {
     this.selectedReplacementData[key] = {selectData: dataValue, selectDataId: dataId};
     this.editForm.get(field)?.setValue(dataId);
     this.selectOpen[key].opened = false;

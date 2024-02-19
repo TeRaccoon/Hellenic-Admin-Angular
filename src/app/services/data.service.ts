@@ -54,6 +54,7 @@ export class DataService {
 
   uploadImage(formData: FormData): Observable<any> {
     const url = urlBase + 'API/image_upload.php';
+    console.log("Huh?");
     return this.http.post(url, formData).pipe(
       map((response: any) => {
         if (response && response.success) {
