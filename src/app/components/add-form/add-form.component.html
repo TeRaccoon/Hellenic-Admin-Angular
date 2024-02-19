@@ -19,7 +19,7 @@
                                     <fa-icon [icon]="faCloudUpload" /> Upload Image
                                 </label>
                                 <ng-container *ngSwitchCase="'alternative-select'">
-                                    <input (input)="filterDropSelect(data.key, $event, data.value.fields)" type="text" (focus)="selectOpen[data.key] = {opened: true}" [value]="alternativeSelectedData[data.key]?.selectData">
+                                    <input (input)="filterDropSelect(data.key, $event, data.value.fields)" type="text" (focus)="selectOpen[data.key] = {opened: true}" [value]="alternativeSelectedData[data.key].selectData">
                                     <div class="drop-select" [ngClass]="selectOpen[data.key]?.opened ? '' : 'hidden'" [attr.required]="data.value.required ? true : null">
                                         <p *ngFor="let option of alternativeSelectData[data.key].data" (click)="updateAlternativeSelectData(data.value.fields, option, data.key)">{{ option }}</p>
                                     </div>

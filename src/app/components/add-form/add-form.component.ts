@@ -88,6 +88,9 @@ export class AddFormComponent {
     this.filteredReplacementData = data.replacementData;
     this.replacementData = data.replacementData;
     this.alternativeSelectData = this.formService.getAlternativeSelectData();
+    Object.keys(this.alternativeSelectData).forEach((key) => {
+      this.alternativeSelectedData[key] = { selectData: '' };
+    });
     Object.keys(this.replacementData).forEach((key) => {
       this.selectedReplacementData[key] = null;
       this.selectedReplacementFilter[key] = { selectFilter: ''};
