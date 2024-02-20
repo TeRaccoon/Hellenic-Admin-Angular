@@ -98,6 +98,12 @@
                 flex: 1 0 48%;
                 .drop-select-container {
                     position: relative;
+                    width: 100%;
+                    z-index: 3;
+                    input {
+                        width: 100%;
+                        box-sizing: border-box;
+                    }
                 }
                 .select {
                     cursor: pointer;
