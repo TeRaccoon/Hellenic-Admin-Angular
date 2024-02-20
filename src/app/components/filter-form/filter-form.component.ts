@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-filter-form',
@@ -10,6 +10,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 })
 export class FilterFormComponent {
   faSearch = faSearch;
+  faPlus = faPlus;
 
   formVisible = 'hidden';
   tableColumns: { columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[] } = {
@@ -41,7 +42,7 @@ export class FilterFormComponent {
     this.formService.hideFilterForm();
   }
 
-  search() {
+  search(hide: boolean) {
     if (this.columnInput != '' && ((this.columnType == 'date' && this.startDate != null && this.endDate != null) || (this.columnType != 'date' && this.searchInput != ''))) {
       if (this.columnType == 'date' && this.startDate != null && this.endDate != null) {
         this.filterService.setColumnDateFilter({column: this.columnInput, startDate: this.startDate, endDate: this.endDate});
@@ -50,7 +51,7 @@ export class FilterFormComponent {
       }
       this.formService.setReloadType("filter");
       this.formService.requestReload();
-      this.hide();
+      hide && this.hide();
       this.resetForm();      
     } else {
       this.errorMsg = "Please fill in all required fields";
