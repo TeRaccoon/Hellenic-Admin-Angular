@@ -4,13 +4,11 @@
     z-index: 1;
     left: 0;
     top: 0;
-    width: 100%;
+    width: 100vw;
     height: 100%;
     overflow: auto;
     background-color: rgb(0, 0, 0);
     background-color: rgba(0, 0, 0, 0.4);
-    padding: 60px;
-    height: 90%;
     .form-footer {
         display: flex;
         justify-content: right;
@@ -36,9 +34,8 @@
         background-color: #ebebeb;
         border: none;
         border-radius: 15px;
-        margin: 5px auto;
-        width: 82.5%;
-        margin: 30px 15px 15px 285px;
+        width: 82.5vw;
+        margin: 5vw 0 0 16.5vw;
         .header-section {
             height: 50px;
             border-radius: 15px 15px 0 0;
