@@ -74,6 +74,9 @@
                     position: absolute;
                     opacity: 0;
                 }
+                button {
+                    z-index: 3;
+                }
                 fa-icon {
                     font-size: 25px;
                 }
