@@ -57,6 +57,9 @@ $hellenicblue: rgb(0, 140, 255);
     border: 1px solid rgb(215, 215, 215);
     overflow-y: scroll;
     max-height: 400px;
+    position: absolute;
+    width: 38%;
+    top: 244px;
     p {
         margin: 5px;
         cursor: pointer;
