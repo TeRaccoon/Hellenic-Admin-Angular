@@ -61,18 +61,26 @@
             .image-upload-container {
                 border: 2px dashed rgb(154, 154, 154);
                 margin: 10px;
-                height: 100px;
+                height: 150px;
                 align-items: center;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 position: relative;
                 cursor: pointer;
+                .button {
+                    border-radius: 5px;
+                    padding: 8px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                    font-size: 16px;
+                }
                 input {
                     height: 100px;
                     width: 100%;
                     position: absolute;
                     opacity: 0;
+                    cursor: pointer;
                 }
                 button {
                     z-index: 3;
