@@ -4,13 +4,11 @@
     z-index: 1;
     left: 0;
     top: 0;
-    width: 100%;
+    width: 100vw;
     height: 100%;
     overflow: auto;
     background-color: rgb(0, 0, 0);
     background-color: rgba(0, 0, 0, 0.4);
-    padding: 60px;
-    height: 90%;
     .form-footer {
         display: flex;
         justify-content: right;
@@ -36,9 +34,8 @@
         background-color: #ebebeb;
         border: none;
         border-radius: 15px;
-        margin: 5px auto;
-        width: 82.5%;
-        margin: 30px 15px 15px 285px;
+        width: 82.5vw;
+        margin: 5vw 0 0 16.5vw;
         .header-section {
             height: 50px;
             border-radius: 15px 15px 0 0;
@@ -58,6 +55,31 @@
             }
         }
         .content-section {
+            .image-upload-container {
+                width: 100%;
+                border: 2px dashed rgb(154, 154, 154);
+                margin: 10px;
+                height: 150px;
+                align-items: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                position: relative;
+                cursor: pointer;
+                input {
+                    height: 100px;
+                    width: 100%;
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                }
+                button {
+                    z-index: 3;
+                }
+                fa-icon {
+                    font-size: 25px;
+                }
+            }
             .form-container {
                 display: flex;
                 flex-wrap: wrap;
@@ -68,6 +90,9 @@
                 display: flex;
                 flex-direction: column;
                 flex: 1 0 48%;
+                .drop-select-container {
+                    position: relative;
+                }
                 .select {
                     font-size: 16px;
                     padding: 10px;
