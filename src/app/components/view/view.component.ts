@@ -4,7 +4,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { urlBase } from '../../services/data.service';
-import { faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 import {Location} from '@angular/common';
 
 @Component({
@@ -14,6 +14,9 @@ import {Location} from '@angular/common';
 })
 export class ViewComponent {
   urlBase = urlBase;
+
+  faLock = faLock;
+  faLockOpen = faLockOpen;
   faBasketShopping = faBasketShopping;
   faSpinner = faSpinner;
   faPencil = faPencil;
@@ -57,6 +60,8 @@ export class ViewComponent {
   currentPage: number = 1;
 
   loaded = false;
+
+  icon = faLock;
 
   searchText: string = '';
   filter: string = '';
@@ -456,7 +461,6 @@ export class ViewComponent {
           }
           groupedData[dataItem.title].push({name: dataItem.name, quantity: dataItem.quantity})
         });
-        console.log(groupedData);
         this.dataService.storeWidgetData(groupedData);
       });
     } else {
@@ -495,6 +499,39 @@ export class ViewComponent {
         break;
     }
     return true;
+  }
+
+  displayWithIcon(column: string, row: any) {
+    switch (this.selectedOption) {
+      case "invoices":
+        if (column == "title") {
+          this.icon = row['status'] == "Complete" ? faLock : faLockOpen;
+          return true;
+        }
+        break;
+    }
+    return false;
+  }
+
+  iconClick(event: Event, key: number, column: string, row: any) {
+    switch (this.selectedOption) {
+      case "invoices":
+        if (column == 'title') {
+          let data = { ...this.data[key] };
+          data['status'] = data['status'] == 'Complete' ? 'Pending' : 'Complete';
+          row['status'] = data['status'];
+          data['action'] = 'append';
+          data['table_name'] = String(this.selectedOption);
+          this.dataService.submitFormData(data).subscribe((response: any) => {
+            if (response.success) {
+              this.reloadTable();
+            } else {
+              alert(":(");
+            }
+          });
+        }
+        break;
+    }
   }
 
   //Filter

@@ -98,6 +98,9 @@
                                             </ng-container>
                                             <ng-container *ngSwitchDefault>
                                                 {{ item[column] == null ? '---' : item[column] }}
+                                                <ng-container *ngIf="displayWithIcon(column, item)">
+                                                    <fa-icon class="row-icon" (click)="iconClick($event, key + (currentPage - 1) * entryLimit, column, item)" [icon]="icon" />
+                                                </ng-container>
                                             </ng-container>
                                         </ng-container>
                                     </ng-container>

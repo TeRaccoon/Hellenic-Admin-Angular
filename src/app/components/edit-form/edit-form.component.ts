@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faCloudUpload } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUpload, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-edit-form',
@@ -11,6 +11,7 @@ import { faCloudUpload } from '@fortawesome/free-solid-svg-icons';
 })
 export class EditFormComponent {
   faCloudUpload = faCloudUpload;
+  faSpinner = faSpinner;
 
   editForm: FormGroup;
   formData: {
@@ -25,6 +26,8 @@ export class EditFormComponent {
   tableName: string = '';
   id: string = '';
   formVisible = 'hidden';
+  locked = true;
+  loaded = false;
 
   fileName = '';
   imageReplacements: string[] = [];
@@ -66,6 +69,7 @@ export class EditFormComponent {
 
   ngOnInit() {
     this.formService.getEditFormVisibility().subscribe((visible) => {
+      this.loaded = false;
       this.selectedImage = "";
       this.imageReplacements = [];
       this.formVisible = visible ? 'visible' : 'hidden';
@@ -96,10 +100,12 @@ export class EditFormComponent {
         this.selectedReplacementFilter[key] = { selectFilter: ''};
         this.selectOpen[key] = {opened: false};
       });
+      this.loaded = true;
     }
   }
 
   buildForm() {
+    this.isLocked();
     for (const key in this.formData) {
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];
@@ -115,7 +121,7 @@ export class EditFormComponent {
         } else {
           this.editForm.addControl(
             field.fields,
-            this.fb.control({ value: field.inputType == 'file' ? null : field.value, disabled: false }, validators)
+            this.fb.control({ value: field.inputType == 'file' ? null : field.value, disabled: this.locked }, validators)
           );
         }
       }
@@ -151,8 +157,8 @@ export class EditFormComponent {
       this.tableName = this.formService.getSelectedTable();
       this.id = this.formService.getSelectedId();
       this.buildForm();
-      await this.replaceAmiguousData();
       this.handleImages();
+      await this.replaceAmiguousData();
     }
   }
 
@@ -242,5 +248,12 @@ export class EditFormComponent {
     this.alternativeSelectedData[key] = { selectData: data };
     this.editForm.get(field)?.setValue(data);
     this.selectOpen[key].opened = false;
+  }
+
+  isLocked() {
+    switch (this.tableName) {
+      case 'invoices':
+        this.locked = this.formData['Status'].value == 'Complete'
+    }
   }
 }
