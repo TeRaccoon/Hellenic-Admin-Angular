@@ -57,7 +57,6 @@ export class SidebarComponent {
           {"displayName": "Details", "tableName": "customers"},
           {"displayName": "Payments", "tableName": "customer_payments"},
           {"displayName": "Invoices", "tableName": "invoices"},
-          {"displayName": "Invoiced Items", "tableName": "invoiced_items"}
           ]);
         break;
 
