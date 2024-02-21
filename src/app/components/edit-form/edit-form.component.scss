@@ -55,6 +55,14 @@
             }
         }
         .content-section {
+            .loading-container {
+                display: flex;
+                justify-content: center;
+                margin-top: 100px;
+                .loading-icon {
+                    margin: 100px 0 200px 0;
+                }
+            }
             .image-upload-container {
                 width: 100%;
                 border: 2px dashed rgb(154, 154, 154);
