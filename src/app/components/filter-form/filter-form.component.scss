@@ -67,10 +67,13 @@
                     display: flex;
                     justify-content: right;
                     button {
-                        margin: 10px 2px 2px 2px;
+                        margin: 10px 2px 2px 10px;
                         border-radius: 12px;
                         padding: 10px;
                         font-size: 20px;
+                        .fa-icon {
+                            font-size: 17px;
+                        }
                     }
                 }
                 .case-option-container {
