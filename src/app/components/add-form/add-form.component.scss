@@ -55,6 +55,13 @@
             }
         }
         .content-section {
+            .error-section {
+                display: flex;
+                justify-content: center;
+                color: red;
+                margin: 20px 0 10px 0;
+                font-size: 18px;
+            }
             .image-upload-container {
                 border: 2px dashed rgb(154, 154, 154);
                 margin: 10px;
