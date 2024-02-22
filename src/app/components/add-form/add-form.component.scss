@@ -120,6 +120,10 @@
                 label {
                     padding: 5px;
                     font-weight: bold;
+                    .asterisk {
+                        font-size: 12px;
+                        margin-left: 2px;
+                    }
                 }
                 input {
                     background-color: #ffffff;
