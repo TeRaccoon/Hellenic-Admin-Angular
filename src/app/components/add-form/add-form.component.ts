@@ -326,7 +326,8 @@ export class AddFormComponent {
     this.selectOpen[key].opened = false;
   }
 
-  addInvoicedItem() {
+  addInvoicedItem(event: Event) {
+    event.preventDefault();
     if (this.addForm.valid) {
       this.formSubmit(false);
       this.formService.setSelectedTable('invoiced_items');

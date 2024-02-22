@@ -52,7 +52,7 @@
                         </div>
                     </ng-container>
                     <div class="form-footer">
-                        <button *ngIf="tableName == 'invoices'" (click)="addInvoicedItem()" class="button">Add invoiced items</button>
+                        <button *ngIf="tableName == 'invoices'" (click)="addInvoicedItem($event)" class="button">Add invoiced items</button>
                         <button name="action" value="append" type="submit">Submit</button>
                     </div>
                 </form>
