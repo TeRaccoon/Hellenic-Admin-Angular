@@ -328,6 +328,7 @@ export class AddFormComponent {
 
   addInvoicedItem(event: Event) {
     event.preventDefault();
+    this.findInvalidControls();
     if (this.addForm.valid) {
       this.formSubmit(false);
       this.formService.setSelectedTable('invoiced_items');
@@ -338,5 +339,17 @@ export class AddFormComponent {
       } else {
       this.error = "Please fill in all the required fields before continuing!"
     }
+  }
+
+  findInvalidControls() {
+    const invalid = [];
+    const controls = this.addForm.controls;
+    for (const name in controls) {
+        if (controls[name].invalid) {
+            invalid.push(name);
+        }
+    }
+    console.log(invalid);
+    return invalid;
   }
 }
