@@ -10,7 +10,7 @@ export const urlBase = "http://localhost/";
 
 export class DataService {
   private dataSubject = new Subject<any[]>();
-  tableData: any = {};
+  tableData: any = null;
   private widgetData = new Subject<{ [key: string]: { name: string, quantity: number}[]}>();
   altTableData: any = {};
   invoiceIds: any[] = [];

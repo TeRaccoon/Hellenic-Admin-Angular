@@ -10,7 +10,7 @@ import { FormService } from '../../services/form.service';
 })
 export class TablelessViewComponent {
   tableName = '';
-  tableData: any[] = [];
+  tableData: any[] | null = null;
   tableHeaders: any = [];
 
   constructor(private formService: FormService, private route: ActivatedRoute, private dataService: DataService) {}

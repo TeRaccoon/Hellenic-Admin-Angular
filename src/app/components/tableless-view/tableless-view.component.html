@@ -1,5 +1,5 @@
 <div class="container">
-    <ng-container *ngIf="tableHeaders && tableData.length > 0">
+    <ng-container *ngIf="tableHeaders && tableData != null && tableData.length > 0 else noData">
         <div class="table-container">
             <table>
                 <thead>
@@ -17,6 +17,14 @@
             </table>
         </div>
     </ng-container>
+    <ng-template #noData>
+        <div *ngIf="tableData != null" class="no-data-container">
+            <div class="content">
+                <h1>Whoops! No data was found!</h1>
+                <p>Could this be an error? If so, try refreshing the page!</p>
+            </div>
+        </div>
+    </ng-template>
 </div>
 <ng-container *ngIf="tableName === 'debtor_creditor'">
     <app-debtor-creditor-widget></app-debtor-creditor-widget>
