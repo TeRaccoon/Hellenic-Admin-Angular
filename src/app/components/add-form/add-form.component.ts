@@ -3,7 +3,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { faCloudUpload, faX, faAsterisk } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUpload, faX, faAsterisk, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-add-form',
@@ -14,6 +14,7 @@ export class AddFormComponent {
   faCloudUpload = faCloudUpload;
   faX = faX;
   faAsterisk = faAsterisk;
+  faPlus = faPlus;
 
   addForm: FormGroup;
   formVisible = 'hidden';
@@ -92,6 +93,7 @@ export class AddFormComponent {
     this.replacementData = {};
     this.addForm = this.fb.group({});
     this.addForm.reset();
+    this.submitted = false;
   }
 
   async replaceAmbiguousData() {
@@ -257,7 +259,7 @@ export class AddFormComponent {
           title: data.success ? 'Success!' : 'Error!',
           message: data.message,
         });
-        this.endSumbission(data.success, data.success);
+        this.endSumbission(data.success, hideForm);
     });
   }
 
@@ -346,12 +348,13 @@ export class AddFormComponent {
     this.findInvalidControls();
     if (this.addForm.valid) {
       this.formSubmit(false);
+      this.tableName = 'invoiced_items';
       this.formService.setSelectedTable('invoiced_items');
       this.dataService.collectData('edit-form-data', 'invoiced_items').subscribe((data: any) => {
-        this.formService.setEditFormData(data);
+        this.formService.processAddFormData(data);
         this.loadForm();
       });
-      } else {
+    } else {
       this.error = "Please fill in all the required fields before continuing!"
     }
   }

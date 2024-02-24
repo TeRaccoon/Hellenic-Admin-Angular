@@ -54,7 +54,8 @@
                     </ng-container>
                     <div class="form-footer">
                         <button *ngIf="tableName == 'invoices'" (click)="addInvoicedItem($event)" class="button">Add invoiced items</button>
-                        <button name="action" value="append" type="submit">Submit</button>
+                        <button *ngIf="tableName == 'invoiced_items'" (click)="formSubmit(false)">Add more <fa-icon [icon]=" faPlus "/></button>
+                        <button name="action " value="append " type="submit ">Submit</button>
                     </div>
                 </form>
             </ng-container>
