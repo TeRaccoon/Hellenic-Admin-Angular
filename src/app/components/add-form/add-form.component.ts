@@ -141,9 +141,8 @@ export class AddFormComponent {
         const field = this.formData[key];
         
         var characterLimit = null;
-        if (field.dataType.includes('varhcar')) {
-          let str = "charchar(24)";
-          let match = str.match(/\d+/);
+        if (field.dataType.includes('varchar')) {
+          let match = field.dataType.match(/\d+/g);
           characterLimit = match ? parseInt(match[0]) : null;
         }
 
@@ -156,7 +155,7 @@ export class AddFormComponent {
         if (field.required) {
           controlValidators.push(Validators.required);
         }
-
+        
         this.addForm.addControl(
           field.fields,
           this.fb.control({ value: '', disabled: false }, controlValidators)
