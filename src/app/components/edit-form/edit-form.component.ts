@@ -26,7 +26,7 @@ export class EditFormComponent {
   tableName: string = '';
   id: string = '';
   formVisible = 'hidden';
-  locked = true;
+  locked = false;
   loaded = false;
 
   fileName = '';
@@ -70,6 +70,7 @@ export class EditFormComponent {
   ngOnInit() {
     this.formService.getEditFormVisibility().subscribe((visible) => {
       this.loaded = false;
+      this.locked = false;
       this.selectedImage = "";
       this.imageReplacements = [];
       this.formVisible = visible ? 'visible' : 'hidden';
