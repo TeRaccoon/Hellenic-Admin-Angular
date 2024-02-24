@@ -326,6 +326,11 @@ export class FormService {
           inputTypes.push("file");
           break;
 
+        case "double":
+        case "float":
+          inputTypes.push("number");
+          break;
+
         default:
           if (!dataType.includes("enum")) {
             inputTypes.push("text");

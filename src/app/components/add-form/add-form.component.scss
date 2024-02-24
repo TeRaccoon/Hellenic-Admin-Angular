@@ -104,6 +104,9 @@
                 display: flex;
                 flex-direction: column;
                 flex: 1 0 48%;
+                .error-input {
+                    border: 1px solid red;
+                }
                 .drop-select-container {
                     position: relative;
                     width: 100%;
