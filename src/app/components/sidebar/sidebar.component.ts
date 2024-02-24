@@ -16,31 +16,36 @@ export class SidebarComponent {
   
   tables: { [category: string]: any[] } = {
     "Customers": [
-      { name: "customers", displayName: "Overview" },
-      { name: "invoices", displayName: "Invoices" },
+      { tableName: "customers", displayName: "Overview" },
+      { tableName: "payments", displayName: "Payments"},
+      { tableName: "invoices", displayName: "Invoices" },
     ],
-    "Retail": [
-      { name: "items", displayName: "Products" },
+    "Products": [
+      { tableName: "items", displayName: "Products" },
+      { tableName: "allergen_information", displayName: "Allergens" },
+      { tableName: "nutrition_info", displayName: "Nutrition" },
     ],
-    "Supplies": [
-      { name: "stocked_items", displayName: "Stock" },
+    "Supply": [
+      { tableName: "stocked_items", displayName: "Stock" },
+      { tableName: "supplier_invoices", displayName: "Invoices" },
+      { tableName: "suppliers", displayName: "Suppliers" },
+      { tableName: "warehouse", displayName: "Warehouses" },
     ],
-    "Accounting": [
-      { name: "general_ledger", displayName: "General Ledger" },
-      { name: "debtor_creditor", displayName: "Aged Debtors/ Creditors" },
-      { name: "profit_loss", displayName: "Profit Loss" },
-      { name: "payments", displayName: "Payments" },
+    "Finance": [
+      { tableName: "invoices", displayName: "Customer Invoices" },
+      { tableName: "supplier_invoices", displayName: "Supplier Invoices" },
+      { tableName: "general_ledger", displayName: "General Ledger" },
+      { tableName: "payments", displayName: "All Payments" },
+      { tableName: "profit_loss", displayName: "Profit / Loss" },
+      { tableName: "customer_payments", displayName: "Invoice Payments" },
+      { tableName: "debtor_creditor", displayName: "Aged Debtor / Creditors"},
     ],
     "Website": [
-      { name: "discount_codes", displayName: "Discount Codes" },
-      { name: "retail_items", displayName: "Retail Items" },
-      { name: "page_section_text", displayName: "Page Section Text"},
-      { name: "page_sections", displayName: "Page Sections" },
-    ],
-    "Admin": [
-      { name: "statistics", displayName: "Statistics" },
-      { name: "image_locations", displayName: "Image Location" },
-      { name: "users", displayName: "Users" },
+      { tableName: "offers", displayName: "Offers" },
+      { tableName: "statistics", displayName: "Statistics" },
+      { tableName: "retail_items", displayName: "Listed Items" },
+      { tableName: "discount_codes", displayName: "Discount codes" },
+      { tableName: "page_section_text", displayName: "Website Customisation" },
     ]
   };
 
@@ -52,46 +57,36 @@ export class SidebarComponent {
     switch (tableName) {
       case "customers":
       case "invoices":
-        this.dataService.setTabs([
-          {"displayName": "Addresses", "tableName": "customer_address"},
-          {"displayName": "Details", "tableName": "customers"},
-          {"displayName": "Payments", "tableName": "customer_payments"},
-          {"displayName": "Invoices", "tableName": "invoices"},
-          ]);
+      case "payments":
+        this.dataService.setTabs(this.tables['Customers']);
         break;
 
       case "items":
-        this.dataService.setTabs([
-          {"displayName": "Products", "tableName": "items"},
-          {"displayName": "Offers", "tableName": "offers"},
-          {"displayName": "Discount Codes", "tableName": "discount_codes"},
-          {"displayName": "Page Sections", "tableName": "page_sections"},
-          {"displayName": "Page Section Text", "tableName": "page_section_text"},
-          {"displayName": "Items", "tableName": "retail_items"},
-          ]);
+      case "allergen_information":
+      case "nutrition_info":
+        this.dataService.setTabs(this.tables['Products']);
         break;
 
       case "stocked_items":
-        this.dataService.setTabs([
-          {"displayName": "Stocked Items", "tableName": "stocked_items"},
-          {"displayName": "Supplier Invoices", "tableName": "supplier_invoices"},
-          {"displayName": "Suppliers", "tableName": "suppliers"},
-          {"displayName": "Warehouses", "tableName": "warehouse"}
-          ]);
+      case "supplier_invoices":
+      case "suppliers":
+      case "warehouse":
+        this.dataService.setTabs(this.tables['Supply']);
+        break;
+
+      case "invoices":
+      case "supplier_invoices":
+      case "general_ledger":
+      case "payments":
+      case "customer_payments":
+        this.dataService.setTabs(this.tables['Finance']);
         break;
       
       case "discount_codes":
       case "retail_items":
       case "page_section_text":
       case "page_sections":
-        this.dataService.setTabs([
-          {"displayName": "Discount Codes", "tableName": "discount_codes"},
-          {"displayName": "Retail Items", "tableName": "retail_items"},
-          {"displayName": "Page Section Text", "tableName": "page_section_text"},
-          {"displayName": "Page Sections", "tableName": "page_sections"},
-          {"displayName": "Page Section Images", "tableName": "image_locations"},
-          {"displayName": "Offers", "tableName": "offers"},
-          ]);
+        this.dataService.setTabs(this.tables['Website']);
           break;
 
       default:

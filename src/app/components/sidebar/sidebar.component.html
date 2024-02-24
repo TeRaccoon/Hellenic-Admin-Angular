@@ -8,7 +8,7 @@
                 <fa-icon [icon]="isDropdownVisible[category] ? faCaretDown : faCaretRight"></fa-icon>
               </button>
             <div class="dropdown-container" [ngClass]="{'hidden': !isDropdownVisible[category]}">
-                <a *ngFor="let table of tables[category]" (click)="changeTable(table.name)">{{ table.displayName }}</a>
+                <a *ngFor="let table of tables[category]" (click)="changeTable(table.tableName)">{{ table.displayName }}</a>
             </div>
         </div>
     </div>
