@@ -138,15 +138,28 @@ export class AddFormComponent {
     for (const key in this.formData) {
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];
+        
+        var characterLimit = null;
+        if (field.dataType.includes('varhcar')) {
+          let str = "charchar(24)";
+          let match = str.match(/\d+/);
+          characterLimit = match ? parseInt(match[0]) : null;
+        }
 
         if (field.inputType == 'select' && field.dataType.startsWith('enum')) {
           const options = this.deriveEnumOptions(field);
           this.selectData.push({ key: key, data: options });
         }
         const validators = field.required ? [Validators.required] : [];
+
+        let controlValidators = characterLimit != null ? [Validators.maxLength(characterLimit)] : [];
+        if (field.required) {
+          controlValidators.push(Validators.required);
+        }
+
         this.addForm.addControl(
           field.fields,
-          this.fb.control({ value: '', disabled: false }, validators)
+          this.fb.control({ value: '', disabled: false }, controlValidators)
         );
         index++;
       }
@@ -156,29 +169,32 @@ export class AddFormComponent {
   }
 
   formSubmit(hideForm: boolean) {
-    if (this.file != null && this.addForm.value['retail_item_id']) {
-      this.dataService
-        .collectData(
-          'image-count-from-item-id',
-          this.addForm.value['retail_item_id']
-        )
-        .subscribe((data: any) => {
-          if (this.file) {
-            if (data != null) {
-              this.fileName = data + 1 + '_' + this.file.name;
-            } else {
-              this.fileName = this.file.name;
+    console.log(this.addForm);
+    if (this.addForm.valid) {
+      if (this.file != null && this.addForm.value['retail_item_id']) {
+        this.dataService
+          .collectData(
+            'image-count-from-item-id',
+            this.addForm.value['retail_item_id']
+          )
+          .subscribe((data: any) => {
+            if (this.file) {
+              if (data != null) {
+                this.fileName = data + 1 + '_' + this.file.name;
+              } else {
+                this.fileName = this.file.name;
+              }
+              this.addForm.value['image_file_name'] = this.fileName;
+  
+              const formData = new FormData();
+  
+              formData.append('image', this.file, this.fileName);
+              this.sumbissionWithImage(formData, hideForm);
             }
-            this.addForm.value['image_file_name'] = this.fileName;
-
-            const formData = new FormData();
-
-            formData.append('image', this.file, this.fileName);
-            this.sumbissionWithImage(formData, hideForm);
-          }
-        });
-    } else {
-      this.sumbissionWithoutImage(hideForm);
+          });
+      } else {
+        this.sumbissionWithoutImage(hideForm);
+      }
     }
   }
 
@@ -242,7 +258,7 @@ export class AddFormComponent {
           title: data.success ? 'Success!' : 'Error!',
           message: data.message,
         });
-        this.endSumbission(data.success, hideForm);
+        this.endSumbission(data.success, data.success);
     });
   }
 
@@ -349,7 +365,6 @@ export class AddFormComponent {
             invalid.push(name);
         }
     }
-    console.log(invalid);
     return invalid;
   }
 }
