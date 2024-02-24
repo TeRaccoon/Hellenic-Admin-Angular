@@ -55,6 +55,13 @@
             }
         }
         .content-section {
+            .error-section {
+                display: flex;
+                justify-content: center;
+                color: red;
+                margin: 20px 0 10px 0;
+                font-size: 18px;
+            }
             .image-upload-container {
                 width: 100%;
                 border: 2px dashed rgb(154, 154, 154);
@@ -114,6 +121,10 @@
                 label {
                     padding: 5px;
                     font-weight: bold;
+                    .asterisk {
+                        font-size: 12px;
+                        margin-left: 2px;
+                    }
                 }
                 input {
                     background-color: #ffffff;
