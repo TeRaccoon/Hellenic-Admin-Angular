@@ -14,6 +14,7 @@ export class FormService {
   private isMessageFormVisible = new BehaviorSubject<boolean>(false);
   private isFilterFormVisible = new BehaviorSubject<boolean>(false);
   private isChangePasswordFormVisible = new BehaviorSubject<boolean>(false);
+  private isInvoicedItemsFormVisible = new BehaviorSubject<boolean>(false);
 
   private editFormData: {
     [key: string]: {
@@ -116,6 +117,13 @@ export class FormService {
     this.isChangePasswordFormVisible.next(false);
   }
 
+  showInvoicedItemForm() {
+    this.isInvoicedItemsFormVisible.next(true);
+  }
+  hideInvoicedItemForm() {
+    this.isInvoicedItemsFormVisible.next(false);
+  }
+
   getEditFormVisibility(): Observable<boolean> {
     return this.isEditFormVisible.asObservable();
   }
@@ -138,6 +146,10 @@ export class FormService {
 
   getChangePasswordFormVisibility(): Observable<boolean> {
     return this.isChangePasswordFormVisible.asObservable();
+  }
+
+  getInvoicedItemsFormVisibility(): Observable<boolean> {
+    return this.isInvoicedItemsFormVisible.asObservable();
   }
 
   setEditFormData(editFormData: {

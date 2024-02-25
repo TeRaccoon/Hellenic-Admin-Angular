@@ -155,11 +155,6 @@
                 <ng-container *ngSwitchCase="'general_ledger'">
                     <app-ledger-widget></app-ledger-widget>
                 </ng-container>
-                <ng-container *ngSwitchCase="'invoices'">
-                    <ng-container *ngIf="selectedRows.length > 0 && widgetVisible">
-                        <app-invoiced-items-widget></app-invoiced-items-widget>
-                    </ng-container>
-                </ng-container>
             </ng-container>
         </div>
     </ng-container>
@@ -177,3 +172,4 @@
 <app-message-form></app-message-form>
 <app-filter-form></app-filter-form>
 <app-change-password-form></app-change-password-form>
+<app-invoiced-items-widget></app-invoiced-items-widget>

@@ -1,4 +1,12 @@
-<div class="container">
+<div class="container" [class]="formVisible">
+    <div class="content">
+        <div class="header-section">
+            <h1>Invoiced items</h1>
+            <a (click)="hide()">
+                <fa-icon [icon]="faX" />
+            </a>
+        </div>
+    </div>
     <ng-container *ngIf="data != null else elseBlock">
         <div *ngFor="let dataItem of data | keyvalue" class="widget-container">
             <div class="table-container">

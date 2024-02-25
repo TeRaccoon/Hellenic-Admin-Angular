@@ -254,25 +254,29 @@ export class ViewComponent {
   }
 
   async editRow(id: any, table: string) {
+    console.log(this.data);
     var row = this.data.filter((row: any) => row.id == id)[0];
+    console.log(this.data);
+
 
     if (table != '') {
-      this.dataService.collectData("edit-form-data", table).subscribe((data: any) => {
-        this.edittable = data;
+      this.dataService.collectData("edit-form-data", table).subscribe((formData: any) => {
+        
+        var fakeRow = JSON.parse(JSON.stringify(row));
 
         switch (table) {
           case "allergen_information":
           case "nutrition_info":
             switch (this.selectedOption) {
               case "retail_items":
-                row['retail_item_id'] = id;
+                fakeRow['retail_item_id'] = id;
                 this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'retail_item_id' }).subscribe((data: any) => {
                   if (data.id) {
-                    row = data;
-                    this.formService.processEditFormData(id, row, this.edittable);
+                    fakeRow = data;
+                    this.formService.processEditFormData(id, fakeRow, formData);
                     this.prepareEditFormService(id, table);
                   } else {
-                    this.formService.processAddFormData(this.edittable);
+                    this.formService.processAddFormData(formData);
                     this.prepareAddFormService(table);
                   }
                 });
@@ -280,14 +284,14 @@ export class ViewComponent {
 
               case "items":
                 this.dataService.collectData("reverse-item-id", id).subscribe((id: any) => {
-                  row['retail_item_id'] = id;
+                  fakeRow['retail_item_id'] = id;
                   this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'retail_item_id' }).subscribe((data: any) => {
                     if (data.id) {
-                      row = data;
-                      this.formService.processEditFormData(id, row, this.edittable);
+                      fakeRow = data;
+                      this.formService.processEditFormData(id, fakeRow, formData);
                       this.prepareEditFormService(id, table);
                     } else {
-                      this.formService.processAddFormData(this.edittable);
+                      this.formService.processAddFormData(formData);
                       this.prepareAddFormService(table);
                     }
                   });
@@ -297,7 +301,7 @@ export class ViewComponent {
             break;
 
           default:
-            this.formService.processEditFormData(id, row, this.edittable);
+            this.formService.processEditFormData(id, fakeRow, formData);
             this.prepareEditFormService(id, table);
             break;
         }
@@ -451,7 +455,6 @@ export class ViewComponent {
   }
 
   invoiceSearch() {
-    this.widgetVisible = true;
     if (this.selectedRows.length > 0) {
       this.dataService.collectDataComplex("invoiced-items-basic-ids", {ids: this.selectedRows}).subscribe((data: any) => {
         var groupedData: { [key: string]: { name: string, quantity: number}[]} = {};
@@ -462,6 +465,7 @@ export class ViewComponent {
           groupedData[dataItem.title].push({name: dataItem.name, quantity: dataItem.quantity})
         });
         this.dataService.storeWidgetData(groupedData);
+        this.formService.showInvoicedItemForm();
       });
     } else {
         this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before searching for items!"});
