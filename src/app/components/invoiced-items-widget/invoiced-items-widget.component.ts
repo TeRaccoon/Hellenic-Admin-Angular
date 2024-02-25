@@ -21,10 +21,7 @@ export class InvoicedItemsWidgetComponent {
     this.formService.getInvoicedItemsFormVisibility().subscribe(async (visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
       if (visible) {
-        this.data = {};
-        this.dataService.retrieveWidgetData().subscribe((data: any) => {
-          this.data = data;
-        });
+        this.data = this.dataService.retrieveWidgetData();
       }
     })
   }
