@@ -4,7 +4,7 @@
         <div class="table-container">
             <div class="options-container">
                 <div class="row">
-                    <button class="button" (click)="addRow()">Add New +</button>
+                    <button class="button" (click)="addRow(null)">Add New +</button>
                     <button *ngIf="selectedOption == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
                     <button *ngIf="selectedOption == 'invoices'" class="button" (click)="invoiceSearch()"><fa-icon [icon]="faBasketShopping"/></button>
                     <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon [icon]="faTrashCan"/></button>
@@ -136,7 +136,7 @@
                             <div class="content">
                                 <h1>Whoops! No data was found for {{ displayName }}!</h1>
                                 <p>Could this be an error? If so, try refreshing the page otherwise add new data below!</p>
-                                <button class="button" (click)="addRow()">Add New +</button>
+                                <button class="button" (click)="addRow(null)">Add New +</button>
                             </div>
                         </div>
                     </div>

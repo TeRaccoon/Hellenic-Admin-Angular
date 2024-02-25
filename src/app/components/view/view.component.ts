@@ -254,9 +254,7 @@ export class ViewComponent {
   }
 
   async editRow(id: any, table: string) {
-    console.log(this.data);
     var row = this.data.filter((row: any) => row.id == id)[0];
-    console.log(this.data);
 
 
     if (table != '') {
@@ -267,6 +265,7 @@ export class ViewComponent {
         switch (table) {
           case "allergen_information":
           case "nutrition_info":
+
             switch (this.selectedOption) {
               case "retail_items":
                 fakeRow['retail_item_id'] = id;
@@ -276,6 +275,10 @@ export class ViewComponent {
                     this.formService.processEditFormData(id, fakeRow, formData);
                     this.prepareEditFormService(id, table);
                   } else {
+                    let values: (string | null)[] = Array(formData.columns.length).fill(null);
+                    const retailItemIdIndex = formData.names.indexOf('Retail Item ID');
+                    values[retailItemIdIndex] = id;
+                    formData.values = values;
                     this.formService.processAddFormData(formData);
                     this.prepareAddFormService(table);
                   }
@@ -283,14 +286,18 @@ export class ViewComponent {
                 break;
 
               case "items":
-                this.dataService.collectData("reverse-item-id", id).subscribe((id: any) => {
-                  fakeRow['retail_item_id'] = id;
-                  this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'retail_item_id' }).subscribe((data: any) => {
+                this.dataService.collectData("reverse-item-id", id).subscribe((reversedId: any) => {
+                  fakeRow['retail_item_id'] = reversedId;
+                  this.dataService.collectDataComplex("append-or-add", { table: table, id: reversedId, column: 'retail_item_id' }).subscribe((data: any) => {
                     if (data.id) {
                       fakeRow = data;
-                      this.formService.processEditFormData(id, fakeRow, formData);
-                      this.prepareEditFormService(id, table);
+                      this.formService.processEditFormData(reversedId, fakeRow, formData);
+                      this.prepareEditFormService(reversedId, table);
                     } else {
+                      let values: (string | null)[] = Array(formData.columns.length).fill(null);
+                      const retailItemIdIndex = formData.names.indexOf('Retail Item ID');
+                      values[retailItemIdIndex] = reversedId;
+                      formData.values = values;
                       this.formService.processAddFormData(formData);
                       this.prepareAddFormService(table);
                     }
@@ -325,8 +332,16 @@ export class ViewComponent {
     this.formService.setReloadType("hard");
   }
 
-  async addRow() {
-    this.formService.processAddFormData(this.edittable);
+  async addRow(values: any) {
+    var addFormData = {
+      columns: this.edittable.columns,
+      types: this.edittable.types,
+      names: this.edittable.names,
+      required: this.edittable.required,
+      fields: this.edittable.fields,
+      values: values,
+    }
+    this.formService.processAddFormData(addFormData);
     this.formService.setSelectedTable(String(this.selectedOption));
     this.formService.showAddForm();
     this.formService.setReloadType("hard");

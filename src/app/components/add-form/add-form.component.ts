@@ -24,6 +24,7 @@ export class AddFormComponent {
       dataType: string;
       required: boolean;
       fields: string;
+      value: string
     };
   } = {};
   tableName: string = '';
@@ -80,6 +81,7 @@ export class AddFormComponent {
   async loadForm() {
     this.clearForm();
     this.formData = this.formService.getAddFormData();
+    console.log(this.formData);
     this.tableName = this.formService.getSelectedTable();
     if (this.tableName !== '' && Object.keys(this.formData).length != 0) {
       this.buildForm();
@@ -111,7 +113,7 @@ export class AddFormComponent {
       this.alternativeSelectedData[key] = { selectData: '' };
     });
     Object.keys(this.replacementData).forEach((key) => {
-      this.selectedReplacementData[key] = null;
+      this.selectedReplacementData[key] = { selectData: this.filteredReplacementData[key].data.find(item => item.id === Number(this.formData[key].value))!.replacement, selectDataId: Number(this.formData[key].value) };
       this.selectedReplacementFilter[key] = { selectFilter: ''};
       this.selectOpen[key] = {opened: false};
     });
@@ -160,7 +162,7 @@ export class AddFormComponent {
         
         this.addForm.addControl(
           field.fields,
-          this.fb.control({ value: '', disabled: false }, controlValidators)
+          this.fb.control({ value: field.value != null ? field.value : '', disabled: false }, controlValidators),
         );
         index++;
       }

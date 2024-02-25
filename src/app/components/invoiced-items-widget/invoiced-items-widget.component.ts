@@ -36,7 +36,7 @@ export class InvoicedItemsWidgetComponent {
   getAddFormData() {
     this.dataService.collectData("table", "invoiced_items").subscribe((data: any) => {
       this.formData = data.edittable;
-      var addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string } } = {};
+      var addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string, value: any } } = {};
       var inputDataTypes: string[] = this.dataTypeToInputType(this.formData.types);
       this.formData.columns.forEach((_: any, index: number) => {
         addFormData[this.formData.names[index]] = {
@@ -44,6 +44,7 @@ export class InvoicedItemsWidgetComponent {
           dataType: this.formData.types[index],
           required: this.formData.required[index],
           fields: this.formData.fields[index],
+          value: null
         };
       });
       this.formService.setAddFormData(addFormData);

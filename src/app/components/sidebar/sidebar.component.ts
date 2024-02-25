@@ -22,8 +22,6 @@ export class SidebarComponent {
     ],
     "Products": [
       { tableName: "items", displayName: "Products" },
-      { tableName: "allergen_information", displayName: "Allergens" },
-      { tableName: "nutrition_info", displayName: "Nutrition" },
     ],
     "Supply": [
       { tableName: "stocked_items", displayName: "Stock" },
@@ -62,8 +60,6 @@ export class SidebarComponent {
         break;
 
       case "items":
-      case "allergen_information":
-      case "nutrition_info":
         this.dataService.setTabs(this.tables['Products']);
         break;
 

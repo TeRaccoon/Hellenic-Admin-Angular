@@ -31,6 +31,7 @@ export class FormService {
       dataType: string;
       required: boolean;
       fields: string;
+      value: any;
     };
   } = {};
   private alternativeSelectData: {
@@ -170,6 +171,7 @@ export class FormService {
       dataType: string;
       required: boolean;
       fields: string;
+      value: any;
     };
   }) {
     this.addFormData = addFormData;
@@ -313,7 +315,7 @@ export class FormService {
     });
   }
 
-  processAddFormData(edittableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[]}) {
+  processAddFormData(edittableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[], values: any[]}) {
     this.addFormData = {};
     var inputDataTypes: string[] = this.dataTypeToInputType(edittableData.types);
     edittableData.columns.forEach((_, index) => {
@@ -322,6 +324,7 @@ export class FormService {
         dataType: edittableData.types[index],
         required: edittableData.required[index],
         fields: edittableData.fields[index],
+        value: edittableData.values ? edittableData.values[index] : null,
       };
     });
   }
