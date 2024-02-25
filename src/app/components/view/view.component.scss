@@ -239,7 +239,7 @@
     }
     .alternate-container {
         border: 2px solid black;
-        border-radius: 15px;
+        border-radius: 0 15px 15px 15px;
         width: 100%;
         box-sizing: border-box;
         .no-data-container {
