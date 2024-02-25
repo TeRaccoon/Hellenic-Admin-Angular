@@ -4,56 +4,59 @@
             <h1>Editting...</h1>
             <a (click)="hide()">X</a>
         </div>
+        <div class="tab-section">
+            <div (click)="changeTab('invoiced_items')">Invoiced Items</div>
+        </div>
         <div class="content-section">
-            <ng-container *ngIf="formData && loaded else loading">
+            <ng-container *ngIf="mappedFormData && loaded else loading">
                 <form [formGroup]="editForm" (ngSubmit)="formSubmit()" class="form-container">
-                    <div class="input-container" *ngFor="let data of formData | keyvalue">
-                        <label>{{ data.key }}</label>
-                        <ng-container [ngSwitch]="data.value.inputType">
+                    <div class="input-container" *ngFor="let key of mappedFormDataKeys">
+                        <label>{{ key }}</label>
+                        <ng-container [ngSwitch]="mappedFormData.get(key)?.inputType">
                             <ng-container *ngSwitchCase="'file'">
-                                <ng-container *ngIf="data.value.value != null else elseBlock">
-                                    <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields" [(ngModel)]="selectedImage">
-                                        <option *ngFor="let image of imageReplacements" [selected]="data.value.value == image" [value]="image">{{ image }}</option>
+                                <ng-container *ngIf="mappedFormData.get(key)?.value != null else elseBlock">
+                                    <select class="select" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields" [(ngModel)]="selectedImage">
+                                        <option *ngFor="let image of imageReplacements" [selected]="mappedFormData.get(key)?.value == image" [value]="image">{{ image }}</option>
                                     </select>
                                     <img *ngIf="selectedImage != ''" [src]="'http://localhost/uploads/' + selectedImage">
                                 </ng-container>
                                 <ng-template #elseBlock>
                                     <label class="file-upload">
-                                        <input [attr.required]="data.value.required ? true : null" accept="image/*" [type]="data.value.inputType" [formControlName]="data.value.fields" (change)="primeImage($event)">
+                                        <input [attr.required]="mappedFormData.get(key)?.required ? true : null" accept="image/*" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields" (change)="primeImage($event)">
                                         <fa-icon [icon]="faCloudUpload" /> Upload Image
                                     </label>
                                 </ng-template>
                             </ng-container>
                             <ng-container *ngSwitchCase="'alternative-select'">
                                 <div class="drop-select-container">
-                                    <input [disabled]="locked" (input)="filterDropSelect(data.key, $event, data.value.fields)" type="text" (focus)="selectOpen[data.key] = {opened: true}" [value]="alternativeSelectedData[data.key]?.selectData">
-                                    <div class="drop-select" [ngClass]="selectOpen[data.key]?.opened ? '' : 'hidden'" [attr.required]="data.value.required ? true : null">
-                                        <p *ngFor="let option of alternativeSelectData[data.key].data" (click)="updateAlternativeSelectData(data.value.fields, option, data.key)">{{ option }}</p>
+                                    <input [disabled]="locked" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.fields)" type="text" (focus)="selectOpen[key] = {opened: true}" [value]="alternativeSelectedData[key]?.selectData">
+                                    <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? '' : 'hidden'" [attr.required]="mappedFormData.get(key)?.required ? true : null">
+                                        <p *ngFor="let option of alternativeSelectData[key].data" (click)="updateAlternativeSelectData(mappedFormData.get(key)!.fields, option, key)">{{ option }}</p>
                                     </div>
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'select'">
-                                <select class="select" [attr.required]="data.value.required ? true : null" [formControlName]="data.value.fields">
-                                    <ng-container *ngFor="let option of selectDataFromKey(data.key)">
-                                        <option [value]="option" [selected]="data.value.value == option">{{ option }}</option>
+                                <select class="select" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields">
+                                    <ng-container *ngFor="let option of selectDataFromKey(key)">
+                                        <option [value]="option" [selected]="mappedFormData.get(key)?.value == option">{{ option }}</option>
                                     </ng-container>
                                 </select>
                             </ng-container>
                             <ng-container *ngSwitchCase="'replacement'">
                                 <div class="drop-select-container">
-                                    <input [disabled]="locked" (input)="filterDropSelect(data.key, $event, null)" type="text" (focus)="selectOpen[data.key] = {opened: true}" [value]="selectedReplacementData[data.key]?.selectData">
-                                    <div class="drop-select" [ngClass]="selectOpen[data.key]?.opened ? '' : 'hidden'" [attr.required]="data.value.required ? true : null">
-                                        <p *ngFor="let option of filteredReplacementData[data.key].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, data.key, data.value.fields)">{{ option.replacement }}</p>
+                                    <input [disabled]="locked" (input)="filterDropSelect(key, $event, null)" type="text" (focus)="selectOpen[key] = {opened: true}" [value]="selectedReplacementData[key]?.selectData">
+                                    <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? '' : 'hidden'" [attr.required]="mappedFormData.get(key)?.required ? true : null">
+                                        <p *ngFor="let option of filteredReplacementData[key].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, key, mappedFormData.get(key)!.fields)">{{ option.replacement }}</p>
                                     </div>
                                 </div>
                             </ng-container>
-                            <input *ngSwitchDefault [attr.required]="data.value.required ? true : null" [type]="data.value.inputType" [formControlName]="data.value.fields" [value]="data.value.value">
+                            <input *ngSwitchDefault [attr.required]="mappedFormData.get(key)?.required ? true : null" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields" [value]="mappedFormData.get(key)?.value">
                         </ng-container>
                     </div>
                     <ng-container *ngIf="tableName == 'retail_items'">
                         <div class="image-upload-container">
                             <input accept="image/*" type="file" (change)="primeImage($event)">
-                            <fa-icon [icon]="faCloudUpload" /> Upload Image
+                            <fa-icon [icon]="faCloudUpload" /> Upload Extra Images
                         </div>
                     </ng-container>
                     <div class="form-footer">

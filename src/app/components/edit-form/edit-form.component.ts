@@ -14,6 +14,13 @@ export class EditFormComponent {
   faSpinner = faSpinner;
 
   editForm: FormGroup;
+  mappedFormDataKeys: any;
+  mappedFormData: Map<string, {value: any;
+    inputType: string;
+    dataType: string;
+    required: boolean;
+    fields: string;}> = new Map(); 
+
   formData: {
     [key: string]: {
       value: any;
@@ -107,6 +114,11 @@ export class EditFormComponent {
 
   buildForm() {
     this.isLocked();
+    
+    let formDataArray = Object.entries(this.formData);
+    formDataArray.sort((a: any, b: any) => a[1].inputType.localeCompare(b[1].inputType));
+    this.mappedFormData = new Map(formDataArray);
+    this.mappedFormDataKeys = Array.from(this.mappedFormData.keys());
     for (const key in this.formData) {
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];
@@ -166,12 +178,12 @@ export class EditFormComponent {
   handleImages() {
     switch(this.tableName) {
       case "retail_items":
-        var id = this.formData['Item ID'].value;
+        var id = this.mappedFormData.get('Item ID')!.value;
         if (id != null) {
           this.dataService.collectData("images-from-item-id", id).subscribe((data: any) => {
             this.imageReplacements = Array.isArray(data) ? data : [data];
-            if (this.formData['Image'].value != null) {
-              this.imageReplacements.push(this.formData['Image'].value);
+            if (this.mappedFormData.get('Image')!.value != null) {
+              this.imageReplacements.push(this.mappedFormData.get('Image')!.value);
             }
           });
         }
@@ -256,5 +268,9 @@ export class EditFormComponent {
       case 'invoices':
         this.locked = this.formData['Status'].value == 'Complete'
     }
+  }
+
+  changeTab(tableName: string) {
+    
   }
 }
