@@ -5,8 +5,8 @@
             <div class="options-container">
                 <div class="row">
                     <button class="button" (click)="addRow(null)">Add New +</button>
-                    <button *ngIf="selectedOption == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
-                    <button *ngIf="selectedOption == 'invoices'" class="button" (click)="invoiceSearch()"><fa-icon [icon]="faBasketShopping"/></button>
+                    <button *ngIf="this.selectedRows.length > 0 && selectedOption == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
+                    <button *ngIf="this.selectedRows.length == 1 && selectedOption == 'invoices'" class="button" (click)="invoiceSearch()"><fa-icon [icon]="faBasketShopping"/></button>
                     <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon [icon]="faTrashCan"/></button>
                 </div>
                 <div>
