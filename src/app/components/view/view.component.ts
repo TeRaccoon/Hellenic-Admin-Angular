@@ -255,8 +255,7 @@ export class ViewComponent {
 
   async editRow(id: any, table: string) {
     var row = this.data.filter((row: any) => row.id == id)[0];
-
-
+    
     if (table != '') {
       this.dataService.collectData("edit-form-data", table).subscribe((formData: any) => {
         
@@ -470,16 +469,11 @@ export class ViewComponent {
   }
 
   invoiceSearch() {
-    if (this.selectedRows.length > 0) {
-      this.dataService.collectDataComplex("invoiced-items-basic-ids", {ids: this.selectedRows}).subscribe((data: any) => {
-        var groupedData: { [key: string]: { name: string, quantity: number}[]} = {};
-        data.map((dataItem: any) => {
-          if (!groupedData[dataItem.title]) {
-            groupedData[dataItem.title] = [];
-          }
-          groupedData[dataItem.title].push({name: dataItem.name, quantity: dataItem.quantity})
-        });
-        this.dataService.storeWidgetData(groupedData);
+    if (this.selectedRows.length > 1) {
+      this.formService.setMessageFormData({title: "Whoops!", message: "Please only select 1 invoice before trying to search!"})
+    } else if (this.selectedRows.length == 1) {
+      this.dataService.collectData("invoiced-items", this.selectedRows[0].toString()).subscribe((data: any) => {
+        this.dataService.storeWidgetData(data);
         this.formService.showInvoicedItemForm();
       });
     } else {
