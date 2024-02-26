@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
-import { faX } from '@fortawesome/free-solid-svg-icons';
+import { faX, faTrashCan, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-invoiced-items-widget',
@@ -9,9 +9,11 @@ import { faX } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./invoiced-items-widget.component.scss']
 })
 export class InvoicedItemsWidgetComponent {
-  data: { [key: string]: { name: string, quantity: number}[]} = {};
+  data: any = {};
   formData: any | null = null;
   faX = faX;
+  faTrashCan = faTrashCan;
+  faPenToSquare = faPenToSquare;
 
   formVisible = 'hidden';
 
@@ -22,6 +24,7 @@ export class InvoicedItemsWidgetComponent {
       this.formVisible = visible ? 'visible' : 'hidden';
       if (visible) {
         this.data = this.dataService.retrieveWidgetData();
+        console.log(this.data);
       }
     })
   }
