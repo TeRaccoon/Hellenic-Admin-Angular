@@ -22,11 +22,10 @@ export class InvoicedItemsWidgetComponent {
   ngOnInit() {
     this.formService.getInvoicedItemsFormVisibility().subscribe(async (visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
-      if (visible) {
-        this.data = this.dataService.retrieveWidgetData();
-        console.log(this.data);
-      }
-    })
+    });
+    this.dataService.retrieveWidgetData().subscribe((widgetData: any) => {
+      this.data = widgetData;
+    });
   }
 
   addInvoicedItem() {
@@ -42,11 +41,18 @@ export class InvoicedItemsWidgetComponent {
     });
   }
 
+  deleteRow(id: number) {
+    this.formService.setSelectedTable("invoiced_items");
+    this.formService.setDeleteFormIds([id]);
+    this.formService.showDeleteForm();
+    this.formService.setReloadType("widget");
+  }
+
   prepareEditFormService(id: any, table: string) {
     this.formService.setSelectedTable(table);
     this.formService.setSelectedId(id);
     this.formService.showEditForm();
-    this.formService.setReloadType("hard");
+    this.formService.setReloadType("widget");
   }
 
 

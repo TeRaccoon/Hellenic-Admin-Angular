@@ -24,7 +24,7 @@
                             <td (click)="editRow(values.id)">
                                 <fa-icon [icon]="faPenToSquare" />
                             </td>
-                            <td>
+                            <td (click)="deleteRow(values.id)">
                                 <fa-icon [icon]="faTrashCan" />
                             </td>
                         </tr>
