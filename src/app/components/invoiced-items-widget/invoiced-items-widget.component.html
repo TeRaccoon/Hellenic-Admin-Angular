@@ -6,21 +6,27 @@
                 <fa-icon [icon]="faX" />
             </a>
         </div>
-    </div>
-    <ng-container *ngIf="data != null else elseBlock">
-        <div *ngFor="let dataItem of data | keyvalue" class="widget-container">
+        <ng-container *ngIf="data != null else elseBlock">
             <div class="table-container">
                 <table>
                     <thead>
-                        <th>Invoice ID</th>
+                        <th>ID</th>
                         <th>Item Name</th>
                         <th>Quantity</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let values of dataItem.value">
-                            <td>{{ dataItem.key }}</td>
+                        <tr *ngFor="let values of data">
+                            <td>{{ values.id }}</td>
                             <td>{{ values.name }}</td>
                             <td>{{ values.quantity }}</td>
+                            <td>
+                                <fa-icon [icon]="faPenToSquare" />
+                            </td>
+                            <td>
+                                <fa-icon [icon]="faTrashCan" />
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -28,12 +34,12 @@
                     <button class="button" (click)="addInvoicedItem()">Add more</button>
                 </div>
             </div>
-        </div>
-    </ng-container>
-    <ng-template #elseBlock>
-        <div class="widget-container">
-            <p>There are no invoiced items for this invoice. Would you like to add some?</p>
-            <button class="button" (click)="addInvoicedItem()">Add new</button>
-        </div>
-    </ng-template>
+        </ng-container>
+        <ng-template #elseBlock>
+            <div class="widget-container">
+                <p>There are no invoiced items for this invoice. Would you like to add some?</p>
+                <button class="button" (click)="addInvoicedItem()">Add new</button>
+            </div>
+        </ng-template>
+    </div>
 </div>
