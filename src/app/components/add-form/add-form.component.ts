@@ -390,4 +390,11 @@ export class AddFormComponent {
   inputHasError(field: string) {
     return this.addForm.get(field)?.invalid && this.submitted;
   }
+  
+  openSelect(key: any) {
+    for (let keys in this.selectOpen) {
+      this.selectOpen[keys].opened = false
+    }
+    this.selectOpen[key] = { opened: true };
+  }
 }

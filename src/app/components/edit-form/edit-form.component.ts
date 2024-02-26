@@ -283,4 +283,11 @@ export class EditFormComponent {
   inputHasError(field: string) {
     return this.editForm.get(field)?.invalid && this.submitted;
   }
+  
+  openSelect(key: any) {
+    for (let keys in this.selectOpen) {
+      this.selectOpen[keys].opened = false
+    }
+    this.selectOpen[key] = { opened: true };
+  }
 }
