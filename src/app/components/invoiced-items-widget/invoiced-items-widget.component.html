@@ -21,7 +21,7 @@
                             <td>{{ values.id }}</td>
                             <td>{{ values.name }}</td>
                             <td>{{ values.quantity }}</td>
-                            <td>
+                            <td (click)="editRow(values.id)">
                                 <fa-icon [icon]="faPenToSquare" />
                             </td>
                             <td>

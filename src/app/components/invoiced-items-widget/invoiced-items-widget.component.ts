@@ -33,6 +33,23 @@ export class InvoicedItemsWidgetComponent {
     this.getAddFormData();
   }
 
+  editRow(id: number) {
+    this.dataService.collectData("edit-form-data", "invoiced_items").subscribe((editFormData: any) => {
+      this.dataService.collectDataComplex("append-or-add", { table: 'invoiced_items', id: id, column: 'id' }).subscribe((data: any) => {
+        this.formService.processEditFormData(id, data, editFormData);
+        this.prepareEditFormService(id, 'invoiced_items');
+      });
+    });
+  }
+
+  prepareEditFormService(id: any, table: string) {
+    this.formService.setSelectedTable(table);
+    this.formService.setSelectedId(id);
+    this.formService.showEditForm();
+    this.formService.setReloadType("hard");
+  }
+
+
   getAddFormData() {
     this.dataService.collectData("table", "invoiced_items").subscribe((data: any) => {
       this.formData = data.edittable;
