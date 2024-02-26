@@ -41,12 +41,17 @@
         overflow-x: auto;
         margin: 0 auto;
         border-radius: 15px;
+        .widget-footer {
+            display: flex;
+            justify-content: right;
+        }
         table {
             border-collapse: collapse;
             border-radius: 15px;
             overflow: hidden;
             border-radius: 15px;
             width: 100%;
+            margin-top: 10px;
         }
         tr {
             height: 56px;
