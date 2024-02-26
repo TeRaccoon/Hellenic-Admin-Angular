@@ -4,7 +4,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { urlBase } from '../../services/data.service';
-import { faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck } from '@fortawesome/free-solid-svg-icons';
 import {Location} from '@angular/common';
 
 @Component({
@@ -31,6 +31,7 @@ export class ViewComponent {
   faArrowDown = faArrowDown;
   faBookMedical = faBookMedical;
   faBookOpen = faBookOpen;
+  faTruck = faTruckFront;
   
   selectedOption: string | null = null;
   displayName: string = "";
@@ -255,7 +256,7 @@ export class ViewComponent {
 
   async editRow(id: any, table: string) {
     var row = this.data.filter((row: any) => row.id == id)[0];
-    
+
     if (table != '') {
       this.dataService.collectData("edit-form-data", table).subscribe((formData: any) => {
         
@@ -313,8 +314,18 @@ export class ViewComponent {
         }
       });
     } else {
-      this.formService.processEditFormData(id, row, this.edittable)
-      this.prepareEditFormService(id, table);
+      if (this.selectedOption == 'invoices') {
+        if (row['status'] == 'Complete') {
+          this.formService.setMessageFormData({title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!'});
+          this.formService.showMessageForm();
+        } else {
+          this.formService.processEditFormData(id, row, this.edittable)
+          this.prepareEditFormService(id, table);
+        }
+      } else {
+        this.formService.processEditFormData(id, row, this.edittable)
+        this.prepareEditFormService(id, table);
+      }
     }
   }
 
@@ -475,6 +486,7 @@ export class ViewComponent {
       this.dataService.collectData("invoiced-items", this.selectedRows[0].toString()).subscribe((data: any) => {
         this.dataService.storeWidgetData(data);
         this.formService.showInvoicedItemForm();
+        this.widgetVisible = true;
       });
     } else {
         this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before searching for items!"});
@@ -655,5 +667,9 @@ export class ViewComponent {
   reloadTable() {
     this.loadTable(String(this.selectedOption));    
     this.changePage(1);
+  }
+
+  calculateDistance() {
+    
   }
 }
