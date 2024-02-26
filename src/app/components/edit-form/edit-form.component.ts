@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faCloudUpload, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUpload, faSpinner, faX } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-edit-form',
@@ -12,6 +12,7 @@ import { faCloudUpload, faSpinner } from '@fortawesome/free-solid-svg-icons';
 export class EditFormComponent {
   faCloudUpload = faCloudUpload;
   faSpinner = faSpinner;
+  faX = faX;
 
   editForm: FormGroup;
   mappedFormDataKeys: any;
@@ -59,6 +60,9 @@ export class EditFormComponent {
       data: {value: string}[]
     }
   } = {};
+
+  error: string | null = null;
+  submitted = false;
   
   alternativeSelectedData: { [key: string]: {selectData: string} } = {};
   selectedReplacementData: { [key:string]: {selectData: string, selectDataId: Number | null } | null} = {};
@@ -76,13 +80,9 @@ export class EditFormComponent {
 
   ngOnInit() {
     this.formService.getEditFormVisibility().subscribe((visible) => {
-      this.loaded = false;
-      this.locked = false;
-      this.selectedImage = "";
-      this.imageReplacements = [];
+      this.clearForm();
       this.formVisible = visible ? 'visible' : 'hidden';
       if (visible) {
-        this.clearForm();
         this.loadForm();
       }
     });
@@ -104,7 +104,8 @@ export class EditFormComponent {
         this.alternativeSelectedData[key] = { selectData: this.formData[key]?.value };
       });
       Object.keys(this.replacementData).forEach((key) => {
-        this.selectedReplacementData[key] = null;
+        var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find(item => item.id === Number(this.formData[key].value))!.replacement;
+        this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
         this.selectedReplacementFilter[key] = { selectFilter: ''};
         this.selectOpen[key] = {opened: false};
       });
@@ -119,6 +120,7 @@ export class EditFormComponent {
     formDataArray.sort((a: any, b: any) => a[1].inputType.localeCompare(b[1].inputType));
     this.mappedFormData = new Map(formDataArray);
     this.mappedFormDataKeys = Array.from(this.mappedFormData.keys());
+    
     for (const key in this.formData) {
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];
@@ -158,10 +160,15 @@ export class EditFormComponent {
   }
 
   clearForm() {
+    this.loaded = false;
+    this.locked = false;
+    this.selectedImage = "";
+    this.imageReplacements = [];
     this.formData = {};
     this.replacementData = {};
     this.editForm = this.fb.group({});
     this.editForm.reset();
+    this.submitted = false;
   }
 
   async loadForm() {
@@ -202,20 +209,23 @@ export class EditFormComponent {
   }
 
   formSubmit() {
-    if (this.fileName != "") {
-      this.editForm.value['image_file_name'] = this.fileName;
-    }
-    this.dataService
-      .submitFormData(this.editForm.value)
-      .subscribe((data: any) => {
-        this.formService.setMessageFormData({
-          title: data.success ? 'Success!' : 'Error!',
-          message: data.message,
-        });
-        this.formService.showMessageForm();
-        this.hide();
-        this.formService.requestReload();
+    this.submitted = true;
+    if (this.editForm.valid) {
+      if (this.fileName != "") {
+        this.editForm.value['image_file_name'] = this.fileName;
+      }
+      this.dataService
+        .submitFormData(this.editForm.value)
+        .subscribe((data: any) => {
+          this.formService.setMessageFormData({
+            title: data.success ? 'Success!' : 'Error!',
+            message: data.message,
+          });
+          this.formService.showMessageForm();
+          this.hide();
+          this.formService.requestReload();
       });
+    }
   }
 
   deriveEnumOptions(field: any) {
@@ -270,7 +280,7 @@ export class EditFormComponent {
     }
   }
 
-  changeTab(tableName: string) {
-    
+  inputHasError(field: string) {
+    return this.editForm.get(field)?.invalid && this.submitted;
   }
 }

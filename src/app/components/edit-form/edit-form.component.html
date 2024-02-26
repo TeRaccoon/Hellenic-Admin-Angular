@@ -2,41 +2,41 @@
     <div class="content">
         <div class="header-section">
             <h1>Editting...</h1>
-            <a (click)="hide()">X</a>
-        </div>
-        <div class="tab-section">
-            <div (click)="changeTab('invoiced_items')">Invoiced Items</div>
+            <a (click)="hide()">
+                <fa-icon [icon]="faX" />
+            </a>
         </div>
         <div class="content-section">
+            <div *ngIf="error" class="error-section">{{ error }}</div>
             <ng-container *ngIf="mappedFormData && loaded else loading">
                 <form [formGroup]="editForm" (ngSubmit)="formSubmit()" class="form-container">
-                    <div class="input-container" *ngFor="let key of mappedFormDataKeys">
+                    <div class="input-container" *ngFor="let key of mappedFormDataKeys" [ngClass]="mappedFormData.get(key)?.inputType">
                         <label>{{ key }}</label>
                         <ng-container [ngSwitch]="mappedFormData.get(key)?.inputType">
                             <ng-container *ngSwitchCase="'file'">
                                 <ng-container *ngIf="mappedFormData.get(key)?.value != null else elseBlock">
-                                    <select class="select" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields" [(ngModel)]="selectedImage">
+                                    <select [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" class="select-input" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields" [(ngModel)]="selectedImage">
                                         <option *ngFor="let image of imageReplacements" [selected]="mappedFormData.get(key)?.value == image" [value]="image">{{ image }}</option>
                                     </select>
                                     <img *ngIf="selectedImage != ''" [src]="'http://localhost/uploads/' + selectedImage">
                                 </ng-container>
                                 <ng-template #elseBlock>
                                     <label class="file-upload">
-                                        <input [attr.required]="mappedFormData.get(key)?.required ? true : null" accept="image/*" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields" (change)="primeImage($event)">
+                                        <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [attr.required]="mappedFormData.get(key)?.required ? true : null" accept="image/*" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields" (change)="primeImage($event)">
                                         <fa-icon [icon]="faCloudUpload" /> Upload Image
                                     </label>
                                 </ng-template>
                             </ng-container>
                             <ng-container *ngSwitchCase="'alternative-select'">
                                 <div class="drop-select-container">
-                                    <input [disabled]="locked" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.fields)" type="text" (focus)="selectOpen[key] = {opened: true}" [value]="alternativeSelectedData[key]?.selectData">
+                                    <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [disabled]="locked" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.fields)" type="text" (focus)="selectOpen[key] = {opened: true}" [value]="alternativeSelectedData[key]?.selectData">
                                     <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? '' : 'hidden'" [attr.required]="mappedFormData.get(key)?.required ? true : null">
                                         <p *ngFor="let option of alternativeSelectData[key].data" (click)="updateAlternativeSelectData(mappedFormData.get(key)!.fields, option, key)">{{ option }}</p>
                                     </div>
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'select'">
-                                <select class="select" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields">
+                                <select [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" class="select-input" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields">
                                     <ng-container *ngFor="let option of selectDataFromKey(key)">
                                         <option [value]="option" [selected]="mappedFormData.get(key)?.value == option">{{ option }}</option>
                                     </ng-container>
@@ -44,13 +44,14 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'replacement'">
                                 <div class="drop-select-container">
-                                    <input [disabled]="locked" (input)="filterDropSelect(key, $event, null)" type="text" (focus)="selectOpen[key] = {opened: true}" [value]="selectedReplacementData[key]?.selectData">
+                                    <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [disabled]="locked" (input)="filterDropSelect(key, $event, null)" type="text" (focus)="selectOpen[key] = {opened: true}" [value]="selectedReplacementData[key]?.selectData">
                                     <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? '' : 'hidden'" [attr.required]="mappedFormData.get(key)?.required ? true : null">
                                         <p *ngFor="let option of filteredReplacementData[key].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, key, mappedFormData.get(key)!.fields)">{{ option.replacement }}</p>
                                     </div>
                                 </div>
                             </ng-container>
-                            <input *ngSwitchDefault [attr.required]="mappedFormData.get(key)?.required ? true : null" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields" [value]="mappedFormData.get(key)?.value">
+                            <input *ngSwitchDefault [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" [attr.required]="mappedFormData.get(key)?.required ? true : null" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields"
+                                [value]="mappedFormData.get(key)?.value">
                         </ng-container>
                     </div>
                     <ng-container *ngIf="tableName == 'retail_items'">
