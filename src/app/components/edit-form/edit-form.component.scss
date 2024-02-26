@@ -63,6 +63,13 @@
                     margin: 100px 0 200px 0;
                 }
             }
+            .error-section {
+                display: flex;
+                justify-content: center;
+                color: red;
+                margin: 20px 0 10px 0;
+                font-size: 18px;
+            }
             .image-upload-container {
                 width: 100%;
                 border: 2px dashed rgb(154, 154, 154);
@@ -93,11 +100,24 @@
                 flex-wrap: wrap;
                 width: 100%;
             }
+            .replacement,
+            .select {
+                flex: 1 1 50%;
+            }
+            .date {
+                flex: 1 1 45%;
+            }
+            .number {
+                flex: 1 1 30%;
+                width: 30%;
+            }
             .input-container {
                 padding: 10px;
                 display: flex;
-                flex: 1 0 40%;
                 flex-direction: column;
+                .error-input {
+                    border: 2px solid red;
+                }
                 .drop-select-container {
                     position: relative;
                     width: 100%;
@@ -107,7 +127,7 @@
                         box-sizing: border-box;
                     }
                 }
-                .select {
+                .select-input {
                     font-size: 16px;
                     padding: 10px;
                     cursor: pointer;
@@ -129,15 +149,6 @@
                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
                     font-size: 16px;
                     padding: 10px;
-                }
-                input[type=date] {
-                    width: 45%;
-                }
-                input[type=text] {
-                    width: 75%;
-                }
-                input[type=number] {
-                    width: 20%;
                 }
                 .file-upload {
                     border: 1px solid #ccc;

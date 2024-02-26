@@ -34,8 +34,8 @@
         background-color: #ebebeb;
         border: none;
         border-radius: 15px;
-        width: 82.5vw;
-        margin: 5vw 0 0 16.5vw;
+        width: 35vw;
+        margin: 5vw auto 0 auto;
         .header-section {
             height: 50px;
             border-radius: 15px 15px 0 0;
@@ -55,6 +55,14 @@
             }
         }
         .content-section {
+            .loading-container {
+                display: flex;
+                justify-content: center;
+                margin-top: 100px;
+                .loading-icon {
+                    margin: 100px 0 200px 0;
+                }
+            }
             .error-section {
                 display: flex;
                 justify-content: center;
@@ -99,11 +107,21 @@
                 flex-wrap: wrap;
                 width: 100%;
             }
+            .replacement,
+            .select {
+                flex: 1 1 50%;
+            }
+            .date {
+                flex: 1 1 45%;
+            }
+            .number {
+                flex: 1 1 30%;
+                width: 30%;
+            }
             .input-container {
                 padding: 10px;
                 display: flex;
                 flex-direction: column;
-                flex: 1 0 48%;
                 .error-input {
                     border: 2px solid red;
                 }
@@ -116,7 +134,7 @@
                         box-sizing: border-box;
                     }
                 }
-                .select {
+                .select-input {
                     cursor: pointer;
                     font-size: 16px;
                     padding: 10px;
