@@ -347,6 +347,7 @@ export class FormService {
 
         case "double":
         case "float":
+        case "int":
           inputTypes.push("number");
           break;
 
