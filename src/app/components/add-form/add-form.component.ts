@@ -41,11 +41,7 @@ export class AddFormComponent {
 
   selectData: { key: string; data: string[] }[] = [];
 
-  filteredReplacementData: {
-    [key: string]: {
-      data: { id: Number; replacement: string }[];
-    }
-  } = {};
+  filteredReplacementData: any = {};
 
   replacementData: {
     [key: string]: {
@@ -124,7 +120,10 @@ export class AddFormComponent {
       this.alternativeSelectedData[key] = { selectData: '' };
     });
     Object.keys(this.replacementData).forEach((key) => {
-      var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find(item => item.id === Number(this.formData[key].value))!.replacement;
+      if (!Array.isArray(this.filteredReplacementData[key].data)) {
+        this.filteredReplacementData[key].data = [this.filteredReplacementData[key].data];
+      }
+      var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))!.replacement;
       this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
       this.selectedReplacementFilter[key] = { selectFilter: ''};
       this.selectOpen[key] = {opened: false};
