@@ -2,7 +2,9 @@
     <div class="content">
         <div class="header-section">
             <h1>{{ formData.title }}</h1>
-            <a (click)="hide()">X</a>
+            <a (click)="hide()">
+                <fa-icon [icon]="faX" />
+            </a>
         </div>
         <div class="content-section">
             <p>{{ formData.message }}</p>
