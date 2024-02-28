@@ -29,7 +29,13 @@ export class InvoicedItemsWidgetComponent {
   }
 
   addInvoicedItem() {
-    this.getAddFormData();
+    this.dataService.collectData("table", "invoiced_items").subscribe((data: any) => {
+      this.formData = data.edittable;
+      this.formService.processAddFormData(data.edittable);
+      this.formService.setSelectedTable("invoiced_items");
+      this.formService.showAddForm();
+      this.formService.setReloadType("widget");
+    });
   }
 
   editRow(id: number) {
@@ -53,28 +59,6 @@ export class InvoicedItemsWidgetComponent {
     this.formService.setSelectedId(id);
     this.formService.showEditForm();
     this.formService.setReloadType("widget");
-  }
-
-
-  getAddFormData() {
-    this.dataService.collectData("table", "invoiced_items").subscribe((data: any) => {
-      this.formData = data.edittable;
-      var addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string, value: any } } = {};
-      var inputDataTypes: string[] = this.dataTypeToInputType(this.formData.types);
-      this.formData.columns.forEach((_: any, index: number) => {
-        addFormData[this.formData.names[index]] = {
-          inputType: inputDataTypes[index],
-          dataType: this.formData.types[index],
-          required: this.formData.required[index],
-          fields: this.formData.fields[index],
-          value: null
-        };
-      });
-      this.formService.setAddFormData(addFormData);
-      this.formService.setSelectedTable("invoiced_items");
-      this.formService.showAddForm();
-      this.formService.setReloadType("widget");
-    });
   }
 
   dataTypeToInputType(dataTypes: any[]) {
