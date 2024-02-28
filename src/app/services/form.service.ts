@@ -259,6 +259,10 @@ export class FormService {
         var data = await this.getIdReplacementData('customers_id_name', dataService);
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
+        
+        data = await this.getIdReplacementData('warehouse_id_name', dataService);
+        formData['Warehouse ID'].inputType = 'replacement';
+        replacementData['Warehouse ID'] = { data: data };
         break;
 
       case 'page_section_text':
