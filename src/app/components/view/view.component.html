@@ -5,10 +5,10 @@
             <div class="options-container">
                 <div class="row">
                     <button class="button" (click)="addRow(null)">Add New +</button>
-                    <button *ngIf="this.selectedRows.length > 0 && selectedOption == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
-                    <button *ngIf="this.selectedRows.length == 1 && selectedOption == 'invoices'" class="button" (click)="invoiceSearch()"><fa-icon [icon]="faBasketShopping"/></button>
+                    <button *ngIf="this.selectedRows.length > 0 && tableName == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
+                    <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button" (click)="invoiceSearch()"><fa-icon [icon]="faBasketShopping"/></button>
                     <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon [icon]="faTrashCan"/></button>
-                    <button *ngIf="this.selectedRows.length == 1 && selectedOption == 'invoices'" class="button" (click)="calculateDistance()">
+                    <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button" (click)="calculateDistance()">
                         <fa-icon *ngIf="!distanceLoading; else loading" [icon]="faTruck"></fa-icon>
                         <ng-template #loading>
                           <fa-icon [icon]="faSpinner" spinPulse [spin]="true"></fa-icon>
@@ -63,7 +63,7 @@
             </div>
             <div class="table-wrapper">
                 <div *ngIf="tabs.length > 0" class="tab-parent">
-                    <div *ngFor="let tab of tabs" (click)="changeTab(tab.tableName)" [class]="selectedOption == tab.tableName ? 'active-tab' : 'tab'">
+                    <div *ngFor="let tab of tabs" (click)="changeTab(tab.tableName)" [class]="tableName == tab.tableName ? 'active-tab' : 'tab'">
                         {{tab.displayName}}
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                                 {{ column }}
                                 <fa-icon *ngIf="this.sortedColumn.columnName == column.toString()" [icon]="this.sortedColumn.ascending ? faArrowUp : faArrowDown" />
                             </th>
-                            <ng-container *ngIf="selectedOption == 'items' || selectedOption == 'retail_items'">
+                            <ng-container *ngIf="tableName == 'items' || tableName == 'retail_items'">
                                 <th>Allergen Information</th>
                                 <th>Nutrition Information</th>
                             </ng-container>
@@ -87,7 +87,7 @@
                         <tr class="data-row" *ngFor="let item of filteredDisplayData.slice(0, entryLimit); let key = index;">
                             <ng-container *ngIf="itemContainsFilter(item)">
                                 <td>
-                                    <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox">
+                                    <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox" [checked]="selectedRows.indexOf(item['id']) != -1">
                                 </td>
                                 <td *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;" [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
                                     <ng-container *ngIf="canDisplayColumn(column)">
@@ -111,7 +111,7 @@
                                         </ng-container>
                                     </ng-container>
                                 </td>
-                                <ng-container *ngIf="selectedOption == 'items' || selectedOption == 'retail_items'">
+                                <ng-container *ngIf="tableName == 'items' || tableName == 'retail_items'">
                                     <td (click)="editRow(item.id, 'allergen_information')">
                                         <fa-icon [icon]="faBookMedical" />
                                     </td>
@@ -157,7 +157,7 @@
                     <button (click)="nextPage()">Next</button>
                 </div>
             </div>
-            <ng-container [ngSwitch]="selectedOption">
+            <ng-container [ngSwitch]="tableName">
                 <ng-container *ngSwitchCase="'general_ledger'">
                     <app-ledger-widget></app-ledger-widget>
                 </ng-container>

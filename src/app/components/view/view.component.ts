@@ -33,7 +33,7 @@ export class ViewComponent {
   faBookOpen = faBookOpen;
   faTruck = faTruckFront;
   
-  selectedOption: string | null = null;
+  tableName: string | null = null;
   displayName: string = "";
   tableFilter: string | null = null;
   queryFilter: string | null = null;
@@ -79,13 +79,13 @@ export class ViewComponent {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
-      this.selectedOption = params['table'] || null;
-      if (this.selectedOption != null) {
+      this.tableName = params['table'] || null;
+      if (this.tableName != null) {
         this.widgetVisible = false;
         this.resetTable();
         this.convertTableName();
-        this.formService.setSelectedTable(String(this.selectedOption));
-        this.loadTable(String(this.selectedOption));
+        this.formService.setSelectedTable(String(this.tableName));
+        this.loadTable(String(this.tableName));
         this.loadPage();
         this.tabs = this.dataService.getTabs();
       }
@@ -94,7 +94,7 @@ export class ViewComponent {
     this.formService.getReloadRequest().subscribe((reloadRequested: boolean) => {
       if (reloadRequested) {
         if (this.formService.getReloadType() == "hard") {
-          this.loadTable(String(this.selectedOption));
+          this.loadTable(String(this.tableName));
         } else if (this.formService.getReloadType() == "widget") {
           this.invoiceSearch();
         } else if (this.formService.getReloadType() == "filter") {
@@ -107,7 +107,7 @@ export class ViewComponent {
   }
 
   convertTableName() {
-    switch (this.selectedOption) {
+    switch (this.tableName) {
       case 'allergen_information':
         this.displayName = 'Allergen Information';
         break;
@@ -267,7 +267,7 @@ export class ViewComponent {
           case "allergen_information":
           case "nutrition_info":
 
-            switch (this.selectedOption) {
+            switch (this.tableName) {
               case "retail_items":
                 fakeRow['retail_item_id'] = id;
                 this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'retail_item_id' }).subscribe((data: any) => {
@@ -315,7 +315,7 @@ export class ViewComponent {
         }
       });
     } else {
-      if (this.selectedOption == 'invoices') {
+      if (this.tableName == 'invoices') {
         if (row['status'] == 'Complete') {
           this.formService.setMessageFormData({title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!'});
           this.formService.showMessageForm();
@@ -331,14 +331,14 @@ export class ViewComponent {
   }
 
   prepareEditFormService(id: any, table: string) {
-    this.formService.setSelectedTable(table == '' ? String(this.selectedOption) : table);
+    this.formService.setSelectedTable(table == '' ? String(this.tableName) : table);
     this.formService.setSelectedId(id);
     this.formService.showEditForm();
     this.formService.setReloadType("hard");
   }
 
   prepareAddFormService(table: string) {
-    this.formService.setSelectedTable(table == '' ? String(this.selectedOption) : table);
+    this.formService.setSelectedTable(table == '' ? String(this.tableName) : table);
     this.formService.showAddForm();
     this.formService.setReloadType("hard");
   }
@@ -353,20 +353,20 @@ export class ViewComponent {
       values: values,
     }
     this.formService.processAddFormData(addFormData);
-    this.formService.setSelectedTable(String(this.selectedOption));
+    this.formService.setSelectedTable(String(this.tableName));
     this.formService.showAddForm();
     this.formService.setReloadType("hard");
   }
 
   deleteRow(id: number) {
-    this.formService.setSelectedTable(String(this.selectedOption));
+    this.formService.setSelectedTable(String(this.tableName));
     this.formService.setDeleteFormIds([id]);
     this.formService.showDeleteForm();
     this.formService.setReloadType("hard");
   }
 
   deleteRows() {
-    this.formService.setSelectedTable(String(this.selectedOption));
+    this.formService.setSelectedTable(String(this.tableName));
     this.formService.setDeleteFormIds(this.selectedRows);
     this.formService.showDeleteForm();
     this.formService.setReloadType("hard");
@@ -445,15 +445,14 @@ export class ViewComponent {
     return range;
   }
 
-  changeCheckBox(event: Event, key: number, columnName: string) {
+  async changeCheckBox(event: Event, key: number, columnName: string) {
     const option = event.target as HTMLInputElement;
     let checked = option.checked;
     let data = { ...this.data[key] };
     data[columnName] = checked ? "Yes" : "No";
     data['action'] = 'append';
-    data['table_name'] = String(this.selectedOption);
-    this.dataService.submitFormData(data).subscribe((data: any) => {
-    });
+    data['table_name'] = String(this.tableName);
+    await this.dataService.submitFormData(data).subscribe();
   }
 
   selectRow(event: Event, rowId: number) {
@@ -520,7 +519,7 @@ print() {
   }
 
   shouldColourCell(data: any) {
-    switch(this.selectedOption) {
+    switch(this.tableName) {
       case "invoices":
         switch(data) {
           case "Overdue":
@@ -540,7 +539,7 @@ print() {
   }
 
   canDisplayColumn(column: string) {
-    switch (this.selectedOption) {
+    switch (this.tableName) {
       case "customers":
       case "users":
         if (column == "password") {
@@ -552,7 +551,7 @@ print() {
   }
 
   displayWithIcon(column: string, row: any) {
-    switch (this.selectedOption) {
+    switch (this.tableName) {
       case "invoices":
         if (column == "title") {
           this.icon = row['status'] == "Complete" ? faLock : faLockOpen;
@@ -564,19 +563,20 @@ print() {
   }
 
   iconClick(event: Event, key: number, column: string, row: any) {
-    switch (this.selectedOption) {
+    switch (this.tableName) {
       case "invoices":
         if (column == 'title') {
           let data = { ...this.data[key] };
           data['status'] = data['status'] == 'Complete' ? 'Pending' : 'Complete';
           row['status'] = data['status'];
           data['action'] = 'append';
-          data['table_name'] = String(this.selectedOption);
+          data['table_name'] = String(this.tableName);
           this.dataService.submitFormData(data).subscribe((response: any) => {
             if (response.success) {
               this.reloadTable();
             } else {
-              alert(":(");
+              this.formService.setMessageFormData({ title: "Error!", message: "There was an error trying to unlock the booking!" });
+              this.formService.showMessageForm();
             }
           });
         }
@@ -690,7 +690,7 @@ print() {
   }
 
   reloadTable() {
-    this.loadTable(String(this.selectedOption));    
+    this.loadTable(String(this.tableName));    
     this.changePage(1);
   }
 
