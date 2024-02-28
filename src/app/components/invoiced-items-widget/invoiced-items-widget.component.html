@@ -6,7 +6,7 @@
                 <fa-icon [icon]="faX" />
             </a>
         </div>
-        <ng-container *ngIf="data != null else elseBlock">
+        <ng-container *ngIf="data != null && data.length > 0 else noData">
             <div class="table-container">
                 <table>
                     <thead>
@@ -35,8 +35,8 @@
                 </div>
             </div>
         </ng-container>
-        <ng-template #elseBlock>
-            <div class="widget-container">
+        <ng-template #noData>
+            <div class="error-container">
                 <p>There are no invoiced items for this invoice. Would you like to add some?</p>
                 <button class="button" (click)="addInvoicedItem()">Add new</button>
             </div>
