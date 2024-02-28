@@ -501,8 +501,9 @@ print() {
     if (this.selectedRows.length > 1) {
       this.formService.setMessageFormData({title: "Whoops!", message: "Please only select 1 invoice before trying to search!"})
     } else if (this.selectedRows.length == 1) {
-      this.dataService.collectData("invoiced-items", this.selectedRows[0].toString()).subscribe((data: any) => {
-        this.dataService.storeWidgetData(data);
+      this.dataService.collectData("invoiced-items", this.selectedRows[0].toString()).subscribe((invoiced_items: any) => {
+        var invoicedItems = Array.isArray(invoiced_items) ? invoiced_items : [invoiced_items];
+        this.dataService.storeWidgetData(invoicedItems);
         this.formService.showInvoicedItemForm();
         this.widgetVisible = true;
       });

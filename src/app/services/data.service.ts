@@ -79,7 +79,7 @@ export class DataService {
     return this.tableData;
   }
 
-  storeWidgetData(data: { [key: string]: { name: string, quantity: number}[]}) {
+  storeWidgetData(data: any) {
     this.widgetData.next(data);
   }
 
