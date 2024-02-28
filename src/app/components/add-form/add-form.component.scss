@@ -1,7 +1,7 @@
 @import '../variables';
 .container {
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     left: 0;
     top: 0;
     width: 100vw;
@@ -121,7 +121,6 @@
                 .drop-select-container {
                     position: relative;
                     width: 100%;
-                    z-index: 3;
                     input {
                         width: 100%;
                         box-sizing: border-box;
