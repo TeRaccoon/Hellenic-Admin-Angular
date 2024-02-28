@@ -28,7 +28,7 @@ export class InvoiceViewComponent {
         this.invoiceData.push(data);
       });
       this.dataService.collectData("invoice-products", invoiceId.toString()).subscribe((data: any) => {
-        this.invoiceItems.push(data);
+        this.invoiceItems.push(Array.isArray(data) ? data : [data]);
       });
     });
   }

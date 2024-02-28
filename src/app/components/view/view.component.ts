@@ -470,15 +470,32 @@ export class ViewComponent {
     }
   }
 
-  print() {
-    if (this.selectedRows.length > 0) {
-      this.dataService.storePrintInvoiceIds(this.selectedRows);
-      this.router.navigate(['/print/invoice']);
-    } else {
-      this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before trying to print!"});
-      this.formService.showMessageForm();
-    }
+print() {
+  if (this.selectedRows.length < 1) {
+    this.showErrorMessage("Please select an invoice before trying to print!");
+    return;
   }
+
+  const hasMissingWarehouseOrCustomer = this.selectedRows.some(selectedRow => {
+    var currentRow = this.data.filter((row: any) => row.id == selectedRow)[0];
+    if (currentRow['warehouse_id'] == null) {
+      this.showErrorMessage(`Invoice ${selectedRow} is missing a warehouse! Please assign a warehouse before attempting to print.`);
+      return true;
+    }
+    if (currentRow['customer_id'] == null) {
+      this.showErrorMessage(`Invoice ${selectedRow} is missing a customer! Please assign a customer before attempting to print.`);
+      return true;
+    }
+    return false;
+  });
+
+  if (hasMissingWarehouseOrCustomer) {
+    return;
+  }
+
+  this.dataService.storePrintInvoiceIds(this.selectedRows);
+  this.router.navigate(['/print/invoice']);
+}
 
   invoiceSearch() {
     if (this.selectedRows.length > 1) {
