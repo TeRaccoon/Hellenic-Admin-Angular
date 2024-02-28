@@ -306,7 +306,6 @@ export class AddFormComponent {
     this.formService.showMessageForm();
     hideForm && this.hide();
     if (reset) {
-      this.formService.setReloadType('hard');
       this.formService.requestReload();
     }
   }

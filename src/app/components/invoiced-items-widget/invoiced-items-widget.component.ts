@@ -73,7 +73,7 @@ export class InvoicedItemsWidgetComponent {
       this.formService.setAddFormData(addFormData);
       this.formService.setSelectedTable("invoiced_items");
       this.formService.showAddForm();
-      this.formService.setReloadType("soft");
+      this.formService.setReloadType("widget");
     });
   }
 
