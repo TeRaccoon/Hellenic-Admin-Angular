@@ -6,7 +6,7 @@
                     <h2>Sales Invoice / Delivery</h2>
                 </span>
                 <span class="image-container">
-                    <img style="width:100px;height:100px;" src="images/logo.jpg" alt="Logo">
+                    <img style="width:100px;height:100px;" [src]="urlBase + 'static/logo.jpg'" alt="Logo">
                 </span>
             </div>
         </div>
@@ -25,11 +25,11 @@
                 <div class="section">
                     <div class="row">
                         <span class="label">Estimated Delivery Date:</span>
-                        <span class="value">{{ invoice['delivery_date'] }}</span>
+                        <span class="value">{{ invoice['delivery_date'] | date: 'dd/mm/yyyy' }}</span>
                     </div>
                     <div class="row">
                         <span class="label">Created At:</span>
-                        <span class="value">{{ invoice['created_at'] }}</span><br>
+                        <span class="value">{{ invoice['created_at'] | date: 'dd/mm/yyyy' }}</span><br>
                     </div>
                 </div>
             </div>
@@ -52,10 +52,11 @@
                 </div>
                 <div class="section card">
                     <h1>Delivery Address:</h1>
-                    <p>{{ invoice['delivery_address_one'] }}</p>
-                    <p>{{ invoice['delivery_address_two'] }}</p>
-                    <p>{{ invoice['delivery_address_three'] }}</p>
-                    <p>{{ invoice['delivery_postcode'] }}</p>
+                    <p>{{ invoice['address_line_1'] }}</p>
+                    <p>{{ invoice['address_line_2'] }}</p>
+                    <p>{{ invoice['address_line_3'] }}</p>
+                    <p>{{ invoice['address_line_4'] }}</p>
+                    <p>{{ invoice['postcode'] }}</p>
                 </div>
                 <div class="section card">
                     <h1>Payment Details:</h1>
@@ -73,10 +74,10 @@
                     </div>
                     <div *ngFor="let item of invoiceItems[key]" class="row">
                         <p style="width: 40%;">{{ item['item_name'] }}</p>
-                        <p style="width: 15%;">{{ item['quantity'] | currency:'GBP' }}</p>
-                        <p style="width: 15%;">{{ item['price'] | currency:'GBP'}}</p>
-                        <p style="width: 15%;">{{ (item['quantity'] + item['price']) | currency:'GBP' }}</p>
-                        <p style="width: 15%;">{{ item['vat_charge'] }}</p>
+                        <p style="width: 15%;">{{ item['quantity'] }}</p>
+                        <p style="width: 15%;">{{ item['price'] | currency:'GBP' }}</p>
+                        <p style="width: 15%;">{{ (item['quantity'] * item['price']) | currency:'GBP' }}</p>
+                        <p style="width: 15%;">{{ item['vat_charge'] | currency:'GBP' }}</p>
                     </div>
                 </div>
             </div>
