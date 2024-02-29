@@ -95,14 +95,16 @@
             }
             .replacement,
             .select {
-                flex: 1 1 50%;
-            }
-            .date {
                 flex: 1 1 45%;
             }
+            .date {
+                flex: 1 1 20%;
+            }
             .number {
-                flex: 1 1 30%;
-                width: 30%;
+                flex: 1 1 20%;
+            }
+            .text {
+                flex: 1 1 45%;
             }
             .input-container {
                 padding: 10px;
