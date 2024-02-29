@@ -1,3 +1,4 @@
+@import '../variables';
 .container {
     width: 21cm;
     margin-left: auto;
@@ -21,12 +22,24 @@
             display: none;
         }
     }
-    @media print {
-        .print-exclude {
-            display: none;
-        }
+}
+
+.back-button-container {
+    margin: 15px 15px 15px 16%;
+    button {
+        border-radius: 5px;
+        padding: 8px;
+        font-weight: bold;
+        font-size: 17px;
+        margin: 10px;
     }
     .back-icon {
         cursor: pointer;
+    }
+}
+
+@media print {
+    .print-exclude {
+        display: none;
     }
 }
