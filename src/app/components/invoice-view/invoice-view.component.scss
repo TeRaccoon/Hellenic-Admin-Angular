@@ -72,3 +72,14 @@
 .splittable {
     page-break-after: always;
 }
+
+.loading-container {
+    display: flex;
+    h1 {
+        margin-right: 10px;
+    }
+    .loading-icon {
+        align-self: center;
+        font-size: 25px;
+    }
+}
