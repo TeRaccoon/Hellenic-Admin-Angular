@@ -21,4 +21,12 @@
             display: none;
         }
     }
+    @media print {
+        .print-exclude {
+            display: none;
+        }
+    }
+    .back-icon {
+        cursor: pointer;
+    }
 }
