@@ -19,17 +19,17 @@
                     </div>
                     <div class="row">
                         <span class="label">Invoice Date: </span>
-                        <span class="value">{{ date | date: 'dd/mm/yyyy' }}</span>
+                        <span class="value">{{ date | date: 'dd/MM/yyyy' }}</span>
                     </div>
                 </div>
                 <div class="section">
                     <div class="row">
                         <span class="label">Estimated Delivery Date:</span>
-                        <span class="value">{{ invoice['delivery_date'] | date: 'dd/mm/yyyy' }}</span>
+                        <span class="value">{{ invoice['delivery_date'] | date: 'dd/MM/yyyy' }}</span>
                     </div>
                     <div class="row">
                         <span class="label">Created At:</span>
-                        <span class="value">{{ invoice['created_at'] | date: 'dd/mm/yyyy' }}</span><br>
+                        <span class="value">{{ invoice['created_at'] | date: 'dd/MM/yyyy' }}</span><br>
                     </div>
                 </div>
             </div>
