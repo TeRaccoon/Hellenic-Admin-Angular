@@ -11,7 +11,7 @@
             <ng-container *ngIf="mappedFormData && loaded else loading">
                 <form [formGroup]="editForm" (ngSubmit)="formSubmit()" class="form-container">
                     <div class="input-container" *ngFor="let key of mappedFormDataKeys" [ngClass]="mappedFormData.get(key)?.inputType">
-                        <label>{{ key }}</label>
+                        <label>{{ key }}<fa-icon *ngIf="mappedFormData.get(key)?.required" class="asterisk" [icon]="faAsterisk" /></label>
                         <ng-container [ngSwitch]="mappedFormData.get(key)?.inputType">
                             <ng-container *ngSwitchCase="'file'">
                                 <ng-container *ngIf="mappedFormData.get(key)?.value != null else elseBlock">

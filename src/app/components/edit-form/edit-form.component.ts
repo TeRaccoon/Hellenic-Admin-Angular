@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faCloudUpload, faSpinner, faX } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUpload, faSpinner, faX, faAsterisk } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-edit-form',
@@ -13,6 +13,7 @@ export class EditFormComponent {
   faCloudUpload = faCloudUpload;
   faSpinner = faSpinner;
   faX = faX;
+  faAsterisk = faAsterisk;
 
   editForm: FormGroup;
   mappedFormDataKeys: any;
