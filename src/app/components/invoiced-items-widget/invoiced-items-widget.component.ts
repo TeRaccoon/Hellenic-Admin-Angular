@@ -10,6 +10,7 @@ import { faX, faTrashCan, faPenToSquare } from '@fortawesome/free-solid-svg-icon
 })
 export class InvoicedItemsWidgetComponent {
   data: any = {};
+  title: string | null = null;
   formData: any | null = null;
   faX = faX;
   faTrashCan = faTrashCan;
@@ -24,7 +25,8 @@ export class InvoicedItemsWidgetComponent {
       this.formVisible = visible ? 'visible' : 'hidden';
     });
     this.dataService.retrieveWidgetData().subscribe((widgetData: any) => {
-      this.data = widgetData;
+      this.data = widgetData.data;
+      this.title = widgetData.title;
     });
   }
 
