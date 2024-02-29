@@ -36,23 +36,35 @@ export class InvoiceViewComponent {
       this.router.navigate(['/view'], { queryParams: {table: 'invoices'}});
       return;
     }
-    for (const invoiceId of invoiceIds) {
-      const invoiceData: any = await lastValueFrom(this.dataService.collectData("invoice-info", invoiceId.toString()));
-      this.invoiceData.push(invoiceData);
-      
-      const productData: any = await lastValueFrom(this.dataService.collectData("invoice-products", invoiceId.toString()));
-      this.invoiceItems.push(Array.isArray(productData) ? productData : [productData]);
-      
-      var deliveryData: any = await lastValueFrom(this.dataService.collectData("delivery-info", invoiceId.toString()));
-      deliveryData = this.calculateDistance(deliveryData);
-      if (this.customerIds.indexOf(deliveryData.customer_id) == -1) {
-        this.deliveryData.push(deliveryData);
-        this.customerIds.push(deliveryData.customer_id);
-      }
+
+  let invoiceData: any[] = [];
+  let deliveryData: any[] = [];
+
+  for (const invoiceId of invoiceIds) {
+    const invoiceDataItem: any = await lastValueFrom(this.dataService.collectData("invoice-info", invoiceId.toString()));
+    invoiceData.push(invoiceDataItem);
+    
+    const productData: any = await lastValueFrom(this.dataService.collectData("invoice-products", invoiceId.toString()));
+    this.invoiceItems.push(Array.isArray(productData) ? productData : [productData]);
+    
+    let deliveryDataItem: any = await lastValueFrom(this.dataService.collectData("delivery-info", invoiceId.toString()));
+    deliveryDataItem = this.calculateDistance(deliveryDataItem);
+    if (this.customerIds.indexOf(deliveryDataItem.customer_id) == -1) {
+      deliveryData.push(deliveryDataItem);
+      this.customerIds.push(deliveryDataItem.customer_id);
     }
-    console.log(this.deliveryData);
-    this.calculateVat();
-    this.loaded = true;
+  }
+  
+  let combinedData = invoiceData.map((invoice, index) => ({ invoice, delivery: deliveryData[index] }));
+
+  combinedData.sort((a, b) => parseFloat(a.delivery.distance) - parseFloat(b.delivery.distance));
+
+  this.invoiceData = combinedData.map(item => item.invoice);
+  this.deliveryData = combinedData.map(item => item.delivery);
+
+  console.log(deliveryData);
+  this.calculateVat();
+  this.loaded = true;
   }
 
   calculateDistance(deliveryData: any) {
