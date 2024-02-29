@@ -59,6 +59,16 @@
     }
 }
 
+.delivery {
+    table {
+        border-collapse: collapse;
+    }
+    table,
+    th {
+        border: 1px solid black;
+    }
+}
+
 .splittable {
     page-break-after: always;
 }

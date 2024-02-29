@@ -120,9 +120,35 @@
             </div>
         </div>
     </div>
-    <div class="delivery-container">
+    <div class="container delivery">
+        <h1>Deliveries</h1>
         <table>
-
+            <thead>
+                <th>Account Name</th>
+                <th>Delivery Address Line One</th>
+                <th>Delivery Address Line Two</th>
+                <th>Delivery Address Line Three</th>
+                <th>Delivery Address Line Four</th>
+                <th>Delivery Postcode</th>
+                <th>Dispatching Warehouse</th>
+                <th>Warehouse Postcode</th>
+                <th>Distance (KM)</th>
+                <th>Delivery Date</th>
+            </thead>
+            <tbody>
+                <tr class="data-row" *ngFor="let invoice of deliveryData">
+                    <td>{{ invoice.delivery_info.account_name }}</td>
+                    <td>{{ invoice.delivery_info.address_line_1 }}</td>
+                    <td>{{ invoice.delivery_info.address_line_2 }}</td>
+                    <td>{{ invoice.delivery_info.address_line_3 }}</td>
+                    <td>{{ invoice.delivery_info.address_line_4 }}</td>
+                    <td>{{ invoice.delivery_info.postcode }}</td>
+                    <td>{{ invoice.warehouse_name }}</td>
+                    <td>{{ invoice.warehouse_postcode }}</td>
+                    <td>{{ invoice.distance }}</td>
+                    <td>{{ invoice.delivery_date | date: 'dd/MM/yyyy' }}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </ng-container>
