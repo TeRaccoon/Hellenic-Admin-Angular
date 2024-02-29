@@ -1,4 +1,4 @@
-<ng-container *ngIf="invoiceData.length > 0">
+<ng-container *ngIf="loaded else loading">
     <div *ngFor="let invoice of invoiceData; let key = index" class="container">
         <div class="header-section">
             <div class="row">
@@ -63,7 +63,7 @@
                     <p><u>Hellenic Grocery Ltd</u><br> Account No: 63868745<br> Sort Code: 20-69-40<br><br> Please use this account for any payment</p>
                 </div>
             </div>
-            <div class="row">
+            <div class="row splitteable">
                 <div class="items section card">
                     <div class="row item-headers">
                         <span style="width: 40%;">Item Name</span>
@@ -81,7 +81,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row splitteable">
                 <div class="balance section card">
                     <h1>Previous Outstanding Balance</h1>
                     <p>{{ invoice['outstanding_balance'] | currency:'GBP' }}</p>
@@ -103,7 +103,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row splitteable">
                 <div class="agreement section card">
                     <h1>Agreement:</h1>
                     <p>This serves as an acknowledgment that I have received my order in its entirety, with no missing or damaged products. I have verified that all items listed on the invoice are accounted for. Additionally, I confirm that all products
@@ -120,4 +120,17 @@
             </div>
         </div>
     </div>
+    <div class="delivery-container">
+        <table>
+
+        </table>
+    </div>
 </ng-container>
+<ng-template #loading>
+    <ng-container *ngIf="!loaded">
+        <div class="loading-container">
+            <h1>Loading print preview: Please wait</h1>
+            <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true" />
+        </div>
+    </ng-container>
+</ng-template>
