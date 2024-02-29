@@ -206,11 +206,11 @@ export class AddFormComponent {
               const formData = new FormData();
   
               formData.append('image', this.file, this.fileName);
-              this.sumbissionWithImage(formData, hideForm);
+              this.submissionWithImage(formData, hideForm);
             }
           });
       } else {
-        this.sumbissionWithoutImage(hideForm);
+        this.submissionWithoutImage(hideForm);
       }
     }
   }
@@ -269,17 +269,17 @@ export class AddFormComponent {
     }
   }
 
-  sumbissionWithoutImage(hideForm: boolean) {
+  submissionWithoutImage(hideForm: boolean) {
     this.dataService.submitFormData(this.addForm.value).subscribe((data: any) => {
         this.formService.setMessageFormData({
           title: data.success ? 'Success!' : 'Error!',
           message: data.message,
         });
-        this.endSumbission(data.success, hideForm);
+        this.endSubmission(data.success, hideForm);
     });
   }
 
-  sumbissionWithImage(formData: FormData, hideForm: boolean) {
+  submissionWithImage(formData: FormData, hideForm: boolean) {
     this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
       if (uploadResponse.success) {
         this.dataService
@@ -301,11 +301,15 @@ export class AddFormComponent {
     });
   }
 
-  endSumbission(reset: boolean, hideForm: boolean) {
-    this.formService.showMessageForm();
+  endSubmission(reset: boolean, hideForm: boolean) {
+    hideForm && this.formService.showMessageForm();
     hideForm && this.hide();
     if (reset) {
       this.formService.requestReload();
+      this.addForm.reset();
+      this.alternativeSelectData = {};
+      this.selectedReplacementData = {};
+      this.submitted = false;
     }
   }
 

@@ -507,7 +507,11 @@ print() {
       } else {
         this.dataService.collectData("invoiced-items", this.selectedRows[0].toString()).subscribe((invoiced_items: any) => {
           var invoicedItems = Array.isArray(invoiced_items) ? invoiced_items : [invoiced_items];
-          this.dataService.storeWidgetData(invoicedItems);
+          var invoicedItemsWidgetData = { title: null, data: invoicedItems}
+          if (row['title']) {
+            invoicedItemsWidgetData.title = row['title'];
+          }
+          this.dataService.storeWidgetData(invoicedItemsWidgetData);
           this.formService.showInvoicedItemForm();
           this.widgetVisible = true;
         });

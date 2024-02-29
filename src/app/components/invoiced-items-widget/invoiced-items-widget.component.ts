@@ -10,6 +10,7 @@ import { faX, faTrashCan, faPenToSquare } from '@fortawesome/free-solid-svg-icon
 })
 export class InvoicedItemsWidgetComponent {
   data: any = {};
+  title: string | null = null;
   formData: any | null = null;
   faX = faX;
   faTrashCan = faTrashCan;
@@ -24,12 +25,19 @@ export class InvoicedItemsWidgetComponent {
       this.formVisible = visible ? 'visible' : 'hidden';
     });
     this.dataService.retrieveWidgetData().subscribe((widgetData: any) => {
-      this.data = widgetData;
+      this.data = widgetData.data;
+      this.title = widgetData.title;
     });
   }
 
   addInvoicedItem() {
-    this.getAddFormData();
+    this.dataService.collectData("table", "invoiced_items").subscribe((data: any) => {
+      this.formData = data.edittable;
+      this.formService.processAddFormData(data.edittable);
+      this.formService.setSelectedTable("invoiced_items");
+      this.formService.showAddForm();
+      this.formService.setReloadType("widget");
+    });
   }
 
   editRow(id: number) {
@@ -53,28 +61,6 @@ export class InvoicedItemsWidgetComponent {
     this.formService.setSelectedId(id);
     this.formService.showEditForm();
     this.formService.setReloadType("widget");
-  }
-
-
-  getAddFormData() {
-    this.dataService.collectData("table", "invoiced_items").subscribe((data: any) => {
-      this.formData = data.edittable;
-      var addFormData: { [key:string]: { inputType: string, dataType: string, required: boolean, fields: string, value: any } } = {};
-      var inputDataTypes: string[] = this.dataTypeToInputType(this.formData.types);
-      this.formData.columns.forEach((_: any, index: number) => {
-        addFormData[this.formData.names[index]] = {
-          inputType: inputDataTypes[index],
-          dataType: this.formData.types[index],
-          required: this.formData.required[index],
-          fields: this.formData.fields[index],
-          value: null
-        };
-      });
-      this.formService.setAddFormData(addFormData);
-      this.formService.setSelectedTable("invoiced_items");
-      this.formService.showAddForm();
-      this.formService.setReloadType("widget");
-    });
   }
 
   dataTypeToInputType(dataTypes: any[]) {
