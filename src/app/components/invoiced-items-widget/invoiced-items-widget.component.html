@@ -13,6 +13,7 @@
                         <th>ID</th>
                         <th>Item Name</th>
                         <th>Quantity</th>
+                        <th>VAT Charge</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </thead>
@@ -21,6 +22,7 @@
                             <td>{{ values.id }}</td>
                             <td>{{ values.name }}</td>
                             <td>{{ values.quantity }}</td>
+                            <td>{{ values.vat }}</td>
                             <td (click)="editRow(values.id)">
                                 <fa-icon [icon]="faPenToSquare" />
                             </td>
