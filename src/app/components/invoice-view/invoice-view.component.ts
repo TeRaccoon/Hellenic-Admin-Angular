@@ -37,9 +37,11 @@ export class InvoiceViewComponent {
       return;
     }
 
+  // Arrays to store invoice and delivery data
   let invoiceData: any[] = [];
   let deliveryData: any[] = [];
 
+  // Retrieve and process data for each invoice
   for (const invoiceId of invoiceIds) {
     const invoiceDataItem: any = await lastValueFrom(this.dataService.collectData("invoice-info", invoiceId.toString()));
     invoiceData.push(invoiceDataItem);
@@ -49,20 +51,16 @@ export class InvoiceViewComponent {
     
     let deliveryDataItem: any = await lastValueFrom(this.dataService.collectData("delivery-info", invoiceId.toString()));
     deliveryDataItem = this.calculateDistance(deliveryDataItem);
-    if (this.customerIds.indexOf(deliveryDataItem.customer_id) == -1) {
-      deliveryData.push(deliveryDataItem);
-      this.customerIds.push(deliveryDataItem.customer_id);
-    }
+    deliveryData.push(deliveryDataItem);
+    this.customerIds.push(deliveryDataItem.customer_id);
   }
   
   let combinedData = invoiceData.map((invoice, index) => ({ invoice, delivery: deliveryData[index] }));
-
   combinedData.sort((a, b) => parseFloat(a.delivery.distance) - parseFloat(b.delivery.distance));
 
   this.invoiceData = combinedData.map(item => item.invoice);
   this.deliveryData = combinedData.map(item => item.delivery);
 
-  console.log(deliveryData);
   this.calculateVat();
   this.loaded = true;
   }
