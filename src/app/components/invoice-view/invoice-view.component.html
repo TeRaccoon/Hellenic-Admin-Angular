@@ -84,9 +84,9 @@
             <div class="row">
                 <div class="balance section card">
                     <h1>Previous Outstanding Balance</h1>
-                    <p>{{ invoice['outstanding_balance'] + invoice['total'] | currency:'GBP' }}</p>
-                    <h1>Current Outstanding Balance</h1>
                     <p>{{ invoice['outstanding_balance'] | currency:'GBP' }}</p>
+                    <h1>Current Outstanding Balance</h1>
+                    <p>{{ invoice['outstanding_balance'] + invoice['total'] | currency:'GBP' }}</p>
                 </div>
                 <div class="section card">
                     <div class="row">
