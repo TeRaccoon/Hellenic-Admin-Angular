@@ -698,62 +698,62 @@ print() {
     this.changePage(1);
   }
 
-calculateDistance() {
-  if (this.selectedRows.length !== 1) {
-    this.showWarningMessage("Please select a single row to calculate the distance!");
-    return;
+  calculateDistance() {
+    if (this.selectedRows.length !== 1) {
+      this.showWarningMessage("Please select a single row to calculate the distance!");
+      return;
+    }
+
+    const invoice_id = this.selectedRows[0];
+    var row = this.data.filter((row: any) => row.id == invoice_id)[0];
+
+    if (!row['warehouse_id']) {
+      this.showWarningMessage("This invoice doesn't have a designated warehouse. To calculate the distance please assign a warehouse!");
+      return;
+    }
+
+    if (!row['customer_id']) {
+      this.showWarningMessage("This invoice doesn't have a designated customer. To calculate the distance please assign a customer!");
+      return;
+    }
+
+    this.distanceLoading = true;
+
+    this.dataService.collectDataComplex("calculate-distance", { customer_id: row['customer_id'], warehouse_id: row['warehouse_id'] })
+      .subscribe((coordinates: any) => {
+        this.handleCoordinatesResponse(coordinates);
+        this.distanceLoading = false;
+      });
   }
 
-  const invoice_id = this.selectedRows[0];
-  var row = this.data.filter((row: any) => row.id == invoice_id)[0];
+  handleCoordinatesResponse(coordinates: any) {
+    if (!coordinates || !coordinates['customer_coordinates'] || !coordinates['warehouse_coordinates']) {
+      this.showErrorMessage("There was an error getting the coordinates! One of the postcodes may not be in the database.");
+      return;
+    }
 
-  if (!row['warehouse_id']) {
-    this.showWarningMessage("This invoice doesn't have a designated warehouse. To calculate the distance please assign a warehouse!");
-    return;
-  }
+    if (!coordinates['customer_postcode'] || !coordinates['warehouse_postcode']) {
+      this.showErrorMessage("There was an error getting the postcodes! Either the warehouse or the customer doesn't have a postcode.");
+      return;
+    }
 
-  if (!row['customer_id']) {
-    this.showWarningMessage("This invoice doesn't have a designated customer. To calculate the distance please assign a customer!");
-    return;
-  }
-
-  this.distanceLoading = true;
-
-  this.dataService.collectDataComplex("calculate-distance", { customer_id: row['customer_id'], warehouse_id: row['warehouse_id'] })
-    .subscribe((coordinates: any) => {
-      this.handleCoordinatesResponse(coordinates);
-      this.distanceLoading = false;
+    const distance = this.calculateHaversine(coordinates['customer_coordinates'], coordinates['warehouse_coordinates']);
+    this.formService.setMessageFormData({
+      title: "Distance",
+      message: `The distance between the warehouse at ${coordinates['warehouse_postcode']} and the customer postcode at ${coordinates['customer_postcode']} in a straight line is ${distance}km`
     });
-}
-
-handleCoordinatesResponse(coordinates: any) {
-  if (!coordinates || !coordinates['customer_coordinates'] || !coordinates['warehouse_coordinates']) {
-    this.showErrorMessage("There was an error getting the coordinates! One of the postcodes may not be in the database.");
-    return;
+    this.formService.showMessageForm();
   }
 
-  if (!coordinates['customer_postcode'] || !coordinates['warehouse_postcode']) {
-    this.showErrorMessage("There was an error getting the postcodes! Either the warehouse or the customer doesn't have a postcode.");
-    return;
+  showWarningMessage(message: string) {
+    this.formService.setMessageFormData({ title: "Warning!", message });
+    this.formService.showMessageForm();
   }
 
-  const distance = this.calculateHaversine(coordinates['customer_coordinates'], coordinates['warehouse_coordinates']);
-  this.formService.setMessageFormData({
-    title: "Distance",
-    message: `The distance between the warehouse at ${coordinates['warehouse_postcode']} and the customer postcode at ${coordinates['customer_postcode']} in a straight line is ${distance}km`
-  });
-  this.formService.showMessageForm();
-}
-
-showWarningMessage(message: string) {
-  this.formService.setMessageFormData({ title: "Warning!", message });
-  this.formService.showMessageForm();
-}
-
-showErrorMessage(message: string) {
-  this.formService.setMessageFormData({ title: "Error!", message });
-  this.formService.showMessageForm();
-}
+  showErrorMessage(message: string) {
+    this.formService.setMessageFormData({ title: "Error!", message });
+    this.formService.showMessageForm();
+  }
 
   calculateHaversine(coord1: any, coord2: any): string {
     const R = 6371000; // Earth's radius in meters
