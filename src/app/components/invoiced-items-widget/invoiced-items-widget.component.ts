@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { faX, faTrashCan, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-invoiced-items-widget',
@@ -18,13 +19,18 @@ export class InvoicedItemsWidgetComponent {
 
   formVisible = 'hidden';
 
+  widgetSubscription: Subscription | null = null;
+
   constructor(private dataService: DataService, private formService: FormService) {}
 
   ngOnInit() {
     this.formService.getInvoicedItemsFormVisibility().subscribe(async (visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
+      if (!visible && this.widgetSubscription != null) {
+        this.widgetSubscription.unsubscribe();
+      }
     });
-    this.dataService.retrieveWidgetData().subscribe((widgetData: any) => {
+    this.widgetSubscription = this.dataService.retrieveWidgetData().subscribe((widgetData: any) => {
       this.data = widgetData.data;
       this.title = widgetData.title;
     });
