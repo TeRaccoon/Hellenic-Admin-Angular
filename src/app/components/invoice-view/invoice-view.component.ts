@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { urlBase } from '../../services/data.service';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPrint, faL } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
@@ -17,11 +17,14 @@ export class InvoiceViewComponent {
   customerIds: any[] = [];
 
   faSpinner = faSpinner;
+  faPrint = faPrint;
 
   date = new Date();
   urlBase = urlBase;
 
   loaded = false;
+
+  deliveryOnly = false;
 
   constructor(private router: Router, private dataService: DataService) {}
 
@@ -100,5 +103,9 @@ export class InvoiceViewComponent {
       });
       invoices['vat'] = vatTotal;
     });
+  }
+
+  print() {
+    window.print();
   }
 }

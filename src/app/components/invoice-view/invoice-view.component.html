@@ -1,5 +1,12 @@
 <ng-container *ngIf="loaded else loading">
-    <div *ngFor="let invoice of invoiceData; let key = index" class="container">
+    <div class="menu-bar print-exclude">
+        <button (click)="print()"><fa-icon [icon]="faPrint" /></button>
+        <div class="checkbox-container">
+            <label>Delivery Only</label>
+            <input [ngModel]="deliveryOnly" (change)="deliveryOnly = !deliveryOnly" type="checkbox" class="checkbox">
+        </div>
+    </div>
+    <div *ngFor="let invoice of invoiceData; let key = index" class="container" [ngClass]="deliveryOnly ? 'print-exclude' : ''">
         <div class="header-section">
             <div class="row">
                 <span class="label">

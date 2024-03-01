@@ -83,3 +83,9 @@
         font-size: 25px;
     }
 }
+
+@media print {
+    .print-exclude {
+        display: none;
+    }
+}
