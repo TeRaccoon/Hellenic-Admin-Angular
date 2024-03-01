@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
+import { DataService, imageUrlBase } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCloudUpload, faSpinner, faX, faAsterisk } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +14,8 @@ export class EditFormComponent {
   faSpinner = faSpinner;
   faX = faX;
   faAsterisk = faAsterisk;
+
+  imageUrlBase = imageUrlBase;
 
   editForm: FormGroup;
   mappedFormDataKeys: any;

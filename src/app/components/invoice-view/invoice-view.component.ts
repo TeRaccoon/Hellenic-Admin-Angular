@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
-import { urlBase } from '../../services/data.service';
+import { imageUrlBase } from '../../services/data.service';
 import { faSpinner, faPrint, faL } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
 
@@ -20,7 +20,7 @@ export class InvoiceViewComponent {
   faPrint = faPrint;
 
   date = new Date();
-  urlBase = urlBase;
+  imageUrlBase = imageUrlBase;
 
   loaded = false;
 

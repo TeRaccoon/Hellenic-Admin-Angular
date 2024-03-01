@@ -92,7 +92,7 @@
                                 <td *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;" [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
                                     <ng-container *ngIf="canDisplayColumn(column)">
                                         <ng-container [ngSwitch]="dataTypes[columnIndex]">
-                                            <img *ngSwitchCase="'file'" [src]="urlBase + 'uploads/' + item[column]" />
+                                            <img *ngSwitchCase="'file'" [src]="imageUrlBase + 'uploads/' + item[column]" />
                                             <ng-container *ngSwitchCase="'enum(\'Yes\',\'No\')'">
                                                 <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes' ? true : false">
                                             </ng-container>

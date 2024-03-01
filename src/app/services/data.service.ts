@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-export const urlBase = "http://localhost/";
+export const apiUrlBase = "http://localhost/";
+export const imageUrlBase = "http://localhost/";
 @Injectable({
   providedIn: 'root',
 })
@@ -19,7 +20,7 @@ export class DataService {
   constructor(private http: HttpClient) {}
 
   collectData(query: string, filter?: string): Observable<any[]> {
-    let url = urlBase + `API/admin_query_handler.php?query=${query}`;
+    let url = apiUrlBase + `API/admin_query_handler.php?query=${query}`;
     if (filter != null) {
       url += `&filter=${encodeURIComponent(filter)}`;
     }
@@ -27,7 +28,7 @@ export class DataService {
   }
   
   collectDataComplex(query: string, filter?: Record<string, any>): Observable<any[]> {
-    let url = urlBase + `API/admin_query_handler.php?query=${query}`;
+    let url = apiUrlBase + `API/admin_query_handler.php?query=${query}`;
     if (filter != null) {
       const queryParams = Object.entries(filter).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
       url += `&${queryParams}`;
@@ -36,7 +37,7 @@ export class DataService {
   }
 
   submitFormData(data: any): Observable<any> {
-    const url = urlBase + 'API/manage_data.php';
+    const url = apiUrlBase + 'API/manage_data.php';
     return this.http.post(url, data, {withCredentials: true}).pipe(
       map((response: any) => {
         if (response) {
@@ -53,7 +54,7 @@ export class DataService {
   }
 
   uploadImage(formData: FormData): Observable<any> {
-    const url = urlBase + 'API/image_upload.php';
+    const url = apiUrlBase + 'API/image_upload.php';
     console.log("Huh?");
     return this.http.post(url, formData).pipe(
       map((response: any) => {
