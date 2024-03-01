@@ -22,7 +22,7 @@
                                 </ng-container>
                                 <ng-template #elseBlock>
                                     <label class="file-upload">
-                                        <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [attr.required]="mappedFormData.get(key)?.required ? true : null" accept="image/*" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields" (change)="primeImage($event)">
+                                        <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [attr.required]="mappedFormData.get(key)?.required ? true : null" accept="image/*" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields" (change)="primeImage($event, false)">
                                         <fa-icon [icon]="faCloudUpload" /> Upload Image
                                     </label>
                                 </ng-template>
@@ -56,8 +56,9 @@
                     </div>
                     <ng-container *ngIf="tableName == 'retail_items'">
                         <div class="image-upload-container">
-                            <input accept="image/*" type="file" (change)="primeImage($event)">
-                            <fa-icon [icon]="faCloudUpload" /> Upload Extra Images
+                            <input accept="image/*" type="file" (change)="primeImage($event, true)">
+                            <fa-icon [icon]="faCloudUpload" [ngClass]="file == null ? '' : 'success'" /> Drop Image Here to Upload
+                            <button class="button" (click)="submitImageOnly()">Upload</button>
                         </div>
                     </ng-container>
                     <div class="form-footer">

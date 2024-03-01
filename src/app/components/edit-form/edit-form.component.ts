@@ -38,7 +38,9 @@ export class EditFormComponent {
   locked = false;
   loaded = false;
 
+  file: File | null = null;
   fileName = '';
+  
   imageReplacements: string[] = [];
   selectedImage: string = "";
   
@@ -146,17 +148,9 @@ export class EditFormComponent {
     this.editForm.addControl('table_name', this.fb.control(this.tableName));
   }
 
-  primeImage(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.fileName = file.name;
 
-      const formData = new FormData();
-
-      formData.append('image', file);
-
-      this.dataService.uploadImage(formData);
-    }
+  primeImage(event: any, submit: boolean) {
+    this.file = event.target.files[0];
   }
 
   clearForm() {
@@ -225,6 +219,60 @@ export class EditFormComponent {
           this.hide();
           this.formService.requestReload();
       });
+    }
+  }
+
+  submitImageOnly() {
+    if (this.file != null && this.tableName == 'retail_items') {
+      if (!this.editForm.value['item_id']) {
+        this.error = "You must select an Item ID before uploading an image!";
+      }
+      else {
+        this.dataService.collectData('image-count-from-item-id', this.editForm.value['item_id']).subscribe((data: any) => {
+          if (this.file) {
+            if (data != null && this.selectedReplacementData['Item ID']?.selectData) {
+              this.fileName = this.selectedReplacementData['Item ID'].selectData.replaceAll(' ', '_') + '_' + 1 + '.png';
+            } else {
+              this.fileName = this.file.name;
+            }
+  
+            const formData = new FormData();
+  
+            formData.append('image', this.file, this.fileName);
+            this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
+              if (uploadResponse.success) {
+                const formData = new FormData();
+                formData.append('action', 'add');
+                formData.append('table_name', 'retail_items');
+                formData.append('item_id', this.editForm.value['item_id']);
+                formData.append('image_file_name', this.fileName);
+                this.dataService.submitFormData(formData).subscribe((insertResponse: any) => {
+                  if (insertResponse.success) {
+                    this.formService.setMessageFormData({
+                      title: 'Success!',
+                      message: 'Image uploaded successfully as ' + this.fileName,
+                    });
+                  } else {
+                    this.formService.setMessageFormData({
+                      title: 'Error!',
+                      message: insertResponse.message,
+                    });
+                  }
+                  this.formService.showMessageForm();
+                });
+              } else {
+                this.formService.setMessageFormData({
+                  title: 'Error!',
+                  message: uploadResponse.message,
+                });
+                this.formService.showMessageForm();
+              }
+            });
+          }
+        });
+      }
+    } else {
+      this.error = "Please choose an image to upload before trying to upload!";
     }
   }
 
