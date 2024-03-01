@@ -310,6 +310,8 @@ export class AddFormComponent {
       this.alternativeSelectData = {};
       this.selectedReplacementData = {};
       this.submitted = false;
+      this.addForm.get('action')?.setValue('add');
+      this.addForm.get('table_name')?.setValue(this.tableName);
     }
   }
 
