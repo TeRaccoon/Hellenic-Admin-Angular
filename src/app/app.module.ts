@@ -29,6 +29,7 @@ import { ItemBreakdownWidgetComponent } from './components/item-breakdown-widget
 import { FilterFormComponent } from './components/filter-form/filter-form.component';
 import { InvoicedItemsWidgetComponent } from './components/invoiced-items-widget/invoiced-items-widget.component';
 import { ChangePasswordFormComponent } from './components/change-password-form/change-password-form.component';
+import { StockedItemsWidgetComponent } from './components/stocked-items-widget/stocked-items-widget.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,6 +54,7 @@ import { ChangePasswordFormComponent } from './components/change-password-form/c
     FilterFormComponent,
     InvoicedItemsWidgetComponent,
     ChangePasswordFormComponent,
+    StockedItemsWidgetComponent,
   ],
   imports: [
     BrowserModule,

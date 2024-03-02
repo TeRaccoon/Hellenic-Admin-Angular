@@ -4,7 +4,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { apiUrlBase, imageUrlBase } from '../../services/data.service';
-import { faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck } from '@fortawesome/free-solid-svg-icons';
 import {Location} from '@angular/common';
 
 @Component({
@@ -16,6 +16,7 @@ export class ViewComponent {
   apiUrlBase = apiUrlBase;
   imageUrlBase = imageUrlBase;
 
+  faBox = faBox;
   faLock = faLock;
   faLockOpen = faLockOpen;
   faBasketShopping = faBasketShopping;
@@ -72,8 +73,6 @@ export class ViewComponent {
 
   tabs: {displayName: string, tableName: string}[] = [];
 
-  widgetVisible = false;
-
   sortedColumn: { columnName: string, ascending: boolean } = {columnName: '', ascending: false};
 
   constructor(private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {}
@@ -82,7 +81,6 @@ export class ViewComponent {
     this.route.queryParams.subscribe((params) => {
       this.tableName = params['table'] || null;
       if (this.tableName != null) {
-        this.widgetVisible = false;
         this.resetTable();
         this.convertTableName();
         this.formService.setSelectedTable(String(this.tableName));
@@ -96,8 +94,10 @@ export class ViewComponent {
       if (reloadRequested) {
         if (this.formService.getReloadType() == "hard") {
           this.loadTable(String(this.tableName));
-        } else if (this.formService.getReloadType() == "widget") {
+        } else if (this.formService.getReloadType() == "invoice-widget") {
           this.invoiceSearch();
+        } else if (this.formService.getReloadType() == "stock-widget") {
+          this.stockSearch(this.formService.getReloadId());
         } else if (this.formService.getReloadType() == "filter") {
           this.applyFilter();
         }
@@ -464,38 +464,34 @@ export class ViewComponent {
     } else {
       this.selectedRows = this.selectedRows.filter(function (item) { return item !== rowId; })
     }
-
-    if (this.selectedRows.length == 0) {
-      this.widgetVisible = false;
-    }
   }
 
-print() {
-  if (this.selectedRows.length < 1) {
-    this.showErrorMessage("Please select an invoice before trying to print!");
-    return;
-  }
-
-  const hasMissingWarehouseOrCustomer = this.selectedRows.some(selectedRow => {
-    var currentRow = this.data.filter((row: any) => row.id == selectedRow)[0];
-    if (currentRow['warehouse_id'] == null) {
-      this.showErrorMessage(`Invoice ${selectedRow} is missing a warehouse! Please assign a warehouse before attempting to print.`);
-      return true;
+  print() {
+    if (this.selectedRows.length < 1) {
+      this.showErrorMessage("Please select an invoice before trying to print!");
+      return;
     }
-    if (currentRow['customer_id'] == null) {
-      this.showErrorMessage(`Invoice ${selectedRow} is missing a customer! Please assign a customer before attempting to print.`);
-      return true;
+
+    const hasMissingWarehouseOrCustomer = this.selectedRows.some(selectedRow => {
+      var currentRow = this.data.filter((row: any) => row.id == selectedRow)[0];
+      if (currentRow['warehouse_id'] == null) {
+        this.showErrorMessage(`Invoice ${selectedRow} is missing a warehouse! Please assign a warehouse before attempting to print.`);
+        return true;
+      }
+      if (currentRow['customer_id'] == null) {
+        this.showErrorMessage(`Invoice ${selectedRow} is missing a customer! Please assign a customer before attempting to print.`);
+        return true;
+      }
+      return false;
+    });
+
+    if (hasMissingWarehouseOrCustomer) {
+      return;
     }
-    return false;
-  });
 
-  if (hasMissingWarehouseOrCustomer) {
-    return;
+    this.dataService.storePrintInvoiceIds(this.selectedRows);
+    this.router.navigate(['/print/invoice']);
   }
-
-  this.dataService.storePrintInvoiceIds(this.selectedRows);
-  this.router.navigate(['/print/invoice']);
-}
 
   invoiceSearch() {
     if (this.selectedRows.length > 1) {
@@ -514,13 +510,20 @@ print() {
           }
           this.dataService.storeWidgetData(invoicedItemsWidgetData);
           this.formService.showInvoicedItemForm();
-          this.widgetVisible = true;
         });
       }
     } else {
         this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before searching for items!"});
         this.formService.showMessageForm();
     }
+  }
+
+  stockSearch(id: string) {
+    this.dataService.collectData("stocked-items", id).subscribe((stockData: any) => {
+      console.log(stockData);
+      this.dataService.storeWidgetData({id: id, stock_data: stockData});
+      this.formService.showStockedItemForm();
+    });
   }
 
   shouldColourCell(data: any) {

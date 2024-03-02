@@ -1,0 +1,49 @@
+<div class="container" [class]="formVisible">
+    <div class="content">
+        <div class="header-section">
+            <h1>Stocked items for {{ data != null && data.length > 0 ? data[0].item_name : '' }}</h1>
+            <a (click)="hide()">
+                <fa-icon [icon]="faX" />
+            </a>
+        </div>
+        <ng-container *ngIf="data != null && data.length > 0 else noData">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <th>Quantity</th>
+                        <th>Expiry Date</th>
+                        <th>Packing Format</th>
+                        <th>Barcode</th>
+                        <th>Warehouse</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let stock of data">
+                            <td>{{ stock.quantity }}</td>
+                            <td>{{ stock.expiry_date }}</td>
+                            <td>{{ stock.packing_format }}</td>
+                            <td>{{ stock.barcode }}</td>
+                            <td>{{ stock.warehouse_name }}</td>
+                            <td (click)="editRow(stock.id)">
+                                <fa-icon [icon]="faPenToSquare" />
+                            </td>
+                            <td (click)="deleteRow(stock.id)">
+                                <fa-icon [icon]="faTrashCan" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="widget-footer">
+                    <button class="button" (click)="addStockedItem()">Add more</button>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #noData>
+            <div class="error-container">
+                <p>There are none of this item stocked!</p>
+                <button class="button" (click)="addStockedItem()">Add new</button>
+            </div>
+        </ng-template>
+    </div>
+</div>

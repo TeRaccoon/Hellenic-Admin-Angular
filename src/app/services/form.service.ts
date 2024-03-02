@@ -15,6 +15,7 @@ export class FormService {
   private isFilterFormVisible = new BehaviorSubject<boolean>(false);
   private isChangePasswordFormVisible = new BehaviorSubject<boolean>(false);
   private isInvoicedItemsFormVisible = new BehaviorSubject<boolean>(false);
+  private isStockedItemsFormVisible = new BehaviorSubject<boolean>(false);
 
   private editFormData: {
     [key: string]: {
@@ -47,6 +48,7 @@ export class FormService {
   private selectedTable: string = '';
   private selectedId: string = '';
   private reloadType: string = '';
+  private reloadId: string = '';
 
   private waitingToReload = new BehaviorSubject<boolean>(false);
 
@@ -125,6 +127,13 @@ export class FormService {
     this.isInvoicedItemsFormVisible.next(false);
   }
 
+  showStockedItemForm() {
+    this.isStockedItemsFormVisible.next(true);
+  }
+  hideStockedItemForm() {
+    this.isStockedItemsFormVisible.next(false);
+  }
+
   getEditFormVisibility(): Observable<boolean> {
     return this.isEditFormVisible.asObservable();
   }
@@ -151,6 +160,10 @@ export class FormService {
 
   getInvoicedItemsFormVisibility(): Observable<boolean> {
     return this.isInvoicedItemsFormVisible.asObservable();
+  }
+
+  getStockedItemsFormVisibility(): Observable<boolean> {
+    return this.isStockedItemsFormVisible.asObservable();
   }
 
   setEditFormData(editFormData: {
@@ -252,6 +265,16 @@ export class FormService {
         formData['Invoice ID'].inputType = 'replacement';
         replacementData['Invoice ID'] = { data: data };
         break;
+
+      case 'stocked_items':
+        var data = await this.getIdReplacementData('items_id_name', dataService);
+        formData['Item ID'].inputType = 'replacement';
+        replacementData['Item ID'] = { data: data };
+
+        var data = await this.getIdReplacementData('warehouse_id_name', dataService);
+        formData['Warehouse ID'].inputType = 'replacement';
+        replacementData['Warehouse ID'] = { data: data };
+        break;
         
       case 'customer_payments':
       case 'customer_address':
@@ -303,6 +326,14 @@ export class FormService {
 
   getReloadType() {
     return this.reloadType;
+  }
+
+  setReloadId(reloadId: string) {
+    this.reloadId = reloadId;
+  }
+
+  getReloadId() {
+    return this.reloadId;
   }
 
   processEditFormData(id: number, row: any, edittableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[]}) {
