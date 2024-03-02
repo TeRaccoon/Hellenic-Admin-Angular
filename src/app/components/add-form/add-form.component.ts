@@ -3,6 +3,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCloudUpload, faSpinner, faX, faAsterisk, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-add-form',
@@ -123,6 +124,7 @@ export class AddFormComponent {
       if (!Array.isArray(this.filteredReplacementData[key].data)) {
         this.filteredReplacementData[key].data = [this.filteredReplacementData[key].data];
       }
+      this.addForm.get(this.formData[key].fields)?.setValue(this.filteredReplacementData[key].data[0].id);
       var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))!.replacement;
       this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
       this.selectedReplacementFilter[key] = { selectFilter: ''};
@@ -155,9 +157,11 @@ export class AddFormComponent {
     this.mappedFormData = new Map(formDataArray);
     this.mappedFormDataKeys = Array.from(this.mappedFormData.keys());
 
+    let index = 0;
     for (const key in this.formData) {
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];
+        let fieldValue = field.value;
         
         var characterLimit = null;
         if (field.dataType.includes('varchar')) {
@@ -168,6 +172,11 @@ export class AddFormComponent {
         if (field.inputType == 'select' && field.dataType.startsWith('enum')) {
           const options = this.deriveEnumOptions(field);
           this.selectData.push({ key: key, data: options });
+          fieldValue = options[0];
+        }
+
+        if (field.inputType == 'date') {
+          fieldValue = formatDate(new Date(), 'yyyy-MM-dd', 'en').toString();
         }
 
         let controlValidators = characterLimit != null ? [Validators.maxLength(characterLimit)] : [];
@@ -177,9 +186,10 @@ export class AddFormComponent {
         
         this.addForm.addControl(
           field.fields,
-          this.fb.control({ value: field.value != null ? field.value : '', disabled: false }, controlValidators),
+          this.fb.control({ value: fieldValue != null ? fieldValue : '', disabled: false }, controlValidators),
         );
       }
+      index++;
     }
     this.addForm.addControl('action', this.fb.control('add'));
     this.addForm.addControl('table_name', this.fb.control(this.tableName));
@@ -329,7 +339,6 @@ export class AddFormComponent {
 
   selectDataFromKey(key: string) {
     const matchingData = this.selectData.find((data) => data.key === key);
-
     if (matchingData) {
       return matchingData.data;
     }

@@ -30,12 +30,12 @@
                                 <ng-container *ngSwitchCase="'select'">
                                     <select [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" class="select-input" [attr.required]="mappedFormData.get(key)!.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields">
                                         <option hidden disabled selected value> -- Select an option -- </option>
-                                        <option *ngFor="let data of selectDataFromKey(key)">{{ data }}</option>
+                                        <option *ngFor="let data of selectDataFromKey(key); let optionKey = index" [selected]="optionKey == 0">{{ data }}</option>
                                     </select>
                                 </ng-container>
                                 <ng-container *ngSwitchCase="'replacement'">
                                     <div class="drop-select-container">
-                                        <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" (input)="filterDropSelect(key, $event, null)" type="text" (focus)="openSelect(key)" [value]="selectedReplacementData[key]?.selectData">
+                                        <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" (input)="filterDropSelect(key, $event, null)" type="text" (focus)="openSelect(key)" [value]="!selectedReplacementData[key]?.selectData ? filteredReplacementData[key].data[0].replacement : selectedReplacementData[key]?.selectData">
                                         <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? '' : 'hidden'" [attr.required]="mappedFormData.get(key)!.required ? true : null">
                                             <p *ngFor="let option of filteredReplacementData[key].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, key, mappedFormData.get(key)!.fields)">{{ option.replacement }}</p>
                                         </div>
