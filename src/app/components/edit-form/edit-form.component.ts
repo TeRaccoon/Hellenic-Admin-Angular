@@ -165,6 +165,7 @@ export class EditFormComponent {
     this.editForm = this.fb.group({});
     this.editForm.reset();
     this.submitted = false;
+    this.error = null;
   }
 
   async loadForm() {

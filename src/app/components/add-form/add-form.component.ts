@@ -104,6 +104,7 @@ export class AddFormComponent {
     this.addForm = this.fb.group({});
     this.addForm.reset();
     this.submitted = false;
+    this.error = null;
   }
 
   async replaceAmbiguousData() {
