@@ -55,14 +55,9 @@ export class DataService {
 
   uploadImage(formData: FormData): Observable<any> {
     const url = apiUrlBase + 'API/image_upload.php';
-    console.log("Huh?");
     return this.http.post(url, formData).pipe(
       map((response: any) => {
-        if (response && response.success) {
-          return response;
-        } else {
-          throw new Error('Unexpected response format');
-        }
+        return response;
       }),
       catchError((error: any) => {
         console.error('HTTP error occurred:', error);
