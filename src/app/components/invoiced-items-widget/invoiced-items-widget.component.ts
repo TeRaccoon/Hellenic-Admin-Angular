@@ -26,11 +26,8 @@ export class InvoicedItemsWidgetComponent {
   ngOnInit() {
     this.formService.getInvoicedItemsFormVisibility().subscribe(async (visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
-      if (!visible && this.widgetSubscription != null) {
-        this.widgetSubscription.unsubscribe();
-      }
     });
-    this.widgetSubscription = this.dataService.retrieveWidgetData().subscribe((widgetData: any) => {
+    this.dataService.retrieveWidgetData().subscribe((widgetData: any) => {
       this.data = widgetData.data;
       this.title = widgetData.title;
     });
@@ -42,7 +39,7 @@ export class InvoicedItemsWidgetComponent {
       this.formService.processAddFormData(data.edittable);
       this.formService.setSelectedTable("invoiced_items");
       this.formService.showAddForm();
-      this.formService.setReloadType("widget");
+      this.formService.setReloadType("invoice-widget");
     });
   }
 
