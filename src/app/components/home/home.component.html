@@ -13,9 +13,20 @@
         </div>
     </div>
     <div class="quick-view-container">
-        <button class="button" (click)="getInvoicesDueToday()">Invoices Due Today</button>
-        <button class="button" (click)="getLowStock()">Low Stock</button>
-        <button class="button" (click)="getProductsExpiring()">Products Expiring Soon</button>
+        <div class="button-container">
+            <button class="button" (click)="getInvoicesDueToday()">Invoices Due Today</button>
+            <button class="button" (click)="getLowStock()">Low Stock</button>
+            <button class="button" (click)="getProductsExpiring()">Products Expiring Soon</button>
+        </div>
+        <div class="table-container">
+            <h1>Invoices Due Today</h1>
+            <table>
+                <th>Invoice ID</th>
+                <th>Customer Name</th>
+                <th>Printed?</th>
+                <th>Paid?</th>
+            </table>
+        </div>
     </div>
 </div>
 <app-message-form></app-message-form>
