@@ -74,6 +74,7 @@
                             <ng-container *ngFor="let column of displayNames; let key = index">
                                 <ng-container *ngIf="tableName == 'items' && key == 2">
                                     <th>Stock</th>
+                                    <th>Total Stock</th>
                                 </ng-container>
                                 <th (click)="sortColumn(column)">
                                     {{ column }}
@@ -99,6 +100,7 @@
                                         <td (click)="stockSearch(item.id)" [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
                                             <fa-icon [icon]="faBox"></fa-icon>
                                         </td>
+                                        <td>{{ stockData[item['id']] ? stockData[item['id']] : 0 }}</td>
                                     </ng-container>
                                     <td [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
                                         <ng-container *ngIf="canDisplayColumn(column)">
