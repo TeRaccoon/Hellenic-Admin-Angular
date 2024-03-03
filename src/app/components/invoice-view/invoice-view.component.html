@@ -133,10 +133,7 @@
             <thead>
                 <th>Invoice ID</th>
                 <th>Account Name</th>
-                <th>Delivery Address Line One</th>
-                <th>Delivery Address Line Two</th>
-                <th>Delivery Address Line Three</th>
-                <th>Delivery Address Line Four</th>
+                <th>Delivery Address </th>
                 <th>Delivery Postcode</th>
                 <th>Dispatching Warehouse</th>
                 <th>Distance (KM)</th>
@@ -146,10 +143,7 @@
                 <tr class="data-row" *ngFor="let invoice of deliveryData">
                     <td>{{ invoice.invoice_id }}</td>
                     <td>{{ invoice.delivery_info.account_name }}</td>
-                    <td>{{ invoice.delivery_info.address_line_1 }}</td>
-                    <td>{{ invoice.delivery_info.address_line_2 }}</td>
-                    <td>{{ invoice.delivery_info.address_line_3 }}</td>
-                    <td>{{ invoice.delivery_info.address_line_4 }}</td>
+                    <td>{{ invoice.full_address }}</td>
                     <td>{{ invoice.delivery_info.postcode }}</td>
                     <td>{{ invoice.warehouse_name }}</td>
                     <td>{{ invoice.distance }}</td>

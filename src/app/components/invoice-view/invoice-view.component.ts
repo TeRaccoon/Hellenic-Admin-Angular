@@ -54,10 +54,16 @@ export class InvoiceViewComponent {
     
     let deliveryDataItem: any = await lastValueFrom(this.dataService.collectData("delivery-info", invoiceId.toString()));
     deliveryDataItem = this.calculateDistance(deliveryDataItem);
+    deliveryDataItem['full_address'] = [
+      deliveryDataItem.delivery_info.address_line_1,
+      deliveryDataItem.delivery_info.address_line_2,
+      deliveryDataItem.delivery_info.address_line_3,
+      deliveryDataItem.delivery_info.address_line_4
+    ].join(' ');
     deliveryData.push(deliveryDataItem);
-    this.customerIds.push(deliveryDataItem.customer_id);
+    this.customerIds.push(deliveryDataItem.customer_id);    
   }
-  
+    
   let combinedData = invoiceData.map((invoice, index) => ({ invoice, delivery: deliveryData[index] }));
   combinedData.sort((a, b) => parseFloat(a.delivery.distance) - parseFloat(b.delivery.distance));
 
