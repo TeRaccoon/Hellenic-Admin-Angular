@@ -4,6 +4,7 @@ import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { faReceipt, faCircleExclamation, faUserGroup, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -20,10 +21,15 @@ export class HomeComponent {
   widgetHeaders = ["Invoices this month", "Invoices due today", "Total customers", "New customers"];
   widgetIcons = [faReceipt, faCircleExclamation, faUserGroup, faUserPlus ]
 
+  invoiceDueData: any[] = [];
+  lowStockData: any[] = [];
+  productsExpiringData: any[] = [];
+
   constructor(private formService: FormService, private dataService: DataService, private filterService: FilterService, private router: Router) { }
 
   ngOnInit() {
     this.loadWidgets();
+    this.loadQuickViews();
   }
 
   async loadWidgets() {
@@ -41,38 +47,28 @@ export class HomeComponent {
     });
   }
 
-  getInvoicesDueToday() {
-    this.dataService.collectData("invoices-due-today-ids").subscribe((data: any) => {
-      if (data == null) {
-        this.formService.setMessageFormData({title: "Information", message: "There are no invoices due to be fulfilled today!"});
-        this.formService.showMessageForm();
-      } else {
-        this.dataService.storePrintInvoiceIds(data);
-        this.router.navigate(['/print/invoice']);
-      }
-    });
+  async loadQuickViews() {
+    this.getInvoicesDueToday();
+    this.getLowStock();
+    this.getProductsExpiring();
   }
 
-  getLowStock() {
-    this.dataService.collectData("low-stock").subscribe((data: any) => {
-      if (data == null) {
-        this.formService.setMessageFormData({title: "Information", message: "There are no products low on stock!"});
-      } else {
-        this.filterService.setTableFilter("low-stock");
-        this.router.navigate(['/view'], { queryParams: {table: 'stocked_items' } });
-      }
-    });
+  async getInvoicesDueToday() {
+    let invoiceDueData = await lastValueFrom(this.dataService.collectData("invoices-due-today-basic"));
+    this.invoiceDueData = Array.isArray(invoiceDueData) ? invoiceDueData : [invoiceDueData];
   }
 
-  getProductsExpiring() {
-    this.dataService.collectData("product-expiring-soon").subscribe((data: any) => {
-      if (data == null) {
-        this.formService.setMessageFormData({title: "Information", message: "There are no products expiring soon!"});
-        this.formService.showMessageForm();
-      } else {
-        this.filterService.setTableFilter("expiring-soon");
-        this.router.navigate(['/view'], { queryParams: {table: 'stocked_items' } })
-      }
-    });
+  async getLowStock() {
+    let lowStockData = await lastValueFrom(this.dataService.collectData("low-stock"));
+    this.lowStockData = Array.isArray(lowStockData) ? lowStockData : [lowStockData];
+  }
+
+  async getProductsExpiring() {
+    let productsExpiringData = await lastValueFrom(this.dataService.collectData("products-expiring-soon"));
+    this.productsExpiringData = Array.isArray(productsExpiringData) ? productsExpiringData : [productsExpiringData];
+  }
+
+  getObjectKeys(column: any) {
+    return Object.keys(column);
   }
 }
