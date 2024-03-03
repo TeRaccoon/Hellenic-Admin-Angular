@@ -100,9 +100,11 @@
                 flex-wrap: wrap;
                 width: 100%;
             }
-            .replacement,
-            .select {
+            .replacement {
                 flex: 1 1 50%;
+            }
+            .select {
+                flex: 1 1 45%;
             }
             .date {
                 flex: 1 1 45%;
