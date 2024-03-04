@@ -61,12 +61,13 @@
                     </div>
                 </div>
             </div>
-            <div class="table-wrapper">
-                <div *ngIf="tabs.length > 0" class="tab-parent">
-                    <div *ngFor="let tab of tabs" (click)="changeTab(tab.tableName)" [class]="tableName == tab.tableName ? 'active-tab' : 'tab'">
-                        {{tab.displayName}}
-                    </div>
+            <div *ngIf="tabs.length > 0" class="tab-parent">
+                <div *ngFor="let tab of tabs" (click)="changeTab(tab.tableName)" [class]="tableName == tab.tableName ? 'active-tab' : 'tab'">
+                    {{tab.displayName}}
                 </div>
+            </div>
+            <div class="table-wrapper">
+
                 <table *ngIf="data && data.length > 0 else noData">
                     <thead>
                         <tr *ngIf="data[0]">
