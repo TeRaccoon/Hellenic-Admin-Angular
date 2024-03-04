@@ -12,6 +12,7 @@
                     <thead>
                         <th>ID</th>
                         <th>Item Name</th>
+                        <th>Picture</th>
                         <th>Quantity</th>
                         <th>VAT Charge</th>
                         <th>Edit</th>
@@ -21,6 +22,16 @@
                         <tr *ngFor="let values of data">
                             <td>{{ values.id }}</td>
                             <td>{{ values.name }}</td>
+                            <ng-container *ngIf="values.image_file_name != null else noImage">
+                                <td>
+                                    <img [src]="imageUrlBase + values.image_file_name" />
+                                </td>
+                            </ng-container>
+                            <ng-template #noImage>
+                                <td>No image on file
+                                    <fa-icon [icon]="faFileCircleXmark" />
+                                </td>
+                            </ng-template>
                             <td>{{ values.quantity }}</td>
                             <td>{{ values.vat }}</td>
                             <td (click)="editRow(values.id)">

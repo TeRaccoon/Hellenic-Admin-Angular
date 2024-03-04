@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
-import { faX, faTrashCan, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faX, faTrashCan, faPenToSquare, faFileCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { imageUrlBase } from '../../services/data.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -10,12 +11,16 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./invoiced-items-widget.component.scss']
 })
 export class InvoicedItemsWidgetComponent {
+  imageUrlBase = imageUrlBase;
+
   data: any = {};
   title: string | null = null;
   formData: any | null = null;
+  
   faX = faX;
   faTrashCan = faTrashCan;
   faPenToSquare = faPenToSquare;
+  faFileCircleXmark = faFileCircleXmark;
 
   formVisible = 'hidden';
 
