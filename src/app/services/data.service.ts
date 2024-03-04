@@ -4,7 +4,7 @@ import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 export const apiUrlBase = "http://localhost/";
-export const imageUrlBase = "http://localhost/";
+export const imageUrlBase = "http://localhost/uploads/";
 @Injectable({
   providedIn: 'root',
 })
