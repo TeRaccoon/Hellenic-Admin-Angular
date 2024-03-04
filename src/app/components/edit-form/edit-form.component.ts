@@ -166,6 +166,7 @@ export class EditFormComponent {
     this.editForm.reset();
     this.submitted = false;
     this.error = null;
+    this.file = null;
   }
 
   async loadForm() {
@@ -182,7 +183,8 @@ export class EditFormComponent {
   handleImages() {
     switch(this.tableName) {
       case "retail_items":
-        var id = this.mappedFormData.get('Item ID')!.value;
+      case "items":
+        var id = this.tableName == "retail_items" ? this.mappedFormData.get('Item ID')!.value : this.formService.getSelectedId();
         if (id != null) {
           this.dataService.collectData("images-from-item-id", id).subscribe((data: any) => {
             this.imageReplacements = Array.isArray(data) ? data : [data];
@@ -205,77 +207,136 @@ export class EditFormComponent {
     });
   }
 
-  formSubmit() {
+  formSubmit(hideForm: boolean) {
     this.submitted = true;
     if (this.editForm.valid) {
-      if (this.fileName != "") {
-        this.editForm.value['image_file_name'] = this.fileName;
-      }
-      this.dataService
-        .submitFormData(this.editForm.value)
-        .subscribe((data: any) => {
-          this.formService.setMessageFormData({
-            title: data.success ? 'Success!' : 'Error!',
-            message: data.message,
+      if (this.file != null) {
+        let itemId = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
+        if (itemId != null) {
+          this.dataService
+          .collectData(
+            'image-count-from-item-id',
+            itemId
+          )
+          .subscribe((data: any) => {
+            if (this.file) {
+              if (data != null) {
+                this.fileName = data + 1 + '_' + this.file.name;
+              } else {
+                this.fileName = this.file.name;
+              }
+              this.editForm.value['image_file_name'] = this.fileName;
+  
+              const formData = new FormData();
+  
+              formData.append('image', this.file, this.fileName);
+              this.submissionWithImage(formData, hideForm);
+            }
           });
-          this.formService.showMessageForm();
-          this.hide();
-          this.formService.requestReload();
-      });
+        }
+      } else {
+        this.submissionWithoutImage(hideForm);
+      }
     }
   }
 
   submitImageOnly() {
-    if (this.file != null && this.tableName == 'retail_items') {
-      if (!this.editForm.value['item_id']) {
-        this.error = "You must select an Item ID before uploading an image!";
-      }
-      else {
-        this.dataService.collectData('image-count-from-item-id', this.editForm.value['item_id']).subscribe((data: any) => {
-          if (this.file) {
-            if (data != null && this.selectedReplacementData['Item ID']?.selectData) {
-              this.fileName = this.selectedReplacementData['Item ID'].selectData.replaceAll(' ', '_') + '_' + 1 + '.png';
-            } else {
-              this.fileName = this.file.name;
-            }
-  
-            const formData = new FormData();
-  
-            formData.append('image', this.file, this.fileName);
-            this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
-              if (uploadResponse.success) {
-                const formData = new FormData();
-                formData.append('action', 'add');
-                formData.append('table_name', 'retail_items');
-                formData.append('item_id', this.editForm.value['item_id']);
-                formData.append('image_file_name', this.fileName);
-                this.dataService.submitFormData(formData).subscribe((insertResponse: any) => {
-                  if (insertResponse.success) {
-                    this.formService.setMessageFormData({
-                      title: 'Success!',
-                      message: 'Image uploaded successfully as ' + this.fileName,
-                    });
-                  } else {
-                    this.formService.setMessageFormData({
-                      title: 'Error!',
-                      message: insertResponse.message,
-                    });
-                  }
-                  this.formService.showMessageForm();
-                });
-              } else {
-                this.formService.setMessageFormData({
-                  title: 'Error!',
-                  message: uploadResponse.message,
-                });
-                this.formService.showMessageForm();
-              }
-            });
+    if (this.file != null && this.tableName == 'items') {
+      this.dataService.collectData('image-count-from-item-id', this.editForm.get('id')!.value).subscribe((data: any) => {
+        if (this.file) {
+          if (data != null) {
+            this.fileName = this.editForm.get('item_name')!.value.replaceAll(' ', '_') + '_' + 1 + '.png';
+          } else {
+            this.fileName = this.file.name;
           }
-        });
-      }
+
+          const formData = new FormData();
+
+          formData.append('image', this.file, this.fileName);
+          this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
+            if (uploadResponse.success) {
+
+              let imageFormData = {
+                'action': 'add',
+                'table_name': 'retail_item_images',
+                'item_id': this.formService.getSelectedId(),
+                'image_file_name': this.fileName
+            };
+
+              this.dataService.submitFormData(imageFormData).subscribe((insertResponse: any) => {
+                if (insertResponse.success) {
+                  this.formService.setMessageFormData({
+                    title: 'Success!',
+                    message: 'Image uploaded successfully as ' + this.fileName,
+                  });
+                } else {
+                  this.formService.setMessageFormData({
+                    title: 'Error!',
+                    message: insertResponse.message,
+                  });
+                }
+                this.formService.showMessageForm();
+              });
+            } else {
+              this.formService.setMessageFormData({
+                title: 'Error!',
+                message: uploadResponse.message,
+              });
+              this.formService.showMessageForm();
+            }
+          });
+        }
+      });
     } else {
       this.error = "Please choose an image to upload before trying to upload!";
+    }
+  }  
+  
+  submissionWithoutImage(hideForm: boolean) {
+    console.log(this.editForm.value);
+    this.dataService.submitFormData(this.editForm.value).subscribe((data: any) => {
+        this.formService.setMessageFormData({
+          title: data.success ? 'Success!' : 'Error!',
+          message: data.message,
+        });
+        this.endSubmission(data.success, hideForm);
+    });
+  }
+
+  submissionWithImage(formData: FormData, hideForm: boolean) {
+    this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
+      if (uploadResponse.success) {
+        this.dataService
+          .submitFormData(this.editForm.value)
+          .subscribe((data: any) => {
+            this.formService.setMessageFormData({
+              title: data.success ? 'Success!' : 'Error!',
+              message: data.message,
+            });
+          this.endSubmission(data.success, hideForm);
+          });
+      } else {
+        this.formService.setMessageFormData({
+          title: 'Error!',
+          message: uploadResponse.message,
+        });
+        this.formService.showMessageForm();
+        hideForm && this.hide();
+      }
+    });
+  }
+
+  endSubmission(reset: boolean, hideForm: boolean) {
+    hideForm && this.formService.showMessageForm();
+    hideForm && this.hide();
+    if (reset) {
+      this.formService.requestReload();
+      this.editForm.reset();
+      this.alternativeSelectData = {};
+      this.selectedReplacementData = {};
+      this.submitted = false;
+      this.editForm.get('action')?.setValue('add');
+      this.editForm.get('table_name')?.setValue(this.tableName);
     }
   }
 

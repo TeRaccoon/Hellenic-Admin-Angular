@@ -9,7 +9,7 @@
         <div class="content-section">
             <div *ngIf="error" class="error-section">{{ error }}</div>
             <ng-container *ngIf="mappedFormData && loaded else loading">
-                <form [formGroup]="editForm" (ngSubmit)="formSubmit()" class="form-container">
+                <form [formGroup]="editForm" class="form-container">
                     <div class="input-container" *ngFor="let key of mappedFormDataKeys" [ngClass]="mappedFormData.get(key)?.inputType">
                         <label>{{ key }}<fa-icon *ngIf="mappedFormData.get(key)?.required" class="asterisk" [icon]="faAsterisk" /></label>
                         <ng-container [ngSwitch]="mappedFormData.get(key)?.inputType">
@@ -21,7 +21,7 @@
                                     <img *ngIf="selectedImage != ''" [src]="imageUrlBase + 'uploads/' + selectedImage">
                                 </ng-container>
                                 <ng-template #elseBlock>
-                                    <label class="file-upload">1
+                                    <label class="file-upload">
                                         <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [attr.required]="mappedFormData.get(key)?.required ? true : null" accept="image/*" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields" (change)="primeImage($event, false)">
                                         <fa-icon [icon]="faCloudUpload" /> Upload Image
                                     </label>
@@ -54,7 +54,7 @@
                                 [value]="mappedFormData.get(key)?.value">
                         </ng-container>
                     </div>
-                    <ng-container *ngIf="tableName == 'retail_items'">
+                    <ng-container *ngIf="tableName == 'retail_items' || tableName == 'items'">
                         <div class="image-upload-container">
                             <input accept="image/*" type="file" (change)="primeImage($event, true)">
                             <fa-icon [icon]="faCloudUpload" [ngClass]="file == null ? '' : 'success'" /> Drop Image Here to Upload
@@ -62,7 +62,7 @@
                         </div>
                     </ng-container>
                     <div class="form-footer">
-                        <button class="button" name="action" value="append" type="submit">Save</button>
+                        <button class="button" name="action" value="append" (click)="formSubmit(true)" type="submit">Save</button>
                     </div>
                 </form>
             </ng-container>
