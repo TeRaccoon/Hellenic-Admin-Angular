@@ -5,7 +5,7 @@ import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { apiUrlBase, imageUrlBase } from '../../services/data.service';
 import { faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck } from '@fortawesome/free-solid-svg-icons';
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 
 @Component({

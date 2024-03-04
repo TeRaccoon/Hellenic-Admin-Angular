@@ -106,7 +106,7 @@
                                     <td [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
                                         <ng-container *ngIf="canDisplayColumn(column)">
                                             <ng-container [ngSwitch]="dataTypes[columnIndex]">
-                                                <img *ngSwitchCase="'file'" [src]="imageUrlBase + 'uploads/' + item[column]" />
+                                                <img *ngSwitchCase="'file'" [src]="imageUrlBase + item[column]" />
                                                 <ng-container *ngSwitchCase="'enum'">
                                                     <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
                                                 </ng-container>
