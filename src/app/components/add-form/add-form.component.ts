@@ -105,6 +105,7 @@ export class AddFormComponent {
     this.addForm.reset();
     this.submitted = false;
     this.error = null;
+    this.file = null;
   }
 
   async replaceAmbiguousData() {
