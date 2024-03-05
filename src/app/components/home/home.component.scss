@@ -1,11 +1,20 @@
 @import '../variables';
 .quick-view-container {
-    .button {
-        border-radius: 5px;
-        padding: 8px;
-        margin: 5px;
-        font-weight: bold;
-        font-size: 18px;
+    display: flex;
+    flex: 1 1 25%;
+    .button-container {
+        display: flex;
+        flex-direction: column;
+        width: 33vh;
+        margin-right: 20px;
+        .button {
+            border-radius: 5px;
+            padding: 8px;
+            margin: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            width: 20vh;
+        }
     }
 }
 
