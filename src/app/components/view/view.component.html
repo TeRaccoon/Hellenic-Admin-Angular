@@ -67,7 +67,6 @@
                 </div>
             </div>
             <div class="table-wrapper">
-
                 <table *ngIf="data && data.length > 0 else noData">
                     <thead>
                         <tr *ngIf="data[0]">
@@ -76,6 +75,9 @@
                                 <ng-container *ngIf="tableName == 'items' && key == 2">
                                     <th>Stock</th>
                                     <th>Total Stock</th>
+                                </ng-container>
+                                <ng-container *ngIf="tableName == 'stocked_items' && key == 2">
+                                    <th>Image</th>
                                 </ng-container>
                                 <th (click)="sortColumn(column)">
                                     {{ column }}
@@ -102,6 +104,11 @@
                                             <fa-icon [icon]="faBox"></fa-icon>
                                         </td>
                                         <td>{{ stockData[item['id']] ? stockData[item['id']] : 0 }}</td>
+                                    </ng-container>
+                                    <ng-container *ngIf="tableName == 'stocked_items' && columnIndex == 2">
+                                        <td>
+                                            <img [src]="imageUrlBase + images[columnIndex]" />
+                                        </td>
                                     </ng-container>
                                     <td [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
                                         <ng-container *ngIf="canDisplayColumn(column)">

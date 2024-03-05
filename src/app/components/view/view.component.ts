@@ -60,6 +60,8 @@ export class ViewComponent {
 
   selectedRows: number[] = [];
 
+  images: any[] = [];
+
   entryLimit: number = 10;
   pageCount: number = 0;
   currentPage: number = 1;
@@ -210,6 +212,13 @@ export class ViewComponent {
       totalStockData.forEach((stock) => {
         this.stockData[stock.item_id] = stock.total_quantity;
       });
+    }
+
+    if (this.tableName == "stocked_items") {
+      let images = await lastValueFrom(this.dataService.collectData("stocked-item-images"));
+      if (images != null) {
+        this.images = images;
+      }
     }
 
     this.dataService.collectData(queryString, table).subscribe((data: any) => {
