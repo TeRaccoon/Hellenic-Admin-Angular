@@ -293,7 +293,6 @@ export class EditFormComponent {
   }  
   
   submissionWithoutImage(hideForm: boolean) {
-    console.log(this.editForm.value);
     this.dataService.submitFormData(this.editForm.value).subscribe((data: any) => {
         this.formService.setMessageFormData({
           title: data.success ? 'Success!' : 'Error!',
