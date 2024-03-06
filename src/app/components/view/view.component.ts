@@ -209,7 +209,7 @@ export class ViewComponent {
 
     if (this.tableName == "items") {
       let totalStockData = await lastValueFrom(this.dataService.collectData("total-stock"));
-      totalStockData.forEach((stock) => {
+      totalStockData.forEach((stock: any) => {
         this.stockData[stock.item_id] = stock.total_quantity;
       });
     }

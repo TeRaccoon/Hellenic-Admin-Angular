@@ -19,12 +19,12 @@ export class DataService {
 
   constructor(private http: HttpClient) {}
 
-  collectData(query: string, filter?: string): Observable<any[]> {
+  collectData(query: string, filter?: string): Observable<any> {
     let url = apiUrlBase + `API/admin_query_handler.php?query=${query}`;
     if (filter != null) {
       url += `&filter=${encodeURIComponent(filter)}`;
     }
-    return this.http.get<any[]>(url);
+    return this.http.get<any>(url);
   }
   
   collectDataComplex(query: string, filter?: Record<string, any>): Observable<any[]> {
