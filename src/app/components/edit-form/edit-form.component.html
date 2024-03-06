@@ -18,7 +18,7 @@
                                     <select [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" class="select-input" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields" [(ngModel)]="selectedImage">
                                         <option *ngFor="let image of imageReplacements" [selected]="mappedFormData.get(key)?.value == image" [value]="image">{{ image }}</option>
                                     </select>
-                                    <img *ngIf="selectedImage != ''" [src]="imageUrlBase + 'uploads/' + selectedImage">
+                                    <img *ngIf="selectedImage != ''" [src]="imageUrlBase + selectedImage">
                                 </ng-container>
                                 <ng-template #elseBlock>
                                     <label class="file-upload">

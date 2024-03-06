@@ -3,6 +3,7 @@ import { DataService, imageUrlBase } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCloudUpload, faSpinner, faX, faAsterisk } from '@fortawesome/free-solid-svg-icons';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-edit-form',
@@ -213,30 +214,26 @@ export class EditFormComponent {
       if (this.file != null) {
         let itemId = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
         if (itemId != null) {
-          this.dataService
-          .collectData(
-            'image-count-from-item-id',
-            itemId
-          )
-          .subscribe((data: any) => {
-            if (this.file) {
-              if (data != null) {
-                this.fileName = data + 1 + '_' + this.file.name;
-              } else {
-                this.fileName = this.file.name;
-              }
-              this.editForm.value['image_file_name'] = this.fileName;
+          this.processImageName(itemId);
+          this.editForm.value['image_file_name'] = this.fileName;
+
+          const formData = new FormData();
   
-              const formData = new FormData();
-  
-              formData.append('image', this.file, this.fileName);
-              this.submissionWithImage(formData, hideForm);
-            }
-          });
+          formData.append('image', this.file, this.fileName);
+          this.submissionWithImage(formData, hideForm);
         }
       } else {
         this.submissionWithoutImage(hideForm);
       }
+    }
+  }
+
+  async processImageName(itemId: any) {
+    let imageCount = await lastValueFrom<number>(this.dataService.collectData('image-count-from-item-id', itemId));
+    if (imageCount != null) {
+      this.fileName = imageCount + 1 + '_' + this.file!.name;
+    } else {
+      this.fileName = this.file!.name;
     }
   }
 
@@ -245,9 +242,9 @@ export class EditFormComponent {
       this.dataService.collectData('image-count-from-item-id', this.editForm.get('id')!.value).subscribe((data: any) => {
         if (this.file) {
           if (data != null) {
-            this.fileName = this.editForm.get('item_name')!.value.replaceAll(' ', '_') + '_' + 1 + '.png';
+            this.fileName = this.editForm.get('item_name')!.value.replaceAll(/[^a-zA-Z0-9_]/g, '_') + '_' + data + '.png';
           } else {
-            this.fileName = this.file.name;
+            this.fileName = this.file.name.replaceAll(/[^a-zA-Z0-9_]/g, '_');
           }
 
           const formData = new FormData();
@@ -255,28 +252,7 @@ export class EditFormComponent {
           formData.append('image', this.file, this.fileName);
           this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
             if (uploadResponse.success) {
-
-              let imageFormData = {
-                'action': 'add',
-                'table_name': 'retail_item_images',
-                'item_id': this.formService.getSelectedId(),
-                'image_file_name': this.fileName
-            };
-
-              this.dataService.submitFormData(imageFormData).subscribe((insertResponse: any) => {
-                if (insertResponse.success) {
-                  this.formService.setMessageFormData({
-                    title: 'Success!',
-                    message: 'Image uploaded successfully as ' + this.fileName,
-                  });
-                } else {
-                  this.formService.setMessageFormData({
-                    title: 'Error!',
-                    message: insertResponse.message,
-                  });
-                }
-                this.formService.showMessageForm();
-              });
+              this.addImageLocationToDatabase();
             } else {
               this.formService.setMessageFormData({
                 title: 'Error!',
@@ -302,27 +278,50 @@ export class EditFormComponent {
     });
   }
 
-  submissionWithImage(formData: FormData, hideForm: boolean) {
-    this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
-      if (uploadResponse.success) {
-        this.dataService
-          .submitFormData(this.editForm.value)
-          .subscribe((data: any) => {
-            this.formService.setMessageFormData({
-              title: data.success ? 'Success!' : 'Error!',
-              message: data.message,
-            });
-          this.endSubmission(data.success, hideForm);
-          });
+  async submissionWithImage(formData: FormData, hideForm: boolean) {
+    const uploadResponse = await lastValueFrom<{success: boolean, message: string}>(this.dataService.uploadImage(formData));
+    if (uploadResponse.success) {
+      const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(this.editForm.value))
+
+      this.formService.setMessageFormData({
+        title: formSubmitResponse.success ? 'Success!' : 'Error!',
+        message: formSubmitResponse.message,
+      });
+
+      this.endSubmission(formSubmitResponse.success, hideForm);
+    } else {
+      this.formService.setMessageFormData({
+        title: 'Error!',
+        message: uploadResponse.message,
+      });
+      
+      this.formService.showMessageForm();
+      hideForm && this.hide();
+    }
+  }
+
+  addImageLocationToDatabase() {
+    let imageFormData = {
+      'action': 'add',
+      'table_name': 'retail_item_images',
+      'item_id': this.formService.getSelectedId(),
+      'image_file_name': this.fileName
+    };
+
+    this.dataService.submitFormData(imageFormData).subscribe((insertResponse: any) => {
+      if (insertResponse.success) {
+        this.formService.setMessageFormData({
+          title: 'Success!',
+          message: 'Image uploaded successfully as ' + this.fileName,
+        });
       } else {
         this.formService.setMessageFormData({
           title: 'Error!',
-          message: uploadResponse.message,
+          message: insertResponse.message,
         });
-        this.formService.showMessageForm();
-        hideForm && this.hide();
       }
-    });
+      this.formService.showMessageForm();
+    }); 
   }
 
   endSubmission(reset: boolean, hideForm: boolean) {
