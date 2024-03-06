@@ -208,63 +208,40 @@ export class EditFormComponent {
     });
   }
 
-  formSubmit(hideForm: boolean) {
+  async formSubmit(hideForm: boolean) {
     this.submitted = true;
-    if (this.editForm.valid) {
-      if (this.file != null) {
-        let itemId = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
-        if (itemId != null) {
-          this.processImageName(itemId);
-          this.editForm.value['image_file_name'] = this.fileName;
 
-          const formData = new FormData();
-  
-          formData.append('image', this.file, this.fileName);
-          this.submissionWithImage(formData, hideForm);
-        }
+    if (this.editForm.valid) {
+      const validationResult = this.imageSubmissionValidation();
+
+      if (validationResult !== false) {
+        this.submissionWithImage(validationResult.itemId, validationResult.itemName, hideForm);
       } else {
         this.submissionWithoutImage(hideForm);
       }
     }
   }
 
-  async processImageName(itemId: any) {
-    let imageCount = await lastValueFrom<number>(this.dataService.collectData('image-count-from-item-id', itemId));
-    if (imageCount != null) {
-      this.fileName = imageCount + 1 + '_' + this.file!.name;
-    } else {
-      this.fileName = this.file!.name;
+  imageSubmissionValidation() {
+    if (this.file == null || this.tableName != 'items') {
+      this.error = "Please choose an image to upload before trying to upload!";
+      return false;
     }
+
+    let itemId = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
+    let itemName = this.editForm.get('item_name')?.value;
+    if (itemId == null || itemName == null) {
+      this.error = "Please choose an item to upload an image for before trying to upload!";
+      return false;
+    }
+
+    return {itemId: itemId, itemName: itemName};
   }
 
-  submitImageOnly() {
-    if (this.file != null && this.tableName == 'items') {
-      this.dataService.collectData('image-count-from-item-id', this.editForm.get('id')!.value).subscribe((data: any) => {
-        if (this.file) {
-          if (data != null) {
-            this.fileName = this.editForm.get('item_name')!.value.replaceAll(/[^a-zA-Z0-9_]/g, '_') + '_' + data + '.png';
-          } else {
-            this.fileName = this.file.name.replaceAll(/[^a-zA-Z0-9_]/g, '_');
-          }
-
-          const formData = new FormData();
-
-          formData.append('image', this.file, this.fileName);
-          this.dataService.uploadImage(formData).subscribe((uploadResponse: any) => {
-            if (uploadResponse.success) {
-              this.addImageLocationToDatabase();
-            } else {
-              this.formService.setMessageFormData({
-                title: 'Error!',
-                message: uploadResponse.message,
-              });
-              this.formService.showMessageForm();
-            }
-          });
-        }
-      });
-    } else {
-      this.error = "Please choose an image to upload before trying to upload!";
+  async submitImageOnly() {
+    const validationResult = this.imageSubmissionValidation();
+    if (validationResult !== false) {
+      await this.formService.handleImageSubmissions(validationResult.itemId, validationResult.itemName, this.file as File);
     }
   }  
   
@@ -278,9 +255,10 @@ export class EditFormComponent {
     });
   }
 
-  async submissionWithImage(formData: FormData, hideForm: boolean) {
-    const uploadResponse = await lastValueFrom<{success: boolean, message: string}>(this.dataService.uploadImage(formData));
-    if (uploadResponse.success) {
+  async submissionWithImage(itemId: string, itemName: string, hideForm: boolean) {
+    const uploadResponse = await this.formService.handleImageSubmissions(itemId, itemName, this.file as File);
+
+    if (uploadResponse) {
       const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(this.editForm.value))
 
       this.formService.setMessageFormData({
@@ -290,12 +268,6 @@ export class EditFormComponent {
 
       this.endSubmission(formSubmitResponse.success, hideForm);
     } else {
-      this.formService.setMessageFormData({
-        title: 'Error!',
-        message: uploadResponse.message,
-      });
-      
-      this.formService.showMessageForm();
       hideForm && this.hide();
     }
   }
@@ -335,6 +307,7 @@ export class EditFormComponent {
       this.submitted = false;
       this.editForm.get('action')?.setValue('add');
       this.editForm.get('table_name')?.setValue(this.tableName);
+      this.error = null;
     }
   }
 

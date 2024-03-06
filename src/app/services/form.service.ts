@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BarElement } from 'chart.js';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, last, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
 
 @Injectable({
@@ -52,7 +51,7 @@ export class FormService {
 
   private waitingToReload = new BehaviorSubject<boolean>(false);
 
-  constructor() {}
+  constructor(private dataService: DataService) {}
 
   getReloadRequest(): Observable<boolean> {
     return this.waitingToReload.asObservable();
@@ -391,5 +390,58 @@ export class FormService {
       }
     });
     return inputTypes;
+  }
+
+  async handleImageSubmissions(itemId: string, itemName: string, image: File) {
+    let imageFileName = await this.processImageName(itemId, itemName);
+
+    const uploadResponse = await this.uploadImage(image, imageFileName);
+
+    let title = 'Error!';
+    let message = 'There was an issue uploading your image. Possible causes are the image is not a correct file type (.png, .jpg, .jpeg) or the file name contains special characters. Please try again!';
+    let success = false;
+
+    if (uploadResponse.success) {
+      const recordUploadResponse = await this.addImageLocationToDatabase(itemId, imageFileName);
+
+      if (recordUploadResponse.success) {
+        title = 'Success!';
+        message = 'Image uploaded successfully!';
+        success = true;
+      }
+    }
+    this.setMessageFormData({title: title, message: message})
+    this.showMessageForm();
+    return success;
+  }
+
+  async uploadImage(image: File, imageFileName: string) {
+    const formData = new FormData();
+    formData.append('image', image, imageFileName);
+
+    return await lastValueFrom(this.dataService.uploadImage(formData));
+  }
+
+  async processImageName(itemId: string, itemName: string) {
+    itemName = itemName.replaceAll(/[^a-zA-Z0-9_]/g, '_');
+    let fileName = itemName + '.png';
+
+    let imageCount = await lastValueFrom<number>(this.dataService.collectData('image-count-from-item-id', itemId));
+    if (imageCount != null) {
+      fileName = itemName + '_' + imageCount + '.png';
+    }
+
+    return fileName;
+  }
+
+  async addImageLocationToDatabase(itemId: string, imageFileName: string) {
+    let imageFormData = {
+      'action': 'add',
+      'table_name': 'retail_item_images',
+      'item_id': itemId,
+      'image_file_name': imageFileName
+    };
+
+    return await lastValueFrom<{success: boolean, message: string}>(this.dataService.submitFormData(imageFormData)); 
   }
 }
