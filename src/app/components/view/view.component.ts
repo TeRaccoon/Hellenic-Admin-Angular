@@ -226,8 +226,6 @@ export class ViewComponent {
       }
     }
 
-    // THIS NEEDS TO BE CONVERTED
-
     let tableData = await lastValueFrom(this.dataService.collectData(queryString, table));
 
     if (tableData != null) {
@@ -432,7 +430,7 @@ export class ViewComponent {
   loadPage() {
     var start = (this.currentPage - 1) * this.entryLimit;
     var end = start + this.entryLimit;
-    if (this.tableFilter == null && this.searchText == null) {
+    if (this.tableFilter == null && this.searchText == '') {
       this.filteredDisplayData = this.displayData.slice(start, end);
     } else {
       this.filteredDisplayData = this.applyTemporaryFilter();
