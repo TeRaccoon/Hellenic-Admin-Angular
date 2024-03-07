@@ -82,6 +82,10 @@ export class ViewComponent {
   constructor(private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {}
 
   ngOnInit() {
+    this.subscriptionHandler();
+  }
+
+  async subscriptionHandler() {
     this.route.queryParams.subscribe((params) => {
       this.tableName = params['table'] || null;
       if (this.tableName != null) {
@@ -94,15 +98,16 @@ export class ViewComponent {
       }
     });
 
-    this.formService.getReloadRequest().subscribe((reloadRequested: boolean) => {
+    this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
       if (reloadRequested) {
-        if (this.formService.getReloadType() == "hard") {
-          this.loadTable(String(this.tableName));
-        } else if (this.formService.getReloadType() == "invoice-widget") {
+        let reloadType = this.formService.getReloadType();
+        if (reloadType == "hard") {
+          await this.loadTable(String(this.tableName));
+        } else if (reloadType == "invoice-widget") {
           this.invoiceSearch();
-        } else if (this.formService.getReloadType() == "stock-widget") {
+        } else if (reloadType == "stock-widget") {
           this.stockSearch(this.formService.getReloadId());
-        } else if (this.formService.getReloadType() == "filter") {
+        } else if (reloadType == "filter") {
           this.applyFilter();
         }
         this.loadPage();
@@ -221,20 +226,24 @@ export class ViewComponent {
       }
     }
 
-    this.dataService.collectData(queryString, table).subscribe((data: any) => {
-      this.data = Array.isArray(data.data) ? data.data : [data.data];
-      this.displayData = Array.isArray(data.display_data) ? data.display_data : [data.display_data];
-      this.dataTypes = data.types;
+    // THIS NEEDS TO BE CONVERTED
+
+    let tableData = await lastValueFrom(this.dataService.collectData(queryString, table));
+
+    if (tableData != null) {
+      this.data = Array.isArray(tableData.data) ? tableData.data : [tableData.data];
+      this.displayData = Array.isArray(tableData.display_data) ? tableData.display_data : [tableData.display_data];
+      this.dataTypes = tableData.types;
       this.filteredDisplayData = this.displayData;
-      this.displayNames = data.display_names;
-      this.edittable = data.edittable;
+      this.displayNames = tableData.display_names;
+      this.edittable = tableData.edittable;
 
       this.applyFilter();
 
       this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit) + 1;
 
       this.loaded = true;
-    });
+    }
   }
 
   getColumnHeaders(obj: { [key: string]: any }): string[] {
@@ -423,7 +432,7 @@ export class ViewComponent {
   loadPage() {
     var start = (this.currentPage - 1) * this.entryLimit;
     var end = start + this.entryLimit;
-    if (this.tableFilter == null) {
+    if (this.tableFilter == null && this.searchText == null) {
       this.filteredDisplayData = this.displayData.slice(start, end);
     } else {
       this.filteredDisplayData = this.applyTemporaryFilter();
@@ -538,7 +547,6 @@ export class ViewComponent {
 
   stockSearch(id: string) {
     this.dataService.collectData("stocked-items", id).subscribe((stockData: any) => {
-      console.log(stockData);
       this.dataService.storeWidgetData({id: id, stock_data: stockData});
       this.formService.showStockedItemForm();
     });
@@ -701,11 +709,13 @@ export class ViewComponent {
 
   applyTemporaryFilter() {
     var temporaryData: any[] = [];
-    this.displayData.forEach(data => {
-      if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.tableFilter).toUpperCase()))) {
-        temporaryData.push(data);
-      }
-    });
+    if (this.tableFilter != null) {
+      this.displayData.forEach(data => {
+        if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.tableFilter).toUpperCase()))) {
+          temporaryData.push(data);
+        }
+      });
+    }
     return temporaryData;
   }
 
