@@ -444,4 +444,15 @@ export class FormService {
 
     return await lastValueFrom<{success: boolean, message: string}>(this.dataService.submitFormData(imageFormData)); 
   }
+
+  async getImagesForItem(itemId: string) {
+    if (itemId == null) {
+      return [];
+    }
+
+    let images = await lastValueFrom(this.dataService.collectData("images-from-item-id", itemId));
+    images = Array.isArray(images) ? images : [images];
+
+    return images;
+  }
 }

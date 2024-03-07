@@ -14,7 +14,7 @@
                         <label>{{ key }}<fa-icon *ngIf="mappedFormData.get(key)?.required" class="asterisk" [icon]="faAsterisk" /></label>
                         <ng-container [ngSwitch]="mappedFormData.get(key)?.inputType">
                             <ng-container *ngSwitchCase="'file'">
-                                <ng-container *ngIf="mappedFormData.get(key)?.value != null else elseBlock">
+                                <ng-container *ngIf="imageReplacements.length > 0 != null else elseBlock">
                                     <select [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" class="select-input" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields" [(ngModel)]="selectedImage">
                                         <option *ngFor="let image of imageReplacements" [selected]="mappedFormData.get(key)?.value == image" [value]="image">{{ image }}</option>
                                     </select>
@@ -29,8 +29,8 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'alternative-select'">
                                 <div class="drop-select-container">
-                                    <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [disabled]="locked" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.fields)" type="text" (focus)="openSelect(key)" [value]="alternativeSelectedData[key]?.selectData">
-                                    <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? '' : 'hidden'" [attr.required]="mappedFormData.get(key)?.required ? true : null">
+                                    <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [disabled]="locked" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.fields)" type="text" (focus)="openSelect(key)" [value]="alternativeSelectedData[key].selectData">
+                                    <div class="drop-select" [ngClass]="selectOpen[key].opened ? '' : 'hidden'" [attr.required]="mappedFormData.get(key)?.required ? true : null">
                                         <p *ngFor="let option of alternativeSelectData[key].data" (click)="updateAlternativeSelectData(mappedFormData.get(key)!.fields, option, key)">{{ option }}</p>
                                     </div>
                                 </div>

@@ -176,25 +176,24 @@ export class EditFormComponent {
       this.tableName = this.formService.getSelectedTable();
       this.id = this.formService.getSelectedId();
       this.buildForm();
-      this.handleImages();
+      await this.handleImages();
       await this.replaceAmiguousData();
     }
   }
 
-  handleImages() {
-    switch(this.tableName) {
-      case "retail_items":
-      case "items":
-        var id = this.tableName == "retail_items" ? this.mappedFormData.get('Item ID')!.value : this.formService.getSelectedId();
-        if (id != null) {
-          this.dataService.collectData("images-from-item-id", id).subscribe((data: any) => {
-            this.imageReplacements = Array.isArray(data) ? data : [data];
-            if (this.mappedFormData.get('Image')!.value != null) {
-              this.imageReplacements.push(this.mappedFormData.get('Image')!.value);
-            }
-          });
-        }
-        break;
+  async handleImages() {
+    let itemId = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
+    if (itemId == null) {
+      return;
+    }
+
+    this.imageReplacements = await this.formService.getImagesForItem(itemId);
+    if (this.imageReplacements.length == 0) {
+      return;
+    }
+    
+    if (this.mappedFormData.get('Image')!.value != null) {
+      this.imageReplacements.push(this.mappedFormData.get('Image')!.value);
     }
   }
 
