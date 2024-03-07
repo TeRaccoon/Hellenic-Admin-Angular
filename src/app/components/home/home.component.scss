@@ -2,6 +2,48 @@
 .quick-view-container {
     display: flex;
     flex: 1 1 25%;
+    .table-container {
+        border-collapse: collapse;
+        border-radius: 15px;
+        overflow-x: auto;
+        margin: 10px;
+        border-radius: 15px;
+        table {
+            border-collapse: collapse;
+            border-radius: 15px;
+            overflow: hidden;
+            border-radius: 15px;
+            width: 100%;
+            margin-top: 10px;
+            tr {
+                height: 56px;
+            }
+            th,
+            td {
+                padding: 10px;
+                text-align: left;
+                font-size: 16px;
+            }
+            td {
+                .ng-fa-icon {
+                    cursor: pointer;
+                }
+            }
+            thead {
+                background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
+                color: rgb(255, 255, 255);
+                tr {
+                    background-color: transparent;
+                }
+            }
+            .data-row {
+                background-color: #eaeef3;
+            }
+            tr:nth-child(odd) {
+                background-color: white;
+            }
+        }
+    }
     .button-container {
         display: flex;
         flex-direction: column;
