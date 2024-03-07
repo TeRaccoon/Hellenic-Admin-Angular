@@ -216,6 +216,11 @@
                     width: 150px;
                 }
             }
+            td {
+                .ng-fa-icon {
+                    cursor: pointer;
+                }
+            }
             thead {
                 position: sticky;
                 top: 0;
