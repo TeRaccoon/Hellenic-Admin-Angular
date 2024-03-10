@@ -123,6 +123,8 @@ export class EditFormComponent {
     
     let formDataArray = Object.entries(this.formData);
     formDataArray.sort((a: any, b: any) => a[1].inputType.localeCompare(b[1].inputType));
+    formDataArray = this.checkForSensitiveData(formDataArray);
+
     this.mappedFormData = new Map(formDataArray);
     this.mappedFormDataKeys = Array.from(this.mappedFormData.keys());
     
@@ -149,6 +151,22 @@ export class EditFormComponent {
     this.editForm.addControl('action', this.fb.control('append'));
     this.editForm.addControl('id', this.fb.control(this.id));
     this.editForm.addControl('table_name', this.fb.control(this.tableName));
+  }
+
+  checkForSensitiveData(formDataArray: [string, {
+    value: any;
+    inputType: string;
+    dataType: string;
+    required: boolean;
+    fields: string;}][])
+  {
+    formDataArray.forEach(subArray => {
+      if (subArray[0] === "Password") {
+        subArray[1].value = '';
+      }
+    });
+
+    return formDataArray;
   }
 
 
