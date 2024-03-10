@@ -30,6 +30,8 @@ import { FilterFormComponent } from './components/filter-form/filter-form.compon
 import { InvoicedItemsWidgetComponent } from './components/invoiced-items-widget/invoiced-items-widget.component';
 import { ChangePasswordFormComponent } from './components/change-password-form/change-password-form.component';
 import { StockedItemsWidgetComponent } from './components/stocked-items-widget/stocked-items-widget.component';
+import { SettingsComponent } from './components/settings/settings.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,6 +57,7 @@ import { StockedItemsWidgetComponent } from './components/stocked-items-widget/s
     InvoicedItemsWidgetComponent,
     ChangePasswordFormComponent,
     StockedItemsWidgetComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

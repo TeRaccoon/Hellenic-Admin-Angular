@@ -9,6 +9,7 @@ import { LoginComponent } from './components/login/login.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { PrintLayoutComponent } from './components/print-layout/print-layout.component';
 import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'page', component: TablelessViewComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'statistics', component: StatisticsComponent, canActivate: [AuthGuard] },
+  { path: "settings", component: SettingsComponent, canActivate: [AuthGuard] },
   { path: 'print',
     component: PrintLayoutComponent,
     children: [

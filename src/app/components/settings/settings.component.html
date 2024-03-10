@@ -1,0 +1,26 @@
+<div class="container">
+    <div class="control-container">
+        <ng-container *ngIf="settings != [] && loaded else loading">
+            <form [formGroup]="settingsForm" (ngSubmit)="formSubmit()">
+                <div *ngFor="let key of getColumnHeaders(settings)" class="controller">
+                    <ng-container [ngSwitch]="settings[key]['type']">
+                        <label>{{ settings[key]['name'] }}</label>
+                        <div *ngSwitchCase="'int'">
+                            <input type="number" class="number" [formControlName]="key" />
+                        </div>
+                        <div *ngSwitchDefault>
+                            <input type="checkbox" class="checkbox" [formControlName]="key" />
+                        </div>
+                    </ng-container>
+                </div>
+                <button type="submit" class="button">Save</button>
+            </form>
+        </ng-container>
+        <ng-template #loading>
+            <div class="loading-container">
+                <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true" />
+            </div>
+        </ng-template>
+    </div>
+    <app-message-form></app-message-form>
+</div>

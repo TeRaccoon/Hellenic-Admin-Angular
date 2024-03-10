@@ -44,6 +44,9 @@ export class SidebarComponent {
       { tableName: "retail_items", displayName: "Listed Items" },
       { tableName: "discount_codes", displayName: "Discount codes" },
       { tableName: "page_section_text", displayName: "Website Customisation" },
+    ],
+    "Admin": [
+      { tableName: "settings", displayName: "Settings" },
     ]
   };
 
@@ -89,10 +92,12 @@ export class SidebarComponent {
         this.dataService.setTabs([]);
         break;
     }
-    if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics") {
+    if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics" && tableName != "settings") {
       this.router.navigate(['/view'], { queryParams: {table: tableName } });
     } else if (tableName == "statistics") {
-      this.router.navigate(['/statistics'])
+      this.router.navigate(['/statistics']);
+    } else if (tableName == "settings") {
+      this.router.navigate(['/settings']);
     } else {
       this.router.navigate(['/page'], { queryParams: {table: tableName } });
     }
