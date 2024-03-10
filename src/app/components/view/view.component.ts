@@ -60,7 +60,7 @@ export class ViewComponent {
 
   selectedRows: number[] = [];
 
-  images: any[] = [];
+  images: { [key:string]: any}[] = [];
 
   entryLimit: number = 10;
   pageCount: number = 0;
@@ -222,8 +222,10 @@ export class ViewComponent {
     if (this.tableName == "stocked_items") {
       let images = await lastValueFrom(this.dataService.collectData("stocked-item-images"));
       if (images != null) {
-        this.images = images;
-      }
+        images.forEach((imageData: any) => {
+          this.images[imageData.item_id] = imageData.file_name
+        });
+      };
     }
 
     let tableData = await lastValueFrom(this.dataService.collectData(queryString, table));
