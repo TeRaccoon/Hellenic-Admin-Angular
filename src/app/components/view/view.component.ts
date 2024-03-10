@@ -7,6 +7,7 @@ import { apiUrlBase, imageUrlBase } from '../../services/data.service';
 import { faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck } from '@fortawesome/free-solid-svg-icons';
 import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-view',
@@ -14,6 +15,8 @@ import { lastValueFrom } from 'rxjs';
   styleUrls: ['./view.component.scss'],
 })
 export class ViewComponent {
+  accessible = false;
+
   apiUrlBase = apiUrlBase;
   imageUrlBase = imageUrlBase;
 
@@ -79,7 +82,9 @@ export class ViewComponent {
 
   sortedColumn: { columnName: string, ascending: boolean } = {columnName: '', ascending: false};
 
-  constructor(private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {}
+  constructor(private authService: AuthService, private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {
+    this.accessible = this.authService.returnAccess();
+  }
 
   ngOnInit() {
     this.subscriptionHandler();

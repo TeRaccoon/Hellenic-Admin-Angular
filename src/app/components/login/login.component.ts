@@ -3,6 +3,7 @@ import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,7 @@ export class LoginComponent {
   ngOnInit() {
     this.authService.checkLogin().subscribe((response: any) => {
       if (response.success) {
-        this.authService.login(null);
+        this.authService.login();
         this.router.navigate(['/home'])
       }
       this.loaded = true;
@@ -32,16 +33,16 @@ export class LoginComponent {
     this.loginForm.addControl('action', this.fb.control('login'));
   }
 
-  formSubmit() {
+  async formSubmit() {
     if (this.loginForm.valid) {
-      this.dataService.submitFormData(this.loginForm.value).subscribe((response: any) => {
-        if (response.success) {
-          this.authService.login(null);
-          this.router.navigate(['/home'])
-        } else {
-          this.error = response.message;
-        }
-      });
+      let loginResponse = await lastValueFrom(this.dataService.submitFormData(this.loginForm.value));
+      if (loginResponse.success) {
+        let accessLevel = loginResponse.data == null ? 'low' : loginResponse.data;
+        this.authService.login(accessLevel);
+        this.router.navigate(['/home'])
+      } else {
+        this.error = loginResponse.message;
+      }
     }
   }
 }

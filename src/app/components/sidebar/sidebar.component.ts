@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -47,14 +48,19 @@ export class SidebarComponent {
     ],
     "Admin": [
       { tableName: "settings", displayName: "Settings" },
+      { tableName: "users", displayName: "Users" },
     ]
   };
 
   isDropdownVisible: { [key: string]: boolean } = {};
   
-  constructor(private router: Router, private dataService: DataService) {}
+  constructor(private router: Router, private dataService: DataService, private authService: AuthService) {}
 
   changeTable(tableName: string) {
+    if (!this.authService.queryAccessTable(tableName)) {
+      return;
+    } 
+
     switch (tableName) {
       case "customers":
       case "invoices":

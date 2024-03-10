@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, lastValueFrom, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrlBase } from './data.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     private isAuthenticated = new BehaviorSubject<boolean>(false);
+    private accessLevel = "low";
+    private accessGranted = false;
 
-    constructor(private http: HttpClient) {
-    }
+    constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
 
     checkLogin() {
         const url = apiUrlBase + 'API/manage_data.php';
@@ -23,8 +25,12 @@ export class AuthService {
         );
     }
 
-    login(userID: number | null) {
+    login(accessLevel = this.accessLevel) {
         this.isAuthenticated.next(true);
+        this.accessLevel = accessLevel;
+        if (accessLevel == "full") {
+            this.accessGranted = true;
+        }
     }
 
     logout() {
@@ -56,5 +62,43 @@ export class AuthService {
 
     isLoggedIn(): Observable<boolean> {
         return this.isAuthenticated.asObservable();
+    }
+
+    accessGuard() {
+        console.log("Access Guard Engaged");
+        this.route.queryParams.subscribe(async (params) => {
+            let tableAccess = this.queryAccessTable(params["table"]);
+            let urlAccess = this.queryAccessURL();
+            this.accessGranted = tableAccess && urlAccess;
+        });
+    }
+
+    queryAccessURL() {
+        if (this.accessLevel == "full") {
+            return true;
+        }
+        switch (this.router.url) {
+            case "/print/invoice":
+                return true;
+        }
+        return false;
+    }
+
+    queryAccessTable(table: any) {
+        if (this.accessLevel == "full") {
+            return true;
+        }
+        switch(table) {
+            case "invoices":
+                return true;
+
+            default:
+                this.router.navigate(['/home'], {});
+                return false;
+        }
+    }
+
+    returnAccess() {
+        return this.accessGranted;
     }
 }
