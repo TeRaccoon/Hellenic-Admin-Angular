@@ -12,13 +12,18 @@ export class AuthService {
     private accessLevel = "low";
     private accessGranted = false;
 
-    constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
+    constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+        this.checkLogin();
+    }
 
     checkLogin() {
         const url = apiUrlBase + 'API/manage_data.php';
         
         return this.http.post(url, {action: "check-login"}, {withCredentials: true}).pipe(
             map((response: any) => {
+                if (response.data != null) {
+                    this.accessLevel = response.data;
+                }
                 return response;
             })
         );
