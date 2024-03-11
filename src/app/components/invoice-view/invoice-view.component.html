@@ -1,6 +1,6 @@
 <ng-container *ngIf="loaded else loading">
     <div class="menu-bar print-exclude">
-        <button (click)="print()"><fa-icon [icon]="faPrint" /></button>
+        <button class="button" (click)="print()"><fa-icon [icon]="faPrint" /></button>
         <div class="checkbox-container">
             <label>Delivery Only</label>
             <input [ngModel]="deliveryOnly" (change)="deliveryOnly = !deliveryOnly" type="checkbox" class="checkbox">
