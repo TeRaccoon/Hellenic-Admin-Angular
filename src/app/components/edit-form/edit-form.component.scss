@@ -118,6 +118,7 @@
                 padding: 10px;
                 display: flex;
                 flex-direction: column;
+                max-width: calc(100% - 20px);
                 .error-input {
                     border: 2px solid red;
                 }
