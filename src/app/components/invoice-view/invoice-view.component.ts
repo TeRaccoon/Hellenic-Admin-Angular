@@ -60,6 +60,9 @@ export class InvoiceViewComponent {
       deliveryDataItem.delivery_info.address_line_3,
       deliveryDataItem.delivery_info.address_line_4
     ].join(' ');
+
+    console.log(this.invoiceItems);
+
     deliveryData.push(deliveryDataItem);
     this.customerIds.push(deliveryDataItem.customer_id);    
   }

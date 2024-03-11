@@ -129,28 +129,48 @@
     </div>
     <div class="container delivery">
         <h1>Deliveries</h1>
-        <table>
-            <thead>
-                <th>Invoice ID</th>
-                <th>Account Name</th>
-                <th>Delivery Address </th>
-                <th>Delivery Postcode</th>
-                <th>Dispatching Warehouse</th>
-                <th>Distance (KM)</th>
-                <th>Delivery Date</th>
-            </thead>
-            <tbody>
-                <tr class="data-row" *ngFor="let invoice of deliveryData">
-                    <td>{{ invoice.invoice_id }}</td>
-                    <td>{{ invoice.delivery_info.account_name }}</td>
-                    <td>{{ invoice.full_address }}</td>
-                    <td>{{ invoice.delivery_info.postcode }}</td>
-                    <td>{{ invoice.warehouse_name }}</td>
-                    <td>{{ invoice.distance }}</td>
-                    <td>{{ invoice.delivery_date | date: 'dd/MM/yyyy' }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <ng-container *ngFor="let invoice of deliveryData; let index = index">
+            <h2>INV{{ invoice.invoice_id }}</h2>
+            <table>
+                <thead>
+                    <th>Invoice ID</th>
+                    <th>Account Name</th>
+                    <th>Delivery Address </th>
+                    <th>Delivery Postcode</th>
+                    <th>Dispatching Warehouse</th>
+                    <th>Distance (KM)</th>
+                    <th>Delivery Date</th>
+                </thead>
+                <tbody>
+                    <tr class="data-row">
+                        <td>{{ invoice.invoice_id }}</td>
+                        <td>{{ invoice.delivery_info.account_name }}</td>
+                        <td>{{ invoice.full_address }}</td>
+                        <td>{{ invoice.delivery_info.postcode }}</td>
+                        <td>{{ invoice.warehouse_name }}</td>
+                        <td>{{ invoice.distance }}</td>
+                        <td>{{ invoice.delivery_date | date: 'dd/MM/yyyy' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h2>Item List</h2>
+            <table>
+                <thead>
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th>Quantity</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of invoiceItems[index]">
+                        <td>{{ item.item_name }}</td>
+                        <td>
+                            <img [src]="item.file_name == null ? imageUrlBase + 'placeholder.jpg' : imageUrlBase + item.file_name" />
+                        </td>
+                        <td>{{ item.quantity }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </ng-container>
     </div>
 </ng-container>
 <ng-template #loading>
