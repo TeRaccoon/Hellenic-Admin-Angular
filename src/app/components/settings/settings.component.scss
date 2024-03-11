@@ -1,6 +1,6 @@
 @import "../variables";
 .container {
-    margin: 15px 15px 15px 16%;
+    margin: 15px 15px 15px calc(16% + 10px);
     .control-container {
         background: white;
         width: 50vh;
@@ -9,11 +9,24 @@
         display: flex;
         text-align: center;
         padding: 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         form {
             width: inherit;
         }
         .controller {
             margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .input-container {
+                margin-top: 10px;
+            }
+            .number {
+                width: 40px;
+                border-radius: 5px;
+                border: 1px solid black;
+                padding: 5px;
+            }
         }
         .button {
             border-radius: 5px;
