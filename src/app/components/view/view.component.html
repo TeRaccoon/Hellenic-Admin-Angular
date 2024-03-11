@@ -6,7 +6,6 @@
                 <div class="row">
                     <button class="button" (click)="addRow(null)">Add New +</button>
                     <button *ngIf="this.selectedRows.length > 0 && tableName == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
-                    <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button"></button>
                     <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon [icon]="faTrashCan"/></button>
                     <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button" (click)="calculateDistance()">
                         <fa-icon *ngIf="!distanceLoading; else loading" [icon]="faTruck"></fa-icon>

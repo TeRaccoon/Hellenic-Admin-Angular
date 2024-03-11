@@ -586,7 +586,7 @@ export class ViewComponent {
   displayWithIcon(column: string, row: any) {
     switch (this.tableName) {
       case "invoices":
-        if (column == "title") {
+        if (column == "id") {
           this.icon = row['status'] == "Complete" ? faLock : faLockOpen;
           return true;
         }
