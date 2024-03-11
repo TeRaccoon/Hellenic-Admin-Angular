@@ -108,6 +108,8 @@ export class NavbarComponent {
   }
 
   async logout() {
+    this.userOptionsVisible = false;
+
     const logoutResponse = await this.authService.logout();
     if (logoutResponse) {
       this.router.navigate(['/login']);
@@ -119,6 +121,7 @@ export class NavbarComponent {
   }
 
   changePassword() {
+    this.userOptionsVisible = false;
     this.formService.showChangePasswordForm();
   }
 
