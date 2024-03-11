@@ -109,7 +109,7 @@ export class ViewComponent {
         if (reloadType == "hard") {
           await this.loadTable(String(this.tableName));
         } else if (reloadType == "invoice-widget") {
-          this.invoiceSearch();
+          this.invoiceSearch(this.formService.getReloadId());
         } else if (reloadType == "stock-widget") {
           this.stockSearch(this.formService.getReloadId());
         } else if (reloadType == "filter") {
@@ -525,28 +525,22 @@ export class ViewComponent {
     this.router.navigate(['/print/invoice']);
   }
 
-  invoiceSearch() {
-    if (this.selectedRows.length > 1) {
-      this.formService.setMessageFormData({title: "Whoops!", message: "Please only select 1 invoice before trying to search!"})
-    } else if (this.selectedRows.length == 1) {
-      var row = this.data.filter((row: any) => row.id == this.selectedRows[0])[0];
-      if (row['status'] == 'Complete') {
-        this.formService.setMessageFormData({title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!'});
-        this.formService.showMessageForm();
-      } else {
-        this.dataService.collectData("invoiced-items", this.selectedRows[0].toString()).subscribe((invoiced_items: any) => {
-          var invoicedItems = Array.isArray(invoiced_items) ? invoiced_items : [invoiced_items];
-          var invoicedItemsWidgetData = { title: null, data: invoicedItems}
-          if (row['title']) {
-            invoicedItemsWidgetData.title = row['title'];
-          }
-          this.dataService.storeWidgetData(invoicedItemsWidgetData);
-          this.formService.showInvoicedItemForm();
-        });
-      }
+  invoiceSearch(id: string) {
+    var row = this.data.filter((row: any) => row.id == id)[0];
+    if (row['status'] == 'Complete') {
+      this.formService.setMessageFormData({title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!'});
+      this.formService.showMessageForm();
     } else {
-        this.formService.setMessageFormData({title: "Error", message: "Please select an invoice before searching for items!"});
-        this.formService.showMessageForm();
+      this.dataService.collectData("invoiced-items", id.toString()).subscribe((invoiced_items: any) => {
+        var invoicedItems = Array.isArray(invoiced_items) ? invoiced_items : [invoiced_items];
+        var invoicedItemsWidgetData = { title: null, data: invoicedItems}
+        if (row['title']) {
+          invoicedItemsWidgetData.title = row['title'];
+        }
+        this.dataService.storeWidgetData(invoicedItemsWidgetData);
+        this.formService.setReloadId(id);
+        this.formService.showInvoicedItemForm();
+      });
     }
   }
 

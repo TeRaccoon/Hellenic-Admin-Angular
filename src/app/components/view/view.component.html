@@ -6,7 +6,7 @@
                 <div class="row">
                     <button class="button" (click)="addRow(null)">Add New +</button>
                     <button *ngIf="this.selectedRows.length > 0 && tableName == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
-                    <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button" (click)="invoiceSearch()"><fa-icon [icon]="faBasketShopping"/></button>
+                    <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button"></button>
                     <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon [icon]="faTrashCan"/></button>
                     <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button" (click)="calculateDistance()">
                         <fa-icon *ngIf="!distanceLoading; else loading" [icon]="faTruck"></fa-icon>
@@ -79,6 +79,9 @@
                                 <ng-container *ngIf="tableName == 'stocked_items' && key == 2">
                                     <th>Image</th>
                                 </ng-container>
+                                <ng-container *ngIf="tableName == 'invoices' && key == 2">
+                                    <th>Items</th>
+                                </ng-container>
                                 <th (click)="sortColumn(column)">
                                     {{ column }}
                                     <fa-icon *ngIf="this.sortedColumn.columnName == column.toString()" [icon]="this.sortedColumn.ascending ? faArrowUp : faArrowDown" />
@@ -108,6 +111,11 @@
                                     <ng-container *ngIf="tableName == 'stocked_items' && columnIndex == 2">
                                         <td>
                                             <img [alt]="item['item_id']" [src]="imageUrlBase + images[item['item_id']]" />
+                                        </td>
+                                    </ng-container>
+                                    <ng-container *ngIf="tableName == 'invoices' && columnIndex == 2">
+                                        <td (click)="invoiceSearch(item.id)">
+                                            <fa-icon [icon]="faBasketShopping" />
                                         </td>
                                     </ng-container>
                                     <td [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
