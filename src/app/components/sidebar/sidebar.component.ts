@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
+import { FormService } from '../../services/form.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -54,10 +55,12 @@ export class SidebarComponent {
 
   isDropdownVisible: { [key: string]: boolean } = {};
   
-  constructor(private router: Router, private dataService: DataService, private authService: AuthService) {}
+  constructor(private router: Router, private dataService: DataService, private authService: AuthService, private formService: FormService) {}
 
   changeTable(tableName: string) {
     if (!this.authService.queryAccessTable(tableName)) {
+      this.formService.setMessageFormData({title: "Warning!", message: "You don't have permission to access this page! If you think you should, contact the site administrator."});
+      this.formService.showMessageForm();
       return;
     } 
 
