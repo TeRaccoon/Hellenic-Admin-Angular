@@ -81,6 +81,11 @@
     th {
         border: 1px solid black;
     }
+    .delivery-items-table {
+        .item-image {
+            max-width: 20%;
+        }
+    }
 }
 
 .splittable {
