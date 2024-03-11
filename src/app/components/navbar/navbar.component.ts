@@ -107,9 +107,15 @@ export class NavbarComponent {
     this.searchDropdownVisible = false;
   }
 
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  async logout() {
+    const logoutResponse = await this.authService.logout();
+    if (logoutResponse) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.formService.setMessageFormData({ title: "Whoops!", message: "Something went wrong! Please try again" });
+    this.formService.showMessageForm();
   }
 
   changePassword() {

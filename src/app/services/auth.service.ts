@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, lastValueFrom, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrlBase } from './data.service';
 import { ActivatedRoute, Router } from '@angular/router';
-
 @Injectable({
     providedIn: 'root'
 })
@@ -33,31 +32,17 @@ export class AuthService {
         }
     }
 
-    logout() {
-        this.isAuthenticated.next(false);
-        this.clearSession().subscribe((response: any) => {
-            if (response.success) {
-            } else {
-              console.log(response);
-            }
-        });
-    }
-
-    clearSession() {
+    async logout() {
         const url = apiUrlBase + 'API/manage_data.php';
-        return this.http.post(url, {action: "logout"}, {withCredentials: true}).pipe(
-            map((response: any) => {
-                if (response && response.success) {
-                return response;
-                } else {
-                throw new Error('Unexpected response format');
-                }
-            }),
-            catchError((error: any) => {
-                console.error('HTTP error occurred:', error);
-                return throwError(error);
-            })
-        );
+
+        this.isAuthenticated.next(false);
+
+        const logoutResponse = await lastValueFrom(this.http.post<{ success: boolean, message: string }>(url, {action: "logout"}, {withCredentials: true}));
+        if (logoutResponse.success) {
+            return true;
+        }
+
+        return false;
     }
 
     isLoggedIn(): Observable<boolean> {
