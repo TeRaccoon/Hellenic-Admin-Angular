@@ -48,18 +48,18 @@ export class SettingsComponent {
   buildForm() {
     this.getColumnHeaders(this.settings).forEach((key: string) => {
       const field = this.settings[key];
-      console.log(field);
 
       const validators = field['required'] ? [Validators.required] : [];
-      const initialValue = field['data'] !== null ? field['data'] : '';
+      let initialValue = field['data'] !== null ? field['data'] : '';
+
+      if (field.type == "enum('Yes','No')") {
+        initialValue = initialValue == 'Yes' ? true : false;
+      }
 
       this.settingsForm.addControl(
         key,
         this.fb.control(initialValue, validators)
       );
-
-      // this.changes[key] = {id: field['id']}
-
     });
 
     this.settingsForm.addControl('id', this.fb.control('1'));
@@ -67,30 +67,19 @@ export class SettingsComponent {
     this.settingsForm.addControl('table_name', this.fb.control('settings'));
   }
 
-  changeCheckbox(key: string, checkedEvent: Event) {
-    let checked = (checkedEvent.target as HTMLInputElement).checked ? 'Yes' : 'No';
-
-  }
-
   getColumnHeaders(obj: { [key: string]: any }): string[] {
     return obj ? Object.keys(obj) : [];
-  }
-
-  logChange() {
-
   }
 
   async formSubmit() {
     const formData = { ...this.settingsForm.value };
     Object.keys(formData).forEach(key => {
-      console.log(formData[key]);
       if (formData[key] === true) {
         formData[key] = 'Yes';
       }
       if (formData[key] === false) {
         formData[key] = 'No';
       }
-      console.log(formData[key]);
     });
 
     const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(formData));
