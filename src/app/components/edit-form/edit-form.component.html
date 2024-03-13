@@ -14,13 +14,13 @@
                         <label>{{ key }}<fa-icon *ngIf="mappedFormData.get(key)?.required" class="asterisk" [icon]="faAsterisk" /></label>
                         <ng-container [ngSwitch]="mappedFormData.get(key)?.inputType">
                             <ng-container *ngSwitchCase="'file'">
-                                <ng-container *ngIf="imageReplacements.length > 0 != null else elseBlock">
+                                <ng-container *ngIf="imageReplacements.length > 0 else noImages">
                                     <select [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" class="select-input" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields" [(ngModel)]="selectedImage">
                                         <option *ngFor="let image of imageReplacements" [value]="image">{{ image }}</option>
                                     </select>
                                     <img *ngIf="selectedImage != ''" [src]="imageUrlBase + selectedImage">
                                 </ng-container>
-                                <ng-template #elseBlock>
+                                <ng-template #noImages>
                                     <label class="file-upload">
                                         <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [attr.required]="mappedFormData.get(key)?.required ? true : null" accept="image/*" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields" (change)="primeImage($event, false)">
                                         <fa-icon [icon]="faCloudUpload" /> Upload Image
