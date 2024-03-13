@@ -136,6 +136,11 @@ export class EditFormComponent {
           const options = this.deriveEnumOptions(field);
           this.selectData.push({ key: key, data: options });
         }
+        if (field.inputType == 'file') {
+          let fileName = this.mappedFormData.get('Image')?.value;
+          this.selectedImage = fileName == null ? '' : fileName;
+        }
+
         const validators = field.required ? [Validators.required] : [];
 
         if (this.editForm.contains(field.fields)) {
@@ -213,6 +218,8 @@ export class EditFormComponent {
     if (this.mappedFormData.get('Image')!.value != null) {
       this.imageReplacements.push(this.mappedFormData.get('Image')!.value);
     }
+    console.log(this.imageReplacements);
+
   }
 
   async getIdReplacementData(query: string): Promise<any>  {
