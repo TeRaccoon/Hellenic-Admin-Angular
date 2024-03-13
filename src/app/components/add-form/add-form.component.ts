@@ -173,7 +173,7 @@ export class AddFormComponent {
         }
 
         if (field.inputType == 'select' && field.dataType.startsWith('enum')) {
-          const options = this.deriveEnumOptions(field);
+          const options = this.formService.deriveEnumOptions(field);
           this.selectData.push({ key: key, data: options });
           fieldValue = options[0];
         }
@@ -220,7 +220,8 @@ export class AddFormComponent {
 
     let itemId = this.addForm.value['retail_item_id'] != null ? this.addForm.value['retail_item_id'] : this.addForm.get('id')?.value;
     let itemName = this.addForm.get('item_name')?.value;
-    if (itemId == null || itemName == null) {
+
+    if (itemName == null) {
       this.error = "Please choose an item to upload an image for before trying to upload!";
       return false;
     }
@@ -245,18 +246,25 @@ export class AddFormComponent {
     });
   }
 
-  async submissionWithImage(itemId: string, itemName: string, hideForm: boolean) {
-    const uploadResponse = await this.formService.handleImageSubmissions(itemId, itemName, this.file as File);
+  async submissionWithImage(itemId: string, itemName: string, hideForm: boolean) {  
+    let nextIdResult = await lastValueFrom(this.dataService.collectData("next-invoice-id", "items"));
+    itemId = nextIdResult.next_id;
 
-    if (uploadResponse) {
-      const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(this.addForm.value))
+    let imageFileName = await this.formService.processImageName(null, itemName);
 
-      this.formService.setMessageFormData({
-        title: formSubmitResponse.success ? 'Success!' : 'Error!',
-        message: formSubmitResponse.message,
-      });
+    this.addForm.get("image_file_name")?.setValue(imageFileName);
 
-      this.endSubmission(formSubmitResponse.success, hideForm);
+    const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(this.addForm.value))
+
+    if (formSubmitResponse.success) {
+      const uploadResponse = await this.formService.handleImageSubmissions(itemId, itemName, this.file as File);
+      if (uploadResponse) {
+        this.formService.setMessageFormData({
+          title: formSubmitResponse.success ? 'Success!' : 'Error!',
+          message: formSubmitResponse.message,
+        });
+        this.endSubmission(formSubmitResponse.success, hideForm);
+      }
     } else {
       hideForm && this.hide();
     }
@@ -277,16 +285,8 @@ export class AddFormComponent {
     }
   }
 
-  primeImage(event: any, submit: boolean) {
+  primeImage(event: any) {
     this.file = event.target.files[0];
-  }
-
-  deriveEnumOptions(field: any) {
-    return field.dataType
-      .replace('enum(', '')
-      .replace(')', '')
-      .split(',')
-      .map((option: any) => option.replace(/'/g, '').trim());
   }
 
   selectDataFromKey(key: string) {
