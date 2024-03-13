@@ -133,7 +133,7 @@ export class EditFormComponent {
         const field = this.formData[key];
 
         if (field.inputType == 'select' && field.dataType.startsWith('enum')) {
-          const options = this.deriveEnumOptions(field);
+          const options = this.formService.deriveEnumOptions(field);
           this.selectData.push({ key: key, data: options });
         }
         if (field.inputType == 'file') {
@@ -333,14 +333,6 @@ export class EditFormComponent {
       this.editForm.get('table_name')?.setValue(this.tableName);
       this.error = null;
     }
-  }
-
-  deriveEnumOptions(field: any) {
-    return field.dataType
-      .replace('enum(', '')
-      .replace(')', '')
-      .split(',')
-      .map((option: any) => option.replace(/'/g, '').trim());
   }
 
   selectDataFromKey(key: string) {

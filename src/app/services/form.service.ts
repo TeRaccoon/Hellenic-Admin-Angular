@@ -422,11 +422,13 @@ export class FormService {
     return await lastValueFrom(this.dataService.uploadImage(formData));
   }
 
-  async processImageName(itemId: string, itemName: string) {
+  async processImageName(itemId: string | null, itemName: string) {
     itemName = itemName.replaceAll(/[^a-zA-Z0-9_]/g, '_');
     let fileName = itemName + '.png';
-
-    let imageCount = await lastValueFrom<number>(this.dataService.collectData('image-count-from-item-id', itemId));
+    let imageCount = 0;
+    if (itemId != null) {
+      imageCount = await lastValueFrom<number>(this.dataService.collectData('image-count-from-item-id', itemId));
+    }
     if (imageCount != null) {
       fileName = itemName + '_' + imageCount + '.png';
     }
@@ -454,5 +456,13 @@ export class FormService {
     images = Array.isArray(images) ? images : [images];
 
     return images;
+  }
+
+  deriveEnumOptions(field: any) {
+    return field.dataType
+      .replace('enum(', '')
+      .replace(')', '')
+      .split(',')
+      .map((option: any) => option.replace(/'/g, '').trim());
   }
 }
