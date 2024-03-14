@@ -175,7 +175,7 @@ export class EditFormComponent {
   }
 
 
-  primeImage(event: any, submit: boolean) {
+  primeImage(event: any) {
     this.file = event.target.files[0];
   }
 
