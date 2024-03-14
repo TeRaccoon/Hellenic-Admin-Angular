@@ -10,9 +10,9 @@
                     <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button" (click)="calculateDistance()">
                         <fa-icon *ngIf="!distanceLoading; else loading" [icon]="faTruck"></fa-icon>
                         <ng-template #loading>
-                          <fa-icon [icon]="faSpinner" spinPulse [spin]="true"></fa-icon>
+                            <fa-icon [icon]="faSpinner" spinPulse [spin]="true"></fa-icon>
                         </ng-template>
-                      </button>
+                    </button>
                 </div>
                 <div>
                     <p>Show
@@ -121,7 +121,7 @@
                                         <ng-container *ngIf="canDisplayColumn(column)">
                                             <ng-container [ngSwitch]="dataTypes[columnIndex]">
                                                 <img *ngSwitchCase="'file'" [src]="item[column] == null ? imageUrlBase + 'placeholder.jpg' : imageUrlBase + item[column]" />
-                                                <ng-container *ngSwitchCase="'enum'">
+                                                <ng-container *ngSwitchCase="'enum(\'No\',\'Yes\')'">
                                                     <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
                                                 </ng-container>
                                                 <ng-container *ngSwitchCase="'float'">
