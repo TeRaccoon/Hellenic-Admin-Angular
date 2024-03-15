@@ -126,6 +126,9 @@ export class ViewComponent {
       case 'allergen_information':
         this.displayName = 'Allergen Information';
         break;
+      case "categories":
+        this.displayName = 'Categories';
+        break;
       case 'customer_address':
           this.displayName = 'Customer Address';
           break;

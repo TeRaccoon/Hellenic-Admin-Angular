@@ -202,13 +202,29 @@ export class AddFormComponent {
     this.submitted = true;
 
     if (this.addForm.valid) {
-      const validationResult = this.imageSubmissionValidation();
+      if (this.tableName != "categories") {
+        const validationResult = this.imageSubmissionValidation();
 
-      if (validationResult !== false) {
-        this.submissionWithImage(validationResult.itemId, validationResult.itemName, hideForm);
+        if (validationResult !== false) {
+          this.submissionWithImage(validationResult.itemId, validationResult.itemName, hideForm);
+        } else {
+          this.submissionWithoutImage(hideForm);
+        }
       } else {
-        this.submissionWithoutImage(hideForm);
+        this.standardImageSubmission();
       }
+    }
+  }
+
+  async standardImageSubmission() {
+    if (this.file != null) {
+      const uploadResponse = await this.formService.uploadImage(this.file, this.file?.name);
+      if (uploadResponse.success) {
+        this.addForm.get("image_file_name")?.setValue(this.file.name);
+        this.submissionWithoutImage(true);
+      }
+    } else {
+      this.submissionWithoutImage(true);
     }
   }
 

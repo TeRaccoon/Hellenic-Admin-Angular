@@ -42,6 +42,7 @@ export class SidebarComponent {
     ],
     "Website": [
       { tableName: "offers", displayName: "Offers" },
+      { tableName: "categories", displayName: "Categories" },
       { tableName: "statistics", displayName: "Statistics" },
       { tableName: "retail_items", displayName: "Listed Items" },
       { tableName: "discount_codes", displayName: "Discount codes" },
