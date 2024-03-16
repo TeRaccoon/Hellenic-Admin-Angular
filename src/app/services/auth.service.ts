@@ -17,7 +17,7 @@ export class AuthService {
     }
 
     checkLogin() {
-        const url = apiUrlBase + 'API/manage_data.php';
+        const url = apiUrlBase + 'manage_data.php';
         
         return this.http.post(url, {action: "check-login"}, {withCredentials: true}).pipe(
             map((response: any) => {
@@ -38,7 +38,7 @@ export class AuthService {
     }
 
     async logout() {
-        const url = apiUrlBase + 'API/manage_data.php';
+        const url = apiUrlBase + 'manage_data.php';
 
         this.isAuthenticated.next(false);
 
