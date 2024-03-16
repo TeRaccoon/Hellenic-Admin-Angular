@@ -104,6 +104,9 @@
             .select {
                 flex: 1 1 45%;
             }
+            .alternative-select {
+                flex: 1 1 100%;
+            }
             .date {
                 flex: 1 1 45%;
             }
@@ -173,6 +176,17 @@
                     input {
                         display: none;
                     }
+                }
+                .input-hidden {
+                    opacity: 0;
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: max-height 0.5s ease, opacity 0.5s ease;
+                }
+                .input-visible {
+                    opacity: 1;
+                    max-height: 500px;
+                    transition: max-height 0.5s ease, opacity 0.5s ease;
                 }
             }
         }

@@ -104,6 +104,7 @@ export class EditFormComponent {
       this.alternativeSelectData = this.formService.getAlternativeSelectData();
       Object.keys(this.alternativeSelectData).forEach((key) => {
         this.alternativeSelectedData[key] = { selectData: this.formData[key]?.value };
+        this.selectOpen[key] = {opened: false};
       });
       Object.keys(this.replacementData).forEach((key) => {
         if (!Array.isArray(this.filteredReplacementData[key].data)) {
@@ -382,11 +383,15 @@ export class EditFormComponent {
   inputHasError(field: string) {
     return this.editForm.get(field)?.invalid && this.submitted;
   }
-  
-  openSelect(key: any) {
+
+  onInputFocus(key: string) {
     for (let keys in this.selectOpen) {
-      this.selectOpen[keys].opened = false
+      this.selectOpen[keys] = { opened: false };
     }
     this.selectOpen[key] = { opened: true };
+  }
+  
+  onInputBlur(key: string) {
+    this.selectOpen[key] = { opened: false };
   }
 }
