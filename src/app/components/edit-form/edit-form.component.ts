@@ -218,8 +218,8 @@ export class EditFormComponent {
     if (this.mappedFormData.get('Image')!.value != null) {
       this.imageReplacements.push(this.mappedFormData.get('Image')!.value);
     }
-    console.log(this.imageReplacements);
-
+    
+    this.imageReplacements = [...new Set(this.imageReplacements)];
   }
 
   async getIdReplacementData(query: string): Promise<any>  {
