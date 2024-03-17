@@ -549,7 +549,7 @@ export class ViewComponent {
 
   stockSearch(id: string) {
     this.dataService.collectData("stocked-items", id).subscribe((stockData: any) => {
-      this.dataService.storeWidgetData({id: id, stock_data: stockData});
+      this.dataService.storeStockWidgetData({id: id, stock_data: stockData});
       this.formService.showStockedItemForm();
     });
   }

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { faX, faTrashCan, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { Subscription } from 'rxjs';
+import { Subscription, lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-stocked-items-widget',
@@ -27,12 +27,18 @@ export class StockedItemsWidgetComponent {
   ngOnInit() {
     this.formService.getStockedItemsFormVisibility().subscribe(async (visible) => {
       this.formVisible = visible ? 'visible' : 'hidden';
+      if (visible) {
+        this.collectData();
+      }
     });
-    this.dataService.retrieveWidgetData().subscribe((widgetData: any) => {
-      console.log(widgetData);
-      this.data = Array.isArray(widgetData.stock_data) ? widgetData.stock_data : [widgetData.stock_data];
-      this.itemId = widgetData.id;
-    });
+  }
+
+  collectData() {
+    let data = this.dataService.retrieveStockWidgetData();
+    if (data != null) {
+      this.data = Array.isArray(data.stock_data) ? data.stock_data : [data.stock_data];
+      this.itemId = data.id;
+    }
   }
 
   hide() {
