@@ -601,7 +601,7 @@ export class ViewComponent {
   iconClick(event: Event, key: number, column: string, row: any) {
     switch (this.tableName) {
       case "invoices":
-        if (column == 'title') {
+        if (column == 'id') {
           let data = { ...this.data[key] };
           data['status'] = data['status'] == 'Complete' ? 'Pending' : 'Complete';
           row['status'] = data['status'];
