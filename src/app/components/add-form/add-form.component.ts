@@ -364,6 +364,12 @@ export class AddFormComponent {
     this.selectOpen[key].opened = false;
   }
 
+  updateAlternativeSelectData(field: string, data: any, key: string) {
+    this.alternativeSelectedData[key] = { selectData: data };
+    this.addForm.get(field)?.setValue(data);
+    this.selectOpen[key].opened = false;
+  }
+
   filterDropSelect(key: string, event: any, field: string | null) {
     this.selectedReplacementData[key];
     this.filteredReplacementData = JSON.parse(JSON.stringify(this.replacementData));
@@ -374,12 +380,6 @@ export class AddFormComponent {
     if (field) {
       this.addForm.get(field)?.setValue(filter);
     }
-  }
-
-  updateAlternativeSelectData(field: string, data: any, key: string) {
-    this.alternativeSelectedData[key] = { selectData: data };
-    this.addForm.get(field)?.setValue(data);
-    this.selectOpen[key].opened = false;
   }
 
   async addInvoicedItem(event: Event) {

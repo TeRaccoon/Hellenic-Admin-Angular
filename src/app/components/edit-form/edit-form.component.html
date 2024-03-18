@@ -29,8 +29,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'alternative-select'">
                                 <div class="drop-select-container">
-                                    <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [disabled]="locked" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.fields)" type="text" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)"
-                                        [value]="alternativeSelectedData[key].selectData">
+                                    <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [disabled]="locked" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.fields)" type="text" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)">                                    [value]="alternativeSelectedData[key].selectData">
                                     <div class="drop-select" [ngClass]="selectOpen[key].opened ? 'input-visible' : 'input-hidden'" [attr.required]="mappedFormData.get(key)?.required ? true : null">
                                         <p *ngFor="let option of alternativeSelectData[key].data" (click)="updateAlternativeSelectData(mappedFormData.get(key)!.fields, option, key)">{{ option }}</p>
                                     </div>
