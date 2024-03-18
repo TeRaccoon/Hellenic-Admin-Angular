@@ -68,6 +68,8 @@ export class AddFormComponent {
   selectedReplacementFilter: { [key:string]: {selectFilter: string } } = {};
   selectOpen: {[key: string]: {opened: boolean}} = {};
 
+  invoicedItemsList: {itemName: string, quantity: number}[] = [];
+
   constructor(
     private dataService: DataService,
     private formService: FormService,
@@ -129,7 +131,7 @@ export class AddFormComponent {
         this.filteredReplacementData[key].data = [this.filteredReplacementData[key].data];
       }
       this.addForm.get(this.formData[key].fields)?.setValue(this.filteredReplacementData[key].data[0].id);
-      var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))!.replacement;
+      var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))?.replacement;
       this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
       this.selectedReplacementFilter[key] = { selectFilter: ''};
       this.selectOpen[key] = {opened: false};
@@ -213,6 +215,41 @@ export class AddFormComponent {
         }
       } else {
         this.standardImageSubmission();
+      }
+    }
+  }
+
+  async addMore(event: Event) {
+    this.submitted = true;
+
+    event.preventDefault();
+    if (this.addForm.valid) {
+      let itemIdNames = this.replacementData["Item ID"];
+      let itemName = itemIdNames.data.find((data) => data.id == Number(this.addForm.get("item_id")?.value))?.replacement;
+      let quantity = this.addForm.get("quantity")?.value;
+
+      if (itemName != null && quantity != null) {
+        this.invoicedItemsList.push({itemName: itemName, quantity: quantity});
+        
+        let submissionResponse = await lastValueFrom(this.dataService.submitFormData(this.addForm.value));
+        if (!submissionResponse.success) {
+          this.formService.setMessageFormData({
+            title: "Error!",
+            message: submissionResponse.message,
+          });
+          this.formService.showMessageForm();
+        }
+        this.formService.requestReload();
+
+        let invoiceId = this.addForm.get("invoice_id")?.value;
+
+        this.submitted = false;
+
+        this.selectedReplacementData["Item ID"] = null;
+        this.addForm.get("item_id")?.setValue(null);
+        this.addForm.get("quantity")?.setValue(null);
+
+        this.addForm.get("invoice_id")?.setValue(invoiceId);
       }
     }
   }
@@ -343,17 +380,25 @@ export class AddFormComponent {
     this.selectOpen[key].opened = false;
   }
 
-  addInvoicedItem(event: Event) {
+  async addInvoicedItem(event: Event) {
     event.preventDefault();
     this.findInvalidControls();
     if (this.addForm.valid) {
+      let nextIdResult = await lastValueFrom(this.dataService.collectData("next-invoice-id", "invoices"));
+      let invoice_id = nextIdResult.next_id;
+
       this.formSubmit(false);
       this.tableName = 'invoiced_items';
       this.formService.setSelectedTable('invoiced_items');
-      this.dataService.collectData('edit-form-data', 'invoiced_items').subscribe((data: any) => {
-        this.formService.processAddFormData(data);
-        this.loadForm();
-      });
+      
+      let data = await lastValueFrom(this.dataService.collectData('edit-form-data', 'invoiced_items'));
+      let values: (string | null)[] = Array(data.columns.length).fill(null);
+      const invoiceIdIndex = data.names.indexOf('Invoice ID');
+      values[invoiceIdIndex] = invoice_id;
+      data.values = values;
+
+      this.formService.processAddFormData(data);
+      this.loadForm();
     } else {
       this.error = "Please fill in all the required fields before continuing!"
     }
