@@ -418,7 +418,7 @@ export class FormService {
     }
     this.setMessageFormData({title: title, message: message})
     this.showMessageForm();
-    return success;
+    return { success: success, imageFileName: imageFileName };
   }
 
   async uploadImage(image: File, imageFileName: string) {

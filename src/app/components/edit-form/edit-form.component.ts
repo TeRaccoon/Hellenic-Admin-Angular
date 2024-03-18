@@ -299,7 +299,8 @@ export class EditFormComponent {
   async submissionWithImage(itemId: string, itemName: string, hideForm: boolean) {
     const uploadResponse = await this.formService.handleImageSubmissions(itemId, itemName, this.file as File);
 
-    if (uploadResponse) {
+    if (uploadResponse.success) {
+      this.editForm.get('image_file_name')?.setValue(uploadResponse.imageFileName);
       const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(this.editForm.value))
 
       this.formService.setMessageFormData({
