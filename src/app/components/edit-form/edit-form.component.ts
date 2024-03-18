@@ -282,7 +282,10 @@ export class EditFormComponent {
   async submitImageOnly() {
     const validationResult = this.imageSubmissionValidation();
     if (validationResult !== false) {
-      await this.formService.handleImageSubmissions(validationResult.itemId, validationResult.itemName, this.file as File);
+      let uploadResponse =  await this.formService.handleImageSubmissions(validationResult.itemId, validationResult.itemName, this.file as File);
+      if (uploadResponse.success) {
+        this.editForm.get('image_file_name')?.setValue(uploadResponse.imageFileName);
+      }
     }
   }  
   
