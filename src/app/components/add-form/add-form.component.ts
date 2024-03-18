@@ -109,6 +109,7 @@ export class AddFormComponent {
     this.submitted = false;
     this.error = null;
     this.file = null;
+    this.invoicedItemsList = [];
   }
 
   async replaceAmbiguousData() {
@@ -336,6 +337,7 @@ export class AddFormComponent {
       this.addForm.get('action')?.setValue('add');
       this.addForm.get('table_name')?.setValue(this.tableName);
       this.error = null;
+      this.invoicedItemsList = [];
     }
   }
 
