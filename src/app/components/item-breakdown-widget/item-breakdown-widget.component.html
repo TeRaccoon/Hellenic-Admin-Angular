@@ -18,7 +18,7 @@
     </div>
     <div class="row">
         <div *ngFor="let data of itemDataRowB; let i = index" class="section">
-            <h1>{{ headers[i] }}</h1>
+            <h1>{{ headers[i + 2] }}</h1>
             <h2>{{ data["item_name"] }}</h2>
             <ng-container *ngIf="data['unit_cost'] == 0 || data['retail_price'] == null || data['wholesale_price'] == null">
                 <fa-icon [icon]="faWarning" />
