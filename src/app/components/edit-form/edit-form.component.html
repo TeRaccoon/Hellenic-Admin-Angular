@@ -15,10 +15,16 @@
                         <ng-container [ngSwitch]="mappedFormData.get(key)?.inputType">
                             <ng-container *ngSwitchCase="'file'">
                                 <ng-container *ngIf="imageReplacements.length > 0 else noImages">
-                                    <select [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" class="select-input" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields" [(ngModel)]="selectedImage">
-                                        <option *ngFor="let image of imageReplacements" [value]="image">{{ image }}</option>
-                                    </select>
-                                    <img *ngIf="selectedImage != ''" [src]="imageUrlBase + selectedImage">
+                                    <div class="drop-select-container">
+                                        <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)" [attr.required]="mappedFormData.get(key)?.required ? true : null" [formControlName]="mappedFormData.get(key)!.fields"
+                                            [(ngModel)]="selectedImage">
+                                        <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? 'input-visible' : 'input-hidden'" [attr.required]="mappedFormData.get(key)?.required ? true : null">
+                                            <div *ngFor="let image of imageReplacements" (click)="updateImageSelection(image)" class="image-row">
+                                                <p>{{ image }}</p>
+                                                <img [src]="imageUrlBase + image">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </ng-container>
                                 <ng-template #noImages>
                                     <label class="file-upload">
@@ -29,8 +35,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'alternative-select'">
                                 <div class="drop-select-container">
-                                    <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [disabled]="locked" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.fields)" type="text" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)"
-                                        [value]="alternativeSelectedData[key].selectData">
+                                    <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" type="text" [disabled]="locked" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.fields)" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)" [value]="alternativeSelectedData[key].selectData">
                                     <div class="drop-select" [ngClass]="selectOpen[key].opened ? 'input-visible' : 'input-hidden'" [attr.required]="mappedFormData.get(key)?.required ? true : null">
                                         <p *ngFor="let option of alternativeSelectData[key].data" (click)="updateAlternativeSelectData(mappedFormData.get(key)!.fields, option, key)">{{ option }}</p>
                                     </div>

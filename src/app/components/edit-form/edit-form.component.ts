@@ -414,4 +414,8 @@ export class EditFormComponent {
   onInputBlur(key: string) {
     this.selectOpen[key] = { opened: false };
   }
+
+  updateImageSelection(image: string) {
+    this.selectedImage = image;    
+  }
 }
