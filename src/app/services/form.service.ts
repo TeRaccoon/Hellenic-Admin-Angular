@@ -40,9 +40,10 @@ export class FormService {
     }
   } = {};
   private deleteFormIds: number[] = [];
-  private messageFormData: { title: string; message: string } = {
-    title: '',
-    message: '',
+  private messageFormData: { title: string; message: string, secondaryMessage?: string } = {
+    title: "",
+    message: "",
+    secondaryMessage: ""
   };
   private selectedTable: string = '';
   private selectedId: string = '';
@@ -193,7 +194,7 @@ export class FormService {
     this.deleteFormIds = deleteFormIds;
   }
 
-  setMessageFormData(messageFormData: { title: string; message: string }) {
+  setMessageFormData(messageFormData: { title: string; message: string, secondaryMessage?: string }) {
     this.messageFormData = messageFormData;
   }
 

@@ -236,7 +236,8 @@ export class AddFormComponent {
         if (!submissionResponse.success) {
           this.formService.setMessageFormData({
             title: "Error!",
-            message: submissionResponse.message,
+            message: "The server has encountered an error!",
+            secondaryMessage: submissionResponse.message
           });
           this.formService.showMessageForm();
         }
