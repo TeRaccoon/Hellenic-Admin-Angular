@@ -222,6 +222,8 @@ export class ViewComponent {
 
     if (this.tableName == "items") {
       let totalStockData = await lastValueFrom(this.dataService.collectData("total-stock"));
+      totalStockData = Array.isArray(totalStockData) ? totalStockData : [totalStockData];
+      
       totalStockData.forEach((stock: any) => {
         this.stockData[stock.item_id] = stock.total_quantity;
       });
@@ -229,6 +231,8 @@ export class ViewComponent {
 
     if (this.tableName == "stocked_items") {
       let images = await lastValueFrom(this.dataService.collectData("stocked-item-images"));
+      images = Array.isArray(images) ? images : [images];
+      
       if (images != null) {
         images.forEach((imageData: any) => {
           this.images[imageData.item_id] = imageData.file_name
