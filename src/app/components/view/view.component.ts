@@ -107,6 +107,7 @@ export class ViewComponent {
       if (reloadRequested) {
         let reloadType = this.formService.getReloadType();
         if (reloadType == "hard") {
+          this.selectedRows = [];
           await this.loadTable(String(this.tableName));
         } else if (reloadType == "invoice-widget") {
           this.invoiceSearch(this.formService.getReloadId());
@@ -223,7 +224,7 @@ export class ViewComponent {
     if (this.tableName == "items") {
       let totalStockData = await lastValueFrom(this.dataService.collectData("total-stock"));
       totalStockData = Array.isArray(totalStockData) ? totalStockData : [totalStockData];
-      
+
       totalStockData.forEach((stock: any) => {
         this.stockData[stock.item_id] = stock.total_quantity;
       });
