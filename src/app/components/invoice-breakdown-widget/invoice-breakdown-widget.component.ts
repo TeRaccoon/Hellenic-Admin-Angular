@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Chart, ChartConfiguration, ChartItem, registerables } from 'chart.js';
 import { DataService } from '../../services/data.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-invoice-breakdown-widget',
@@ -144,24 +145,19 @@ export class InvoiceBreakdownWidgetComponent {
     }
   }
 
-  getPieData() {
+  async getPieData() {
     if (this.selectedMonth != null) {
-      this.dataService
-        .collectDataComplex('invoiced-item-month-totals', {
-          month: this.selectedMonth,
-          year: this.selectedYear,
-        })
-        .subscribe((data: any) => {
-          var itemTotalData = data;
-          if (!Array.isArray(itemTotalData)) {
-            itemTotalData = [itemTotalData];
-          }
-          itemTotalData.forEach((item: any) => {
-            this.pieChartData.push(item.total_quantity);
-            this.pieChartLabel.push(item.item_name);
-          });
-          this.createPieChart();
+      let invoicedItemData = await lastValueFrom(this.dataService.collectDataComplex("invoiced-item-month-totals", { month: this.selectedMonth, year: this.selectedYear }));
+
+      if (invoicedItemData != null) {
+        invoicedItemData = !Array.isArray(invoicedItemData) ? [invoicedItemData] : invoicedItemData;
+
+        invoicedItemData.slice(0, 4).forEach((item: any) => {
+          this.pieChartData.push(item.total_quantity);
+          this.pieChartLabel.push(item.item_name);
         });
+        this.createPieChart();
+      }
     }
   }
 
