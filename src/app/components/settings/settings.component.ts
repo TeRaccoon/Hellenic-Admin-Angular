@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { lastValueFrom } from 'rxjs';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faAsterisk } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormService } from '../../services/form.service';
 
@@ -13,12 +13,14 @@ import { FormService } from '../../services/form.service';
 export class SettingsComponent {
   settings: any = [];
   faSpinner = faSpinner;
+  faAsterisk = faAsterisk;
 
   loaded = false;
 
   settingsForm: FormGroup;
 
-  changes: { [key: string]: {id: string, value: any, type: any}}[] = [];
+  changes: any = {};
+  originalValues: any = {};
 
   constructor(private dataService: DataService, private fb: FormBuilder, private formService: FormService) {
     this.settingsForm = this.fb.group({});
@@ -31,7 +33,10 @@ export class SettingsComponent {
   async build() {
     await this.collectSettings();
     this.buildForm();
+    this.changes = this.settingsForm.value;
+    this.originalValues = this.settingsForm.value;
     this.loaded = true;
+    this.trackFormChanges();
   }
 
   async collectSettings() {
@@ -97,5 +102,11 @@ export class SettingsComponent {
 
     this.formService.setMessageFormData({title, message});
     this.formService.showMessageForm();
+  }
+
+  trackFormChanges() {
+    this.settingsForm.valueChanges.subscribe(data => {
+      this.changes = data;
+    });
   }
 }
