@@ -258,7 +258,7 @@ export class FormService {
         break;
 
       case 'invoiced_items':
-        var data = await this.getIdReplacementData('items_id_name', dataService);
+        var data = await this.getIdReplacementData('items_id_name_sku', dataService);
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
@@ -268,7 +268,7 @@ export class FormService {
         break;
 
       case 'stocked_items':
-        var data = await this.getIdReplacementData('items_id_name', dataService);
+        var data = await this.getIdReplacementData('items_id_name_sku', dataService);
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
