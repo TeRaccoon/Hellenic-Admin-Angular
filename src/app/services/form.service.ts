@@ -249,11 +249,6 @@ export class FormService {
         var data = await this.getIdReplacementData('items_id_name', dataService);
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
-
-
-        data = await this.getIdReplacementData('brands', dataService);
-        formData['Brand'].inputType = 'alternative-select';
-        this.alternativeSelectData['Brand'] = { data: data };
         break;
 
       case "items":
