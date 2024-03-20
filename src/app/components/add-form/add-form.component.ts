@@ -432,4 +432,12 @@ export class AddFormComponent {
   onInputBlur(key: string) {
     this.selectOpen[key] = { opened: false };
   }
+  
+  canDisplayInputField(key: string) {
+    switch(this.tableName) {
+      case "invoices":
+        return !(key == "VAT" || key == "Total" || key == "Net Value");
+    }
+    return true;
+  }
 }
