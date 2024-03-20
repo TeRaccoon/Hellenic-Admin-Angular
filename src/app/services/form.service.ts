@@ -249,6 +249,10 @@ export class FormService {
         var data = await this.getIdReplacementData('items_id_name', dataService);
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
+
+        data = await this.getIdReplacementData("offer_id_name", dataService);
+        formData["Offer ID"].inputType = "replacement";
+        replacementData["Offer ID"] = { data: data };
         break;
 
       case "items":
@@ -337,30 +341,30 @@ export class FormService {
     return this.reloadId;
   }
 
-  processEditFormData(id: number, row: any, edittableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[]}) {
+  processEditFormData(id: number, row: any, editableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[]}) {
     this.editFormData = {};
-    var inputDataTypes = this.dataTypeToInputType(edittableData.types);
-    edittableData.columns.forEach((columnName, index) => {
-      this.editFormData[edittableData.names[index]] = {
+    var inputDataTypes = this.dataTypeToInputType(editableData.types);
+    editableData.columns.forEach((columnName, index) => {
+      this.editFormData[editableData.names[index]] = {
         value: row[columnName],
         inputType: inputDataTypes[index],
-        dataType: edittableData.types[index],
-        required: edittableData.required[index],
-        fields: edittableData.fields[index],
+        dataType: editableData.types[index],
+        required: editableData.required[index],
+        fields: editableData.fields[index],
       };
     });
   }
 
-  processAddFormData(edittableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[], values: any[]}) {
+  processAddFormData(editableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[], values: any[]}) {
     this.addFormData = {};
-    var inputDataTypes: string[] = this.dataTypeToInputType(edittableData.types);
-    edittableData.columns.forEach((_, index) => {
-      this.addFormData[edittableData.names[index]] = {
+    var inputDataTypes: string[] = this.dataTypeToInputType(editableData.types);
+    editableData.columns.forEach((_, index) => {
+      this.addFormData[editableData.names[index]] = {
         inputType: inputDataTypes[index],
-        dataType: edittableData.types[index],
-        required: edittableData.required[index],
-        fields: edittableData.fields[index],
-        value: edittableData.values ? edittableData.values[index] : null,
+        dataType: editableData.types[index],
+        required: editableData.required[index],
+        fields: editableData.fields[index],
+        value: editableData.values ? editableData.values[index] : null,
       };
     });
   }
