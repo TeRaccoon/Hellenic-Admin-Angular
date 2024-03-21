@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-ledger-widget',
@@ -16,12 +17,11 @@ export class LedgerWidgetComponent {
 
   constructor(private dataService: DataService) {}
 
-  calculateTrialBalance() {
+  async calculateTrialBalance() {
     if (this.startDate != '' && this.endDate != '') {
-      this.dataService.collectDataComplex('account-balances', {'start-date': this.startDate, 'end-date': this.endDate}).subscribe((data: any) => {
-        this.balanceData = data;
-        this.searched = true;
-      });
+      let accountBalanceData = await lastValueFrom(this.dataService.collectDataComplex('account-balances', {'start-date': this.startDate, 'end-date': this.endDate}));
+      this.balanceData = accountBalanceData;
+      this.searched = true;
     }
     else {
       this.hasError = true;

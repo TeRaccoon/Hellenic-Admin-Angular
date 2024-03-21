@@ -19,11 +19,11 @@ export class TablelessViewComponent {
     this.route.queryParams.subscribe((params) => {
       this.tableName = params['table'];
     });
+
     this.dataService.getDataObservable().subscribe((data) => {
       var retrievedData = this.dataService.retrieveData();
       this.tableData = retrievedData.Data;
       this.tableHeaders = retrievedData.Headers;
-      console.log(this.tableData);
     });
   }
   

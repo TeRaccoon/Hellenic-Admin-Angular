@@ -3,7 +3,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { faX, faTrashCan, faPenToSquare, faFileCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { imageUrlBase } from '../../services/data.service';
-import { Subscription } from 'rxjs';
+import { Subscription, lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-invoiced-items-widget',
@@ -38,23 +38,26 @@ export class InvoicedItemsWidgetComponent {
     });
   }
 
-  addInvoicedItem() {
-    this.dataService.collectData("table", "invoiced_items").subscribe((data: any) => {
-      this.formData = data.edittable;
-      this.formService.processAddFormData(data.edittable);
+  async addInvoicedItem() {
+    let invoicedItemsData = await lastValueFrom(this.dataService.collectData("table", "invoiced_items"));
+
+    if (invoicedItemsData != null) {
+      this.formData = invoicedItemsData.edittable;
+      this.formService.processAddFormData(invoicedItemsData.edittable);
       this.formService.setSelectedTable("invoiced_items");
       this.formService.showAddForm();
       this.formService.setReloadType("invoice-widget");
-    });
+    }
   }
 
-  editRow(id: number) {
-    this.dataService.collectData("edit-form-data", "invoiced_items").subscribe((editFormData: any) => {
-      this.dataService.collectDataComplex("append-or-add", { table: 'invoiced_items', id: id, column: 'id' }).subscribe((data: any) => {
-        this.formService.processEditFormData(id, data, editFormData);
-        this.prepareEditFormService(id, 'invoiced_items');
-      });
-    });
+  async editRow(id: number) {
+    let invoicedItemsFormData = await lastValueFrom(this.dataService.collectData("edit-form-data", "invoiced_items"));
+    let appendOrAdd = await lastValueFrom(this.dataService.collectData("edit-form-data", "invoiced_items"));
+
+    if (invoicedItemsFormData != null && appendOrAdd != appendOrAdd) {
+      this.formService.processEditFormData(id, appendOrAdd, invoicedItemsFormData);
+      this.prepareEditFormService(id, 'invoiced_items');
+    }
   }
 
   deleteRow(id: number) {

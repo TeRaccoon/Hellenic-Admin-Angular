@@ -10,6 +10,7 @@ import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormService } from '../../services/form.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -77,23 +78,22 @@ export class NavbarComponent {
     this.userOptionsVisible = !this.userOptionsVisible;
   }
 
-  getNotifications() {
-    this.dataService.collectData('invoices-due', '1').subscribe((data: any) => {
-      if (data.length != 0) {
-        var invoicesDue = data;
-        if (!Array.isArray(invoicesDue)) {
-          invoicesDue = [invoicesDue];
-        }
-        var invoiceDataArray: any[] = [];
-        invoicesDue.forEach((invoiceData: any) => {
-          invoiceDataArray.push(`Invoice: ${invoiceData.title}`);
-        });
-        this.notifications.push({
-          header: 'Invoices Due Today',
-          data: invoiceDataArray,
-        });
-      }
-    });
+  async getNotifications() {
+    let invoicesDue = await lastValueFrom(this.dataService.collectData('invoices-due', '1'));
+
+    if (invoicesDue.length != 0) {
+      invoicesDue = Array.isArray(invoicesDue) ? [invoicesDue] : invoicesDue;
+
+      var invoiceDataArray: any[] = [];
+      invoicesDue.forEach((invoiceData: any) => {
+        invoiceDataArray.push(`Invoice: ${invoiceData.title}`);
+      });
+      
+      this.notifications.push({
+        header: 'Invoices Due Today',
+        data: invoiceDataArray,
+      });
+    }
   }
 
   searchTables(event: Event) {

@@ -33,18 +33,18 @@ export class HomeComponent {
   }
 
   async loadWidgets() {
-    this.dataService.collectData("total-invoices-month").subscribe((data: any) => {
-      this.widgetData.push(data);
-    });
-    this.dataService.collectData("invoices-due-today").subscribe((data: any) => {
-      this.widgetData.push(data);
-    });
-    this.dataService.collectData("total-customers").subscribe((data: any) => {
-      this.widgetData.push(data);
-    });
-    this.dataService.collectData("new-customers").subscribe((data: any) => {
-      this.widgetData.push(data);
-    });
+    
+    let data = await lastValueFrom(this.dataService.collectData("total-invoices-month"))
+    this.widgetData.push(data);
+
+    data = await lastValueFrom(this.dataService.collectData("invoices-due-today"))
+    this.widgetData.push(data);
+
+    data = await lastValueFrom(this.dataService.collectData("total-customers"))
+    this.widgetData.push(data);
+
+    data = await lastValueFrom(this.dataService.collectData("new-customers"))
+    this.widgetData.push(data);
   }
 
   async loadQuickViews() {

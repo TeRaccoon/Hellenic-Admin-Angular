@@ -128,20 +128,21 @@ export class InvoiceBreakdownWidgetComponent {
     this.pieChart = new Chart(chartItem, config);
   }
 
-  getData() {
+  async getData() {
     if (this.selectedYear != null) {
-      this.dataService
-        .collectData('invoice-month-totals', this.selectedYear.toString())
-        .subscribe((data: any) => {
-          var invoiceData = data;
-          if (!Array.isArray(invoiceData)) {
-            invoiceData = [invoiceData];
-          }
-          for (const item of invoiceData) {
-            this.barChartData[item.month - 1] = item.total_amount;
-          }
-          this.createBarChart();
-        });
+      let invoiceMonthTotals = await lastValueFrom(this.dataService.collectData('invoice-month-totals', this.selectedYear.toString()));
+
+      if (invoiceMonthTotals != null) {
+        if (!Array.isArray(invoiceMonthTotals)) {
+          invoiceMonthTotals = [invoiceMonthTotals];
+        }
+
+        for (const item of invoiceMonthTotals) {
+          this.barChartData[item.month - 1] = item.total_amount;
+        }
+
+        this.createBarChart();
+      }
     }
   }
 
@@ -161,28 +162,25 @@ export class InvoiceBreakdownWidgetComponent {
     }
   }
 
-  getListData() {
-    this.dataService
-      .collectDataComplex('total-invoices-month-profit', {
-        month: this.selectedMonth,
-        year: this.selectedYear,
-      })
-      .subscribe((data: any) => {
-        var invoiceData = data;
-        this.listData.push(
-          invoiceData['month_total'].toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'GBP',
-          })
-        );
-        this.listData.push(invoiceData['total_invoices']);
-        this.listData.push(
-          invoiceData['invoice_profit'].toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'GBP',
-          })
-        );
-      });
+  async getListData() {
+    let totalMonthInvoiceProfit = await lastValueFrom<any>(this.dataService.collectDataComplex("total-invoices-month-profit", { month: this.selectedMonth, year: this.selectedYear }));
+
+    if (totalMonthInvoiceProfit != null) {
+      this.listData.push(
+        totalMonthInvoiceProfit['month_total'].toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'GBP',
+        })
+      );
+      
+      this.listData.push(totalMonthInvoiceProfit['total_invoices']);
+      this.listData.push(
+        totalMonthInvoiceProfit['invoice_profit'].toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'GBP',
+        })
+      );
+    }
   }
 
   handleBarClick(event: MouseEvent, elements: any[]) {

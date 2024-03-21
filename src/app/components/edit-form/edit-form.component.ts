@@ -223,16 +223,6 @@ export class EditFormComponent {
     this.imageReplacements = [...new Set(this.imageReplacements)];
   }
 
-  async getIdReplacementData(query: string): Promise<any>  {
-    return new Promise((resolve, reject) => {
-      this.dataService.collectData(query).subscribe(
-        (data: any) => {
-          resolve(data);
-        },
-      );
-    });
-  }
-
   async formSubmit(hideForm: boolean) {
     this.submitted = true;
 
@@ -289,14 +279,13 @@ export class EditFormComponent {
     }
   }  
   
-  submissionWithoutImage(hideForm: boolean) {
-    this.dataService.submitFormData(this.editForm.value).subscribe((data: any) => {
-        this.formService.setMessageFormData({
-          title: data.success ? 'Success!' : 'Error!',
-          message: data.message,
-        });
-        this.endSubmission(data.success, hideForm);
+  async submissionWithoutImage(hideForm: boolean) {
+    let submissionResponse = await lastValueFrom(this.dataService.submitFormData(this.editForm.value));
+    this.formService.setMessageFormData({
+      title: submissionResponse.success ? 'Success!' : 'Error!',
+      message: submissionResponse.message,
     });
+    this.endSubmission(submissionResponse.success, hideForm);
   }
 
   async submissionWithImage(itemId: string, itemName: string, hideForm: boolean) {
@@ -317,7 +306,7 @@ export class EditFormComponent {
     }
   }
 
-  addImageLocationToDatabase() {
+  async addImageLocationToDatabase() {
     let imageFormData = {
       'action': 'add',
       'table_name': 'retail_item_images',
@@ -325,20 +314,19 @@ export class EditFormComponent {
       'image_file_name': this.fileName
     };
 
-    this.dataService.submitFormData(imageFormData).subscribe((insertResponse: any) => {
-      if (insertResponse.success) {
-        this.formService.setMessageFormData({
-          title: 'Success!',
-          message: 'Image uploaded successfully as ' + this.fileName,
-        });
-      } else {
-        this.formService.setMessageFormData({
-          title: 'Error!',
-          message: insertResponse.message,
-        });
-      }
-      this.formService.showMessageForm();
-    }); 
+    let insertResponse = await lastValueFrom(this.dataService.submitFormData(imageFormData));
+    if (insertResponse.success) {
+      this.formService.setMessageFormData({
+        title: 'Success!',
+        message: 'Image uploaded successfully as ' + this.fileName,
+      });
+    } else {
+      this.formService.setMessageFormData({
+        title: 'Error!',
+        message: insertResponse.message,
+      });
+    }
+    this.formService.showMessageForm();
   }
 
   endSubmission(reset: boolean, hideForm: boolean) {

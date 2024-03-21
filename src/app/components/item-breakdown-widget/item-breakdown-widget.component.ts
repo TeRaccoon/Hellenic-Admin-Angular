@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {Chart, ChartConfiguration, ChartItem, registerables} from 'chart.js';
 import { DataService } from '../../services/data.service';
 import { faWarning } from '@fortawesome/free-solid-svg-icons';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-item-breakdown-widget',
@@ -30,23 +31,27 @@ export class ItemBreakdownWidgetComponent {
   }
 
   async getTopSelling() {
-    this.dataService.collectData("top-selling-item").subscribe((data: any) => {
-      this.itemDataRowA[0] = data;
-    });
+    let topSellingItem = await lastValueFrom(this.dataService.collectData("top-selling-item"));
+    if (topSellingItem != null) {
+      this.itemDataRowA[0] = topSellingItem;
+    }
   }
   async getLeastPurchased() {
-    this.dataService.collectData("least-purchased-item").subscribe((data: any) => {
-      this.itemDataRowA[1] = data;
-    });
+    let leastPurchasedItem = await lastValueFrom(this.dataService.collectData("least-purchased-item"));
+    if (leastPurchasedItem != null) {
+      this.itemDataRowA[1] = leastPurchasedItem;
+    }
   }
   async getMostIncome() {
-    this.dataService.collectData("most-income-item").subscribe((data: any) => {
-      this.itemDataRowB[0] = data;
-    });
+    let mostIncomeItem = await lastValueFrom(this.dataService.collectData("most-income-item"));
+    if (mostIncomeItem != null) {
+      this.itemDataRowB[1] = mostIncomeItem;
+    }
   }
   async getLeastIncome() {
-    this.dataService.collectData("least-income-item").subscribe((data: any) => {
-      this.itemDataRowB[1] = data;
-    });
+    let leastIncomeItem = await lastValueFrom(this.dataService.collectData("least-income-item"));
+    if (leastIncomeItem != null) {
+      this.itemDataRowB[1] = leastIncomeItem;
+    }
   }
 }

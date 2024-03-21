@@ -45,9 +45,11 @@ export class StockedItemsWidgetComponent {
     this.formService.hideStockedItemForm();
   }
 
-  addStockedItem() {
-    this.dataService.collectData("table", "stocked_items").subscribe((data: any) => {
-      this.formData = data.edittable;
+  async addStockedItem() {
+    let stockedItemsData = await lastValueFrom(this.dataService.collectData("table", "stocked_items"));
+
+    if (stockedItemsData != null) {
+      this.formData = stockedItemsData.edittable;
 
       let values: (string | null)[] = Array(this.formData.columns.length).fill(null);
       const itemIdIndex = this.formData.names.indexOf('Item ID');
@@ -59,16 +61,17 @@ export class StockedItemsWidgetComponent {
       this.formService.showAddForm();
       this.formService.setReloadType("stock-widget");
       this.formService.setReloadId(this.itemId);
-    });
+    }
   }
 
-  editRow(id: number) {
-    this.dataService.collectData("edit-form-data", "stocked_items").subscribe((editFormData: any) => {
-      this.dataService.collectDataComplex("append-or-add", { table: 'stocked_items', id: id, column: 'id' }).subscribe((data: any) => {
-        this.formService.processEditFormData(id, data, editFormData);
-        this.prepareEditFormService(id, 'stocked_items');
-      });
-    });
+  async editRow(id: number) {
+    let editFormData = await lastValueFrom(this.dataService.collectData("edit-form-data", "stocked_items"));
+    let appendOrAdd = await lastValueFrom(this.dataService.collectDataComplex("append-or-add", { table: 'stocked_items', id: id, column: 'id' }));
+
+    if (editFormData != null && appendOrAdd != null) {
+      this.formService.processEditFormData(id, appendOrAdd, editFormData);
+      this.prepareEditFormService(id, 'stocked_items');
+    }
   }
 
   deleteRow(id: number) {

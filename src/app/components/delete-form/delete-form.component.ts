@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-delete-form',
@@ -26,7 +27,7 @@ export class DeleteFormComponent {
     this.formService.hideDeleteForm();
   }
 
-  deleteRow() {
+  async deleteRow() {
     var idString = "";
     if (this.ids.length > 1) {
       this.ids.forEach(id => {
@@ -38,11 +39,10 @@ export class DeleteFormComponent {
       idString = String(this.ids[0]);
     }
     
-    this.dataService.submitFormData({action: 'delete', id: idString, table_name: this.tableName}).subscribe((data: any) => {
-      this.formService.setMessageFormData({title: data.success ? 'Success!' : 'Error!', message: data.message});
-      this.formService.showMessageForm();
-      this.hide();
-      this.formService.requestReload();
-    });
+    let deletionResponse = await lastValueFrom(this.dataService.submitFormData({action: 'delete', id: idString, table_name: this.tableName}));
+    this.formService.setMessageFormData({title: deletionResponse.success ? 'Success!' : 'Error!', message: deletionResponse.message});
+    this.formService.showMessageForm();
+    this.hide();
+    this.formService.requestReload();
   }
 }

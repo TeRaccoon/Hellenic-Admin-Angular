@@ -299,63 +299,7 @@ export class ViewComponent {
   async editRow(id: any, table: string) {
     var row = this.data.filter((row: any) => row.id == id)[0];
 
-    if (table != '') {
-      this.dataService.collectData("edit-form-data", table).subscribe((formData: any) => {
-        
-        var fakeRow = JSON.parse(JSON.stringify(row));
-
-        switch (table) {
-          case "allergen_information":
-          case "nutrition_info":
-
-            switch (this.tableName) {
-              case "retail_items":
-                fakeRow['retail_item_id'] = id;
-                this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'retail_item_id' }).subscribe((data: any) => {
-                  if (data.id) {
-                    fakeRow = data;
-                    this.formService.processEditFormData(id, fakeRow, formData);
-                    this.prepareEditFormService(id, table);
-                  } else {
-                    let values: (string | null)[] = Array(formData.columns.length).fill(null);
-                    const retailItemIdIndex = formData.names.indexOf('Retail Item ID');
-                    values[retailItemIdIndex] = id;
-                    formData.values = values;
-                    this.formService.processAddFormData(formData);
-                    this.prepareAddFormService(table);
-                  }
-                });
-                break;
-
-              case "items":
-                this.dataService.collectData("reverse-item-id", id).subscribe((reversedId: any) => {
-                  fakeRow['retail_item_id'] = reversedId;
-                  this.dataService.collectDataComplex("append-or-add", { table: table, id: reversedId, column: 'retail_item_id' }).subscribe((data: any) => {
-                    if (data.id) {
-                      fakeRow = data;
-                      this.formService.processEditFormData(reversedId, fakeRow, formData);
-                      this.prepareEditFormService(reversedId, table);
-                    } else {
-                      let values: (string | null)[] = Array(formData.columns.length).fill(null);
-                      const retailItemIdIndex = formData.names.indexOf('Retail Item ID');
-                      values[retailItemIdIndex] = reversedId;
-                      formData.values = values;
-                      this.formService.processAddFormData(formData);
-                      this.prepareAddFormService(table);
-                    }
-                  });
-                });
-                break;
-            }
-            break;
-
-          default:
-            this.formService.processEditFormData(id, fakeRow, formData);
-            this.prepareEditFormService(id, table);
-            break;
-        }
-      });
-    } else {
+    if (table == '') {
       if (this.tableName == 'invoices') {
         if (row['status'] == 'Complete') {
           this.formService.setMessageFormData({title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!'});
@@ -368,6 +312,63 @@ export class ViewComponent {
         this.formService.processEditFormData(id, row, this.edittable)
         this.prepareEditFormService(id, table);
       }
+
+      return;
+    }
+
+    let editFormData = await lastValueFrom(this.dataService.collectData("edit-form-data", table));
+      
+    var fakeRow = JSON.parse(JSON.stringify(row));
+
+    let appendOrAdd;
+
+    switch (table) {
+      case "allergen_information":
+      case "nutrition_info":
+        switch (this.tableName) {
+          case "retail_items":
+            fakeRow['retail_item_id'] = id;
+            appendOrAdd = await lastValueFrom<any>(this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'retail_item_id' }));
+
+            if (appendOrAdd.id) {
+              fakeRow = appendOrAdd;
+              this.formService.processEditFormData(id, fakeRow, editFormData);
+              this.prepareEditFormService(id, table);
+            } else {
+              let values: (string | null)[] = Array(editFormData.columns.length).fill(null);
+              const retailItemIdIndex = editFormData.names.indexOf('Retail Item ID');
+              values[retailItemIdIndex] = id;
+              editFormData.values = values;
+              this.formService.processAddFormData(editFormData);
+              this.prepareAddFormService(table);
+            }
+            break;
+
+          case "items":
+            let reverseItemId = await lastValueFrom<any>(this.dataService.collectData("reverse-item-id", id));
+            appendOrAdd = await lastValueFrom<any>(this.dataService.collectDataComplex("append-or-add", { table: table, id: reverseItemId, column: 'retail_item_id' }));
+            
+            fakeRow['retail_item_id'] = reverseItemId;
+              if (appendOrAdd.id) {
+                fakeRow = appendOrAdd;
+                this.formService.processEditFormData(reverseItemId, fakeRow, editFormData);
+                this.prepareEditFormService(reverseItemId, table);
+              } else {
+                let values: (string | null)[] = Array(editFormData.columns.length).fill(null);
+                const retailItemIdIndex = editFormData.names.indexOf('Retail Item ID');
+                values[retailItemIdIndex] = reverseItemId;
+                editFormData.values = values;
+                this.formService.processAddFormData(editFormData);
+                this.prepareAddFormService(table);
+              }
+            break;
+        }
+        break;
+
+      default:
+        this.formService.processEditFormData(id, fakeRow, formData);
+        this.prepareEditFormService(id, table);
+        break;
     }
   }
 
@@ -493,7 +494,7 @@ export class ViewComponent {
     data[columnName] = checked ? "Yes" : "No";
     data['action'] = 'append';
     data['table_name'] = String(this.tableName);
-    await this.dataService.submitFormData(data).subscribe();
+    await lastValueFrom(this.dataService.submitFormData(data));
   }
 
   selectRow(event: Event, rowId: number) {
@@ -533,30 +534,33 @@ export class ViewComponent {
     this.router.navigate(['/print/invoice']);
   }
 
-  invoiceSearch(id: string) {
+  async invoiceSearch(id: string) {
     var row = this.data.filter((row: any) => row.id == id)[0];
     if (row['status'] == 'Complete') {
       this.formService.setMessageFormData({title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!'});
       this.formService.showMessageForm();
     } else {
-      this.dataService.collectData("invoiced-items", id.toString()).subscribe((invoiced_items: any) => {
-        var invoicedItems = Array.isArray(invoiced_items) ? invoiced_items : [invoiced_items];
-        var invoicedItemsWidgetData = { title: null, data: invoicedItems}
-        if (row['title']) {
-          invoicedItemsWidgetData.title = row['title'];
-        }
-        this.dataService.storeWidgetData(invoicedItemsWidgetData);
-        this.formService.setReloadId(id);
-        this.formService.showInvoicedItemForm();
-      });
+      let invoicedItems = await lastValueFrom(this.dataService.collectData("invoiced-items", id.toString()));
+      invoicedItems = Array.isArray(invoicedItems) ? invoicedItems : [invoicedItems];
+
+      var invoicedItemsWidgetData = { title: null, data: invoicedItems};
+
+      if (row['title']) {
+        invoicedItemsWidgetData.title = row['title'];
+      }
+
+      this.dataService.storeWidgetData(invoicedItemsWidgetData);
+      this.formService.setReloadId(id);
+      this.formService.showInvoicedItemForm();
     }
   }
 
-  stockSearch(id: string) {
-    this.dataService.collectData("stocked-items", id).subscribe((stockData: any) => {
+  async stockSearch(id: string) {
+    let stockData = await lastValueFrom(this.dataService.collectData("stocked-items", id));
+    if (stockData != null) {
       this.dataService.storeStockWidgetData({id: id, stock_data: stockData});
       this.formService.showStockedItemForm();
-    });
+    }
   }
 
   shouldColourCell(data: any) {
@@ -612,14 +616,15 @@ export class ViewComponent {
           row['status'] = data['status'];
           data['action'] = 'append';
           data['table_name'] = String(this.tableName);
-          this.dataService.submitFormData(data).subscribe((response: any) => {
-            if (response.success) {
-              this.reloadTable();
-            } else {
-              this.formService.setMessageFormData({ title: "Error!", message: "There was an error trying to unlock the booking!" });
-              this.formService.showMessageForm();
-            }
-          });
+
+          let submissionResponse = await lastValueFrom(this.dataService.submitFormData(data));
+
+          if (submissionResponse.success) {
+            this.reloadTable();
+          } else {
+            this.formService.setMessageFormData({ title: "Error!", message: "There was an error trying to unlock the booking!" });
+            this.formService.showMessageForm();
+          }
         }
         break;
     }
@@ -737,7 +742,7 @@ export class ViewComponent {
     this.changePage(1);
   }
 
-  calculateDistance() {
+  async calculateDistance() {
     if (this.selectedRows.length !== 1) {
       this.showWarningMessage("Please select a single row to calculate the distance!");
       return;
@@ -758,11 +763,10 @@ export class ViewComponent {
 
     this.distanceLoading = true;
 
-    this.dataService.collectDataComplex("calculate-distance", { customer_id: row['customer_id'], warehouse_id: row['warehouse_id'] })
-      .subscribe((coordinates: any) => {
-        this.handleCoordinatesResponse(coordinates);
-        this.distanceLoading = false;
-      });
+    let coordinates = await lastValueFrom(this.dataService.collectDataComplex("calculate-distance", { customer_id: row['customer_id'], warehouse_id: row['warehouse_id'] });
+
+    this.handleCoordinatesResponse(coordinates);
+    this.distanceLoading = false;
   }
 
   handleCoordinatesResponse(coordinates: any) {

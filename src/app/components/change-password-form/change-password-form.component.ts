@@ -4,6 +4,7 @@ import { FormService } from '../../services/form.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-change-password-form',
@@ -45,18 +46,15 @@ export class ChangePasswordFormComponent {
     this.changePasswordForm.addControl('action', this.fb.control('change-password'));
   }
 
-  formSubmit() {
-    this.dataService
-      .submitFormData(this.changePasswordForm.value)
-      .subscribe((data: any) => {
-        this.formService.setMessageFormData({
-          title: data.success ? 'Success!' : 'Error!',
-          message: data.message,
-        });
-        this.formService.showMessageForm();
-        this.hide();
-        this.formService.requestReload();
-      });
+  async formSubmit() {
+    let submissionResponse = await lastValueFrom(this.dataService.submitFormData(this.changePasswordForm.value));
+    this.formService.setMessageFormData({
+      title: submissionResponse.success ? 'Success!' : 'Error!',
+      message: submissionResponse.message,
+    });
+    this.formService.showMessageForm();
+    this.hide();
+    this.formService.requestReload();
   }
 
   hide() {
