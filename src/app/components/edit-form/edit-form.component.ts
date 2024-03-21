@@ -380,7 +380,7 @@ export class EditFormComponent {
     this.filteredReplacementData = JSON.parse(JSON.stringify(this.replacementData));
     var filter = event.target.value;
     this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
-      return data.replacement.includes(filter);
+      return data.replacement.toLowerCase().includes(filter.toLowerCase());
     });
     if (field) {
       this.editForm.get(field)?.setValue(filter);
