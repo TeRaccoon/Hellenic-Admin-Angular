@@ -366,7 +366,7 @@ export class ViewComponent {
         break;
 
       default:
-        this.formService.processEditFormData(id, fakeRow, formData);
+        this.formService.processEditFormData(id, fakeRow, editFormData);
         this.prepareEditFormService(id, table);
         break;
     }
@@ -607,7 +607,7 @@ export class ViewComponent {
     return false;
   }
 
-  iconClick(event: Event, key: number, column: string, row: any) {
+  async iconClick(event: Event, key: number, column: string, row: any) {
     switch (this.tableName) {
       case "invoices":
         if (column == 'id') {
@@ -763,7 +763,7 @@ export class ViewComponent {
 
     this.distanceLoading = true;
 
-    let coordinates = await lastValueFrom(this.dataService.collectDataComplex("calculate-distance", { customer_id: row['customer_id'], warehouse_id: row['warehouse_id'] });
+    let coordinates = await lastValueFrom(this.dataService.collectDataComplex("calculate-distance", { customer_id: row['customer_id'], warehouse_id: row['warehouse_id'] }));
 
     this.handleCoordinatesResponse(coordinates);
     this.distanceLoading = false;
@@ -806,8 +806,8 @@ export class ViewComponent {
     const deltaLon = (coord2.longitude - coord1.longitude) * (Math.PI/180);
   
     const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
-              Math.cos(lat1Rad) * Math.cos(lat2Rad) *
-              Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
+      Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+      Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   
     const distance = R * c / 1000; // Distance in km
