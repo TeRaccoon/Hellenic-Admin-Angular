@@ -8,7 +8,7 @@
         </div>
         <div class="content-section">
             <p class="primary-text">{{ formData.message }}</p>
-            <p class="secondary-text">{{ formData.secondaryMessage }}</p>
+            <p [class]="formData.secondaryMessage ? 'hidden' : ''" class="secondary-text">{{ formData.secondaryMessage }}</p>
         </div>
     </div>
 </div>
