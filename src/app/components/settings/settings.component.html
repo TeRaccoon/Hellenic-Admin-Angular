@@ -6,7 +6,7 @@
                     <ng-container [ngSwitch]="settings[key]['type']">
                         <label>{{ settings[key]['name'] }} 
                             <fa-icon *ngIf="changes[key] !== originalValues[key]" [icon]="faAsterisk"></fa-icon>
-                          </label>
+                            </label>
                         <div class="input-container" *ngSwitchCase="'int'">
                             <input type="number" class="number" [formControlName]="key" />
                         </div>

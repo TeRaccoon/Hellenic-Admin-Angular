@@ -131,74 +131,77 @@ export class ViewComponent {
         this.displayName = 'Categories';
         break;
       case 'customer_address':
-          this.displayName = 'Customer Address';
-          break;
+        this.displayName = 'Customer Address';
+        break;
       case 'customer_payments':
-          this.displayName = 'Customer Payments';
-          break;
+        this.displayName = 'Customer Payments';
+        break;
       case 'customers':
-          this.displayName = 'Customers';
-          break;
+        this.displayName = 'Customers';
+        break;
       case 'discount_codes':
-          this.displayName = 'Discount Codes';
-          break;
+        this.displayName = 'Discount Codes';
+        break;
       case 'general_ledger':
-          this.displayName = 'General Ledger';
-          break;
+        this.displayName = 'General Ledger';
+        break;
       case 'image_locations':
-          this.displayName = 'Image Locations';
-          break;
+        this.displayName = 'Image Locations';
+        break;
       case 'interest_charges':
-          this.displayName = 'Interest Charges';
-          break;
+        this.displayName = 'Interest Charges';
+        break;
       case 'invoiced_items':
-          this.displayName = 'Invoiced Items';
-          break;
+        this.displayName = 'Invoiced Items';
+        break;
       case 'invoices':
-          this.displayName = 'Invoices';
-          break;
+        this.displayName = 'Invoices';
+        break;
       case 'items':
-          this.displayName = 'Items';
-          break;
+        this.displayName = 'Items';
+        break;
       case 'nutrition_info':
-          this.displayName = 'Nutrition Information';
-          break;
+        this.displayName = 'Nutrition Information';
+        break;
       case 'offers':
-          this.displayName = 'Offers';
-          break;
+        this.displayName = 'Offers';
+        break;
       case 'page_section_text':
-          this.displayName = 'Page Section Text';
-          break;
+        this.displayName = 'Page Section Text';
+        break;
       case 'page_sections':
-          this.displayName = 'Page Sections';
-          break;
+        this.displayName = 'Page Sections';
+        break;
       case 'payments':
-          this.displayName = 'Payments';
-          break;
+        this.displayName = 'Payments';
+        break;
       case 'retail_item_images':
-          this.displayName = 'Retail Item Images';
-          break;
+        this.displayName = 'Retail Item Images';
+        break;
       case 'retail_items':
-          this.displayName = 'Retail Items';
-          break;
+        this.displayName = 'Retail Items';
+        break;
       case 'retail_users':
-          this.displayName = 'Retail Users';
-          break;
+        this.displayName = 'Retail Users';
+        break;
       case 'stocked_items':
-          this.displayName = 'Stocked Items';
-          break;
+        this.displayName = 'Stocked Items';
+        break;
+      case "sub_categories":
+        this.displayName = "Sub-categories"
+        break;
       case 'supplier_invoices':
-          this.displayName = 'Supplier Invoices';
-          break;
+        this.displayName = 'Supplier Invoices';
+        break;
       case 'suppliers':
-          this.displayName = 'Suppliers';
-          break;
+        this.displayName = 'Suppliers';
+        break;
       case 'users':
-          this.displayName = 'Users';
-          break;
+        this.displayName = 'Users';
+        break;
       case 'warehouse':
-          this.displayName = 'Warehouse';
-          break;
+        this.displayName = 'Warehouse';
+        break;
     }
   }
 

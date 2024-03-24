@@ -79,12 +79,7 @@ export class SettingsComponent {
   async formSubmit() {
     const formData = { ...this.settingsForm.value };
     Object.keys(formData).forEach(key => {
-      if (formData[key] === true) {
-        formData[key] = 'Yes';
-      }
-      if (formData[key] === false) {
-        formData[key] = 'No';
-      }
+      formData[key] = formData[key] === true ? 'Yes' : 'No';
     });
 
     const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(formData));
