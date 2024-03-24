@@ -43,6 +43,7 @@ export class SidebarComponent {
     "Website": [
       { tableName: "offers", displayName: "Offers" },
       { tableName: "categories", displayName: "Categories" },
+      { tableName: "sub_categories", displayName: "Sub-categories" },
       { tableName: "statistics", displayName: "Statistics" },
       { tableName: "retail_items", displayName: "Listed Items" },
       { tableName: "discount_codes", displayName: "Discount codes" },
@@ -95,6 +96,9 @@ export class SidebarComponent {
       case "retail_items":
       case "page_section_text":
       case "page_sections":
+      case "offers":
+      case "categories":
+      case "sub_categories":
         this.dataService.setTabs(this.tables['Website']);
           break;
 
