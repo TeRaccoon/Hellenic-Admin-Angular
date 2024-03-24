@@ -47,8 +47,12 @@
     }
     .content-section {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        text-align: center;
         font-size: 20px;
+        .secondary-text {
+            font-size: 16px;
+        }
         p {
             margin: 40px;
         }

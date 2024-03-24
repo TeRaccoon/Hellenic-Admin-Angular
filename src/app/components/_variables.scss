@@ -10,6 +10,15 @@ $hellenicblue: rgb(0, 140, 255);
     }
 }
 
+.button:disabled {
+    cursor: default;
+    color: #eaeef3;
+    background-image: linear-gradient(to right, rgb(186, 186, 186), rgb(87, 87, 87));
+    &:hover {
+        background-image: linear-gradient(to right, rgb(186, 186, 186), rgb(87, 87, 87));
+    }
+}
+
 .sidebar-button {
     color: white;
     display: flex;

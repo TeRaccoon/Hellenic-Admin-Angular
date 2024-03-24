@@ -1,5 +1,17 @@
 .container {
     margin: 15px 15px 15px 16%;
+    .no-data-container {
+        background-color: #ffffff;
+        padding: 10px;
+        margin-left: 10px;
+        border-radius: 15px;
+        width: 30%;
+        text-align: center;
+        height: 100px;
+        h1 {
+            font-size: 18px;
+        }
+    }
     .table-container {
         background: none;
         padding: 10px;

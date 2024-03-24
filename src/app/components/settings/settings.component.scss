@@ -13,6 +13,14 @@
         form {
             width: inherit;
         }
+        label {
+            display: flex;
+            .ng-fa-icon {
+                display: flex;
+                font-size: 13px;
+                margin: 0 0 5px 2px;
+            }
+        }
         .controller {
             margin: 10px;
             display: flex;
