@@ -105,11 +105,22 @@ export class InvoiceBreakdownWidgetComponent {
         {
           backgroundColor: ['#0740a9', '#2281fe', '#3f3f46', '#0098ff'],
           data: this.pieChartData,
-          borderRadius: 15,
+          borderRadius: 5,
         },
       ],
     };
     const options = {
+      plugins: {
+        legend: {
+          align: 'start' as 'start' | 'end' | 'center' | undefined,
+          labels: {
+            font: {
+              size: 14,
+            },
+            color: 'black',
+          },
+        },
+      },
       scales: {
         y: {
           beginAtZero: true,
