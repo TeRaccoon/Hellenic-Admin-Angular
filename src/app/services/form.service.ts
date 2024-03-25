@@ -246,7 +246,7 @@ export class FormService {
   ) {
     switch (tableName) {
       case 'retail_items':
-        var data = await this.getIdReplacementData('items_id_name', dataService);
+        var data = await this.getIdReplacementData('items_id_name_sku', dataService);
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
