@@ -65,6 +65,7 @@ export class EditFormComponent {
 
   error: string | null = null;
   submitted = false;
+  submissionEnded = false;
   
   alternativeSelectedData: { [key: string]: {selectData: string} } = {};
   selectedReplacementData: { [key:string]: {selectData: string, selectDataId: Number | null } | null} = {};
@@ -90,7 +91,7 @@ export class EditFormComponent {
     });
   }
 
-  async replaceAmiguousData() {
+  async replaceAmbiguousData() {
     if (Object.keys(this.formData).length != 0) {
       const data = await this.formService.replaceAmbiguousData(
         this.tableName,
@@ -190,6 +191,7 @@ export class EditFormComponent {
     this.editForm = this.fb.group({});
     this.editForm.reset();
     this.submitted = false;
+    this.submissionEnded = false;
     this.error = null;
     this.file = null;
   }
@@ -201,7 +203,7 @@ export class EditFormComponent {
       this.id = this.formService.getSelectedId();
       this.buildForm();
       await this.handleImages();
-      await this.replaceAmiguousData();
+      await this.replaceAmbiguousData();
     }
   }
 
@@ -224,6 +226,8 @@ export class EditFormComponent {
   }
 
   async formSubmit(hideForm: boolean) {
+    this.submitted = true;
+
     if (this.editForm.valid) {
       if (this.tableName != "categories") {
         const validationResult = this.imageSubmissionValidation();
@@ -236,9 +240,7 @@ export class EditFormComponent {
       } else {
         this.standardImageSubmission();
       }
-    }
-    
-    this.submitted = true;
+    }    
   }
 
   async standardImageSubmission() {
@@ -342,6 +344,7 @@ export class EditFormComponent {
       this.editForm.get('table_name')?.setValue(this.tableName);
       this.error = null;
     }
+    this.submissionEnded = true;
   }
 
   selectDataFromKey(key: string) {
