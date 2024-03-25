@@ -11,7 +11,7 @@ export class MessageFormComponent {
   faX = faX;
 
   formVisible = 'hidden';
-  formData: { title: string, message: string, secondaryMessage?: string } = { title: '', message: '', secondaryMessage: '' };
+  formData: { title: string, message: string, secondaryMessage?: string | null } = { title: '', message: '', secondaryMessage: null };
 
   constructor(private formService: FormService) {}
 

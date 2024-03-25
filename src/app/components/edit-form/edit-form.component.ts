@@ -224,8 +224,6 @@ export class EditFormComponent {
   }
 
   async formSubmit(hideForm: boolean) {
-    this.submitted = true;
-
     if (this.editForm.valid) {
       if (this.tableName != "categories") {
         const validationResult = this.imageSubmissionValidation();
@@ -239,6 +237,8 @@ export class EditFormComponent {
         this.standardImageSubmission();
       }
     }
+    
+    this.submitted = true;
   }
 
   async standardImageSubmission() {
@@ -254,7 +254,7 @@ export class EditFormComponent {
   }
 
   imageSubmissionValidation() {
-    if (this.file == null || this.tableName != 'items') {
+    if ((this.file == null || this.tableName != 'items') && this.editForm.get('image_file_name') == null) {
       this.error = "Please choose an image to upload before trying to upload!";
       return false;
     }

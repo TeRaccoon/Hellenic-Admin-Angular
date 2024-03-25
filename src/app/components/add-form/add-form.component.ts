@@ -270,7 +270,7 @@ export class AddFormComponent {
   }
 
   imageSubmissionValidation() {
-    if (this.file == null || this.tableName != 'items') {
+    if ((this.file == null || this.tableName != 'items') && this.addForm.get('image_file_name') == null) {
       this.error = "Please choose an image to upload before trying to upload!";
       return false;
     }
