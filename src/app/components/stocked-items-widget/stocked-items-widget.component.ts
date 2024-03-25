@@ -12,6 +12,7 @@ import { Subscription, lastValueFrom } from 'rxjs';
 export class StockedItemsWidgetComponent {
   data: any = null;
   itemId: any = null;
+  total = 0;
   formData: any | null = null;
 
   faX = faX;
@@ -38,6 +39,7 @@ export class StockedItemsWidgetComponent {
     if (data != null) {
       this.data = Array.isArray(data.stock_data) ? data.stock_data : [data.stock_data];
       this.itemId = data.id;
+      this.total = data.total.total_quantity;
     }
   }
 
