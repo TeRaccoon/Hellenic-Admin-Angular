@@ -560,8 +560,10 @@ export class ViewComponent {
 
   async stockSearch(id: string) {
     let stockData = await lastValueFrom(this.dataService.collectData("stocked-items", id));
+    let total = await lastValueFrom(this.dataService.collectData("total-stock-from-item-id", id));
+
     if (stockData != null) {
-      this.dataService.storeStockWidgetData({id: id, stock_data: stockData});
+      this.dataService.storeStockWidgetData({id: id, stock_data: stockData, total: total});
       this.formService.showStockedItemForm();
     }
   }
