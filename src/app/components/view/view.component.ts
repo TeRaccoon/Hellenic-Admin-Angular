@@ -545,7 +545,7 @@ export class ViewComponent {
       let invoicedItems = await lastValueFrom(this.dataService.collectData("invoiced-items", id.toString()));
       invoicedItems = Array.isArray(invoicedItems) ? invoicedItems : [invoicedItems];
 
-      var invoicedItemsWidgetData = { title: null, data: invoicedItems};
+      var invoicedItemsWidgetData = { id: id, title: null, data: invoicedItems };
 
       if (row['title']) {
         invoicedItemsWidgetData.title = row['title'];
