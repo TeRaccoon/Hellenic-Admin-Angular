@@ -116,7 +116,6 @@ export class ViewComponent {
         } else if (reloadType == "filter") {
           this.applyFilter();
         }
-        this.loadPage();
         this.formService.performReload();
       }
     });
@@ -220,7 +219,7 @@ export class ViewComponent {
     this.queryFilter = this.filterService.getTableFilter();
     var queryString = this.queryFilter == null ? "table" : this.queryFilter;
 
-    if (this.filterService.getTableFilter() == null) {
+    if (this.queryFilter == null) {
       queryString = "table"
     }
 
@@ -259,7 +258,7 @@ export class ViewComponent {
       this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit) + 1;
 
       this.loaded = true;
-    }
+    }    
   }
 
   getColumnHeaders(obj: { [key: string]: any }): string[] {
@@ -681,7 +680,7 @@ export class ViewComponent {
     this.filteredDisplayData = this.displayData;
   }
 
-  clearFilter(filter: string, reload: boolean) {
+  clearFilter(filter: string, reload: boolean) {    
     if (filter === "all" || filter === "column-date") {
       this.filterService.clearColumnDateFilter();
       this.columnDateFilters = [];
@@ -710,6 +709,7 @@ export class ViewComponent {
     this.displayColumnFilters = this.displayColumnFilters.filter((filter) => filter != this.displayColumnFilters[columnFilterIndex]);
     this.filterService.removeColumnFilter(this.columnFilters[columnFilterIndex].filter);
     this.columnFilters = this.filterService.getColumnFilter();
+    
     this.reloadTable();
   }
 
@@ -742,9 +742,9 @@ export class ViewComponent {
     this.formService.showFilterForm();
   }
 
-  reloadTable() {
-    this.loadTable(String(this.tableName));    
-    this.changePage(1);
+  async reloadTable() {
+    this.loadPage();
+    await this.loadTable(String(this.tableName));
   }
 
   async calculateDistance() {
