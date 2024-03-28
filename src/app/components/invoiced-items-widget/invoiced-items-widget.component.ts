@@ -13,6 +13,7 @@ import { Subscription, lastValueFrom } from 'rxjs';
 export class InvoicedItemsWidgetComponent {
   imageUrlBase = imageUrlBase;
 
+  id: string | null = null;
   data: any = {};
   title: string | null = null;
   formData: any | null = null;
@@ -33,6 +34,7 @@ export class InvoicedItemsWidgetComponent {
       this.formVisible = visible ? 'visible' : 'hidden';
     });
     this.dataService.retrieveWidgetData().subscribe((widgetData: any) => {
+      this.id = widgetData.id;
       this.data = widgetData.data;
       this.title = widgetData.title;
     });
@@ -40,10 +42,17 @@ export class InvoicedItemsWidgetComponent {
 
   async addInvoicedItem() {
     let invoicedItemsData = await lastValueFrom(this.dataService.collectData("table", "invoiced_items"));
-
+    
     if (invoicedItemsData != null) {
-      this.formData = invoicedItemsData.edittable;
-      this.formService.processAddFormData(invoicedItemsData.edittable);
+      let formData = invoicedItemsData.edittable;
+
+      let values: (string | null)[] = Array(invoicedItemsData.edittable.columns.length).fill(null);
+      const invoiceIdIndex = invoicedItemsData.edittable.names.indexOf('Invoice ID');
+      values[invoiceIdIndex] = this.id;
+      formData.values = values;
+
+      this.formData = formData;
+      this.formService.processAddFormData(formData);
       this.formService.setSelectedTable("invoiced_items");
       this.formService.showAddForm();
       this.formService.setReloadType("invoice-widget");
