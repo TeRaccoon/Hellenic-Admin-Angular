@@ -71,15 +71,22 @@
                         <tr *ngIf="data[0]">
                             <th>Select</th>
                             <ng-container *ngFor="let column of displayNames; let key = index">
-                                <ng-container *ngIf="tableName == 'items' && key == 2">
-                                    <th>Stock</th>
-                                    <th>Total Stock</th>
-                                </ng-container>
-                                <ng-container *ngIf="tableName == 'stocked_items' && key == 2">
-                                    <th>Image</th>
-                                </ng-container>
-                                <ng-container *ngIf="tableName == 'invoices' && key == 2">
-                                    <th>Items</th>
+                                <ng-container *ngIf="key == 2">
+                                    <ng-container [ngSwitch]="tableName">
+                                        <ng-container *ngSwitchCase="'items'">
+                                            <th>Stock</th>
+                                            <th>Total Stock</th>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'stocked_items'">
+                                            <th>Image</th>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'invoices'">
+                                            <th>Items</th>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'customers'">
+                                            <th>Addresses</th>
+                                        </ng-container>
+                                    </ng-container>
                                 </ng-container>
                                 <th (click)="sortColumn(column)">
                                     {{ column }}
@@ -101,21 +108,39 @@
                                     <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox" [checked]="selectedRows.indexOf(item['id']) != -1">
                                 </td>
                                 <ng-container *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;">
+                                    <ng-container *ngIf="columnIndex == 2">
+                                        <ng-container [ngSwitch]="tableName">
+                                            <ng-container *ngSwitchCase="'items'">
+                                                <td (click)="stockSearch(item.id)" [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
+                                                    <fa-icon [icon]="faBox"></fa-icon>
+                                                </td>
+                                                <td>{{ stockData[item['id']] ? stockData[item['id']] : 0 }}</td>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'stocked_items'">
+                                                <td>
+                                                    <img [alt]="item['item_id']" [src]="images[item['item_id']] == null ? imageUrlBase + 'placeholder.jpg' :  imageUrlBase + images[item['item_id']]" />
+                                                </td>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'invoices'">
+                                                <td (click)="invoiceSearch(item.id)">
+                                                    <fa-icon [icon]="faBasketShopping" />
+                                                </td>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'customers'">
+                                                <td (click)="addressSearch(item.id, item.account_name)">
+                                                    <fa-icon [icon]="faAddressBook" />
+                                                </td>
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
                                     <ng-container *ngIf="tableName == 'items' && columnIndex == 2">
-                                        <td (click)="stockSearch(item.id)" [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
-                                            <fa-icon [icon]="faBox"></fa-icon>
-                                        </td>
-                                        <td>{{ stockData[item['id']] ? stockData[item['id']] : 0 }}</td>
+
                                     </ng-container>
                                     <ng-container *ngIf="tableName == 'stocked_items' && columnIndex == 2">
-                                        <td>
-                                            <img [alt]="item['item_id']" [src]="images[item['item_id']] == null ? imageUrlBase + 'placeholder.jpg' :  imageUrlBase + images[item['item_id']]" />
-                                        </td>
+
                                     </ng-container>
                                     <ng-container *ngIf="tableName == 'invoices' && columnIndex == 2">
-                                        <td (click)="invoiceSearch(item.id)">
-                                            <fa-icon [icon]="faBasketShopping" />
-                                        </td>
+
                                     </ng-container>
                                     <td [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
                                         <ng-container *ngIf="canDisplayColumn(column)">
@@ -209,3 +234,4 @@
 <app-change-password-form></app-change-password-form>
 <app-invoiced-items-widget></app-invoiced-items-widget>
 <app-stocked-items-widget></app-stocked-items-widget>
+<app-widget />
