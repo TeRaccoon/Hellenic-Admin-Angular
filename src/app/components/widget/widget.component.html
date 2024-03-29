@@ -1,0 +1,43 @@
+<div class="container" [class]="visible ? 'visible' : 'hidden'">
+    <div class="content">
+        <div class="header-section">
+            <h1>{{ tableData.title }}</h1>
+            <a (click)="hide()">
+                <fa-icon [icon]="faX" />
+            </a>
+        </div>
+        <ng-container *ngIf="tableData.rows.length > 0 else noData">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <th *ngFor="let header of tableData.headers">{{ header }}</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of tableData.rows">
+                            <td *ngFor="let key of getColumnKeys(row)">
+                                {{ row[key] }}
+                            </td>
+                            <td (click)="editRow(row['id'])">
+                                <fa-icon [icon]="faPenToSquare" />
+                            </td>
+                            <td (click)="deleteRow(row['id'])">
+                                <fa-icon [icon]="faTrashCan" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="widget-footer">
+                    <button class="button" (click)="addRow()">Add more</button>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #noData>
+            <div class="error-container">
+                <p>Error! There is no data. Would you like to add some?</p>
+                <button (click)="addRow()" class="button">Add Data</button>
+            </div>
+        </ng-template>
+    </div>
+</div>

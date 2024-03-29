@@ -15,6 +15,8 @@ export class FormService {
   private isChangePasswordFormVisible = new BehaviorSubject<boolean>(false);
   private isInvoicedItemsFormVisible = new BehaviorSubject<boolean>(false);
   private isStockedItemsFormVisible = new BehaviorSubject<boolean>(false);
+  private isWidgetVisible = new BehaviorSubject<boolean>(false);
+
 
   private editFormData: {
     [key: string]: {
@@ -166,6 +168,18 @@ export class FormService {
     return this.isStockedItemsFormVisible.asObservable();
   }
 
+  getWidgetVisibility(): Observable<boolean> {
+    return this.isWidgetVisible.asObservable();
+  }
+
+  hideWidget() {
+    this.isWidgetVisible.next(false);
+  }
+
+  showWidget() {
+    this.isWidgetVisible.next(true);
+  }
+
   setEditFormData(editFormData: {
     [key: string]: {
       value: any;
@@ -285,8 +299,6 @@ export class FormService {
         replacementData['Warehouse ID'] = { data: data };
         break;
         
-      case 'customer_payments':
-      case 'customer_address':
       case 'invoices':
         var data = await this.getIdReplacementData('customers_id_name', dataService);
         formData['Customer Name'].inputType = 'replacement';
@@ -295,6 +307,13 @@ export class FormService {
         data = await this.getIdReplacementData('warehouse_id_name', dataService);
         formData['Warehouse ID'].inputType = 'replacement';
         replacementData['Warehouse ID'] = { data: data };
+        break;
+
+      case 'customer_payments':
+      case 'customer_address':
+        var data = await this.getIdReplacementData('customers_id_name', dataService);
+        formData['Customer Name'].inputType = 'replacement';
+        replacementData['Customer Name'] = { data: data };
         break;
 
       case 'page_section_text':
