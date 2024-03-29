@@ -133,7 +133,7 @@ export class AddFormComponent {
       if (!Array.isArray(this.filteredReplacementData[key].data)) {
         this.filteredReplacementData[key].data = [this.filteredReplacementData[key].data];
       }
-      this.addForm.get(this.formData[key].fields)?.setValue(this.filteredReplacementData[key].data[0].id);
+      // this.addForm.get(this.formData[key].fields)?.setValue(this.filteredReplacementData[key].data[0].id);      
       var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))?.replacement;
       this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
       this.selectedReplacementFilter[key] = { selectFilter: ''};
