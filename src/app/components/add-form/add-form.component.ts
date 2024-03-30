@@ -189,6 +189,10 @@ export class AddFormComponent {
           fieldValue = formatDate(new Date(), 'yyyy-MM-dd', 'en').toString();
         }
 
+        if (field.inputType == 'number') {
+          fieldValue = '0';
+        }
+
         let controlValidators = characterLimit != null ? [Validators.maxLength(characterLimit)] : [];
         if (field.required) {
           controlValidators.push(Validators.required);
