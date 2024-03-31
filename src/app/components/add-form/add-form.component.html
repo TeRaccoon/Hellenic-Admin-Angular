@@ -74,6 +74,21 @@
                         <button class="button" name="action" value="append" (click)="formSubmit(true)" type="submit ">Submit</button>
                     </div>
                 </form>
+                <ng-container *ngIf="tableName == 'invoices'">
+                    <form>
+                        <label>Item Name</label>
+                        <div class="drop-select-container">
+                            <input (input)="filterDropSelect('invoice-item-add', $event, null)" type="text" (focus)="onInputFocus('invoice-item-add')" (blur)="onInputBlur('invoice-item-add')" [value]="selectedReplacementData['invoice-item-add']?.selectData">
+                            <div class="drop-select" [ngClass]="selectOpen['invoice-item-add']?.opened ? 'input-visible' : 'input-hidden'" [attr.required]="mappedFormData.get('invoice-item-add')!.required ? true : null">
+                                <p *ngFor="let option of filteredReplacementData['invoice-item-add'].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, 'invoice-item-add', mappedFormData.get('invoice-item-add')!.fields)">{{ option.replacement }}</p>
+                            </div>
+                        </div>
+                        <label>Quantity</label>
+                        <input type="number">
+                        <label>Discount</label>
+                        <input type="number">
+                    </form>
+                </ng-container>
             </ng-container>
             <ng-template #loading>
                 <div class="loading-container">
