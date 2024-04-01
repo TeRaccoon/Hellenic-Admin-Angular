@@ -38,7 +38,7 @@
                                         <div class="drop-select-container">
                                             <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" (input)="filterDropSelect(key, $event, null)" type="text" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)" [value]="selectedReplacementData[key]?.selectData">
                                             <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? 'input-visible' : 'input-hidden'" [attr.required]="mappedFormData.get(key)!.required ? true : null">
-                                                <p *ngFor="let option of filteredReplacementData[key].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, key, mappedFormData.get(key)!.fields)">{{ option.replacement }}</p>
+                                                <p *ngFor="let option of filteredReplacementData[key].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, key, mappedFormData.get(key)!.fields, false)">{{ option.replacement }}</p>
                                             </div>
                                         </div>
                                     </ng-container>
@@ -54,39 +54,45 @@
                             <button class="button" (click)="submitImageOnly()">Upload</button>
                         </div>
                     </ng-container>
-                    <div *ngIf="invoicedItemsList.length > 0">
-                        <table>
-                            <thead>
-                                <th>Item Name</th>
-                                <th>Quantity</th>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let invoicedItem of invoicedItemsList">
-                                    <td>{{ invoicedItem.itemName }}</td>
-                                    <td>{{ invoicedItem.quantity }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
                     <div class="form-footer">
-                        <button *ngIf="tableName == 'invoices'" (click)="addInvoicedItem($event)" class="button">Add invoiced items</button>
                         <button *ngIf="tableName == 'invoiced_items'" class="button" (click)="addMore($event)">Add more <fa-icon [icon]=" faPlus "/></button>
-                        <button class="button" name="action" value="append" (click)="formSubmit(true)" type="submit ">Submit</button>
+                        <button class="button" name="action" value="append" (click)="formSubmit(tableName != 'invoices')" type="submit">{{ tableName != "invoices" ? "Submit" : "Create" }}</button>
                     </div>
                 </form>
                 <ng-container *ngIf="tableName == 'invoices'">
-                    <form>
-                        <label>Item Name</label>
-                        <div class="drop-select-container">
-                            <input (input)="filterDropSelect('invoice-item-add', $event, null)" type="text" (focus)="onInputFocus('invoice-item-add')" (blur)="onInputBlur('invoice-item-add')" [value]="selectedReplacementData['invoice-item-add']?.selectData">
-                            <div class="drop-select" [ngClass]="selectOpen['invoice-item-add']?.opened ? 'input-visible' : 'input-hidden'" [attr.required]="mappedFormData.get('invoice-item-add')!.required ? true : null">
-                                <p *ngFor="let option of filteredReplacementData['invoice-item-add'].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, 'invoice-item-add', mappedFormData.get('invoice-item-add')!.fields)">{{ option.replacement }}</p>
+                    <h1>Add Invoiced Items</h1>
+                    <form class="form-container" [formGroup]="addInvoicedItemForm">
+                        <div class="input-container">
+                            <label>Item Name <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
+                            <div class="drop-select-container">
+                                <input (input)="filterDropSelect('Item ID', $event, null)" type="text" (focus)="onInputFocus('Item ID')" (blur)="onInputBlur('Item ID')" [value]="selectedReplacementData['Item ID']?.selectData" formControlName="itemName">
+                                <div class="drop-select" [ngClass]="selectOpen['Item ID']?.opened ? 'input-visible' : 'input-hidden'" required>
+                                    <p *ngFor="let option of filteredReplacementData['Item ID'].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, 'Item ID', 'item_id', true)">{{ option.replacement }}</p>
+                                </div>
                             </div>
+                            <label>Quantity <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
+                            <input class="number" type="number" formControlName="quantity">
+                            <label>Discount</label>
+                            <input class="number" type="number" formControlName="discount">
                         </div>
-                        <label>Quantity</label>
-                        <input type="number">
-                        <label>Discount</label>
-                        <input type="number">
+                        <div *ngIf="invoicedItemsList.length > 0">
+                            <table>
+                                <thead>
+                                    <th>Item Name</th>
+                                    <th>Quantity</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let invoicedItem of invoicedItemsList">
+                                        <td>{{ invoicedItem.itemName }}</td>
+                                        <td>{{ invoicedItem.quantity }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-footer">
+                            <button *ngIf="tableName == 'invoices'" (click)="addInvoicedItem($event)" class="button">Add invoiced items</button>
+                            <button>Save</button>
+                        </div>
                     </form>
                 </ng-container>
             </ng-container>
