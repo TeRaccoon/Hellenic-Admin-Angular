@@ -233,7 +233,7 @@ export class EditFormComponent {
       if (this.tableName != "categories") {
         const validationResult = this.imageSubmissionValidation();
 
-        if (validationResult !== false) {
+        if (validationResult !== false && this.file != null) {
           this.submissionWithImage(validationResult.itemId, validationResult.itemName, hideForm);
         } else {
           this.submissionWithoutImage(hideForm);
