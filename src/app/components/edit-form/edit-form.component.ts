@@ -135,7 +135,7 @@ export class EditFormComponent {
         const field = this.formData[key];
 
         if (field.inputType == 'select' && field.dataType.startsWith('enum')) {
-          const options = this.formService.deriveEnumOptions(field);
+          const options = this.formService.deriveEnumOptions(field.dataType);
           this.selectData.push({ key: key, data: options });
         }
         if (field.inputType == 'file') {

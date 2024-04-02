@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, last, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
+import { formatDate } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,8 @@ export class FormService {
   private isChangePasswordFormVisible = new BehaviorSubject<boolean>(false);
   private isInvoicedItemsFormVisible = new BehaviorSubject<boolean>(false);
   private isStockedItemsFormVisible = new BehaviorSubject<boolean>(false);
+  private isWidgetVisible = new BehaviorSubject<boolean>(false);
+
 
   private editFormData: {
     [key: string]: {
@@ -166,6 +169,18 @@ export class FormService {
     return this.isStockedItemsFormVisible.asObservable();
   }
 
+  getWidgetVisibility(): Observable<boolean> {
+    return this.isWidgetVisible.asObservable();
+  }
+
+  hideWidget() {
+    this.isWidgetVisible.next(false);
+  }
+
+  showWidget() {
+    this.isWidgetVisible.next(true);
+  }
+
   setEditFormData(editFormData: {
     [key: string]: {
       value: any;
@@ -285,8 +300,6 @@ export class FormService {
         replacementData['Warehouse ID'] = { data: data };
         break;
         
-      case 'customer_payments':
-      case 'customer_address':
       case 'invoices':
         var data = await this.getIdReplacementData('customers_id_name', dataService);
         formData['Customer Name'].inputType = 'replacement';
@@ -295,6 +308,21 @@ export class FormService {
         data = await this.getIdReplacementData('warehouse_id_name', dataService);
         formData['Warehouse ID'].inputType = 'replacement';
         replacementData['Warehouse ID'] = { data: data };
+
+        data = await this.getIdReplacementData('items_id_name_sku', dataService);
+        formData['Item ID'] = {
+          inputType: 'replacement',
+          value: null,
+          fields: 'item_id',
+        };
+        replacementData['Item ID'] = { data: data };
+        break;
+
+      case 'customer_payments':
+      case 'customer_address':
+        var data = await this.getIdReplacementData('customers_id_name', dataService);
+        formData['Customer Name'].inputType = 'replacement';
+        replacementData['Customer Name'] = { data: data };
         break;
 
       case 'page_section_text':
@@ -319,6 +347,33 @@ export class FormService {
         
     }
     return { formData, replacementData };
+  }
+
+  getFieldValues(dataType: string, fieldValue: string) {
+    switch (dataType) {
+      case "date":
+        return formatDate(new Date(), 'yyyy-MM-dd', 'en').toString();
+
+      case "number":
+        return "0";
+    }
+
+    return fieldValue;
+  }
+
+  getSelectDataOptions(dataType: string, inputType: string) {
+    if (inputType == "select" && dataType.startsWith("enum")) {
+      return this.deriveEnumOptions(dataType);
+    }
+    return null;
+  }
+
+  getCharacterLimit(dataType: string) {
+    if (dataType.includes('varchar')) {
+      let match = dataType.match(/\d+/g);
+      return match ? parseInt(match[0]) : null;
+    }
+    return null;
   }
 
   async getIdReplacementData(query: string, dataService: DataService): Promise<any> {
@@ -468,8 +523,8 @@ export class FormService {
     return images;
   }
 
-  deriveEnumOptions(field: any) {
-    return field.dataType
+  deriveEnumOptions(dataType: string) {
+    return dataType
       .replace('enum(', '')
       .replace(')', '')
       .split(',')

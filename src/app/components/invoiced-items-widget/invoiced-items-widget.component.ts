@@ -101,6 +101,7 @@ export class InvoicedItemsWidgetComponent {
           } else {
             inputTypes.push("select");
           }
+          break;
       }
     });
     return inputTypes;

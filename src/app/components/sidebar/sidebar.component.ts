@@ -84,8 +84,6 @@ export class SidebarComponent {
         this.dataService.setTabs(this.tables['Supply']);
         break;
 
-      case "invoices":
-      case "supplier_invoices":
       case "general_ledger":
       case "payments":
       case "customer_payments":

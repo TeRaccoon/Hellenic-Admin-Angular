@@ -4,7 +4,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { apiUrlBase, imageUrlBase } from '../../services/data.service';
-import { faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck } from '@fortawesome/free-solid-svg-icons';
+import { faAddressBook, faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck } from '@fortawesome/free-solid-svg-icons';
 import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
@@ -20,6 +20,7 @@ export class ViewComponent {
   apiUrlBase = apiUrlBase;
   imageUrlBase = imageUrlBase;
 
+  faAddressBook = faAddressBook;
   faBox = faBox;
   faLock = faLock;
   faLockOpen = faLockOpen;
@@ -565,6 +566,17 @@ export class ViewComponent {
       this.dataService.storeStockWidgetData({id: id, stock_data: stockData, total: total});
       this.formService.showStockedItemForm();
     }
+  }
+
+  async addressSearch(customerId: string, accountName: string) {
+    let tableColumns = ["Invoice Address One", "Invoice Address Two", "Invoice Address Three", "Invoice Address Four", "Invoice Postcode", "Delivery Address One", "Delivery Address Two", "Delivery Address Three", "Delivery Address Four", "Delivery Postcode"];
+    let tableRows = await lastValueFrom(this.dataService.collectData("addresses_from_customer_id", customerId));
+    tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
+    let tableName = "customer_address";
+    let title = `Customer Addresses for ${accountName}`;
+
+    this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: customerId, columnName: "Customer Name"}, query: "addresses_from_customer_id"});
+    this.formService.showWidget();
   }
 
   shouldColourCell(data: any) {
