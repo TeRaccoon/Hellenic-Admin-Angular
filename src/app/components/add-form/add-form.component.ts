@@ -3,8 +3,8 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCheck, faCloudUpload, faSpinner, faX, faAsterisk, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { formatDate } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-add-form',
@@ -358,14 +358,18 @@ export class AddFormComponent {
 
   filterDropSelect(key: string, event: any, field: string | null) {
     this.selectedReplacementData[key];
-    this.filteredReplacementData = JSON.parse(JSON.stringify(this.replacementData));
     var filter = event.target.value;
-    this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
-      return data.replacement.toLowerCase().includes(filter.toLowerCase());
-    });
-    if (field) {
-      this.addForm.get(field)?.setValue(filter);
-    }
+
+    setTimeout(() => {
+      this.filteredReplacementData = _.cloneDeep(this.replacementData);
+
+      this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
+        return data.replacement.toLowerCase().includes(filter.toLowerCase());
+      });
+      if (field) {
+        this.addForm.get(field)?.setValue(filter);
+      }
+    }, 500);
   }
 
   async addInvoicedItem(event: Event) {

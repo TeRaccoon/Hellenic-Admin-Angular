@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import * as _ from 'lodash';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 
