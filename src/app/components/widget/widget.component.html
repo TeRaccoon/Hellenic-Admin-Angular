@@ -1,4 +1,4 @@
-<div class="container" [class]="visible ? 'visible' : 'hidden'">
+<div *ngIf="visible" class="container" [class]="visible ? 'visible' : 'hidden'">
     <div class="content">
         <div class="header-section">
             <h1>{{ tableData.title }}</h1>
@@ -6,7 +6,7 @@
                 <fa-icon [icon]="faX" />
             </a>
         </div>
-        <ng-container *ngIf="tableData.rows.length > 0 else noData">
+        <ng-container *ngIf="tableData.rows && tableData.rows.length > 0 else noData">
             <div class="table-container">
                 <table>
                     <thead>
