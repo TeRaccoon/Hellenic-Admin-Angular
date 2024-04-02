@@ -79,7 +79,9 @@ export class SettingsComponent {
   async formSubmit() {
     const formData = { ...this.settingsForm.value };
     Object.keys(formData).forEach(key => {
-      formData[key] = formData[key] === true ? 'Yes' : 'No';
+      if (typeof formData[key] === 'boolean') {
+        formData[key] = formData[key] === true ? 'Yes' : 'No';
+      }
     });
 
     const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(formData));
@@ -93,6 +95,9 @@ export class SettingsComponent {
     if (formSubmitResponse.success) {
       title = "Success!";
       message = "Settings saved successfully!";
+      
+      this.changes = {};
+      this.originalValues = {};
     }
 
     this.formService.setMessageFormData({title, message});
