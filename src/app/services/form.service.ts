@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, last, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
+import { formatDate } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -348,6 +349,33 @@ export class FormService {
     return { formData, replacementData };
   }
 
+  getFieldValues(dataType: string, fieldValue: string) {
+    switch (dataType) {
+      case "date":
+        return formatDate(new Date(), 'yyyy-MM-dd', 'en').toString();
+
+      case "number":
+        return "0";
+    }
+
+    return fieldValue;
+  }
+
+  getSelectDataOptions(dataType: string, inputType: string) {
+    if (inputType == "select" && dataType.startsWith("enum")) {
+      return this.deriveEnumOptions(dataType);
+    }
+    return null;
+  }
+
+  getCharacterLimit(dataType: string) {
+    if (dataType.includes('varchar')) {
+      let match = dataType.match(/\d+/g);
+      return match ? parseInt(match[0]) : null;
+    }
+    return null;
+  }
+
   async getIdReplacementData(query: string, dataService: DataService): Promise<any> {
     return new Promise((resolve, reject) => {
       dataService.collectData(query).subscribe((data: any) => {
@@ -495,8 +523,8 @@ export class FormService {
     return images;
   }
 
-  deriveEnumOptions(field: any) {
-    return field.dataType
+  deriveEnumOptions(dataType: string) {
+    return dataType
       .replace('enum(', '')
       .replace(')', '')
       .split(',')

@@ -145,7 +145,7 @@ export class AddFormComponent {
       if (!Array.isArray(this.filteredReplacementData[key].data)) {
         this.filteredReplacementData[key].data = [this.filteredReplacementData[key].data];
       }
-      var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))?.replacement;
+      var tempReplacement = this.formData[key].value == null ? this.filteredReplacementData[key].data[0] : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))?.replacement;
       this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
       this.selectedReplacementFilter[key] = { selectFilter: ''};
       this.selectOpen[key] = {opened: false};
@@ -187,26 +187,14 @@ export class AddFormComponent {
     for (const key in this.formData) {
       if (this.formData.hasOwnProperty(key) && this.formData[key].dataType != undefined) {
         const field = this.formData[key];
-        let fieldValue = field.value;
         
-        var characterLimit = null;
-        if (field.dataType.includes('varchar')) {
-          let match = field.dataType.match(/\d+/g);
-          characterLimit = match ? parseInt(match[0]) : null;
-        }
-
-        if (field.inputType == 'select' && field.dataType.startsWith('enum')) {
-          const options = this.formService.deriveEnumOptions(field);
-          this.selectData.push({ key: key, data: options });
-          fieldValue = options[0];
-        }
-
-        if (field.inputType == 'date') {
-          fieldValue = formatDate(new Date(), 'yyyy-MM-dd', 'en').toString();
-        }
-
-        if (field.inputType == 'number') {
-          fieldValue = '0';
+        let fieldValue = this.formService.getFieldValues(field.dataType, field.value);
+        let characterLimit = this.formService.getCharacterLimit(field.dataType)
+        
+        let selectData = this.formService.getSelectDataOptions(field.dataType, field.inputType);
+        if (selectData != null) {
+          fieldValue = selectData[0];
+          this.selectData.push({ key: key, data: selectData });
         }
 
         let controlValidators = characterLimit != null ? [Validators.maxLength(characterLimit)] : [];
@@ -221,8 +209,9 @@ export class AddFormComponent {
       }
       index++;
     }
-    this.addForm.addControl('action', this.fb.control('add'));
-    this.addForm.addControl('table_name', this.fb.control(this.tableName));
+
+    this.addForm.addControl("action", this.fb.control("add"));
+    this.addForm.addControl("table_name", this.fb.control(this.tableName));
 
     if (this.tableName == "invoices") {
       this.itemData = await lastValueFrom(this.dataService.collectData("items_id_name_sku"));
