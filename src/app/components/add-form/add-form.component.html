@@ -76,7 +76,7 @@
                         <div class="input-container">
                             <label>Item Name <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
                             <div class="drop-select-container">
-                                <input (input)="filterDropSelect('Item ID', $event, null)" type="text" (focus)="onInputFocus('Item ID')" (blur)="onInputBlur('Item ID')" formControlName="item_id">
+                                <input (input)="filterDropSelect('Item ID', $event, null)" type="text" (focus)="onInputFocus('Item ID')" (blur)="onInputBlur('Item ID')" [value]="selectedReplacementData['Item ID']?.selectData" formControlName="item_id">
                                 <div class="drop-select" [ngClass]="selectOpen['Item ID']?.opened ? 'input-visible' : 'input-hidden'" required>
                                     <p *ngFor="let option of filteredReplacementData['Item ID'].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, 'Item ID', 'item_id', true)">{{ option.replacement }}</p>
                                 </div>
@@ -102,7 +102,7 @@
                         </div>
                         <div class="form-footer">
                             <button *ngIf="tableName == 'invoices'" (click)="addInvoicedItem($event)" class="button">Add invoiced items</button>
-                            <button>Save</button>
+                            <button class="button">Save</button>
                         </div>
                     </form>
                 </ng-container>
