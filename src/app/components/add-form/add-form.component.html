@@ -102,7 +102,7 @@
                         </div>
                         <div class="form-footer">
                             <button *ngIf="tableName == 'invoices'" (click)="addInvoicedItem($event)" class="button">Add invoiced items</button>
-                            <button class="button">Save</button>
+                            <button (click)="close()" class="button">Save</button>
                         </div>
                     </form>
                 </ng-container>
