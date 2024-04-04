@@ -48,6 +48,9 @@
             }
         }
         .content-section {
+            h1 {
+                margin-left: 14px;
+            }
             .loading-container {
                 display: flex;
                 justify-content: center;
@@ -199,4 +202,8 @@
 
 .button-success {
     background-image: linear-gradient(to right, rgb(34, 255, 63), rgb(6, 167, 6));
+    &:hover {
+        background-image: linear-gradient(to right, rgb(63, 194, 81), rgb(6, 167, 6));
+    }
+    padding: 5px 20px !important;
 }
