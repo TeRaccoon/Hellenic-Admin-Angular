@@ -37,8 +37,14 @@
             padding: 12px;
             color: white;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
-            a {
+            .fa-icon {
                 cursor: pointer;
+            }
+            a {
+                display: inline-block;
+                position: relative;
+                padding: 1.5em;
+                margin: -1.5em;
             }
             h1 {
                 text-align: center;
