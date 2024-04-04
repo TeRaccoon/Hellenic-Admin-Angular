@@ -61,9 +61,9 @@ export class InvoicedItemsWidgetComponent {
 
   async editRow(id: number) {
     let invoicedItemsFormData = await lastValueFrom(this.dataService.collectData("edit-form-data", "invoiced_items"));
-    let appendOrAdd = await lastValueFrom(this.dataService.collectData("edit-form-data", "invoiced_items"));
+    let appendOrAdd = await lastValueFrom(this.dataService.collectDataComplex("append-or-add", { table: 'invoiced_items', id: id, column: 'id' }));
 
-    if (invoicedItemsFormData != null && appendOrAdd != appendOrAdd) {
+    if (invoicedItemsFormData != null) {
       this.formService.processEditFormData(id, appendOrAdd, invoicedItemsFormData);
       this.prepareEditFormService(id, 'invoiced_items');
     }
