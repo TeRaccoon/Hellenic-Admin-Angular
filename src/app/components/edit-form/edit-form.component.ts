@@ -219,7 +219,7 @@ export class EditFormComponent {
       return;
     }
     
-    if (this.mappedFormData.get('Image')!.value != null) {
+    if (this.mappedFormData.get('Image')?.value != null) {
       this.imageReplacements.push(this.mappedFormData.get('Image')!.value);
     }
     
