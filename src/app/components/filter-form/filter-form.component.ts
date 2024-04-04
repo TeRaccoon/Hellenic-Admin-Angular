@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faPlus, faX } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-filter-form',
@@ -11,6 +11,7 @@ import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 export class FilterFormComponent {
   faSearch = faSearch;
   faPlus = faPlus;
+  faX = faX;
 
   formVisible = 'hidden';
   tableColumns: { columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[] } = {

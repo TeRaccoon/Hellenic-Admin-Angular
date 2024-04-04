@@ -309,6 +309,10 @@ export class FormService {
         formData['Warehouse ID'].inputType = 'replacement';
         replacementData['Warehouse ID'] = { data: data };
 
+        data = await this.getIdReplacementData('customer_address_id_full', dataService);
+        formData['Address'].inputType = "replacement";
+        replacementData['Address'] = { data: data };
+
         data = await this.getIdReplacementData('items_id_name_sku', dataService);
         formData['Item ID'] = {
           inputType: 'replacement',
@@ -377,11 +381,7 @@ export class FormService {
   }
 
   async getIdReplacementData(query: string, dataService: DataService): Promise<any> {
-    return new Promise((resolve, reject) => {
-      dataService.collectData(query).subscribe((data: any) => {
-        resolve(data);
-      });
-    });
+    return await lastValueFrom(dataService.collectData(query));
   }
 
   setReloadType(reloadType: string) {

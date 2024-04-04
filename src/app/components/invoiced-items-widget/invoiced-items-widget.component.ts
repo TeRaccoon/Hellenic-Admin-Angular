@@ -44,10 +44,10 @@ export class InvoicedItemsWidgetComponent {
     let invoicedItemsData = await lastValueFrom(this.dataService.collectData("table", "invoiced_items"));
     
     if (invoicedItemsData != null) {
-      let formData = invoicedItemsData.edittable;
+      let formData = invoicedItemsData.editable;
 
-      let values: (string | null)[] = Array(invoicedItemsData.edittable.columns.length).fill(null);
-      const invoiceIdIndex = invoicedItemsData.edittable.names.indexOf('Invoice ID');
+      let values: (string | null)[] = Array(invoicedItemsData.editable.columns.length).fill(null);
+      const invoiceIdIndex = invoicedItemsData.editable.names.indexOf('Invoice ID');
       values[invoiceIdIndex] = this.id;
       formData.values = values;
 

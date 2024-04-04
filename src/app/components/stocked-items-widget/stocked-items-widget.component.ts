@@ -51,7 +51,7 @@ export class StockedItemsWidgetComponent {
     let stockedItemsData = await lastValueFrom(this.dataService.collectData("table", "stocked_items"));
 
     if (stockedItemsData != null) {
-      this.formData = stockedItemsData.edittable;
+      this.formData = stockedItemsData.editable;
 
       let values: (string | null)[] = Array(this.formData.columns.length).fill(null);
       const itemIdIndex = this.formData.names.indexOf('Item ID');

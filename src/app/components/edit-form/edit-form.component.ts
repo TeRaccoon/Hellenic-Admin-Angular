@@ -4,6 +4,7 @@ import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCloudUpload, faSpinner, faX, faAsterisk } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-edit-form',
@@ -218,7 +219,7 @@ export class EditFormComponent {
       return;
     }
     
-    if (this.mappedFormData.get('Image')!.value != null) {
+    if (this.mappedFormData.get('Image')?.value != null) {
       this.imageReplacements.push(this.mappedFormData.get('Image')!.value);
     }
     
@@ -232,7 +233,7 @@ export class EditFormComponent {
       if (this.tableName != "categories") {
         const validationResult = this.imageSubmissionValidation();
 
-        if (validationResult !== false) {
+        if (validationResult !== false && this.file != null) {
           this.submissionWithImage(validationResult.itemId, validationResult.itemName, hideForm);
         } else {
           this.submissionWithoutImage(hideForm);
@@ -368,14 +369,19 @@ export class EditFormComponent {
   }
 
   filterDropSelect(key: string, event: any, field: string | null) {
-    this.filteredReplacementData = JSON.parse(JSON.stringify(this.replacementData));
+    this.selectedReplacementData[key];
     var filter = event.target.value;
-    this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
-      return data.replacement.toLowerCase().includes(filter.toLowerCase());
-    });
-    if (field) {
-      this.editForm.get(field)?.setValue(filter);
-    }
+
+    setTimeout(() => {
+      this.filteredReplacementData = _.cloneDeep(this.replacementData);
+
+      this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
+        return data.replacement.toLowerCase().includes(filter.toLowerCase());
+      });
+      if (field) {
+        this.editForm.get(field)?.setValue(filter);
+      }
+    }, 500);
   }
 
   updateAlternativeSelectData(field: string, data: any, key: string) {

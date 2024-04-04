@@ -42,10 +42,10 @@ export class SettingsComponent {
   async collectSettings() {
     let settingsRaw = await lastValueFrom(this.dataService.collectData('table', 'settings'));
 
-    const edittableSettings = settingsRaw.edittable;
+    const editableSettings = settingsRaw.editable;
 
-    edittableSettings.columns.forEach((column: any, index: number) => {
-      this.settings[column] = { name: edittableSettings.names[index], data: settingsRaw.data[column], required: edittableSettings.required[index], type: edittableSettings.types[index], key: column};
+    editableSettings.columns.forEach((column: any, index: number) => {
+      this.settings[column] = { name: editableSettings.names[index], data: settingsRaw.data[column], required: editableSettings.required[index], type: editableSettings.types[index], key: column};
     });
     this.settings = this.settings;
   }
@@ -79,7 +79,9 @@ export class SettingsComponent {
   async formSubmit() {
     const formData = { ...this.settingsForm.value };
     Object.keys(formData).forEach(key => {
-      formData[key] = formData[key] === true ? 'Yes' : 'No';
+      if (typeof formData[key] === 'boolean') {
+        formData[key] = formData[key] === true ? 'Yes' : 'No';
+      }
     });
 
     const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(formData));
@@ -93,6 +95,9 @@ export class SettingsComponent {
     if (formSubmitResponse.success) {
       title = "Success!";
       message = "Settings saved successfully!";
+      
+      this.changes = {};
+      this.originalValues = {};
     }
 
     this.formService.setMessageFormData({title, message});
