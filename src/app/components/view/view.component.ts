@@ -53,7 +53,7 @@ export class ViewComponent {
   displayData: any[] = [];
   dataTypes: any[] = [];
   filteredDisplayData: any[] = [];
-  edittable = {
+  editable = {
     columns: [],
     types: [],
     names: [],
@@ -252,7 +252,7 @@ export class ViewComponent {
       this.dataTypes = tableData.types;
       this.filteredDisplayData = this.displayData;
       this.displayNames = tableData.display_names;
-      this.edittable = tableData.edittable;
+      this.editable = tableData.editable;
 
       this.applyFilter();
 
@@ -268,7 +268,7 @@ export class ViewComponent {
 
   sortColumn(column: any) {
     this.filteredDisplayData = this.displayData;
-    let dataName = this.edittable.columns.filter((_, index) => this.edittable.names[index] == column)[0];
+    let dataName = this.editable.columns.filter((_, index) => this.editable.names[index] == column)[0];
     if (this.sortedColumn.columnName == column) {
       this.sortedColumn.ascending = !this.sortedColumn.ascending;
     } else {
@@ -308,11 +308,11 @@ export class ViewComponent {
           this.formService.setMessageFormData({title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!'});
           this.formService.showMessageForm();
         } else {
-          this.formService.processEditFormData(id, row, this.edittable)
+          this.formService.processEditFormData(id, row, this.editable)
           this.prepareEditFormService(id, table);
         }
       } else {
-        this.formService.processEditFormData(id, row, this.edittable)
+        this.formService.processEditFormData(id, row, this.editable)
         this.prepareEditFormService(id, table);
       }
 
@@ -390,11 +390,11 @@ export class ViewComponent {
 
   async addRow(values: any) {
     var addFormData = {
-      columns: this.edittable.columns,
-      types: this.edittable.types,
-      names: this.edittable.names,
-      required: this.edittable.required,
-      fields: this.edittable.fields,
+      columns: this.editable.columns,
+      types: this.editable.types,
+      names: this.editable.names,
+      required: this.editable.required,
+      fields: this.editable.fields,
       values: values,
     }
     this.formService.processAddFormData(addFormData);

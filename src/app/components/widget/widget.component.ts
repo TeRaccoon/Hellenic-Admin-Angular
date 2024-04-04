@@ -78,10 +78,10 @@ export class WidgetComponent {
     let addFormData = await lastValueFrom(this.dataService.collectData("table", this.tableData.tableName));
     
     if (addFormData != null) {
-      let formData = addFormData.edittable;
+      let formData = addFormData.editable;
 
-      let values: (string | null)[] = Array(addFormData.edittable.columns.length).fill(null);
-      const idIndex = addFormData.edittable.names.indexOf(this.tableData.idData.columnName);
+      let values: (string | null)[] = Array(addFormData.editable.columns.length).fill(null);
+      const idIndex = addFormData.editable.names.indexOf(this.tableData.idData.columnName);
       values[idIndex] = this.tableData.idData.id;
       formData.values = values;
 
