@@ -133,15 +133,6 @@
                                             </ng-container>
                                         </ng-container>
                                     </ng-container>
-                                    <ng-container *ngIf="tableName == 'items' && columnIndex == 2">
-
-                                    </ng-container>
-                                    <ng-container *ngIf="tableName == 'stocked_items' && columnIndex == 2">
-
-                                    </ng-container>
-                                    <ng-container *ngIf="tableName == 'invoices' && columnIndex == 2">
-
-                                    </ng-container>
                                     <td [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
                                         <ng-container *ngIf="canDisplayColumn(column)">
                                             <ng-container [ngSwitch]="dataTypes[columnIndex]">
