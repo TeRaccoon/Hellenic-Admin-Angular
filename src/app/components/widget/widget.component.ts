@@ -3,6 +3,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { faX, faTrashCan, faPenToSquare, faFileCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
+import { imageUrlBase } from '../../services/data.service';
 
 @Component({
   selector: 'app-widget',
@@ -14,13 +15,18 @@ export class WidgetComponent {
   faTrashCan = faTrashCan;
   faPenToSquare = faPenToSquare;
   faFileCircleXmark = faFileCircleXmark;
+  
+  imageUrlBase = imageUrlBase;
 
   visible = false;
 
   formName = "";
 
   tableData = {
-    headers: [],
+    headers: [{
+      name: "",
+      type: ""
+    }],
     rows: [],
     tableName: "",
     title: "",

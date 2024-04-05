@@ -537,25 +537,52 @@ export class ViewComponent {
     this.router.navigate(['/print/invoice']);
   }
 
-  async invoiceSearch(id: string) {
-    var row = this.data.filter((row: any) => row.id == id)[0];
+  async invoiceSearch(invoiceId: string) {
+    var row = this.data.filter((row: any) => row.id == invoiceId)[0];
+    
     if (row['status'] == 'Complete') {
       this.formService.setMessageFormData({title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!'});
       this.formService.showMessageForm();
     } else {
-      let invoicedItems = await lastValueFrom(this.dataService.collectData("invoiced-items", id.toString()));
-      invoicedItems = Array.isArray(invoicedItems) ? invoicedItems : [invoicedItems];
+      let tableColumns = [
+        { name: "ID", type: "number" },
+        { name: "Item Name", type: "string" },
+        { name: "Picture", type: "image" },
+        { name: "Quantity", type: "number" },
+        { name: "VAT Charge", type: "enum" },
+        { name: "Discount", type: "number" }
+      ];
+      let tableRows = await lastValueFrom(this.dataService.collectData("invoiced-items", invoiceId));
+      tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
+      let tableName = "invoiced_items";
+      let title = `Invoiced Items for ${row['title']}`;
 
-      var invoicedItemsWidgetData = { id: id, title: null, data: invoicedItems };
-
-      if (row['title']) {
-        invoicedItemsWidgetData.title = row['title'];
-      }
-
-      this.dataService.storeWidgetData(invoicedItemsWidgetData);
-      this.formService.setReloadId(id);
-      this.formService.showInvoicedItemForm();
+      this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: invoiceId, columnName: "Invoice ID"}, query: "invoiced-items"});
+      this.formService.showWidget();
     }
+  }
+
+  async addressSearch(customerId: string, accountName: string) {
+    let tableColumns = [
+      { name: "ID", type: "number" },
+      { name: "Invoice Address One", type: "string" },
+      { name: "Invoice Address Two", type: "string" },
+      { name: "Invoice Address Three", type: "string" },
+      { name: "Invoice Address Four", type: "string" },
+      { name: "Invoice Postcode", type: "string" },
+      { name: "Delivery Address One", type: "string" },
+      { name: "Delivery Address Two", type: "string" },
+      { name: "Delivery Address Three", type: "string" },
+      { name: "Delivery Address Four", type: "string" },
+      { name: "Delivery Postcode", type: "string" }
+    ];  
+    let tableRows = await lastValueFrom(this.dataService.collectData("addresses_from_customer_id", customerId));
+    tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
+    let tableName = "customer_address";
+    let title = `Customer Addresses for ${accountName}`;
+
+    this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: customerId, columnName: "Customer Name"}, query: "addresses_from_customer_id"});
+    this.formService.showWidget();
   }
 
   async stockSearch(id: string) {
@@ -566,17 +593,6 @@ export class ViewComponent {
       this.dataService.storeStockWidgetData({id: id, stock_data: stockData, total: total});
       this.formService.showStockedItemForm();
     }
-  }
-
-  async addressSearch(customerId: string, accountName: string) {
-    let tableColumns = ["ID", "Invoice Address One", "Invoice Address Two", "Invoice Address Three", "Invoice Address Four", "Invoice Postcode", "Delivery Address One", "Delivery Address Two", "Delivery Address Three", "Delivery Address Four", "Delivery Postcode"];
-    let tableRows = await lastValueFrom(this.dataService.collectData("addresses_from_customer_id", customerId));
-    tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
-    let tableName = "customer_address";
-    let title = `Customer Addresses for ${accountName}`;
-
-    this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: customerId, columnName: "Customer Name"}, query: "addresses_from_customer_id"});
-    this.formService.showWidget();
   }
 
   shouldColourCell(data: any) {

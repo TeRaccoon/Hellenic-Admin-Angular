@@ -10,14 +10,21 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <th *ngFor="let header of tableData.headers">{{ header }}</th>
+                        <th *ngFor="let header of tableData.headers">{{ header.name }}</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </thead>
                     <tbody>
                         <tr *ngFor="let row of tableData.rows">
-                            <td *ngFor="let key of getColumnKeys(row)">
-                                {{ row[key] }}
+                            <td *ngFor="let key of getColumnKeys(row); let index = index">
+                                <ng-container [ngSwitch]="tableData.headers[index].type">
+                                    <ng-container *ngSwitchCase="'image'">
+                                        <img [src]="imageUrlBase + row[key]">
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                        {{ row[key] }}
+                                    </ng-container>
+                                </ng-container>
                             </td>
                             <td (click)="editRow(row['id'])">
                                 <fa-icon [icon]="faPenToSquare" />
