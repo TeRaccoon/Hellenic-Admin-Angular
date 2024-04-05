@@ -569,7 +569,7 @@ export class ViewComponent {
   }
 
   async addressSearch(customerId: string, accountName: string) {
-    let tableColumns = ["Invoice Address One", "Invoice Address Two", "Invoice Address Three", "Invoice Address Four", "Invoice Postcode", "Delivery Address One", "Delivery Address Two", "Delivery Address Three", "Delivery Address Four", "Delivery Postcode"];
+    let tableColumns = ["ID", "Invoice Address One", "Invoice Address Two", "Invoice Address Three", "Invoice Address Four", "Invoice Postcode", "Delivery Address One", "Delivery Address Two", "Delivery Address Three", "Delivery Address Four", "Delivery Postcode"];
     let tableRows = await lastValueFrom(this.dataService.collectData("addresses_from_customer_id", customerId));
     tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
     let tableName = "customer_address";

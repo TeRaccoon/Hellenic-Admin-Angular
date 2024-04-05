@@ -39,7 +39,6 @@ export class WidgetComponent {
     });
     this.dataService.retrieveWidgetData().subscribe((tableData: any) => {
       this.tableData = tableData;
-      console.log("🚀 ~ WidgetComponent ~ this.dataService.retrieveWidgetData ~ this.tableData:", this.tableData)
     });
     this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
       if (reloadRequested) {
@@ -65,13 +64,13 @@ export class WidgetComponent {
   }
 
   async editRow(id: number) {
-    // let invoicedItemsFormData = await lastValueFrom(this.dataService.collectData("edit-form-data", "invoiced_items"));
-    // let appendOrAdd = await lastValueFrom(this.dataService.collectData("edit-form-data", "invoiced_items"));
+    let editFormData = await lastValueFrom(this.dataService.collectData("edit-form-data", this.tableData.tableName));
+    let appendOrAdd = await lastValueFrom(this.dataService.collectDataComplex("append-or-add", { table: this.tableData.tableName, id: id, column: 'id' }));
 
-    // if (invoicedItemsFormData != null && appendOrAdd != appendOrAdd) {
-    //   this.formService.processEditFormData(id, appendOrAdd, invoicedItemsFormData);
-    //   this.prepareEditFormService(id, 'invoiced_items');
-    // }
+    if (editFormData != null && appendOrAdd != null) {
+      this.formService.processEditFormData(id, appendOrAdd, editFormData);
+      this.prepareEditFormService(id, this.tableData.tableName);
+    }
   }
 
   async addRow() {
