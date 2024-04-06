@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+import { NgChartsModule } from 'ng2-charts';
 import * as _ from 'lodash';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {LocationStrategy, HashLocationStrategy} from '@angular/common';
@@ -33,6 +35,7 @@ import { ChangePasswordFormComponent } from './components/change-password-form/c
 import { StockedItemsWidgetComponent } from './components/stocked-items-widget/stocked-items-widget.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { WidgetComponent } from './components/widget/widget.component';
+import { AverageOrderWidgetComponent } from './components/average-order-widget/average-order-widget.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +63,8 @@ import { WidgetComponent } from './components/widget/widget.component';
     ChangePasswordFormComponent,
     StockedItemsWidgetComponent,
     SettingsComponent,
-    WidgetComponent
+    WidgetComponent,
+    AverageOrderWidgetComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,6 +74,8 @@ import { WidgetComponent } from './components/widget/widget.component';
     FontAwesomeModule,
     ReactiveFormsModule,
     FormsModule,
+    NgChartsModule,
+    NgxDaterangepickerMd.forRoot()
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy}
