@@ -1,14 +1,22 @@
 <div class="container">
     <div class="toolbar">
-        <input type="text" matInput ngxDaterangepickerMd [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" startKey="start" endKey="end" [(ngModel)]="selected" name="daterange" (change)="updateDateRange()" />
+        <input type="text" matInput ngxDaterangepickerMd [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange" (change)="updateDateRange()" />
     </div>
-    <div class="section-a">
-        <app-invoice-breakdown-widget></app-invoice-breakdown-widget>
-    </div>
-    <div class="section-b">
-        <app-item-breakdown-widget></app-item-breakdown-widget>
-    </div>
-    <div class="section-c">
-        <app-average-order-widget></app-average-order-widget>
+    <div class="content">
+        <div>
+            <app-invoice-breakdown-widget></app-invoice-breakdown-widget>
+        </div>
+        <div>
+            <app-item-breakdown-widget></app-item-breakdown-widget>
+        </div>
+        <div>
+            <canvas baseChart [data]="averageOrderValueChartData" [options]="averageOrderValueChartOptions" [type]="averageOrderValueChartType"></canvas>
+        </div>
+        <div>
+            <canvas baseChart [data]="totalOrdersChartData" [options]="totalOrdersChartOptions" [type]="averageOrderValueChartType"></canvas>
+        </div>
+        <div>
+            <canvas baseChart [data]="topSellingProductsChartData" [options]="topSellingProductsChartOptions" [type]="topSellingProductsChartType"></canvas>
+        </div>
     </div>
 </div>

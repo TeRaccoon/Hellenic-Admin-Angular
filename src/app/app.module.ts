@@ -35,7 +35,6 @@ import { ChangePasswordFormComponent } from './components/change-password-form/c
 import { StockedItemsWidgetComponent } from './components/stocked-items-widget/stocked-items-widget.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { WidgetComponent } from './components/widget/widget.component';
-import { AverageOrderWidgetComponent } from './components/average-order-widget/average-order-widget.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +63,6 @@ import { AverageOrderWidgetComponent } from './components/average-order-widget/a
     StockedItemsWidgetComponent,
     SettingsComponent,
     WidgetComponent,
-    AverageOrderWidgetComponent,
   ],
   imports: [
     BrowserModule,
