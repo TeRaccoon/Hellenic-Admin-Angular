@@ -25,7 +25,6 @@ export class StatisticsService {
     'Nov',
     'Dec',
   ];
-  private defaultColours = [];
 
   constructor(private dataService: DataService) {}
 
@@ -33,17 +32,8 @@ export class StatisticsService {
     return this.months;
   }
 
-  getDateRange() {
-    return this.dateRange.asObservable();
-  }
-
-  setDateRange(dateRange: any) {
-    this.dateRange.next(dateRange);
-  }
-
-  getLineChartData(dataset: any[], label: string, labels: string[], fill: boolean) {
+  getLineChartData(dataset: any[], label: string, fill: boolean) {
     return {
-      labels: labels,
       datasets: {
         data: dataset,
         label: label,
@@ -55,9 +45,8 @@ export class StatisticsService {
     };
   }
 
-  getBarChartData(dataset: any[], label: string, borderRadius: number, labels: string[]) {
+  getBarChartData(dataset: any[], label: string, borderRadius: number) {
     return {
-      labels: labels,
       datasets: {
         data: dataset,
         label: label,
@@ -267,17 +256,13 @@ export class StatisticsService {
         })
       );
 
-      xLabels = Array(endKey - startKey + 1)
-      .fill(null)
-      .map((_, index) => monthLabels[monthStart] + ' ' + (startKey + index));
+      xLabels = Array(endKey - startKey + 1).fill(null).map((_, index) => monthLabels[monthStart] + ' ' + (startKey + index));
 
       keyModifier = startKey;
     }
 
     data = Array(endKey - startKey + 1).fill(0);
-    queryData = Array.isArray(queryData)
-      ? queryData
-      : [queryData];
+    queryData = Array.isArray(queryData) ? queryData : [queryData];
 
     if (ignoreDate) {
       xLabels = Array(queryData.length);
