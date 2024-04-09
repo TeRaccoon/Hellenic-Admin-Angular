@@ -41,40 +41,67 @@ export class StatisticsService {
     this.dateRange.next(dateRange);
   }
 
-  getLineChartData(dataset: any[], label: string, backgroundColours: any[], labels: string[]) {
+  getLineChartData(dataset: any[], label: string, labels: string[], fill: boolean) {
     return {
       labels: labels,
       datasets: {
         data: dataset,
         label: label,
-        backgroundColor: backgroundColours[0],
+        borderColor: 'rgb(0, 140, 255)',
+        pointBackgroundColor: 'rgb(0, 140, 255)',
+        backgroundColor: 'rgb(0, 140, 255, 0.4)',
+        fill: fill
       }
     };
   }
 
-  getBarChartData(dataset: any[], label: string, backgroundColours: any[], borderRadius: number, labels: string[]) {
+  getBarChartData(dataset: any[], label: string, borderRadius: number, labels: string[]) {
     return {
       labels: labels,
       datasets: {
         data: dataset,
         label: label,
-        backgroundColor: backgroundColours,
-        borderRadius: borderRadius
+        backgroundColor: 'rgb(0, 140, 255, 0.4)',
+        borderColor: 'rgb(0, 140, 255)',
+        borderRadius: borderRadius,
+        borderWidth: 3,
       }
     };
   }
 
-  getBarChartOptions(yTitle: string, xTitle: string, displayLegend: boolean, stacked: boolean, currency: boolean, labels: any[]): ChartConfiguration['options'] {
+  getBarChartOptions(yTitle: string, xTitle: string, displayLegend: boolean, stacked: boolean, currency: boolean, displayTitles: boolean, labels: any[]): ChartConfiguration['options'] {
     return {
       plugins: {
         legend: {
           display: displayLegend,
         },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipData) {
+              if (tooltipData.dataset.label) {
+                const formatter = new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'GBP',
+                });
+
+                const labels = tooltipData.dataset.label.toString();
+
+                let values = tooltipData.dataset.data[tooltipData.dataIndex]?.toString();
+                if (currency) {
+                  values = formatter.format(Number(tooltipData.dataset.data[tooltipData.dataIndex]));
+                }
+
+                return `${labels}: ${values}`;
+              }
+              return "";
+            }
+          }
+        }
       },
       scales: {
         y: {
           title: {
-            display: true,
+            display: displayTitles,
             text: yTitle,
             color: 'black',
             font: {
@@ -87,13 +114,16 @@ export class StatisticsService {
               if (currency) {
                 return '£' + value;
               }
-              return value;
-            }
+              if (Math.floor(Number(value)) === value) {
+                return value;
+              }
+              return;
+            },
           }
         },
         x: {
           title: {
-            display: true,
+            display: displayTitles,
             text: xTitle,
             color: 'black',
             font: {
@@ -116,12 +146,34 @@ export class StatisticsService {
     };
   }
 
-  getLineChartOptions(tension: number, yTitle: string, xTitle: string, displayLegend: boolean, currency: boolean, aboveZero: boolean, labels: any[]): ChartConfiguration['options'] {
+  getLineChartOptions(tension: number, yTitle: string, xTitle: string, displayLegend: boolean, currency: boolean, aboveZero: boolean, displayTitles: boolean, labels: any[]): ChartConfiguration['options'] {
     return {
       plugins: {
         legend: {
           display: displayLegend,
         },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipData) {
+              if (tooltipData.dataset.label) {
+                const formatter = new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'GBP',
+                });
+
+                const labels = tooltipData.dataset.label.toString();
+
+                let values = tooltipData.dataset.data[tooltipData.dataIndex]?.toString();
+                if (currency) {
+                  values = formatter.format(Number(tooltipData.dataset.data[tooltipData.dataIndex]));
+                }
+
+                return `${labels}: ${values}`;
+              }
+              return "";
+            }
+          }
+        }
       },
       elements: {
         line: {
@@ -132,7 +184,7 @@ export class StatisticsService {
         y: {
           position: 'left',
           title: {
-            display: true,
+            display: displayTitles,
             text: yTitle,
             color: 'black',
             font: {
@@ -144,14 +196,17 @@ export class StatisticsService {
               if (currency) {
                 return '£' + value;
               }
-              return value;
-            }
+              if (Math.floor(Number(value)) === value) {
+                return value;
+              }
+              return;
+            },
           },
           min: aboveZero ? 0 : undefined,
         },
         x: {
           title: {
-            display: true,
+            display: displayTitles,
             text: xTitle,
             color: 'black',
             font: {
@@ -214,7 +269,7 @@ export class StatisticsService {
 
       xLabels = Array(endKey - startKey + 1)
       .fill(null)
-      .map((_, index) => monthLabels[monthStart + 1] + ' ' + (startKey + index));
+      .map((_, index) => monthLabels[monthStart] + ' ' + (startKey + index));
 
       keyModifier = startKey;
     }
