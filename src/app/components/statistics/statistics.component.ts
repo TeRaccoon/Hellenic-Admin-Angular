@@ -23,6 +23,10 @@ export class StatisticsComponent {
   topSellingProductsChartOptions: ChartConfiguration['options'];
   topSellingProductsChartType: ChartType = 'bar';
 
+  invoiceValueChartData: ChartConfiguration['data'] = {datasets: []};
+  invoiceValueChartOptions: ChartConfiguration['options'];
+  invoiceValueChartType: ChartType = 'line';
+
   selected: { startDate: Dayjs; endDate: Dayjs; } = {
     startDate: dayjs().startOf('month'),
     endDate: dayjs().endOf('month')
@@ -54,24 +58,30 @@ export class StatisticsComponent {
 
     //Average order value
     let chartData = await this.statisticsService.buildChart(monthStart, monthEnd, year, this.selected, "average-invoice-value-per-day", "average-invoice-value-per-month", false);
-    console.log("🚀 ~ StatisticsComponent ~ buildCharts ~ chartData:", chartData)
-    let chartDataset = this.statisticsService.getLineChartData(chartData.data, "Total Value", ['rgb(0, 140, 255)'], chartData.labels);
+    let chartDataset = this.statisticsService.getLineChartData(chartData.data, "Total Value", chartData.labels, true);
 
     this.averageOrderValueChartData = {datasets: [chartDataset.datasets], labels: chartData.labels};
-    this.averageOrderValueChartOptions = this.statisticsService.getLineChartOptions(0.5, "Order Value (£)", "Date", false, true, true, chartDataset.labels);
+    this.averageOrderValueChartOptions = this.statisticsService.getLineChartOptions(0.5, "Order Value (£)", "Date", false, true, true, false, chartDataset.labels);
 
     //Total Orders
     chartData = await this.statisticsService.buildChart(monthStart, monthEnd, year, this.selected, "total-invoices-per-day", "total-invoices-per-month", false);
-    chartDataset = this.statisticsService.getLineChartData(chartData.data, "Total Orders", ['rgb(0, 140, 255)'], chartData.labels);
+    chartDataset = this.statisticsService.getLineChartData(chartData.data, "Total Orders", chartData.labels, true);
 
     this.totalOrdersChartData = {datasets: [chartDataset.datasets], labels: chartData.labels};
-    this.totalOrdersChartOptions = this.statisticsService.getLineChartOptions(0.5, "Order Amount", "Date", false, false, true, chartData.labels);
+    this.totalOrdersChartOptions = this.statisticsService.getLineChartOptions(0.5, "Order Amount", "Date", false, false, true, false, chartData.labels);
 
     //Top selling products
     chartData = await this.statisticsService.buildChart(monthStart, monthEnd, year, this.selected, "top-selling-item-per-day", "top-selling-item-per-month", true);
-    let barChartDataset = this.statisticsService.getBarChartData(chartData.data, "Total Sales", ['rgb(0, 140, 255)'], 10, chartData.labels);
+    let barChartDataset = this.statisticsService.getBarChartData(chartData.data, "Total Sales", 10, chartData.labels);
     
     this.topSellingProductsChartData = {labels: barChartDataset.labels, datasets: [barChartDataset.datasets]};
-    this.topSellingProductsChartOptions = this.statisticsService.getBarChartOptions("Total Sales", "Item Name", false, false, false, barChartDataset.labels);
+    this.topSellingProductsChartOptions = this.statisticsService.getBarChartOptions("Total Sales", "Item Name", false, false, false, true, barChartDataset.labels);
+
+    //Invoice Value
+    chartData = await this.statisticsService.buildChart(monthStart, monthEnd, year, this.selected, "total-invoice-value-per-day", "total-invoice-value-per-month", false);
+    chartDataset = this.statisticsService.getLineChartData(chartData.data, "Total Value", chartData.labels, true);
+
+    this.invoiceValueChartData = {datasets: [chartDataset.datasets], labels: chartData.labels};
+    this.invoiceValueChartOptions = this.statisticsService.getLineChartOptions(0.5, "Total Value", "Date", false, true, true, false, chartData.labels);
   }
 }
