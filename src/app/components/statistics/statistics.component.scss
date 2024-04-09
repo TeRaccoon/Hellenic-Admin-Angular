@@ -8,6 +8,9 @@
         padding: 10px;
         border-radius: 10px;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        position: sticky;
+        top: 5px;
+        width: fit-content;
         input {
             padding: 10px;
             border-radius: 5px;
@@ -19,9 +22,10 @@
         display: flex;
         flex-wrap: wrap;
         gap: 15px;
-        margin: 0 10px 10px 10px;
+        margin: 10px;
         div {
             width: calc(33% - 35px);
+            max-width: calc(33% - 35px);
             padding: 15px;
             flex-grow: 1;
             background: white;
