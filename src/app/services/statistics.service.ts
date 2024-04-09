@@ -41,11 +41,14 @@ export class StatisticsService {
     this.dateRange.next(dateRange);
   }
 
-  getLineChartData(dataset: any[], label: string, backgroundColours: any[]) {
+  getLineChartData(dataset: any[], label: string, backgroundColours: any[], labels: string[]) {
     return {
-      data: dataset,
-      label: label,
-      backgroundColor: backgroundColours[0],
+      labels: labels,
+      datasets: {
+        data: dataset,
+        label: label,
+        backgroundColor: backgroundColours[0],
+      }
     };
   }
 
@@ -103,15 +106,17 @@ export class StatisticsService {
               if (labels[Number(value)].toString().length > 10) {
                 return labels[Number(value)].toString().substring(0, 7) + "...";
               }
-              return value;
-            }
+              return labels[Number(value)];
+            },
+            maxRotation: 0,
+            autoSkipPadding: 25
           }
         }
       },
     };
   }
 
-  getLineChartOptions(tension: number, yTitle: string, xTitle: string, displayLegend: boolean, currency: boolean): ChartConfiguration['options'] {
+  getLineChartOptions(tension: number, yTitle: string, xTitle: string, displayLegend: boolean, currency: boolean, aboveZero: boolean, labels: any[]): ChartConfiguration['options'] {
     return {
       plugins: {
         legend: {
@@ -141,7 +146,8 @@ export class StatisticsService {
               }
               return value;
             }
-          }
+          },
+          min: aboveZero ? 0 : undefined,
         },
         x: {
           title: {
@@ -154,11 +160,13 @@ export class StatisticsService {
           },
           ticks: {
             callback: function(value) {
-              if (value.toString().length > 10) {
-                return value.toString().substring(0, 7) + "...";
+              if (labels[Number(value)].toString().length > 10) {
+                return labels[Number(value)].toString().substring(0, 7) + "...";
               }
-              return value;
-            }
+              return labels[Number(value)];
+            },
+            maxRotation: 0,
+            autoSkipPadding: 25
           }
         }
       },
@@ -180,9 +188,10 @@ export class StatisticsService {
     let keyModifier = monthStart + 1;
     let startKey = monthStart;
     let endKey = monthEnd;
+    let monthLabels = this.getMonths();
 
     if (monthStart != monthEnd) {
-      xLabels = this.getMonths().slice(monthStart, monthEnd + 1);
+      xLabels = monthLabels.slice(monthStart, monthEnd + 1);
       queryData = await lastValueFrom(
         this.dataService.collectDataComplex(monthQuery, {
           monthStart: monthStart + 1,
@@ -205,7 +214,7 @@ export class StatisticsService {
 
       xLabels = Array(endKey - startKey + 1)
       .fill(null)
-      .map((_, index) => startKey + index);
+      .map((_, index) => monthLabels[monthStart + 1] + ' ' + (startKey + index));
 
       keyModifier = startKey;
     }
