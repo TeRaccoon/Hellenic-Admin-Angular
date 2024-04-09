@@ -28,13 +28,13 @@ export class DataService {
     return this.http.get<any>(url);
   }
   
-  collectDataComplex(query: string, filter?: Record<string, any>): Observable<any[]> {
+  collectDataComplex(query: string, filter?: Record<string, any>): Observable<any> {
     let url = apiUrlBase + `admin_query_handler.php?query=${query}`;
     if (filter != null) {
       const queryParams = Object.entries(filter).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
       url += `&${queryParams}`;
     }
-    return this.http.get<any[]>(url);
+    return this.http.get<any>(url);
   }
 
   submitFormData(data: any): Observable<any> {

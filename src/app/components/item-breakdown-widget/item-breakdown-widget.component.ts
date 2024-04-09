@@ -45,7 +45,7 @@ export class ItemBreakdownWidgetComponent {
   async getMostIncome() {
     let mostIncomeItem = await lastValueFrom(this.dataService.collectData("most-income-item"));
     if (mostIncomeItem != null) {
-      this.itemDataRowB[1] = mostIncomeItem;
+      this.itemDataRowB[0] = mostIncomeItem;
     }
   }
   async getLeastIncome() {
