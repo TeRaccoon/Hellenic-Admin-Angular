@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import dayjs, { Dayjs } from 'dayjs';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
-import { ChartConfiguration } from 'chart.js';
+import { ChartConfiguration, Ticks } from 'chart.js';
 
 @Injectable({
   providedIn: 'root',
@@ -61,38 +61,62 @@ export class StatisticsService {
     };
   }
 
-  getBarChartOptions(yTitle: string, xTitle: string, displayLegend: boolean, stacked: boolean) {
+  getBarChartOptions(yTitle: string, xTitle: string, displayLegend: boolean, stacked: boolean, currency: boolean, labels: any[]): ChartConfiguration['options'] {
     return {
       plugins: {
         legend: {
-          display: displayLegend
-        }
+          display: displayLegend,
+        },
       },
       scales: {
         y: {
           title: {
             display: true,
-            text: yTitle
+            text: yTitle,
+            color: 'black',
+            font: {
+              size: 17,
+            },
           },
           stacked: stacked,
+          ticks: {
+            callback: function(value) {
+              if (currency) {
+                return '£' + value;
+              }
+              return value;
+            }
+          }
         },
         x: {
           title: {
             display: true,
-            text: xTitle
+            text: xTitle,
+            color: 'black',
+            font: {
+              size: 17,
+            },
           },
           stacked: stacked,
+          ticks: {
+            callback: function(value) {
+              if (labels[Number(value)].toString().length > 10) {
+                return labels[Number(value)].toString().substring(0, 7) + "...";
+              }
+              return value;
+            }
+          }
         }
       },
     };
   }
 
-  getLineChartOptions(tension: number, yTitle: string, xTitle: string, displayLegend: boolean): ChartConfiguration['options'] {
+  getLineChartOptions(tension: number, yTitle: string, xTitle: string, displayLegend: boolean, currency: boolean): ChartConfiguration['options'] {
     return {
       plugins: {
         legend: {
-          display: displayLegend
-        }
+          display: displayLegend,
+        },
       },
       elements: {
         line: {
@@ -104,14 +128,38 @@ export class StatisticsService {
           position: 'left',
           title: {
             display: true,
-            text: yTitle
+            text: yTitle,
+            color: 'black',
+            font: {
+              size: 17,
+            },
           },
+          ticks: {
+            callback: function(value) {
+              if (currency) {
+                return '£' + value;
+              }
+              return value;
+            }
+          }
         },
         x: {
           title: {
             display: true,
-            text: xTitle
+            text: xTitle,
+            color: 'black',
+            font: {
+              size: 17,
+            },
           },
+          ticks: {
+            callback: function(value) {
+              if (value.toString().length > 10) {
+                return value.toString().substring(0, 7) + "...";
+              }
+              return value;
+            }
+          }
         }
       },
     };
@@ -134,20 +182,17 @@ export class StatisticsService {
     let endKey = monthEnd;
 
     if (monthStart != monthEnd) {
-      xLabels = this.getMonths().slice(monthStart, monthEnd);
+      xLabels = this.getMonths().slice(monthStart, monthEnd + 1);
       queryData = await lastValueFrom(
         this.dataService.collectDataComplex(monthQuery, {
           monthStart: monthStart + 1,
           monthEnd: monthEnd + 1,
+          year: year,
         })
       );
     } else {
       startKey = dateRange.startDate.date();
       endKey = dateRange.endDate.date();
-
-      xLabels = Array(endKey - startKey + 1)
-        .fill(null)
-        .map((_, index) => startKey + index);
 
       queryData = await lastValueFrom(
         this.dataService.collectDataComplex(dayQuery, {
@@ -158,6 +203,10 @@ export class StatisticsService {
         })
       );
 
+      xLabels = Array(endKey - startKey + 1)
+      .fill(null)
+      .map((_, index) => startKey + index);
+
       keyModifier = startKey;
     }
 
@@ -167,8 +216,10 @@ export class StatisticsService {
       : [queryData];
 
     if (ignoreDate) {
+      xLabels = Array(queryData.length);
       for (let order in queryData) {
         data[order] = queryData[order].total;
+        xLabels[order] = queryData[order].dateKey;
       }
     } else {
       for (let order in queryData) {
