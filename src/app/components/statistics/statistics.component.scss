@@ -3,7 +3,17 @@
     display: flex;
     flex-direction: column;
     .toolbar {
-        width: 100%;
+        margin: 0 10px 10px 10px;
+        background: white;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgb(215, 215, 215);
+            outline: none;
+        }
     }
     .content {
         display: flex;
