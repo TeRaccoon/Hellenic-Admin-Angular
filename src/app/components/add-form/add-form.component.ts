@@ -124,6 +124,7 @@ export class AddFormComponent {
     this.error = null;
     this.file = null;
     this.invoicedItemsList = [];
+    this.invoiceCreated = false;
   }
 
   async replaceAmbiguousData() {
