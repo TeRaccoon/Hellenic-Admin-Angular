@@ -1,13 +1,19 @@
 .container {
     margin: 15px 15px 15px 16%;
     display: flex;
-    .section-a {
-        width: 50%;
+    flex-direction: column;
+    .toolbar {
+        width: 100%;
     }
-    .section-b {
-        width: 50%;
-    }
-    .section-c {
-        width: 50%;
+    .content {
+        display: flex;
+        div {
+            flex: 1 1 33%;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin: 5px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
     }
 }
