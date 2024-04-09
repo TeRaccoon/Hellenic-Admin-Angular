@@ -10,13 +10,20 @@
             <app-item-breakdown-widget></app-item-breakdown-widget>
         </div> -->
         <div>
+            <h1>Average Order Value</h1>
             <canvas baseChart [data]="averageOrderValueChartData" [options]="averageOrderValueChartOptions" [type]="averageOrderValueChartType"></canvas>
         </div>
         <div>
+            <h1>Total Orders</h1>
             <canvas baseChart [data]="totalOrdersChartData" [options]="totalOrdersChartOptions" [type]="averageOrderValueChartType"></canvas>
         </div>
         <div>
+            <h1>Top Selling Products</h1>
             <canvas baseChart [data]="topSellingProductsChartData" [options]="topSellingProductsChartOptions" [type]="topSellingProductsChartType"></canvas>
+        </div>
+        <div>
+            <h1>Invoice Values</h1>
+            <canvas baseChart [data]="invoiceValueChartData" [options]="invoiceValueChartOptions" [type]="invoiceValueChartType"></canvas>
         </div>
     </div>
 </div>
