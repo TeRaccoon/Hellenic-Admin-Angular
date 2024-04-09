@@ -23,12 +23,10 @@ import { TablelessViewComponent } from './components/tableless-view/tableless-vi
 import { LoginComponent } from './components/login/login.component';
 import { ProfitLossWidgetComponent } from './components/profit-loss-widget/profit-loss-widget.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
-import { InvoiceBreakdownWidgetComponent } from './components/invoice-breakdown-widget/invoice-breakdown-widget.component';
 import { PrintLayoutComponent } from './components/print-layout/print-layout.component';
 import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
 import { DeleteFormComponent } from './components/delete-form/delete-form.component';
 import { MessageFormComponent } from './components/message-form/message-form.component';
-import { ItemBreakdownWidgetComponent } from './components/item-breakdown-widget/item-breakdown-widget.component';
 import { FilterFormComponent } from './components/filter-form/filter-form.component';
 import { InvoicedItemsWidgetComponent } from './components/invoiced-items-widget/invoiced-items-widget.component';
 import { ChangePasswordFormComponent } from './components/change-password-form/change-password-form.component';
@@ -51,12 +49,10 @@ import { WidgetComponent } from './components/widget/widget.component';
     LoginComponent,
     ProfitLossWidgetComponent,
     StatisticsComponent,
-    InvoiceBreakdownWidgetComponent,
     PrintLayoutComponent,
     InvoiceViewComponent,
     DeleteFormComponent,
     MessageFormComponent,
-    ItemBreakdownWidgetComponent,
     FilterFormComponent,
     InvoicedItemsWidgetComponent,
     ChangePasswordFormComponent,

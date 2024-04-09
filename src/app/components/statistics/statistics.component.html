@@ -3,12 +3,6 @@
         <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange" (change)="updateDateRange()" />
     </div>
     <div class="content">
-        <!-- <div>
-            <app-invoice-breakdown-widget></app-invoice-breakdown-widget>
-        </div>
-        <div>
-            <app-item-breakdown-widget></app-item-breakdown-widget>
-        </div> -->
         <div>
             <h1>Average Order Value</h1>
             <canvas baseChart [data]="averageOrderValueChartData" [options]="averageOrderValueChartOptions" [type]="averageOrderValueChartType"></canvas>
