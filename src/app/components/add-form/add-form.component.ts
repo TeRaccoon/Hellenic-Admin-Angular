@@ -250,20 +250,22 @@ export class AddFormComponent {
   }
 
   imageSubmissionValidation() {
-    if ((this.file == null || this.tableName != 'items') && this.addForm.get('image_file_name') == null) {
-      this.error = "Please choose an image to upload before trying to upload!";
-      return false;
+    if (this.addForm.get('image_file_name') != null) {
+      if ((this.file == null || this.tableName != 'items')) {
+        this.error = "Please choose an image to upload before trying to upload!";
+        return false;
+      }
+  
+      let itemId = this.addForm.value['retail_item_id'] != null ? this.addForm.value['retail_item_id'] : this.addForm.get('id')?.value;
+      let itemName = this.addForm.get('item_name')?.value;
+  
+      if (itemName == null) {
+        this.error = "Please choose an item to upload an image for before trying to upload!";
+        return false;
+      }
+      return {itemId: itemId, itemName: itemName};
     }
-
-    let itemId = this.addForm.value['retail_item_id'] != null ? this.addForm.value['retail_item_id'] : this.addForm.get('id')?.value;
-    let itemName = this.addForm.get('item_name')?.value;
-
-    if (itemName == null) {
-      this.error = "Please choose an item to upload an image for before trying to upload!";
-      return false;
-    }
-
-    return {itemId: itemId, itemName: itemName};
+    return false;
   }
 
   async submitImageOnly() {
@@ -280,7 +282,6 @@ export class AddFormComponent {
       message: submissionResponse.message,
     });
     this.endSubmission(submissionResponse.success, hideForm);
-    this.invoiceCreated = true;
   }
 
   async submissionWithImage(itemId: string, itemName: string, hideForm: boolean) {  
@@ -308,7 +309,7 @@ export class AddFormComponent {
   }
 
   endSubmission(reset: boolean, hideForm: boolean) {
-    hideForm && this.formService.showMessageForm();
+    !reset && this.formService.showMessageForm();
     hideForm && this.hide();
     if (reset) {
       this.formService.requestReload();
@@ -320,6 +321,9 @@ export class AddFormComponent {
       this.addForm.get('table_name')?.setValue(this.tableName);
       this.error = null;
       this.invoicedItemsList = [];
+      if (this.tableName == "invoices") {
+        this.invoiceCreated = true;
+      }
     }
     this.submissionEnded = true;
   }
