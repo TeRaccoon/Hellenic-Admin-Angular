@@ -468,6 +468,7 @@ export class ViewComponent {
     this.pageCount = 0;
     this.currentPage = 1;
     this.selectedRows = [];
+    this.sortedColumn.columnName = '';
   }
 
   getPageRange(): number[] {
