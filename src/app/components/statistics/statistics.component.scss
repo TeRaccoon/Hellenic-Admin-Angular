@@ -24,6 +24,11 @@
         flex-wrap: wrap;
         gap: 15px;
         margin: 10px;
+        h1 {
+            font-size: 20px;
+            color: #6a6a6a;
+            text-align: center;
+        }
         div {
             width: calc(33% - 35px);
             max-width: calc(33% - 35px);
