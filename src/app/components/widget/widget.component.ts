@@ -54,7 +54,8 @@ export class WidgetComponent {
   }
 
   async reload() {
-    this.tableData.rows = await lastValueFrom(this.dataService.collectData(this.tableData.query, this.tableData.idData.id));
+    let data = await lastValueFrom<[]>(this.dataService.collectData(this.tableData.query, this.tableData.idData.id));
+    this.tableData.rows = Array.isArray(data) ? data : [data];
     this.formService.performReload();
   }
 
@@ -94,6 +95,7 @@ export class WidgetComponent {
       this.formService.setSelectedTable(this.tableData.tableName);
       this.formService.showAddForm();
       this.formService.setReloadType("widget");
+      this.formService.requestReload();
     }
   }
 
