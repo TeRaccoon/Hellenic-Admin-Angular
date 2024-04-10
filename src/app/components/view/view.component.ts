@@ -256,7 +256,10 @@ export class ViewComponent {
 
       this.applyFilter();
 
-      this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit) + 1;
+      this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit);
+      if (this.pageCount != 1) {
+        this.pageCount += 1;
+      }
 
       this.loaded = true;
     }    
