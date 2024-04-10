@@ -268,7 +268,11 @@ export class ViewComponent {
 
   sortColumn(column: any) {
     this.filteredDisplayData = this.displayData;
-    let dataName = this.editable.columns.filter((_, index) => this.editable.names[index] == column)[0];
+    let dataName : string = this.editable.columns.filter((_, index) => this.editable.names[index] == column)[0];    
+    if (dataName === undefined) {
+      dataName = 'id';
+    }
+
     if (this.sortedColumn.columnName == column) {
       this.sortedColumn.ascending = !this.sortedColumn.ascending;
     } else {
@@ -277,10 +281,10 @@ export class ViewComponent {
     if (this.sortedColumn.ascending) {
       this.filteredDisplayData.sort((a: any, b: any) => {
         if (a[dataName] < b[dataName]) {
-            return -1;
+          return -1;
         }
         if (a[dataName] > b[dataName]) {
-            return 1;
+          return 1;
         }
         return 0;
       });
@@ -288,10 +292,10 @@ export class ViewComponent {
     else {
       this.filteredDisplayData.sort((a: any, b: any) => {
         if (a[dataName] < b[dataName]) {
-            return 1;
+          return 1;
         }
         if (a[dataName] > b[dataName]) {
-            return -1;
+          return -1;
         }
         return 0;
       });
