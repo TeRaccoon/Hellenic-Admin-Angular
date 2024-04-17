@@ -278,6 +278,10 @@ export class FormService {
         data = await this.getIdReplacementData("sub-categories", dataService);
         formData["Sub-category"].inputType = "alternative-select";
         this.alternativeSelectData["Sub-category"] = { data: data };
+
+        data = await this.getIdReplacementData("offer_id_name", dataService);
+        formData["Offer ID"].inputType = "replacement";
+        replacementData["Offer ID"] = { data: data };
         break;
 
       case 'invoiced_items':
