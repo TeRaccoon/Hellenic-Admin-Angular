@@ -5,90 +5,102 @@ import { HttpClient } from '@angular/common/http';
 import { apiUrlBase } from './data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-    private isAuthenticated = new BehaviorSubject<boolean>(false);
-    private accessLevel = "low";
-    private accessGranted = false;
+  private isAuthenticated = new BehaviorSubject<boolean>(false);
+  private accessLevel = 'low';
+  private accessGranted = false;
 
-    constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
-        this.checkLogin();
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.checkLogin();
+  }
+
+  checkLogin() {
+    const url = apiUrlBase + 'manage_data.php';
+
+    return this.http
+      .post(url, { action: 'check-login' }, { withCredentials: true })
+      .pipe(
+        map((response: any) => {
+          if (response.data != null) {
+            this.accessLevel = response.data;
+          }
+          return response;
+        })
+      );
+  }
+
+  login(accessLevel = this.accessLevel) {
+    this.isAuthenticated.next(true);
+    this.accessLevel = accessLevel;
+    if (accessLevel == 'full') {
+      this.accessGranted = true;
+    }
+  }
+
+  async logout() {
+    const url = apiUrlBase + 'manage_data.php';
+
+    this.isAuthenticated.next(false);
+
+    const logoutResponse = await lastValueFrom(
+      this.http.post<{ success: boolean; message: string }>(
+        url,
+        { action: 'logout' },
+        { withCredentials: true }
+      )
+    );
+    if (logoutResponse.success) {
+      return true;
     }
 
-    checkLogin() {
-        const url = apiUrlBase + 'manage_data.php';
-        
-        return this.http.post(url, {action: "check-login"}, {withCredentials: true}).pipe(
-            map((response: any) => {
-                if (response.data != null) {
-                    this.accessLevel = response.data;
-                }
-                return response;
-            })
-        );
+    return false;
+  }
+
+  isLoggedIn(): Observable<boolean> {
+    return this.isAuthenticated.asObservable();
+  }
+
+  accessGuard() {
+    console.log('Access Guard Engaged');
+    this.route.queryParams.subscribe(async (params) => {
+      let tableAccess = this.queryAccessTable(params['table']);
+      let urlAccess = this.queryAccessURL();
+      this.accessGranted = tableAccess && urlAccess;
+    });
+  }
+
+  queryAccessURL() {
+    if (this.accessLevel == 'full') {
+      return true;
     }
-
-    login(accessLevel = this.accessLevel) {
-        this.isAuthenticated.next(true);
-        this.accessLevel = accessLevel;
-        if (accessLevel == "full") {
-            this.accessGranted = true;
-        }
+    switch (this.router.url) {
+      case '/print/invoice':
+        return true;
     }
+    return false;
+  }
 
-    async logout() {
-        const url = apiUrlBase + 'manage_data.php';
+  queryAccessTable(table: any) {
+    if (this.accessLevel == 'full') {
+      return true;
+    }
+    switch (table) {
+      case 'invoices':
+        return true;
 
-        this.isAuthenticated.next(false);
-
-        const logoutResponse = await lastValueFrom(this.http.post<{ success: boolean, message: string }>(url, {action: "logout"}, {withCredentials: true}));
-        if (logoutResponse.success) {
-            return true;
-        }
-
+      default:
+        this.router.navigate(['/home'], {});
         return false;
     }
+  }
 
-    isLoggedIn(): Observable<boolean> {
-        return this.isAuthenticated.asObservable();
-    }
-
-    accessGuard() {
-        console.log("Access Guard Engaged");
-        this.route.queryParams.subscribe(async (params) => {
-            let tableAccess = this.queryAccessTable(params["table"]);
-            let urlAccess = this.queryAccessURL();
-            this.accessGranted = tableAccess && urlAccess;
-        });
-    }
-
-    queryAccessURL() {
-        if (this.accessLevel == "full") {
-            return true;
-        }
-        switch (this.router.url) {
-            case "/print/invoice":
-                return true;
-        }
-        return false;
-    }
-
-    queryAccessTable(table: any) {
-        if (this.accessLevel == "full") {
-            return true;
-        }
-        switch(table) {
-            case "invoices":
-                return true;
-
-            default:
-                this.router.navigate(['/home'], {});
-                return false;
-        }
-    }
-
-    returnAccess() {
-        return this.accessGranted;
-    }
+  returnAccess() {
+    return this.accessGranted;
+  }
 }
