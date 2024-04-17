@@ -20,7 +20,7 @@ export class DataService {
 
   constructor(private http: HttpClient) {}
 
-  collectData(query: string, filter?: string): Observable<any> {
+  processData(query: string, filter?: string): Observable<any> {
     let url = apiUrlBase + `admin_query_handler.php?query=${query}`;
     if (filter != null) {
       url += `&filter=${encodeURIComponent(filter)}`;

@@ -385,7 +385,7 @@ export class FormService {
   }
 
   async getIdReplacementData(query: string, dataService: DataService): Promise<any> {
-    return await lastValueFrom(dataService.collectData(query));
+    return await lastValueFrom(dataService.processData(query));
   }
 
   setReloadType(reloadType: string) {
@@ -496,7 +496,7 @@ export class FormService {
     let fileName = itemName + '.png';
     let imageCount = 0;
     if (itemId != null) {
-      imageCount = await lastValueFrom<number>(this.dataService.collectData('image-count-from-item-id', itemId));
+      imageCount = await lastValueFrom<number>(this.dataService.processData('image-count-from-item-id', itemId));
     }
     if (imageCount != null) {
       fileName = itemName + '_' + imageCount + '.png';
@@ -521,7 +521,7 @@ export class FormService {
       return [];
     }
 
-    let images = await lastValueFrom(this.dataService.collectData("images-from-item-id", itemId));
+    let images = await lastValueFrom(this.dataService.processData("images-from-item-id", itemId));
     images = Array.isArray(images) ? images : [images];
 
     return images;

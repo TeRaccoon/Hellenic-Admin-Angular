@@ -225,7 +225,7 @@ export class ViewComponent {
     }
 
     if (this.tableName == "items") {
-      let totalStockData = await lastValueFrom(this.dataService.collectData("total-stock"));
+      let totalStockData = await lastValueFrom(this.dataService.processData("total-stock"));
       totalStockData = Array.isArray(totalStockData) ? totalStockData : [totalStockData];
 
       totalStockData.forEach((stock: any) => {
@@ -234,7 +234,7 @@ export class ViewComponent {
     }
 
     if (this.tableName == "stocked_items") {
-      let images = await lastValueFrom(this.dataService.collectData("stocked-item-images"));
+      let images = await lastValueFrom(this.dataService.processData("stocked-item-images"));
       images = Array.isArray(images) ? images : [images];
       
       if (images != null) {
@@ -244,7 +244,7 @@ export class ViewComponent {
       };
     }
 
-    let tableData = await lastValueFrom(this.dataService.collectData(queryString, table));
+    let tableData = await lastValueFrom(this.dataService.processData(queryString, table));
 
     if (tableData != null) {
       this.data = Array.isArray(tableData.data) ? tableData.data : [tableData.data];
@@ -326,7 +326,7 @@ export class ViewComponent {
       return;
     }
 
-    let editFormData = await lastValueFrom(this.dataService.collectData("edit-form-data", table));
+    let editFormData = await lastValueFrom(this.dataService.processData("edit-form-data", table));
       
     var fakeRow = JSON.parse(JSON.stringify(row));
 
@@ -355,7 +355,7 @@ export class ViewComponent {
             break;
 
           case "items":
-            let reverseItemId = await lastValueFrom<any>(this.dataService.collectData("reverse-item-id", id));
+            let reverseItemId = await lastValueFrom<any>(this.dataService.processData("reverse-item-id", id));
             appendOrAdd = await lastValueFrom<any>(this.dataService.collectDataComplex("append-or-add", { table: table, id: reverseItemId, column: 'retail_item_id' }));
             
             fakeRow['retail_item_id'] = reverseItemId;
@@ -560,7 +560,7 @@ export class ViewComponent {
         { name: "VAT Charge", type: "enum" },
         { name: "Discount", type: "number" }
       ];
-      let tableRows = await lastValueFrom(this.dataService.collectData("invoiced-items", invoiceId));
+      let tableRows = await lastValueFrom(this.dataService.processData("invoiced-items", invoiceId));
       tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
       let tableName = "invoiced_items";
       let title = `Invoiced Items for ${row['title']}`;
@@ -584,7 +584,7 @@ export class ViewComponent {
       { name: "Delivery Address Four", type: "string" },
       { name: "Delivery Postcode", type: "string" }
     ];  
-    let tableRows = await lastValueFrom(this.dataService.collectData("addresses_from_customer_id", customerId));
+    let tableRows = await lastValueFrom(this.dataService.processData("addresses_from_customer_id", customerId));
     tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
     let tableName = "customer_address";
     let title = `Customer Addresses for ${accountName}`;
@@ -594,8 +594,8 @@ export class ViewComponent {
   }
 
   async stockSearch(id: string) {
-    let stockData = await lastValueFrom(this.dataService.collectData("stocked-items", id));
-    let total = await lastValueFrom(this.dataService.collectData("total-stock-from-item-id", id));
+    let stockData = await lastValueFrom(this.dataService.processData("stocked-items", id));
+    let total = await lastValueFrom(this.dataService.processData("total-stock-from-item-id", id));
 
     if (stockData != null) {
       this.dataService.storeStockWidgetData({id: id, stock_data: stockData, total: total});

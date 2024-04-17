@@ -40,7 +40,7 @@ export class SettingsComponent {
   }
 
   async collectSettings() {
-    let settingsRaw = await lastValueFrom(this.dataService.collectData('table', 'settings'));
+    let settingsRaw = await lastValueFrom(this.dataService.processData('table', 'settings'));
 
     const editableSettings = settingsRaw.editable;
 

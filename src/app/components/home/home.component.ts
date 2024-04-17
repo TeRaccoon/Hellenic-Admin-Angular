@@ -34,16 +34,16 @@ export class HomeComponent {
 
   async loadWidgets() {
     
-    let data = await lastValueFrom(this.dataService.collectData("total-invoices-month"))
+    let data = await lastValueFrom(this.dataService.processData("total-invoices-month"))
     this.widgetData.push(data);
 
-    data = await lastValueFrom(this.dataService.collectData("invoices-due-today"))
+    data = await lastValueFrom(this.dataService.processData("invoices-due-today"))
     this.widgetData.push(data);
 
-    data = await lastValueFrom(this.dataService.collectData("total-customers"))
+    data = await lastValueFrom(this.dataService.processData("total-customers"))
     this.widgetData.push(data);
 
-    data = await lastValueFrom(this.dataService.collectData("new-customers"))
+    data = await lastValueFrom(this.dataService.processData("new-customers"))
     this.widgetData.push(data);
   }
 
@@ -54,17 +54,17 @@ export class HomeComponent {
   }
 
   async getInvoicesDueToday() {
-    let invoiceDueData = await lastValueFrom(this.dataService.collectData("invoices-due-today-basic"));
+    let invoiceDueData = await lastValueFrom(this.dataService.processData("invoices-due-today-basic"));
     this.invoiceDueData = Array.isArray(invoiceDueData) ? invoiceDueData : [invoiceDueData];
   }
 
   async getLowStock() {
-    let lowStockData = await lastValueFrom(this.dataService.collectData("low-stock"));
+    let lowStockData = await lastValueFrom(this.dataService.processData("low-stock"));
     this.lowStockData = Array.isArray(lowStockData) ? lowStockData : [lowStockData];
   }
 
   async getProductsExpiring() {
-    let productsExpiringData = await lastValueFrom(this.dataService.collectData("products-expiring-soon"));
+    let productsExpiringData = await lastValueFrom(this.dataService.processData("products-expiring-soon"));
     this.productsExpiringData = Array.isArray(productsExpiringData) ? productsExpiringData : [productsExpiringData];
   }
 

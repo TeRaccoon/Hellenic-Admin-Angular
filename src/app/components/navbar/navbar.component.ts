@@ -79,7 +79,7 @@ export class NavbarComponent {
   }
 
   async getNotifications() {
-    let invoicesDue = await lastValueFrom(this.dataService.collectData('invoices-due', '1'));
+    let invoicesDue = await lastValueFrom(this.dataService.processData('invoices-due', '1'));
 
     if (invoicesDue.length != 0) {
       invoicesDue = Array.isArray(invoicesDue) ? [invoicesDue] : invoicesDue;

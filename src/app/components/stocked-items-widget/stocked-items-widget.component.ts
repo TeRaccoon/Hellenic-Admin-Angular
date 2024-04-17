@@ -48,7 +48,7 @@ export class StockedItemsWidgetComponent {
   }
 
   async addStockedItem() {
-    let stockedItemsData = await lastValueFrom(this.dataService.collectData("table", "stocked_items"));
+    let stockedItemsData = await lastValueFrom(this.dataService.processData("table", "stocked_items"));
 
     if (stockedItemsData != null) {
       this.formData = stockedItemsData.editable;
@@ -67,7 +67,7 @@ export class StockedItemsWidgetComponent {
   }
 
   async editRow(id: number) {
-    let editFormData = await lastValueFrom(this.dataService.collectData("edit-form-data", "stocked_items"));
+    let editFormData = await lastValueFrom(this.dataService.processData("edit-form-data", "stocked_items"));
     let appendOrAdd = await lastValueFrom(this.dataService.collectDataComplex("append-or-add", { table: 'stocked_items', id: id, column: 'id' }));
 
     if (editFormData != null && appendOrAdd != null) {

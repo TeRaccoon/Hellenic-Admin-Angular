@@ -54,7 +54,7 @@ export class WidgetComponent {
   }
 
   async reload() {
-    let data = await lastValueFrom<[]>(this.dataService.collectData(this.tableData.query, this.tableData.idData.id));
+    let data = await lastValueFrom<[]>(this.dataService.processData(this.tableData.query, this.tableData.idData.id));
     this.tableData.rows = Array.isArray(data) ? data : [data];
     this.formService.performReload();
   }
@@ -71,7 +71,7 @@ export class WidgetComponent {
   }
 
   async editRow(id: number) {
-    let editFormData = await lastValueFrom(this.dataService.collectData("edit-form-data", this.tableData.tableName));
+    let editFormData = await lastValueFrom(this.dataService.processData("edit-form-data", this.tableData.tableName));
     let appendOrAdd = await lastValueFrom(this.dataService.collectDataComplex("append-or-add", { table: this.tableData.tableName, id: id, column: 'id' }));
 
     if (editFormData != null && appendOrAdd != null) {
@@ -81,7 +81,7 @@ export class WidgetComponent {
   }
 
   async addRow() {
-    let addFormData = await lastValueFrom(this.dataService.collectData("table", this.tableData.tableName));
+    let addFormData = await lastValueFrom(this.dataService.processData("table", this.tableData.tableName));
     
     if (addFormData != null) {
       let formData = addFormData.editable;

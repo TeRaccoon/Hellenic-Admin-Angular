@@ -46,13 +46,13 @@ export class InvoiceViewComponent {
 
   // Retrieve and process data for each invoice
   for (const invoiceId of invoiceIds) {
-    const invoiceDataItem: any = await lastValueFrom(this.dataService.collectData("invoice-info", invoiceId.toString()));
+    const invoiceDataItem: any = await lastValueFrom(this.dataService.processData("invoice-info", invoiceId.toString()));
     invoiceData.push(invoiceDataItem);
     
-    const productData: any = await lastValueFrom(this.dataService.collectData("invoice-products", invoiceId.toString()));
+    const productData: any = await lastValueFrom(this.dataService.processData("invoice-products", invoiceId.toString()));
     this.invoiceItems.push(Array.isArray(productData) ? productData : [productData]);
     
-    let deliveryDataItem: any = await lastValueFrom(this.dataService.collectData("delivery-info", invoiceId.toString()));
+    let deliveryDataItem: any = await lastValueFrom(this.dataService.processData("delivery-info", invoiceId.toString()));
     deliveryDataItem = this.calculateDistance(deliveryDataItem);
     deliveryDataItem['full_address'] = [
       deliveryDataItem.delivery_info.address_line_1,

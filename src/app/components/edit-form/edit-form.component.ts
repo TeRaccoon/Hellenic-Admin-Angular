@@ -182,6 +182,28 @@ export class EditFormComponent {
     this.file = event.target.files[0];
   }
 
+  async deleteImage(image: any) {
+    let response = await lastValueFrom(this.dataService.processData("delete-image", image));
+    if (response) {
+      this.formService.setMessageFormData({
+        title: 'Success!',
+        message: 'Image deleted successfully. If this image was the products primary image, please select a new one and save.',
+      });
+
+      let itemId = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;  
+      this.imageReplacements = await this.formService.getImagesForItem(itemId);
+
+      this.selectedImage = "";
+      this.formService.showMessageForm();
+    } else {
+      this.formService.setMessageFormData({
+        title: 'Error!',
+        message: response.message,
+      });
+      this.formService.showMessageForm();
+    }
+  }
+
   clearForm() {
     this.loaded = false;
     this.locked = false;
