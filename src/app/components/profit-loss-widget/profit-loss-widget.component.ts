@@ -20,6 +20,9 @@ export class ProfitLossWidgetComponent {
 
       profitLossData.forEach((item: any) => {
         for (const key in item) {
+          if (item[key] == null) {
+            item[key] = 0;
+          }
           item[key] = item[key].toLocaleString('en-US', { style: 'currency', currency: 'GBP' });
         }
       });
