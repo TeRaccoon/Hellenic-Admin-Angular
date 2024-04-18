@@ -109,4 +109,10 @@ export class WidgetComponent {
   getColumnKeys(row: any): string[] {
     return Object.keys(row);
   }
+
+  getStockedItemTotal() {
+    return this.tableData.rows.reduce((acc: number, curr: any) => {
+      return acc + curr.quantity;
+    }, 0);
+  }
 }

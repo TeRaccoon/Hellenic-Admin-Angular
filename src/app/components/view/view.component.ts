@@ -545,6 +545,30 @@ export class ViewComponent {
     this.router.navigate(['/print/invoice']);
   }
 
+  async stockSearch(itemId: string) {
+    var row = this.data.filter((row: any) => row.id == itemId)[0];
+
+    if (row != null) {
+      let tableColumns = [
+        { name: "ID", type: "number" },
+        { name: "Item Name", type: "string" },
+        { name: "Quantity", type: "number" },
+        { name: "Expiry Date", type: "date" },
+        { name: "Packing Format", type: "string" },
+        { name: "Barcode", type: "string" },
+        { name: "Warehouse", type: "string" }
+      ];
+
+      let tableRows = await lastValueFrom(this.dataService.processData("stocked-items", itemId));
+      tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
+      let tableName = "stocked_items";
+      let title = `Stocked Items for ${row['item_name']}`;
+
+      this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: itemId, columnName: "Item ID"}, query: "stocked-items"});
+      this.formService.showWidget();
+    }
+  }
+
   async invoiceSearch(invoiceId: string) {
     var row = this.data.filter((row: any) => row.id == invoiceId)[0];
     
@@ -591,16 +615,6 @@ export class ViewComponent {
 
     this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: customerId, columnName: "Customer Name"}, query: "addresses_from_customer_id"});
     this.formService.showWidget();
-  }
-
-  async stockSearch(id: string) {
-    let stockData = await lastValueFrom(this.dataService.processData("stocked-items", id));
-    let total = await lastValueFrom(this.dataService.processData("total-stock-from-item-id", id));
-
-    if (stockData != null) {
-      this.dataService.storeStockWidgetData({id: id, stock_data: stockData, total: total});
-      this.formService.showStockedItemForm();
-    }
   }
 
   shouldColourCell(data: any) {
