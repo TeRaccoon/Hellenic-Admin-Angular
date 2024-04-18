@@ -336,38 +336,21 @@ export class ViewComponent {
       case "allergen_information":
       case "nutrition_info":
         switch (this.tableName) {
-          case "retail_items":
-            fakeRow['retail_item_id'] = id;
-            appendOrAdd = await lastValueFrom<any>(this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'retail_item_id' }));
-
-            if (appendOrAdd.id) {
-              fakeRow = appendOrAdd;
-              this.formService.processEditFormData(id, fakeRow, editFormData);
-              this.prepareEditFormService(id, table);
-            } else {
-              let values: (string | null)[] = Array(editFormData.columns.length).fill(null);
-              const retailItemIdIndex = editFormData.names.indexOf('Retail Item ID');
-              values[retailItemIdIndex] = id;
-              editFormData.values = values;
-              this.formService.processAddFormData(editFormData);
-              this.prepareAddFormService(table);
-            }
-            break;
-
           case "items":
-            let reverseItemId = await lastValueFrom<any>(this.dataService.processData("reverse-item-id", id));
-            appendOrAdd = await lastValueFrom<any>(this.dataService.collectDataComplex("append-or-add", { table: table, id: reverseItemId, column: 'retail_item_id' }));
+            console.log(table);
+            appendOrAdd = await lastValueFrom<any>(this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'item_id' }));
             
-            fakeRow['retail_item_id'] = reverseItemId;
+            fakeRow['item_id'] = id;
               if (appendOrAdd.id) {
                 fakeRow = appendOrAdd;
-                this.formService.processEditFormData(reverseItemId, fakeRow, editFormData);
-                this.prepareEditFormService(reverseItemId, table);
+                this.formService.processEditFormData(appendOrAdd.id, fakeRow, editFormData);
+                this.prepareEditFormService(appendOrAdd.id, table);
               } else {
                 let values: (string | null)[] = Array(editFormData.columns.length).fill(null);
-                const retailItemIdIndex = editFormData.names.indexOf('Retail Item ID');
-                values[retailItemIdIndex] = reverseItemId;
+                const itemIdIndex = editFormData.names.indexOf('Item ID');
+                values[itemIdIndex] = id;
                 editFormData.values = values;
+                console.log(values);
                 this.formService.processAddFormData(editFormData);
                 this.prepareAddFormService(table);
               }
