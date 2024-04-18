@@ -341,7 +341,7 @@ export class FormService {
 
       case 'retail_item_images':
       case 'allergen_information':
-      case 'nutrition_information':
+      case 'nutrition_info':
         var data = await this.getIdReplacementData('retail_item_id_name', dataService);
         formData['Retail Item ID'].inputType = 'replacement';
         replacementData['Retail Item ID'] = { data: data };
