@@ -1,48 +1,106 @@
 @import "../variables";
 .container {
     margin: 15px 15px 15px calc(16% + 10px);
-    .control-container {
-        background: white;
-        width: 50vh;
-        border-radius: 10px;
-        justify-content: center;
+    .panel-container {
         display: flex;
-        text-align: center;
-        padding: 20px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        form {
-            width: inherit;
-        }
-        label {
+        .control-container {
+            background: white;
+            border-radius: 10px;
+            justify-content: center;
             display: flex;
-            .ng-fa-icon {
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin: 20px 20px 20px 0;
+            form {
+                width: inherit;
+            }
+            label {
                 display: flex;
-                font-size: 13px;
-                margin: 0 0 5px 2px;
+                .ng-fa-icon {
+                    display: flex;
+                    font-size: 13px;
+                    margin: 0 0 5px 2px;
+                }
             }
-        }
-        .controller {
-            margin: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            .input-container {
-                margin-top: 10px;
+            .table-container {
+                display: flex;
+                flex-direction: column;
+                max-width: 100%;
+                h1 {
+                    font-size: 18px;
+                    margin: 5px;
+                }
+                .table-wrapper {
+                    border-collapse: collapse;
+                    border: 1px solid black;
+                    border-radius: 15px;
+                    max-height: 600px;
+                    overflow-y: auto;
+                    overflow-x: auto;
+                    margin: 0 auto;
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        border-radius: 15px;
+                        max-height: 600px;
+                        overflow-y: auto;
+                        overflow-x: auto;
+                        margin: 0 auto;
+                    }
+                    tr {
+                        height: 56px;
+                    }
+                    tr:nth-child(even) {
+                        background-color: rgb(247, 247, 247);
+                    }
+                    th,
+                    td {
+                        padding: 10px;
+                        text-align: left;
+                        font-size: 16px;
+                        input {
+                            border: none;
+                            background-color: transparent;
+                        }
+                    }
+                    td {
+                        .ng-fa-icon {
+                            cursor: pointer;
+                        }
+                    }
+                    thead {
+                        position: sticky;
+                        top: 0;
+                        z-index: 1;
+                        background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
+                        color: white;
+                    }
+                }
             }
-            .number {
-                width: 40px;
+            .controller {
+                margin: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                .input-container {
+                    margin-top: 10px;
+                }
+                .number {
+                    width: 40px;
+                    border-radius: 5px;
+                    border: 1px solid black;
+                    padding: 5px;
+                }
+            }
+            .button {
                 border-radius: 5px;
-                border: 1px solid black;
                 padding: 5px;
+                font-weight: bold;
+                font-size: 17px;
+                display: flex;
+                margin-left: auto;
             }
-        }
-        .button {
-            border-radius: 5px;
-            padding: 5px;
-            font-weight: bold;
-            font-size: 17px;
-            display: flex;
-            margin-left: auto;
         }
     }
 }

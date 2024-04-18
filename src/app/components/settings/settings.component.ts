@@ -12,6 +12,7 @@ import { FormService } from '../../services/form.service';
 })
 export class SettingsComponent {
   settings: any = [];
+  bands: any = [];
   faSpinner = faSpinner;
   faAsterisk = faAsterisk;
 
@@ -47,7 +48,9 @@ export class SettingsComponent {
     editableSettings.columns.forEach((column: any, index: number) => {
       this.settings[column] = { name: editableSettings.names[index], data: settingsRaw.data[column], required: editableSettings.required[index], type: editableSettings.types[index], key: column};
     });
-    this.settings = this.settings;
+
+    let data = await lastValueFrom(this.dataService.processData('table', 'bands'));
+    this.bands = data['display_data'];
   }
 
   buildForm() {
@@ -108,5 +111,24 @@ export class SettingsComponent {
     this.settingsForm.valueChanges.subscribe(data => {
       this.changes = data;
     });
+  }
+
+  async saveBand(index: number, minWeight: any, maxWeight: any, price: any) {
+    let formData = {
+      id: index + 1,
+      name: this.bands[index]['name'],
+      min_weight: minWeight,
+      max_weight: maxWeight,
+      price: price,
+      action: 'append',
+      table_name: 'bands'
+    };
+
+    let response = await lastValueFrom(this.dataService.submitFormData(formData));
+    this.formService.setMessageFormData({
+      title: response.success ? 'Success!' : 'Error!',
+      message: response.message,
+    });
+    this.formService.showMessageForm();
   }
 }
