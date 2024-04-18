@@ -118,7 +118,7 @@
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'stocked_items'">
                                                 <td>
-                                                    <img [alt]="item['item_id']" [src]="images[item['item_id']] == null ? imageUrlBase + 'placeholder.jpg' :  imageUrlBase + images[item['item_id']]" />
+                                                    <img [src]="images[item['item_id']] == null ? imageUrlBase + 'placeholder.jpg' :  imageUrlBase + images[item['item_id']]" />
                                                 </td>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'invoices'">
