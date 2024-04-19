@@ -110,10 +110,6 @@ export class ViewComponent {
         if (reloadType == "hard") {
           this.selectedRows = [];
           await this.loadTable(String(this.tableName));
-        } else if (reloadType == "invoice-widget") {
-          this.invoiceSearch(this.formService.getReloadId());
-        } else if (reloadType == "stock-widget") {
-          this.stockSearch(this.formService.getReloadId());
         } else if (reloadType == "filter") {
           this.applyFilter();
         }
@@ -260,6 +256,8 @@ export class ViewComponent {
       if (this.pageCount != 1) {
         this.pageCount += 1;
       }
+
+      this.changePage(this.currentPage);
 
       this.loaded = true;
     }    
