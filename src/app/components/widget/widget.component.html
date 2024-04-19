@@ -33,7 +33,7 @@
                                 <fa-icon [icon]="faTrashCan" />
                             </td>
                         </tr>
-                        <tr *ngIf="tableData.tableName == 'stocked_items'">
+                        <tr *ngIf="tableData.query == 'stocked-items'">
                             <td>Total:</td>
                             <td [attr.colspan]="8">{{ getStockedItemTotal() }}</td>
                         </tr>

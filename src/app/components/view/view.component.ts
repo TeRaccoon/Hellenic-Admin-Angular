@@ -577,6 +577,27 @@ export class ViewComponent {
     }
   }
 
+  async supplierInvoiceSearch(invoiceId: string) {
+    var row = this.data.filter((row: any) => row.id == invoiceId)[0];
+    let tableColumns = [
+      { name: "ID", type: "number" },
+      { name: "Item Name", type: "string" },
+      { name: "Picture", type: "image" },
+      { name: "Quantity", type: "number" },
+      { name: "Expiry Date", type: "string" },
+      { name: "Packing Format", type: "enum" },
+      { name: "Barcode", type: "string" },
+      { name: "Warehouse", type: "number" }
+    ];
+    let tableRows = await lastValueFrom(this.dataService.processData("stocked-items-invoice", invoiceId));
+    tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
+    let tableName = "stocked_items";
+    let title = `Stocked Items from ${row['reference']}`;
+
+    this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: invoiceId, columnName: "Supplier Invoice ID"}, query: "stocked-items-invoice"});
+    this.formService.showWidget();
+  }
+
   async addressSearch(customerId: string, accountName: string) {
     let tableColumns = [
       { name: "ID", type: "number" },

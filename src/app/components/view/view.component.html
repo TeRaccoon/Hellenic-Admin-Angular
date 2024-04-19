@@ -80,6 +80,9 @@
                                         <ng-container *ngSwitchCase="'stocked_items'">
                                             <th>Image</th>
                                         </ng-container>
+                                        <ng-container *ngSwitchCase="'supplier_invoices'">
+                                            <th>Items</th>
+                                        </ng-container>
                                         <ng-container *ngSwitchCase="'invoices'">
                                             <th>Items</th>
                                         </ng-container>
@@ -119,6 +122,11 @@
                                             <ng-container *ngSwitchCase="'stocked_items'">
                                                 <td>
                                                     <img [src]="images[item['item_id']] == null ? imageUrlBase + 'placeholder.jpg' :  imageUrlBase + images[item['item_id']]" />
+                                                </td>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'supplier_invoices'">
+                                                <td (click)="supplierInvoiceSearch(item.id)">
+                                                    <fa-icon [icon]="faBasketShopping" />
                                                 </td>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'invoices'">

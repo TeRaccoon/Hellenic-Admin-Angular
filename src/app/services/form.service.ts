@@ -302,6 +302,10 @@ export class FormService {
         var data = await this.getIdReplacementData('warehouse_id_name', dataService);
         formData['Warehouse ID'].inputType = 'replacement';
         replacementData['Warehouse ID'] = { data: data };
+
+        var data = await this.getIdReplacementData('supplier_invoice_id_reference', dataService);
+        formData['Supplier Invoice ID'].inputType = 'replacement';
+        replacementData['Supplier Invoice ID'] = { data: data };
         break;
         
       case 'invoices':
