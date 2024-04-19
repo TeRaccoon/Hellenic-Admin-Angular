@@ -55,6 +55,8 @@ export class SidebarComponent {
     ]
   };
 
+  selectedTable: string | null = null;
+
   isDropdownVisible: { [key: string]: boolean } = {};
   
   constructor(private router: Router, private dataService: DataService, private authService: AuthService, private formService: FormService) {}
@@ -64,7 +66,9 @@ export class SidebarComponent {
       this.formService.setMessageFormData({title: "Warning!", message: "You don't have permission to access this page! If you think you should, contact the site administrator."});
       this.formService.showMessageForm();
       return;
-    } 
+    }
+
+    this.selectedTable = tableName;
 
     switch (tableName) {
       case "customers":

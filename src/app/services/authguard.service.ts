@@ -7,17 +7,17 @@ import { Observable, map } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthGuard {
-    constructor(private authService: AuthService, private router: Router) {}
-  
-    canActivate(): Observable<boolean> {
-      return this.authService.isLoggedIn().pipe(
-        map(isLoggedIn => {
-          if (!isLoggedIn) {
-            this.router.navigate(['/login']);
-            return false;
-          }
-          return true;
-        })
-      );
-    }
+  constructor(private authService: AuthService, private router: Router) {}
+
+  canActivate(): Observable<boolean> {
+    return this.authService.isLoggedIn().pipe(
+      map(isLoggedIn => {
+        if (!isLoggedIn) {
+          this.router.navigate(['/login']);
+          return false;
+        }
+        return true;
+      })
+    );
   }
+}

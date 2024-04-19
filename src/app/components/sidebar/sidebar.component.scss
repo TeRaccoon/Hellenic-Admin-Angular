@@ -45,6 +45,14 @@
                     background-color: #404047;
                 }
             }
+            .selected-tab {
+                background-color: white;
+                color: black;
+                transition: color 0.3s;
+                &:hover {
+                    color: #404047;
+                }
+            }
         }
         button {
             fa-icon {
