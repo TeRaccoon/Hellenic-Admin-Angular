@@ -749,6 +749,7 @@ export class ViewComponent {
     }
   
     if (filter === "all" || filter === "table") {
+      this.searchText = "";
       this.tableFilter = null;
     }
   
