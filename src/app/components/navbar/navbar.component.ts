@@ -37,7 +37,7 @@ export class NavbarComponent {
     { display: 'Invoiced Items', actual: 'invoiced_items' },
     { display: 'Invoices', actual: 'invoices' },
     { display: 'Items', actual: 'items' },
-    { display: 'Nutrition Information', actual: 'nutrition_information' },
+    { display: 'Nutrition Information', actual: 'nutrition_info' },
     { display: 'Offers', actual: 'offers' },
     { display: 'Page Section Text', actual: 'page_section_text' },
     { display: 'Page Sections', actual: 'page_sections' },
