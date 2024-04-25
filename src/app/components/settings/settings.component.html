@@ -60,6 +60,36 @@
                 </div>
             </div>
         </div>
+        <div class="documents-container">
+            <div>
+                <label>Privacy Policy Upload</label>
+                <label class="file-upload">
+                    <input accept=".html" type="file" (change)="uploadDocument($event, 'privacy-policy')">
+                    <fa-icon [icon]="faCloudUpload" /> Upload Document
+                </label>
+            </div>
+            <div>
+                <label>Terms & Conditions Upload</label>
+                <label class="file-upload">
+                    <input accept=".html" type="file" (change)="uploadDocument($event, 'terms-and-conditions')">
+                    <fa-icon [icon]="faCloudUpload" /> Upload Document
+                </label>
+            </div>
+            <div>
+                <label>Shipping Policy Upload</label>
+                <label class="file-upload">
+                    <input accept=".html" type="file" (change)="uploadDocument($event, 'shipping-policy')">
+                    <fa-icon [icon]="faCloudUpload" /> Upload Document
+                </label>
+            </div>
+            <div>
+                <label>Refund Policy Upload</label>
+                <label class="file-upload">
+                    <input accept=".html" type="file" (change)="uploadDocument($event, 'refund-policy')">
+                    <fa-icon [icon]="faCloudUpload" /> Upload Document
+                </label>
+            </div>
+        </div>
     </div>
     <app-message-form></app-message-form>
 </div>

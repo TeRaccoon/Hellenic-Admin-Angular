@@ -67,6 +67,19 @@ export class DataService {
     );
   }
 
+  uploadDocument(formData: FormData): Observable<any> {
+    const url = apiUrlBase + 'document_upload.php';
+    return this.http.post(url, formData).pipe(
+      map((response: any) => {
+        return response;
+      }),
+      catchError((error: any) => {
+        console.error('HTTP error occurred:', error);
+        return throwError(error);
+      })
+    );
+  }
+
   storeData(data: any) {
     this.tableData = data;
     this.dataSubject.next(data);

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { lastValueFrom } from 'rxjs';
-import { faSpinner, faAsterisk } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faAsterisk, faCloudUpload } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormService } from '../../services/form.service';
 
@@ -15,6 +15,7 @@ export class SettingsComponent {
   bands: any = [];
   faSpinner = faSpinner;
   faAsterisk = faAsterisk;
+  faCloudUpload = faCloudUpload;
 
   loaded = false;
 
@@ -125,6 +126,19 @@ export class SettingsComponent {
     };
 
     let response = await lastValueFrom(this.dataService.submitFormData(formData));
+    this.formService.setMessageFormData({
+      title: response.success ? 'Success!' : 'Error!',
+      message: response.message,
+    });
+    this.formService.showMessageForm();
+  }
+
+  async uploadDocument(event: any, documentType: string) {
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('document', file, documentType + '.html');
+
+    let response = await lastValueFrom(this.dataService.uploadDocument(formData));
     this.formService.setMessageFormData({
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,

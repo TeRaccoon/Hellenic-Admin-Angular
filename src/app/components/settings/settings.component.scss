@@ -102,5 +102,38 @@
                 margin-left: auto;
             }
         }
+        .documents-container {
+            background: white;
+            border-radius: 10px;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin: 20px 20px 20px 0;
+            div {
+                margin: 10px;
+                label {
+                    margin: 5px;
+                }
+                .file-upload {
+                    border: 1px solid #ccc;
+                    border-radius: 10px;
+                    background-color: #FFF;
+                    display: inline-block;
+                    padding: 10px!important;
+                    font-weight: normal;
+                    font-size: 16px;
+                    cursor: pointer;
+                    box-sizing: border-box;
+                    width: 100%;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+                    input {
+                        display: none;
+                    }
+                }
+            }
+        }
     }
 }
