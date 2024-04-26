@@ -309,6 +309,7 @@ export class AddFormComponent {
   }
 
   endSubmission(reset: boolean, hideForm: boolean) {
+    this.formService.sync(this.addForm.value, 'add', this.tableName)
     !reset && this.formService.showMessageForm();
     hideForm && this.hide();
     if (reset) {
