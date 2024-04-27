@@ -128,6 +128,9 @@
             .text {
                 flex: 1 1 45%;
             }
+            .textarea {
+                flex: 1 1 100%;
+            }
             .input-container {
                 padding: 10px;
                 display: flex;
@@ -196,6 +199,18 @@
             }
         }
     }
+}
+
+textarea {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    color: #333;
 }
 
 .hidden {

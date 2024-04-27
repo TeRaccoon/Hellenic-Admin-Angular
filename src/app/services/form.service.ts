@@ -454,6 +454,10 @@ export class FormService {
           inputTypes.push("number");
           break;
 
+        case "text":
+          inputTypes.push("textarea")
+          break;
+
         default:
           if (!dataType.includes("enum")) {
             inputTypes.push("text");
