@@ -24,8 +24,10 @@
                                                 <img [src]="imageUrlBase + image">
                                             </div>
                                         </div>
-                                        <img *ngIf="selectedImage" [src]="imageUrlBase + selectedImage">
-                                        <button class="delete-button" *ngIf="selectedImage" (click)="deleteImage(selectedImage)">Remove</button>
+                                        <div class="image-preview-container">
+                                            <img *ngIf="selectedImage" [src]="imageUrlBase + selectedImage">
+                                            <button class="delete-button" *ngIf="selectedImage" (click)="deleteImage(selectedImage)">Remove</button>
+                                        </div>
                                     </div>
                                 </ng-container>
                                 <ng-template #noImages>

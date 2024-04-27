@@ -176,12 +176,18 @@
                     cursor: pointer;
                     width: 100%
                 }
-                img {
-                    border-radius: 10px;
-                    margin: 15px 2px 0 2px;
-                    background-color: white;
-                    max-width: 100%;
-                    width: 100%;
+                .image-preview-container {
+                    display: flex;
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 8px;
+                    img {
+                        border-radius: 10px;
+                        margin: 15px 2px 0 2px;
+                        background-color: white;
+                        max-width: 100%;
+                        width: 5vw;
+                    }
                 }
                 label {
                     display: flex;
