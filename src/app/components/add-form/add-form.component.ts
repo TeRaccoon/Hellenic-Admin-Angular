@@ -362,7 +362,6 @@ export class AddFormComponent {
 
   async updateCustomerAddresses(customerID: string) {
     let addresses = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", customerID));
-    console.log("🚀 ~ AddFormComponent ~ updateCustomerAddresses ~ addresses:", addresses)
   }
 
   updateAlternativeSelectData(field: string, data: any, key: string) {
