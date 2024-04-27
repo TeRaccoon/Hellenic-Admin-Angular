@@ -376,9 +376,8 @@ export class AddFormComponent {
 
     setTimeout(() => {
       this.filteredReplacementData = _.cloneDeep(this.replacementData);
-
       this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
-        return data.replacement.toLowerCase().includes(filter.toLowerCase());
+        return data.replacement &&  data.replacement.toLowerCase().includes(filter.toLowerCase());
       });
       if (field) {
         this.addForm.get(field)?.setValue(filter);

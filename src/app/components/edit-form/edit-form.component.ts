@@ -398,7 +398,7 @@ export class EditFormComponent {
       this.filteredReplacementData = _.cloneDeep(this.replacementData);
 
       this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
-        return data.replacement.toLowerCase().includes(filter.toLowerCase());
+        return data.replacement && data.replacement.toLowerCase().includes(filter.toLowerCase());
       });
       if (field) {
         this.editForm.get(field)?.setValue(filter);
