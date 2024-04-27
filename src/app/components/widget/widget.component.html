@@ -6,7 +6,7 @@
                 <fa-icon [icon]="faX" />
             </a>
         </div>
-        <ng-container *ngIf="tableData.rows && tableData.rows.length > 0 else noData">
+        <ng-container *ngIf="tableData.rows && tableData.rows.length > 0 && tableData.rows[0] != null else noData">
             <div class="table-container">
                 <table>
                     <thead>
