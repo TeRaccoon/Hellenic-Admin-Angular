@@ -335,7 +335,6 @@ export class ViewComponent {
       case "nutrition_info":
         switch (this.tableName) {
           case "items":
-            console.log(table);
             appendOrAdd = await lastValueFrom<any>(this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'item_id' }));
             
             fakeRow['item_id'] = id;
@@ -348,7 +347,6 @@ export class ViewComponent {
                 const itemIdIndex = editFormData.names.indexOf('Item ID');
                 values[itemIdIndex] = id;
                 editFormData.values = values;
-                console.log(values);
                 this.formService.processAddFormData(editFormData);
                 this.prepareAddFormService(table);
               }

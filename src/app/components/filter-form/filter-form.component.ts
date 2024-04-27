@@ -60,7 +60,6 @@ export class FilterFormComponent {
   }
 
   getColumnType() {
-    console.log(this.tableColumns);
     var index = this.tableColumns.columns.indexOf(this.columnInput);
     this.columnType = this.tableColumns.dataTypes[index];
   }
