@@ -92,6 +92,17 @@ export class EditFormComponent {
     });
   }
 
+  async loadForm() {
+    if (this.formService.getSelectedId() != '') {
+      this.formData = this.formService.getEditFormData();
+      this.tableName = this.formService.getSelectedTable();
+      this.id = this.formService.getSelectedId();
+      this.buildForm();
+      await this.handleImages();
+      await this.replaceAmbiguousData();
+    }
+  }
+
   async replaceAmbiguousData() {
     if (Object.keys(this.formData).length != 0) {
       const data = await this.formService.replaceAmbiguousData(
@@ -217,17 +228,6 @@ export class EditFormComponent {
     this.submissionEnded = false;
     this.error = null;
     this.file = null;
-  }
-
-  async loadForm() {
-    if (this.formService.getSelectedId() != '') {
-      this.formData = this.formService.getEditFormData();
-      this.tableName = this.formService.getSelectedTable();
-      this.id = this.formService.getSelectedId();
-      this.buildForm();
-      await this.handleImages();
-      await this.replaceAmbiguousData();
-    }
   }
 
   async handleImages() {

@@ -610,12 +610,12 @@ export class ViewComponent {
       { name: "Delivery Address Four", type: "string" },
       { name: "Delivery Postcode", type: "string" }
     ];  
-    let tableRows = await lastValueFrom(this.dataService.processData("addresses_from_customer_id", customerId));
+    let tableRows = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", customerId));
     tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
     let tableName = "customer_address";
     let title = `Customer Addresses for ${accountName}`;
 
-    this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: customerId, columnName: "Customer Name"}, query: "addresses_from_customer_id"});
+    this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: customerId, columnName: "Customer Name"}, query: "customer-addresses-by-id"});
     this.formService.showWidget();
   }
 
