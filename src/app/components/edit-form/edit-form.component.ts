@@ -433,7 +433,7 @@ export class EditFormComponent {
           this.editForm.get(field)?.setValue(filter);
         }
         this.searchWaiting = false;
-      }, 500);
+      }, 1000);
     }
   }
 

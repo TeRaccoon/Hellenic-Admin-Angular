@@ -405,7 +405,7 @@ export class AddFormComponent {
           this.addForm.get(field)?.setValue(filter);
         }
         this.searchWaiting = false;
-      }, 500);
+      }, 1000);
     }
   }
 
