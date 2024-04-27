@@ -17,6 +17,8 @@ export class EditFormComponent {
   faX = faX;
   faAsterisk = faAsterisk;
 
+  searchWaiting = false;
+
   imageUrlBase = imageUrlBase;
 
   editForm: FormGroup;
@@ -384,26 +386,55 @@ export class EditFormComponent {
     this.formService.hideEditForm();
   }
 
-  updateSelectedReplacementDataFromKey(dataId: Number, dataValue: string, key: string, field: string) {
+  async updateSelectedReplacementDataFromKey(dataId: Number, dataValue: string, key: string, field: string) {
     this.selectedReplacementData[key] = {selectData: dataValue, selectDataId: dataId};
     this.editForm.get(field)?.setValue(dataId);
+
+    if (this.tableName == "invoices" && field == "customer_id") {
+      let addresses = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", String(dataId)));
+      this.updateCustomerAddresses(addresses, "Address");
+      this.updateCustomerAddresses(addresses, "Billing Address");
+    }
+
     this.selectOpen[key].opened = false;
+  }
+
+  async updateCustomerAddresses(addressData: [], key: string) {
+    let addressReplacement = addressData.map((address: any) => {
+      let replacement;
+      if (key == "Address") {
+        replacement = [address.delivery_address_one, address.delivery_address_two, address.delivery_address_three, address.delivery_address_four, address.delivery_postcode];
+      } else {
+        replacement = [address.invoice_address_one, address.invoice_address_two, address.invoice_address_three, address.invoice_address_four, address.invoice_postcode];
+      }
+      replacement = replacement.filter(component => component != null).join(' ');
+
+      return {
+        id: Number(address.id),
+        replacement: replacement
+      };
+    });
+    this.replacementData[key].data = addressReplacement;
+    this.filteredReplacementData[key].data = addressReplacement;
   }
 
   filterDropSelect(key: string, event: any, field: string | null) {
     this.selectedReplacementData[key];
     var filter = event.target.value;
 
-    setTimeout(() => {
-      this.filteredReplacementData = _.cloneDeep(this.replacementData);
-
-      this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
-        return data.replacement && data.replacement.toLowerCase().includes(filter.toLowerCase());
-      });
-      if (field) {
-        this.editForm.get(field)?.setValue(filter);
-      }
-    }, 500);
+    if (!this.searchWaiting && this.filteredReplacementData[key].data.length > 0) {
+      this.searchWaiting = true;
+      setTimeout(() => {
+        this.filteredReplacementData = _.cloneDeep(this.replacementData);
+        this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
+          return data.replacement &&  data.replacement.toLowerCase().includes(filter.toLowerCase());
+        });
+        if (field) {
+          this.editForm.get(field)?.setValue(filter);
+        }
+        this.searchWaiting = false;
+      }, 500);
+    }
   }
 
   updateAlternativeSelectData(field: string, data: any, key: string) {
@@ -415,7 +446,7 @@ export class EditFormComponent {
   isLocked() {
     switch (this.tableName) {
       case 'invoices':
-        this.locked = this.formData['Status'].value == 'Complete'
+        this.locked = this.formData['Status'].value == 'Complete';
     }
   }
 

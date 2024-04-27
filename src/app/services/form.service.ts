@@ -321,6 +321,10 @@ export class FormService {
         formData['Address'].inputType = "replacement";
         replacementData['Address'] = { data: data };
 
+        data = await this.getIdReplacementData('customer_billing_address_id_full', dataService);
+        formData['Billing Address'].inputType = "replacement";
+        replacementData['Billing Address'] = { data: data };
+
         data = await this.getIdReplacementData('items_id_name_sku', dataService);
         formData['Item ID'] = {
           inputType: 'replacement',
