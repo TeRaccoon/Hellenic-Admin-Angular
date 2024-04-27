@@ -331,10 +331,15 @@ export class FormService {
         break;
 
       case 'customer_payments':
-      case 'customer_address':
         var data = await this.getIdReplacementData('customers_id_name', dataService);
         formData['Customer ID'].inputType = 'replacement';        
         replacementData['Customer ID'] = { data: data };
+        break;
+
+      case 'customer_address':
+        var data = await this.getIdReplacementData('customers_id_name', dataService);
+        formData['Customer Name'].inputType = 'replacement';        
+        replacementData['Customer Name'] = { data: data };
         break;
 
       case 'page_section_text':
