@@ -58,6 +58,9 @@
                                     </div>
                                 </div>
                             </ng-container>
+                            <ng-container *ngSwitchCase="'textarea'">
+                                <textarea [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" [formControlName]="mappedFormData.get(key)!.fields"></textarea>
+                            </ng-container>
                             <input *ngSwitchDefault [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" [attr.required]="mappedFormData.get(key)?.required ? true : null" [type]="mappedFormData.get(key)?.inputType" [formControlName]="mappedFormData.get(key)!.fields"
                                 [value]="mappedFormData.get(key)?.value">
                         </ng-container>
