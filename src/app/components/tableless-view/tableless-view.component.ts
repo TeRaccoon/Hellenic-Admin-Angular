@@ -18,6 +18,8 @@ export class TablelessViewComponent {
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       this.tableName = params['table'];
+      this.tableData = null;
+      this.tableHeaders = [];
     });
 
     this.dataService.getDataObservable().subscribe((data) => {
