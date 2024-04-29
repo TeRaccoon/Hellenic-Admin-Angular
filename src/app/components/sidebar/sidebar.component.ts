@@ -39,6 +39,7 @@ export class SidebarComponent {
       { tableName: "profit_loss", displayName: "Profit / Loss" },
       { tableName: "customer_payments", displayName: "Invoice Payments" },
       { tableName: "debtor_creditor", displayName: "Aged Debtor / Creditors"},
+      { tableName: "vat-returns", displayName: "VAT Returns" }
     ],
     "Website": [
       { tableName: "offers", displayName: "Offers" },
@@ -108,7 +109,7 @@ export class SidebarComponent {
         this.dataService.setTabs([]);
         break;
     }
-    if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics" && tableName != "settings") {
+    if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics" && tableName != "settings" && tableName != "vat-returns") {
       this.router.navigate(['/view'], { queryParams: {table: tableName } });
     } else if (tableName == "statistics") {
       this.router.navigate(['/statistics']);
