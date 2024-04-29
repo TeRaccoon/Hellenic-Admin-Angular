@@ -411,12 +411,7 @@ export class AddFormComponent {
 
   async addInvoicedItem(event: Event) {
     if (!this.invoiceCreated) {
-      this.formService.setMessageFormData({
-        title: "Warning!",
-        message: "Please create the invoice first before trying to add items!",
-      });
-      this.formService.showMessageForm();
-      return;
+      await this.formSubmit(false);
     }
 
     let itemIdNames = this.replacementData["Item ID"];
