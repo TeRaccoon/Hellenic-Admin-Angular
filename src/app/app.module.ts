@@ -29,9 +29,9 @@ import { DeleteFormComponent } from './components/delete-form/delete-form.compon
 import { MessageFormComponent } from './components/message-form/message-form.component';
 import { FilterFormComponent } from './components/filter-form/filter-form.component';
 import { ChangePasswordFormComponent } from './components/change-password-form/change-password-form.component';
-import { StockedItemsWidgetComponent } from './components/stocked-items-widget/stocked-items-widget.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { WidgetComponent } from './components/widget/widget.component';
+import { TableWidgetComponent } from './components/table-widget/table-widget.component';
 
 @NgModule({
   declarations: [
@@ -54,9 +54,9 @@ import { WidgetComponent } from './components/widget/widget.component';
     MessageFormComponent,
     FilterFormComponent,
     ChangePasswordFormComponent,
-    StockedItemsWidgetComponent,
     SettingsComponent,
     WidgetComponent,
+    TableWidgetComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,9 @@
+<div class="container">
+    <div *ngIf="displayDateRange" class="date-container">
+        <label>Start date:</label>
+        <input type="date" [(ngModel)]="startDate">
+        <label>End date:</label>
+        <input type="date" [(ngModel)]="endDate">
+        <button class="button" (click)="collectData()">Calculate</button>
+    </div>
+</div>
