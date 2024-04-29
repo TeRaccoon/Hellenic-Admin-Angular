@@ -15,7 +15,6 @@ export class FormService {
   private isFilterFormVisible = new BehaviorSubject<boolean>(false);
   private isChangePasswordFormVisible = new BehaviorSubject<boolean>(false);
   private isInvoicedItemsFormVisible = new BehaviorSubject<boolean>(false);
-  private isStockedItemsFormVisible = new BehaviorSubject<boolean>(false);
   private isWidgetVisible = new BehaviorSubject<boolean>(false);
 
 
@@ -130,13 +129,6 @@ export class FormService {
     this.isInvoicedItemsFormVisible.next(false);
   }
 
-  showStockedItemForm() {
-    this.isStockedItemsFormVisible.next(true);
-  }
-  hideStockedItemForm() {
-    this.isStockedItemsFormVisible.next(false);
-  }
-
   getEditFormVisibility(): Observable<boolean> {
     return this.isEditFormVisible.asObservable();
   }
@@ -163,10 +155,6 @@ export class FormService {
 
   getInvoicedItemsFormVisibility(): Observable<boolean> {
     return this.isInvoicedItemsFormVisible.asObservable();
-  }
-
-  getStockedItemsFormVisibility(): Observable<boolean> {
-    return this.isStockedItemsFormVisible.asObservable();
   }
 
   getWidgetVisibility(): Observable<boolean> {

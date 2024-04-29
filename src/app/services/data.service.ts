@@ -13,7 +13,7 @@ export class DataService {
   private dataSubject = new Subject<any[]>();
   tableData: any = null;
   private widgetData = new Subject<{ [key: string]: { name: string, quantity: number}[]}>();
-  private stockWidgetData: any = {};
+  private tableWidgetData: any = {};
   altTableData: any = {};
   invoiceIds: any[] = [];
   tabs: {displayName: string, tableName: string}[] = [];
@@ -97,12 +97,12 @@ export class DataService {
     return this.widgetData;
   }
 
-  storeStockWidgetData(data: any) {
-    this.stockWidgetData = data;
+  storeTableWidgetData(data: any) {
+    this.tableWidgetData = data;
   }
 
-  retrieveStockWidgetData() {
-    return this.stockWidgetData;
+  retrieveTableWidgetData() {
+    return this.tableWidgetData;
   }
 
   getDataObservable(): Observable<any[]> {
