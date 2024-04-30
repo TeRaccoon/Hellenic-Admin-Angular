@@ -483,4 +483,12 @@ export class AddFormComponent {
     this.formService.showMessageForm();
     this.hide();
   }
+
+  fullscreen() {
+    switch(this.tableName) {
+      case "invoices":
+        return true;
+    }
+    return false;
+  }
 }
