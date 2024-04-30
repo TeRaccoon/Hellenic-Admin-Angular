@@ -1,5 +1,5 @@
 <div class="container" [class]="formVisible">
-    <div class="content">
+    <div [class]="fullscreen() ? 'content-fullscreen content' : 'content'">
         <div class="header-section">
             <h1>Adding...</h1>
             <a (click)="hide()">
@@ -10,6 +10,7 @@
             <div *ngIf="error && submissionEnded" class="error-section">{{ error }}</div>
             <ng-container *ngIf="formData && loaded else loading">
                 <form [formGroup]="addForm" class="form-container">
+                    <h1 *ngIf="fullscreen()">{{ 'Adding Invoices' }}</h1>
                     <ng-container *ngFor="let key of mappedFormDataKeys">
                         <div *ngIf="canDisplayInputField(key)" class="input-container" [ngClass]="mappedFormData.get(key)?.inputType">
                             <label>{{ key }}<fa-icon *ngIf="mappedFormData.get(key)?.required" class="asterisk" [icon]="faAsterisk" /></label>
@@ -77,7 +78,7 @@
                 <ng-container *ngIf="tableName == 'invoices'">
                     <form class="form-container" [formGroup]="addInvoicedItemForm">
                         <h1>Add Invoiced Items</h1>
-                        <div class="input-container">
+                        <div class="input-container replacement">
                             <label>Item Name <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
                             <div class="drop-select-container">
                                 <input (input)="filterDropSelect('Item ID', $event, null)" type="text" (focus)="onInputFocus('Item ID')" (blur)="onInputBlur('Item ID')" [value]="selectedReplacementData['Item ID']?.selectData" formControlName="item_id">
@@ -85,8 +86,12 @@
                                     <p *ngFor="let option of filteredReplacementData['Item ID'].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, 'Item ID', 'item_id', true)">{{ option.replacement }}</p>
                                 </div>
                             </div>
+                        </div>
+                        <div class="input-container number">
                             <label>Quantity <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
                             <input class="number" type="number" formControlName="quantity">
+                        </div>
+                        <div class="input-container number">
                             <label>Discount</label>
                             <input class="number" type="number" formControlName="discount">
                         </div>
@@ -111,11 +116,11 @@
                     </form>
                 </ng-container>
             </ng-container>
-            <ng-template #loading>
-                <div class="loading-container">
-                    <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true" />
-                </div>
-            </ng-template>
         </div>
     </div>
+    <ng-template #loading>
+        <div class="loading-container">
+            <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true" />
+        </div>
+    </ng-template>
 </div>

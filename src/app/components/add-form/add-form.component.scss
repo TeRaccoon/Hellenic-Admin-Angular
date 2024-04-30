@@ -23,11 +23,16 @@
             margin: 5px 10px 5px 5px;
         }
     }
+    .content-fullscreen {
+        margin: 7% 15px 15px 16.5% !important;
+        width: auto !important;
+    }
     .content {
         background-color: #ebebeb;
         border: none;
         border-radius: 15px;
-        margin: 7% 15px 15px 16.5%;
+        width: 35vw;
+        margin: 5vw auto 0 auto;
         .header-section {
             height: 50px;
             border-radius: 15px 15px 0 0;
@@ -54,6 +59,7 @@
         }
         .content-section {
             display: flex;
+            gap: 20px;
             h1 {
                 margin-left: 14px;
             }
@@ -61,6 +67,7 @@
                 display: flex;
                 justify-content: center;
                 margin-top: 100px;
+                flex: 1;
                 .loading-icon {
                     margin: 100px 0 200px 0;
                 }
@@ -109,12 +116,15 @@
                 flex-wrap: wrap;
                 width: 100%;
                 align-content: flex-start;
+                h1 {
+                    width: 100%;
+                }
             }
             .replacement {
-                flex: 1 1 50%;
+                flex: 1 1 100%;
             }
             .select {
-                flex: 1 1 50%;
+                flex: 1 1 calc(50% - 20px);
             }
             .alternative-select {
                 flex: 1 1 100%;
@@ -123,8 +133,7 @@
                 flex: 1 1 50%;
             }
             .number {
-                flex: 1 1 30%;
-                width: 30%;
+                flex: 1 1 calc(33% - 20px);
             }
             .text {
                 flex: 1 1 50%;
