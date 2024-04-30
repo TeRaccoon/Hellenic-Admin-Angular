@@ -122,6 +122,8 @@ export class AddFormComponent {
     this.replacementData = {};
     this.addForm = this.fb.group({});
     this.addForm.reset();
+    this.addInvoicedItemForm = this.fb.group({})
+    this.addInvoicedItemForm.reset();
     this.submitted = false;
     this.submissionEnded = false;
     this.error = null;
@@ -324,7 +326,6 @@ export class AddFormComponent {
       this.addForm.get('action')?.setValue('add');
       this.addForm.get('table_name')?.setValue(this.tableName);
       this.error = null;
-      this.invoicedItemsList = [];
       if (this.tableName == "invoices") {
         this.invoiceCreated = true;
       }
