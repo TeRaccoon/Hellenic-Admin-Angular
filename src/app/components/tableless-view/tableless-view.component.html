@@ -9,8 +9,18 @@
                 </thead>
                 <tbody>
                     <tr class="data-row" *ngFor="let row of tableData">
-                        <td *ngFor="let key of getObjectKeys(row)">
-                            {{ row[key] }}
+                        <td *ngFor="let key of getObjectKeys(row); let index = index">
+                            <ng-container [ngSwitch]="columnTypes[index]">
+                                <ng-container *ngSwitchCase="'currency'">
+                                    {{ row[key] | currency: 'GBP' }}
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'date'">
+                                    {{ row[key] | date: 'dd/MM/yyyy' }}
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'string'">
+                                    {{ row[key] }}
+                                </ng-container>
+                            </ng-container>
                         </td>
                     </tr>
                 </tbody>

@@ -16,6 +16,6 @@ export class DebtorCreditorWidgetComponent {
     let debtorCreditorData = await lastValueFrom(this.dataService.collectDataComplex(type, {'start-day': startDay, 'end-day': endDay}));
     debtorCreditorData = Array.isArray(debtorCreditorData) ? debtorCreditorData : [debtorCreditorData];
     this.dataService.storeData({'Data': debtorCreditorData, 
-    'Headers': ['ID', 'Forename', 'Surname', type == 'debtor' ? 'Total Debt' : 'Total Credit', 'Last Transaction']});
+    'Headers': ['Reference', 'Account Name', type == 'debtor' ? 'Total Debt' : 'Total Credit', 'Last Transaction'], 'columnType': ['string', 'string', 'currency', 'date']});
   }
 }
