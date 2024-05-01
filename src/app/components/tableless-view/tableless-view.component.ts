@@ -27,7 +27,7 @@ export class TablelessViewComponent {
       var retrievedData = this.dataService.retrieveData();
       this.tableData = retrievedData.Data;
       this.tableHeaders = retrievedData.Headers;
-      this.columnTypes = retrievedData.columnType;
+      this.columnTypes = retrievedData.columnTypes;
     });
   }
   
