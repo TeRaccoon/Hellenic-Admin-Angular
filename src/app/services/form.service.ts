@@ -335,6 +335,7 @@ export class FormService {
         break;
 
       case 'page_section_text':
+      case 'image_locations':
         var data = await this.getIdReplacementData('page_section_id_name', dataService);
         formData['Page Section ID'].inputType = 'replacement';
         replacementData['Page Section ID'] = { data: data };
