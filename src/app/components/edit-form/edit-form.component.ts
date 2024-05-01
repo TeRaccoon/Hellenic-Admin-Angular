@@ -260,7 +260,7 @@ export class EditFormComponent {
         const validationResult = this.imageSubmissionValidation();
 
         if (validationResult !== false && this.file != null) {
-          this.submissionWithImage(validationResult.itemId, validationResult.itemName, hideForm);
+          this.submissionWithImage(validationResult.id, validationResult.name, hideForm);
         } else {
           this.submissionWithoutImage(hideForm);
         }
@@ -299,13 +299,13 @@ export class EditFormComponent {
       return false;
     }
 
-    return {itemId: id, itemName: name};
+    return {id: id, name: name};
   }
 
   async submitImageOnly() {
     const validationResult = this.imageSubmissionValidation();
     if (validationResult !== false) {
-      let uploadResponse =  await this.formService.handleImageSubmissions(validationResult.itemId, validationResult.itemName, this.file as File, this.tableName);
+      let uploadResponse =  await this.formService.handleImageSubmissions(validationResult.id, validationResult.name, this.file as File, this.tableName);
       if (uploadResponse.success) {
         this.editForm.get('image_file_name')?.setValue(uploadResponse.imageFileName);
       }
@@ -358,7 +358,7 @@ export class EditFormComponent {
         return this.editForm.get('item_name')?.value;
 
       case "image_locations":
-        return this.editForm.get('page_section_id')?.value;
+        return this.selectedReplacementData['Page Section ID']?.selectData;
     }
 
     return null;
