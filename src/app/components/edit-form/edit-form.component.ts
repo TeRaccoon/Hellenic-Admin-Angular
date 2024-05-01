@@ -301,7 +301,11 @@ export class EditFormComponent {
   }
 
   imageSubmissionValidation() {
-    if ((this.file == null || this.tableName != 'items') && this.editForm.get('image_file_name') == null) {
+    if (!this.canUploadImages()) {
+      return false;
+    }
+
+    if (this.file == null || this.editForm.get('image_file_name') == null) {
       this.error = "Please choose an image to upload before trying to upload!";
       return false;
     }
@@ -324,6 +328,7 @@ export class EditFormComponent {
         this.editForm.get('image_file_name')?.setValue(uploadResponse.imageFileName);
       }
     }
+    this.submissionEnded = true;
   }  
   
   async submissionWithoutImage(hideForm: boolean) {
@@ -492,7 +497,6 @@ export class EditFormComponent {
   canUploadImages() {
     switch (this.tableName) {
       case 'items':
-      case 'retail_items':
       case 'image_locations':
         return true;
     }
