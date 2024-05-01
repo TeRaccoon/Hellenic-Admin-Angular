@@ -169,6 +169,12 @@
                             background-image: linear-gradient(to right, rgb(217, 27, 27), rgb(141, 8, 8));
                         }
                     }
+                    .image-row {
+                        img {
+                            width: 100%;
+                            margin: 10px;
+                        }
+                    }
                 }
                 .select-input {
                     font-size: 16px;

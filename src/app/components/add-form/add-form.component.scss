@@ -167,6 +167,12 @@
                         width: 100%;
                         box-sizing: border-box;
                     }
+                    .image-row {
+                        img {
+                            width: 100%;
+                            margin: 10px;
+                        }
+                    }
                 }
                 .select-input {
                     cursor: pointer;
