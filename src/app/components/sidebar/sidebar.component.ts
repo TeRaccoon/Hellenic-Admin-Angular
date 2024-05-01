@@ -48,7 +48,8 @@ export class SidebarComponent {
       { tableName: "statistics", displayName: "Statistics" },
       { tableName: "retail_items", displayName: "Listed Items" },
       { tableName: "discount_codes", displayName: "Discount codes" },
-      { tableName: "page_section_text", displayName: "Website Customisation" },
+      { tableName: "page_section_text", displayName: "Website Text" },
+      { tableName: "image_locations", displayName: "Website Images" }
     ],
     "Admin": [
       { tableName: "settings", displayName: "Settings" },
@@ -98,6 +99,7 @@ export class SidebarComponent {
       case "discount_codes":
       case "retail_items":
       case "page_section_text":
+      case "image_locations":
       case "page_sections":
       case "offers":
       case "categories":
