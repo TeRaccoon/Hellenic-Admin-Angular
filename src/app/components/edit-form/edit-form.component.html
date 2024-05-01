@@ -67,7 +67,7 @@
                                 [value]="mappedFormData.get(key)?.value">
                         </ng-container>
                     </div>
-                    <ng-container *ngIf="tableName == 'retail_items' || tableName == 'items'">
+                    <ng-container *ngIf="canUploadImages()">
                         <div class="image-upload-container">
                             <input accept="image/*" type="file" (change)="primeImage($event)">
                             <fa-icon [icon]="faCloudUpload" [ngClass]="file == null ? '' : 'success'" /> Drop Image Here to Upload

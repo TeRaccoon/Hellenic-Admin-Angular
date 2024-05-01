@@ -488,4 +488,14 @@ export class EditFormComponent {
   updateImageSelection(image: string) {
     this.selectedImage = image;    
   }
+
+  canUploadImages() {
+    switch (this.tableName) {
+      case 'items':
+      case 'retail_items':
+      case 'image_locations':
+        return true;
+    }
+    return false;
+  }
 }
