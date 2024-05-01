@@ -203,16 +203,7 @@ export class EditFormComponent {
         message: 'Image deleted successfully. If this image was the products primary image, please select a new one and save.',
       });
 
-      let id = "";
-      switch (this.tableName) {
-        case "items":
-          id = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
-          break;
-  
-        case "image_locations":
-          id = this.editForm.value['page_section_id'];
-          break;
-      }
+      let id = this.getImageDependentId();
 
       this.imageReplacements = await this.formService.getImages(id, this.tableName);
 
@@ -243,16 +234,7 @@ export class EditFormComponent {
   }
 
   async handleImages() {
-    let id = "";
-    switch (this.tableName) {
-      case "items":
-        id = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
-        break;
-
-      case "image_locations":
-        id = this.editForm.value['page_section_id'];
-        break;
-    }
+    let id = this.getImageDependentId();
 
     if (id == null) {
       return;
@@ -310,14 +292,14 @@ export class EditFormComponent {
       return false;
     }
 
-    let itemId = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
-    let itemName = this.editForm.get('item_name')?.value;
-    if (itemId == null || itemName == null) {
-      this.error = "Please choose an item to upload an image for before trying to upload!";
+    let id = this.getImageDependentId();
+    let name = this.getImageDependentName();
+    if (id == null || name == null) {
+      this.error = "Please fill out the relevant fields to upload an image for before trying to upload!";
       return false;
     }
 
-    return {itemId: itemId, itemName: itemName};
+    return {itemId: id, itemName: name};
   }
 
   async submitImageOnly() {
@@ -356,6 +338,30 @@ export class EditFormComponent {
     } else {
       hideForm && this.hide();
     }
+  }
+
+  getImageDependentId() {
+    switch (this.tableName) {
+      case "items":
+        return this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
+
+      case "image_locations":
+        return this.editForm.value['page_section_id'];
+    }
+
+    return null
+  }
+
+  getImageDependentName() {
+    switch (this.tableName) {
+      case "items":
+        return this.editForm.get('item_name')?.value;
+
+      case "image_locations":
+        return this.editForm.get('page_section_id')?.value;
+    }
+
+    return null;
   }
 
   async addImageLocationToDatabase() {
