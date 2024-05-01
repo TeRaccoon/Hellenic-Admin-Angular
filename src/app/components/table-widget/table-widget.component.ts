@@ -14,6 +14,7 @@ export class TableWidgetComponent {
   endDate: string = '';
   tableName: string = '';
   headers: any[] = [];
+  columnTypes: string[] = [];
   query = "";
 
   displayDateRange = false;
@@ -33,6 +34,7 @@ export class TableWidgetComponent {
         this.headers = ["Total Sales", "Output VAT", "Total Expenses", "Input VAT", "VAT Liability"];
         this.query = "vat-data";
         this.displayDateRange = true;
+        this.columnTypes = ['currency', 'currency', 'currency', 'currency', 'currency'];
         break;
     }
   }
@@ -46,18 +48,9 @@ export class TableWidgetComponent {
       }
 
       data = Array.isArray(data) ? data : [data];
-
-      data.forEach((item: any) => {
-        for (const key in item) {
-          if (item[key] == null) {
-            item[key] = 0;
-          }
-          item[key] = item[key].toLocaleString('en-US', { style: 'currency', currency: 'GBP' });
-        }
-      });
       
       this.dataService.storeData({'Data': data,
-      'Headers': this.headers});
+      'Headers': this.headers, 'columnTypes': this.columnTypes});
     }
   }
 
