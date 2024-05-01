@@ -472,19 +472,27 @@ export class FormService {
 
     const uploadResponse = await this.uploadImage(image, imageFileName);
 
-    let title = 'Error!';
-    let message = 'There was an issue uploading your image. Possible causes are the image is not a correct file type (.png, .jpg, .jpeg) or the file name contains special characters. Please try again!';
-    let success = false;
+    let title = 'Success!';
+    let message = 'Image uploaded successfully!';
+    let success = true;
+
+    let addToDatabase = this.shouldAddToDatabase(tableName);
 
     if (uploadResponse.success) {
-      const recordUploadResponse = await this.addImageLocationToDatabase(id, imageFileName);
-
-      if (recordUploadResponse.success) {
-        title = 'Success!';
-        message = 'Image uploaded successfully!';
-        success = true;
+      if (addToDatabase) {
+        const recordUploadResponse = await this.addImageLocationToDatabase(id, imageFileName);
+        if (!recordUploadResponse.success) {
+          title = 'Error!';
+          message = 'There was an issue uploading your image. Possible causes are the image is not a correct file type (.png, .jpg, .jpeg) or the file name contains special characters. Please try again!';
+          success = false;
+        }
       }
+    } else {
+      title = 'Error!';
+      message = 'There was an issue uploading your image. Possible causes are the image is not a correct file type (.png, .jpg, .jpeg) or the file name contains special characters. Please try again!';
+      success = false;
     }
+
     this.setMessageFormData({title: title, message: message})
     this.showMessageForm();
     return { success: success, imageFileName: imageFileName };
@@ -514,6 +522,15 @@ export class FormService {
     }
 
     return fileName;
+  }
+
+  shouldAddToDatabase(tableName: string) {
+    switch (tableName) {
+      case 'items':
+        return true
+    }
+
+    return false;
   }
 
   getImageCountQuery(tableName: string) {
