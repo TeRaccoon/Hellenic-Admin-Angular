@@ -203,8 +203,18 @@ export class EditFormComponent {
         message: 'Image deleted successfully. If this image was the products primary image, please select a new one and save.',
       });
 
-      let itemId = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;  
-      this.imageReplacements = await this.formService.getImagesForItem(itemId);
+      let id = "";
+      switch (this.tableName) {
+        case "items":
+          id = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
+          break;
+  
+        case "image_locations":
+          id = this.editForm.value['page_section_id'];
+          break;
+      }
+
+      this.imageReplacements = await this.formService.getImagesForItem(id, this.tableName);
 
       this.selectedImage = "";
       this.formService.showMessageForm();
@@ -233,12 +243,22 @@ export class EditFormComponent {
   }
 
   async handleImages() {
-    let itemId = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
-    if (itemId == null) {
+    let id = "";
+    switch (this.tableName) {
+      case "items":
+        id = this.editForm.value['retail_item_id'] != null ? this.editForm.value['retail_item_id'] : this.editForm.get('id')?.value;
+        break;
+
+      case "image_locations":
+        id = this.editForm.value['page_section_id'];
+        break;
+    }
+
+    if (id == null) {
       return;
     }
 
-    this.imageReplacements = await this.formService.getImagesForItem(itemId);
+    this.imageReplacements = await this.formService.getImagesForItem(id, this.tableName);
     if (this.imageReplacements.length == 0) {
       return;
     }

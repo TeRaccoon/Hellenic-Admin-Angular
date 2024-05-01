@@ -522,12 +522,17 @@ export class FormService {
     return await lastValueFrom<{success: boolean, message: string}>(this.dataService.submitFormData(imageFormData)); 
   }
 
-  async getImagesForItem(itemId: string) {
-    if (itemId == null) {
+  async getImagesForItem(id: string, table: string) {
+    if (id == null) {
       return [];
     }
 
-    let images = await lastValueFrom(this.dataService.processData("images-from-item-id", itemId));
+    let query = "images-from-item-id";
+    if (table == "image_locations") {
+      query = "images-from-page-section-id";
+    }
+
+    let images = await lastValueFrom(this.dataService.processData(query, id));
     images = Array.isArray(images) ? images : [images];
 
     return images;
