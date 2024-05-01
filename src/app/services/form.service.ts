@@ -522,7 +522,7 @@ export class FormService {
     return await lastValueFrom<{success: boolean, message: string}>(this.dataService.submitFormData(imageFormData)); 
   }
 
-  async getImagesForItem(id: string, table: string) {
+  async getImages(id: string, table: string) {
     if (id == null) {
       return [];
     }

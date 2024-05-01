@@ -214,7 +214,7 @@ export class EditFormComponent {
           break;
       }
 
-      this.imageReplacements = await this.formService.getImagesForItem(id, this.tableName);
+      this.imageReplacements = await this.formService.getImages(id, this.tableName);
 
       this.selectedImage = "";
       this.formService.showMessageForm();
@@ -258,7 +258,7 @@ export class EditFormComponent {
       return;
     }
 
-    this.imageReplacements = await this.formService.getImagesForItem(id, this.tableName);
+    this.imageReplacements = await this.formService.getImages(id, this.tableName);
     if (this.imageReplacements.length == 0) {
       return;
     }
