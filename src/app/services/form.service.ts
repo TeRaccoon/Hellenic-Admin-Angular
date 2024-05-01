@@ -467,8 +467,8 @@ export class FormService {
     return inputTypes;
   }
 
-  async handleImageSubmissions(itemId: string, itemName: string, image: File) {
-    let imageFileName = await this.processImageName(itemId, itemName);
+  async handleImageSubmissions(id: string, name: string, image: File, tableName: string) {
+    let imageFileName = await this.processImageName(id, name, tableName);
 
     const uploadResponse = await this.uploadImage(image, imageFileName);
 
@@ -477,7 +477,7 @@ export class FormService {
     let success = false;
 
     if (uploadResponse.success) {
-      const recordUploadResponse = await this.addImageLocationToDatabase(itemId, imageFileName);
+      const recordUploadResponse = await this.addImageLocationToDatabase(id, imageFileName);
 
       if (recordUploadResponse.success) {
         title = 'Success!';
@@ -497,18 +497,35 @@ export class FormService {
     return await lastValueFrom(this.dataService.uploadImage(formData));
   }
 
-  async processImageName(itemId: string | null, itemName: string) {
-    itemName = itemName.replaceAll(/[^a-zA-Z0-9_]/g, '_');
-    let fileName = itemName + '.png';
+  async processImageName(id: string | null, name: string, tableName: string) {
+    name = name.replaceAll(/[^a-zA-Z0-9_]/g, '_');
+
+    let fileName = name + '.png';
     let imageCount = 0;
-    if (itemId != null) {
-      imageCount = await lastValueFrom<number>(this.dataService.processData('image-count-from-item-id', itemId));
+
+    let query = this.getImageCountQuery(tableName);
+
+    if (id != null && query != null) {
+      imageCount = await lastValueFrom<number>(this.dataService.processData(query, id));
     }
+    
     if (imageCount != null) {
-      fileName = itemName + '_' + imageCount + '.png';
+      fileName = name + '_' + imageCount + '.png';
     }
 
     return fileName;
+  }
+
+  getImageCountQuery(tableName: string) {
+    switch (tableName) {
+      case 'items':
+        return 'image-count-from-item-id';
+
+      case 'image_locations':
+        return 'image-count-from-page-section-id';
+    }
+
+    return null;
   }
 
   async addImageLocationToDatabase(itemId: string, imageFileName: string) {

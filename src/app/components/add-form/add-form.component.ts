@@ -276,7 +276,7 @@ export class AddFormComponent {
   async submitImageOnly() {
     const validationResult = this.imageSubmissionValidation();
     if (validationResult !== false) {
-      await this.formService.handleImageSubmissions(validationResult.itemId, validationResult.itemName, this.file as File);
+      await this.formService.handleImageSubmissions(validationResult.itemId, validationResult.itemName, this.file as File, this.tableName);
     }
   }
 
@@ -293,14 +293,14 @@ export class AddFormComponent {
     let nextIdResult = await lastValueFrom(this.dataService.processData("next-invoice-id", "items"));
     itemId = nextIdResult;
 
-    let imageFileName = await this.formService.processImageName(null, itemName);
+    let imageFileName = await this.formService.processImageName(null, itemName, this.tableName);
 
     this.addForm.get("image_file_name")?.setValue(imageFileName);
 
     const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(this.addForm.value))
 
     if (formSubmitResponse.success) {
-      const uploadResponse = await this.formService.handleImageSubmissions(itemId, itemName, this.file as File);
+      const uploadResponse = await this.formService.handleImageSubmissions(itemId, itemName, this.file as File, this.tableName);
       if (uploadResponse) {
         this.formService.setMessageFormData({
           title: formSubmitResponse.success ? 'Success!' : 'Error!',
