@@ -116,11 +116,11 @@
                     </form>
                 </ng-container>
             </ng-container>
+            <ng-template #loading>
+                <div class="loading-container">
+                    <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true" />
+                </div>
+            </ng-template>
         </div>
     </div>
-    <ng-template #loading>
-        <div class="loading-container">
-            <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true" />
-        </div>
-    </ng-template>
 </div>
