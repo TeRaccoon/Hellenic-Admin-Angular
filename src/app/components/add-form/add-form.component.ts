@@ -86,11 +86,7 @@ export class AddFormComponent {
     private fb: FormBuilder,
   ) {
     this.addForm = this.fb.group({});
-    this.addInvoicedItemForm = this.fb.group({
-      item_id: ['', [Validators.required]],
-      quantity: ['', [Validators.required]],
-      discount: ['', [Validators.required]],
-    });
+    this.addInvoicedItemForm = this.fb.group({});
   }
 
   ngOnInit() {
@@ -182,6 +178,11 @@ export class AddFormComponent {
   async buildForm() {
     if (this.tableName == "invoices") {
       delete this.formData["Item ID"];
+      this.addInvoicedItemForm = this.fb.group({
+        item_id: ['', [Validators.required]],
+        quantity: ['', [Validators.required]],
+        discount: ['', [Validators.required]],
+      });
     }
 
     let formDataArray = Object.entries(this.formData);
@@ -362,7 +363,6 @@ export class AddFormComponent {
 
   primeImage(event: any) {
     this.file = event.target.files[0];
-    console.log("🚀 ~ AddFormComponent ~ primeImage ~ this.addForm:", this.addForm)
   }
 
   selectDataFromKey(key: string) {
