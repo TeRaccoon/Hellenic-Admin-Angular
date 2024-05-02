@@ -12,7 +12,8 @@ export class TablelessViewComponent {
   tableName = '';
   tableData: any[] | null = null;
   tableHeaders: any[] = [];
-  columnTypes: any[] = []
+  columnTypes: any[] = [];
+  alternativeData: any;
 
   constructor(private formService: FormService, private route: ActivatedRoute, private dataService: DataService) {}
 
@@ -21,6 +22,7 @@ export class TablelessViewComponent {
       this.tableName = params['table'];
       this.tableData = null;
       this.tableHeaders = [];
+      this.alternativeData = null;
     });
 
     this.dataService.getDataObservable().subscribe((data) => {
@@ -28,6 +30,7 @@ export class TablelessViewComponent {
       this.tableData = retrievedData.Data;
       this.tableHeaders = retrievedData.Headers;
       this.columnTypes = retrievedData.columnTypes;
+      this.alternativeData = retrievedData.alternativeData;
     });
   }
   
