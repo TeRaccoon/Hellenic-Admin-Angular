@@ -421,20 +421,20 @@ export class AddFormComponent {
 
   filterDropSelect(key: string, event: any, field: string | null) {
     this.selectedReplacementData[key];
-    var filter = event.target.value;
+    const filter = event.target.value;
 
     if (!this.searchWaiting && this.filteredReplacementData[key].data.length > 0) {
-      this.searchWaiting = true;
-      setTimeout(() => {
-        this.filteredReplacementData = _.cloneDeep(this.replacementData);
-        this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
-          return data.replacement &&  data.replacement.toLowerCase().includes(filter.toLowerCase());
-        });
-        if (field) {
-          this.addForm.get(field)?.setValue(filter);
-        }
-        this.searchWaiting = false;
-      }, 1000);
+        this.searchWaiting = true;
+        _.debounce(() => {
+            this.filteredReplacementData = _.cloneDeep(this.replacementData);
+            this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
+                return data.replacement && data.replacement.toLowerCase().includes(filter.toLowerCase());
+            });
+            if (field) {
+                this.addForm.get(field)?.setValue(filter);
+            }
+            this.searchWaiting = false;
+        }, 1000)();
     }
   }
 
