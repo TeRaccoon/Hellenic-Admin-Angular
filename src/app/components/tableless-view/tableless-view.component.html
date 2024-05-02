@@ -35,6 +35,15 @@
             </div>
         </div>
     </ng-template>
+    <ng-container *ngIf="tableName === 'vat-returns'">
+        <div *ngIf="alternativeData != null" class="vat-return-table">
+            <div *ngFor="let text of alternativeData.text; let index = index" class="row">
+                <h1>{{ index + 1 }}</h1>
+                <p>{{ text }}</p>
+                <p class="currency">{{ alternativeData.values[index] | currency: 'GBP' }}</p>
+            </div>
+        </div>
+    </ng-container>
 </div>
 <ng-container *ngIf="tableName === 'debtor_creditor'">
     <app-debtor-creditor-widget></app-debtor-creditor-widget>
