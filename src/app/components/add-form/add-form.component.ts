@@ -78,7 +78,7 @@ export class AddFormComponent {
   selectOpen: {[key: string]: {opened: boolean}} = {};
 
   invoiceId: number | null = null;
-  invoicedItemsList: {item_id: string, quantity: number}[] = [];
+  invoicedItemsList: {item_id: string, quantity: number, discount: number}[] = [];
 
   constructor(
     private dataService: DataService,
@@ -447,9 +447,10 @@ export class AddFormComponent {
     
     let itemName = itemIdNames.data.find((data) => data.id == Number(this.addInvoicedItemForm.get("item_id")?.value))?.replacement;
     let quantity = this.addInvoicedItemForm.get("quantity")?.value;
+    let discount = this.addInvoicedItemForm.get("discount")?.value;
 
     if (itemName != null && quantity != null) {
-      this.invoicedItemsList.push({item_id: itemName, quantity: quantity});
+      this.invoicedItemsList.push({item_id: itemName, quantity: quantity, discount: discount});
     }
 
     this.addInvoicedItemForm.addControl('action', this.fb.control('add'));

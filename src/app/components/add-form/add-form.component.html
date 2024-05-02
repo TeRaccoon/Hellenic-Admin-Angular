@@ -100,11 +100,13 @@
                                 <thead>
                                     <th>Item Name</th>
                                     <th>Quantity</th>
+                                    <th>Discount</th>
                                 </thead>
                                 <tbody *ngIf="invoicedItemsList.length > 0">
                                     <tr *ngFor="let invoicedItem of invoicedItemsList">
                                         <td>{{ invoicedItem.item_id }}</td>
                                         <td>{{ invoicedItem.quantity }}</td>
+                                        <td>{{ invoicedItem.discount }}</td>
                                     </tr>
                                 </tbody>
                             </table>
