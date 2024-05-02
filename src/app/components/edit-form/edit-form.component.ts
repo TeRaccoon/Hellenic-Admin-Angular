@@ -423,7 +423,7 @@ export class EditFormComponent {
 
     if (this.tableName == "invoices" && field == "customer_id") {
       let addresses = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", String(dataId)));
-      this.updateCustomerAddresses(addresses, "Address");
+      this.updateCustomerAddresses(addresses, "Delivery Address");
       this.updateCustomerAddresses(addresses, "Billing Address");
     }
 
@@ -433,7 +433,7 @@ export class EditFormComponent {
   async updateCustomerAddresses(addressData: [], key: string) {
     let addressReplacement = addressData.map((address: any) => {
       let replacement;
-      if (key == "Address") {
+      if (key == "Delivery Address") {
         replacement = [address.delivery_address_one, address.delivery_address_two, address.delivery_address_three, address.delivery_address_four, address.delivery_postcode];
       } else {
         replacement = [address.invoice_address_one, address.invoice_address_two, address.invoice_address_three, address.invoice_address_four, address.invoice_postcode];
