@@ -1,0 +1,49 @@
+@import '../variables';
+.container {
+    background-color: #ffffff;
+    padding: 1.54cm;
+    width: 21cm;
+    height: 29.7cm;
+    box-sizing: border-box;
+    h1 {
+        font-size: 26px;
+    }
+    table {
+        border-collapse: collapse;
+        text-align: left;
+        thead {
+            background-color: #000000;
+            color: #ffffff;
+            th {
+                padding: 4px 2px;
+            }
+        }
+        tbody {
+            border: 2px solid #cccccc;
+            .label {
+                font-weight: bold;
+            }
+            tr:nth-child(even) {
+                background-color: #f3f3f3;
+            }
+            td {
+                padding: 8px;
+            }
+        }
+    }
+}
+
+.menu-bar {
+    .button {
+        border-radius: 5px;
+        padding: 8px;
+        font-weight: bold;
+        font-size: 17px;
+    }
+}
+
+@media print {
+    .print-exclude {
+        display: none;
+    }
+}

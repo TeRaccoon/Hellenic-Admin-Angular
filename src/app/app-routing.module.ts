@@ -10,6 +10,7 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
 import { PrintLayoutComponent } from './components/print-layout/print-layout.component';
 import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
 import { SettingsComponent } from './components/settings/settings.component';
+import { VatViewComponent } from './components/vat-view/vat-view.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'print',
     component: PrintLayoutComponent,
     children: [
-      { path: 'invoice', component: InvoiceViewComponent, canActivate: [AuthGuard] }
+      { path: 'invoice', component: InvoiceViewComponent, canActivate: [AuthGuard] },
+      { path: 'vat', component: VatViewComponent, canActivate: [AuthGuard] }
     ]
   }
 ];

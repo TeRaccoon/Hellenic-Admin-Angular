@@ -32,6 +32,7 @@ import { ChangePasswordFormComponent } from './components/change-password-form/c
 import { SettingsComponent } from './components/settings/settings.component';
 import { WidgetComponent } from './components/widget/widget.component';
 import { TableWidgetComponent } from './components/table-widget/table-widget.component';
+import { VatViewComponent } from './components/vat-view/vat-view.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { TableWidgetComponent } from './components/table-widget/table-widget.com
     ChangePasswordFormComponent,
     SettingsComponent,
     WidgetComponent,
-    TableWidgetComponent
+    TableWidgetComponent,
+    VatViewComponent
   ],
   imports: [
     BrowserModule,
