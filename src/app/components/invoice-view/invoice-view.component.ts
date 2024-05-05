@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { imageUrlBase } from '../../services/data.service';
-import { faSpinner, faPrint, faL } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPrint } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
