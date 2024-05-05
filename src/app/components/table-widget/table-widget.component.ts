@@ -61,9 +61,20 @@ export class TableWidgetComponent {
             'Net VAT to be paid to HMRC or reclaimed by you (Difference between boxes 3 and 4)',
             'Total value of sales and all other outputs excluding any VAT (Include your box 8 figure)',
             'Total value of purchases and all other inputs excluding VAT (Include your box 9 figure)',
-            'Total value of intra-community dispatches of goods and related costs (excluding VAT) from Norther Ireland to EU Member States)',
+            'Total value of intra-community dispatches of goods and related costs (excluding VAT) from Northern Ireland to EU Member States',
             'Total value of intra-community acquisitions of goods and related costs (excluding VAT) made in Northern Ireland from EU Member States',
           ],
+          altText: [
+            'VAT due and other outputs',
+            'VAT due on intra-community acquisitions of goods made in Northern Ireland from EU Member States',
+            'Total VAT due',
+            'VAT reclaimed on purchases and other inputs including EC acquisitions',
+            'Net VAT due',
+            'Total value of sales and other outputs including EC supplies',
+            'Total value of purchases and other inputs including EC acquisitions',
+            'Total value of intra-community dispatches from Northern Ireland to EU Member States',
+            'Total value of intra-community acquisitions made in Northern Ireland from EU Member States',
+          ]
         };
         break;
     }
@@ -85,6 +96,7 @@ export class TableWidgetComponent {
       data = Array.isArray(data) ? data : [data];
 
       this.alternativeData['values'] = [data[0].output_vat, 0, data[0].output_vat, data[0].input_vat, data[0].output_vat - data[0].input_vat, data[0].output_total - data[0].output_vat, data[0].input_total - data[0].input_vat, 0, 0];
+      this.alternativeData['period'] = this.getPeriod();
 
       this.dataService.storeData({
         Data: data,
@@ -93,6 +105,15 @@ export class TableWidgetComponent {
         alternativeData: this.alternativeData
       });
     }
+  }
+
+  getPeriod() {
+    const endDate = new Date(this.endDate);
+
+    const month = endDate.toLocaleString('default', { month: 'long' });
+    const year = endDate.getFullYear();
+
+    return `VAT return for period ${month}-${year}`;
   }
 
   vatReturns(vatData: any) {

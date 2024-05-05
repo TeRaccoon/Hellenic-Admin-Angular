@@ -1,9 +1,9 @@
+@import '../variables';
 .container {
-    margin: 15px 15px 15px 16%;
+    margin: 15px 15px 15px 16.5%;
     .no-data-container {
         background-color: #ffffff;
         padding: 10px;
-        margin-left: 10px;
         border-radius: 15px;
         width: 30%;
         text-align: center;
@@ -17,7 +17,7 @@
         padding: 10px;
         background-color: white;
         border-radius: 15px;
-        margin: 10px;
+        margin: 10px 0 10px 0;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         table {
             border-collapse: collapse;
@@ -54,21 +54,65 @@
             }
         }
     }
-    .vat-return-table {
-        margin: 10px;
-        background-color: white;
-        border-radius: 10px;
-        .row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 3vw;
-            border: 2px solid #dedede;
-            padding: 0 15px;
-            .currency {
-                flex: 1;
-                text-align: right;
+    .vat-return-container {
+        background-color: #ffffff;
+        padding: 22px;
+        h1 {
+            margin: 5px 0 15px 0;
+            border-bottom: 2px solid;
+        }
+        .vat-return-table {
+            background-color: white;
+            border-radius: 10px;
+            .row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 3vw;
+                border: 2px solid #dedede;
+                padding: 0 15px;
+                .currency {
+                    flex: 1;
+                    text-align: right;
+                }
             }
         }
     }
+    .vat-adjustments-container {
+        h2 {
+            margin: 5px 0px;
+        }
+        textarea {
+            font-family: 'Titillium Web', sans-serif;
+            width: 100%;
+            min-height: 175px;
+            border: 2px solid #000000;
+            font-size: 16px;
+            padding: 10px;
+        }
+        .vat-adjustments-table {
+            th {
+                background-color: #191919;
+                color: #ffffff;
+                padding: 10px;
+            }
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+            td {
+                padding: 10px;
+                input {
+                    padding: 10px 5px;
+                }
+            }
+        }
+    }
+}
+
+button {
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 17px;
+    margin: 10px 0px 10px 0px;
 }
