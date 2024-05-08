@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { lastValueFrom } from 'rxjs';
 import { FormService } from '../../services/form.service';
 
 @Component({
@@ -133,7 +132,7 @@ export class TablelessViewComponent {
       );
       this.router.navigate(['/print/vat']);
     } else {
-      this.formService.setMessageFormData({ title: 'Warning', message: 'Please fill out all the fields before continuing'});
+      this.formService.setMessageFormData({ title: 'Warning', message: 'Please fill out all the required fields before continuing'});
       this.formService.showMessageForm();
     }
   }
