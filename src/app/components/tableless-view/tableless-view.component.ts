@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormService } from '../../services/form.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-tableless-view',
@@ -47,6 +48,7 @@ export class TablelessViewComponent {
     });
 
     this.dataService.getDataObservable().subscribe((data: any) => {
+      console.log(data);
       this.tableData = data.Data;
       this.tableHeaders = data.Headers;
       this.columnTypes = data.columnTypes;
@@ -116,25 +118,67 @@ export class TablelessViewComponent {
     return Number(this.alternativeData.values[row]);
   }
 
-  submitVATReturn() {
+  async submitVATReturn() {
     if (this.vatReturnForm.valid) {
+
+      let data = {
+        originalValues: this.alternativeData.values,
+        previousAdjustments: [this.vatReturnForm.get('vat-due-previous')?.value, 0, 0, this.vatReturnForm.get('vat-reclaimed-previous')?.value, 0, this.vatReturnForm.get('total-sales-previous')?.value, this.vatReturnForm.get('total-purchases-previous')?.value, '', ''],
+        newAdjustments: [this.vatReturnForm.get('vat-due-new')?.value, 0, 0, this.vatReturnForm.get('vat-reclaimed-new')?.value, 0, this.vatReturnForm.get('total-sales-new')?.value, this.vatReturnForm.get('vat-purchases-new')?.value, '', ''],
+        fuelScaleCharge: [this.vatReturnForm.get('vat-due-fuel')?.value, 0, 0, 0, 0, this.vatReturnForm.get('total-sales-fuel')?.value, 0, 0, 0],
+        total: Array.from({ length: 9 }, (_, row) => this.getRowTotal(row)),
+      };
+
+      let period = this.alternativeData.period;
+      let date = this.alternativeData.date;
+
       this.dataService.storeData(
         {
           labels: this.alternativeData.altText,
           originalValues: this.alternativeData.values,
-          previousAdjustments: [this.vatReturnForm.get('vat-due-previous')?.value, 0, 0, this.vatReturnForm.get('vat-reclaimed-previous')?.value, 0, this.vatReturnForm.get('total-sales-previous')?.value, this.vatReturnForm.get('total-purchases-previous')?.value, '', ''],
-          newAdjustments: [this.vatReturnForm.get('vat-due-new')?.value, 0, 0, this.vatReturnForm.get('vat-reclaimed-new')?.value, 0, this.vatReturnForm.get('total-sales-new')?.value, this.vatReturnForm.get('vat-purchases-new')?.value, '', ''],
-          fuelScaleCharge: [this.vatReturnForm.get('vat-due-fuel')?.value, 0, 0, 0, 0, this.vatReturnForm.get('total-sales-fuel')?.value, 0, 0, 0],
-          total: Array.from({ length: 9 }, (_, row) => this.getRowTotal(row)),
+          previousAdjustments: data.previousAdjustments,
+          newAdjustments: data.newAdjustments,
+          fuelScaleCharge: data.fuelScaleCharge,
+          total: data.total,
           notes: this.vatReturnForm.get('notes')?.value,
-          period: this.alternativeData.period
+          period: `VAT return for period ${period}`
         }
       );
-      this.router.navigate(['/print/vat']);
+
+      let success = await this.addReturnToDatabase(data, period, date, this.vatReturnForm.get('notes')?.value);
+
+      if (success) {
+        this.router.navigate(['/print/vat']);
+      } else {
+        this.formService.setMessageFormData({
+          title: "Error!",
+          message: "There was an issue adding the VAT return to the database! Please try again!"
+        });
+      }
     } else {
       this.formService.setMessageFormData({ title: 'Warning', message: 'Please fill out all the required fields before continuing'});
       this.formService.showMessageForm();
     }
+  }
+
+  async addReturnToDatabase(returnData: any, period: string, date: string, notes: string) {
+    for (let boxNumber = 1; boxNumber < 10; boxNumber++) {
+      const response = await lastValueFrom(this.dataService.submitFormData({
+        action: "add",
+        table_name: "vat_returns",
+        vat_group_id: period,
+        box_num: boxNumber,
+        accounts_value: returnData.originalValues[boxNumber],
+        previous_adjustments: returnData.previousAdjustments[boxNumber],
+        current_adjustments: returnData.newAdjustments[boxNumber],
+        fuel_scale_charge: returnData.fuelScaleCharge[boxNumber],
+        total: returnData.total[boxNumber],
+        return_date: date,
+        notes: notes
+      }));
+      if (!response.success) return false;
+    }
+    return true;
   }
 }
 

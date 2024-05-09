@@ -97,6 +97,7 @@ export class TableWidgetComponent {
 
       this.alternativeData['values'] = [data[0].output_vat, 0, data[0].output_vat, data[0].input_vat, data[0].output_vat - data[0].input_vat, data[0].output_total - data[0].output_vat, data[0].input_total - data[0].input_vat, 0, 0];
       this.alternativeData['period'] = this.getPeriod();
+      this.alternativeData['date'] = this.startDate;
 
       this.dataService.storeData({
         Data: data,
@@ -113,7 +114,7 @@ export class TableWidgetComponent {
     const month = endDate.toLocaleString('default', { month: 'long' });
     const year = endDate.getFullYear();
 
-    return `VAT return for period ${month}-${year}`;
+    return `${month}-${year}`;
   }
 
   vatReturns(vatData: any) {
