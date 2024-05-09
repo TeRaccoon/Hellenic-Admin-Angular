@@ -22,6 +22,7 @@ export class TablelessViewComponent {
   page = 1;
   vatReturnForm: FormGroup;
   controlIndex = -1;
+  submitAttempted = false;
 
   constructor(private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private fb: FormBuilder, private router: Router) {
     this.vatReturnForm = this.fb.group({
@@ -45,10 +46,10 @@ export class TablelessViewComponent {
       this.tableData = null;
       this.tableHeaders = [];
       this.alternativeData = null;
+      this.submitAttempted = false;
     });
 
     this.dataService.getDataObservable().subscribe((data: any) => {
-      console.log(data);
       this.tableData = data.Data;
       this.tableHeaders = data.Headers;
       this.columnTypes = data.columnTypes;
@@ -120,7 +121,7 @@ export class TablelessViewComponent {
 
   async submitVATReturn() {
     if (this.vatReturnForm.valid) {
-
+      this.submitAttempted = true;
       let data = {
         originalValues: this.alternativeData.values,
         previousAdjustments: [this.vatReturnForm.get('vat-due-previous')?.value, 0, 0, this.vatReturnForm.get('vat-reclaimed-previous')?.value, 0, this.vatReturnForm.get('total-sales-previous')?.value, this.vatReturnForm.get('total-purchases-previous')?.value, '', ''],
@@ -132,23 +133,24 @@ export class TablelessViewComponent {
       let period = this.alternativeData.period;
       let date = this.alternativeData.date;
 
-      this.dataService.storeData(
-        {
-          labels: this.alternativeData.altText,
-          originalValues: this.alternativeData.values,
-          previousAdjustments: data.previousAdjustments,
-          newAdjustments: data.newAdjustments,
-          fuelScaleCharge: data.fuelScaleCharge,
-          total: data.total,
-          notes: this.vatReturnForm.get('notes')?.value,
-          period: `VAT return for period ${period}`
-        }
-      );
-
       let success = await this.addReturnToDatabase(data, period, date, this.vatReturnForm.get('notes')?.value);
 
       if (success) {
+        this.dataService.storeData(
+          {
+            labels: this.alternativeData.altText,
+            originalValues: this.alternativeData.values,
+            previousAdjustments: data.previousAdjustments,
+            newAdjustments: data.newAdjustments,
+            fuelScaleCharge: data.fuelScaleCharge,
+            total: data.total,
+            notes: this.vatReturnForm.get('notes')?.value,
+            period: `VAT return for period ${period}`
+          }
+        );
         this.router.navigate(['/print/vat']);
+      } else if (!this.submitAttempted) {
+        this.submitAttempted = true;
       } else {
         this.formService.setMessageFormData({
           title: "Error!",
@@ -162,23 +164,44 @@ export class TablelessViewComponent {
   }
 
   async addReturnToDatabase(returnData: any, period: string, date: string, notes: string) {
-    for (let boxNumber = 1; boxNumber < 10; boxNumber++) {
-      const response = await lastValueFrom(this.dataService.submitFormData({
-        action: "add",
-        table_name: "vat_returns",
-        vat_group_id: period,
-        box_num: boxNumber,
-        accounts_value: returnData.originalValues[boxNumber],
-        previous_adjustments: returnData.previousAdjustments[boxNumber],
-        current_adjustments: returnData.newAdjustments[boxNumber],
-        fuel_scale_charge: returnData.fuelScaleCharge[boxNumber],
-        total: returnData.total[boxNumber],
-        return_date: date,
-        notes: notes
-      }));
-      if (!response.success) return false;
+    if (await this.vatReturnExists(period) && !this.submitAttempted) {
+      this.formService.setMessageFormData({
+        title: "Are you sure?",
+        message: "There is already a VAT return that exists for this period. Creating a new one will overwrite the old!",
+        secondaryMessage: "Click submit again to overwrite the old VAT return"
+      });
+      this.formService.showMessageForm();
+
+      return false;
+    } else {
+      if (await this.vatReturnExists(period)) {
+        await lastValueFrom(this.dataService.processData("delete-vat-returns-by-group-id", period));
+      }
+
+      for (let boxNumber = 1; boxNumber < 10; boxNumber++) {
+        const response = await lastValueFrom(this.dataService.submitFormData({
+          action: "add",
+          table_name: "vat_returns",
+          vat_group_id: period,
+          box_num: boxNumber,
+          accounts_value: returnData.originalValues[boxNumber],
+          previous_adjustments: returnData.previousAdjustments[boxNumber],
+          current_adjustments: returnData.newAdjustments[boxNumber],
+          fuel_scale_charge: returnData.fuelScaleCharge[boxNumber],
+          total: returnData.total[boxNumber],
+          return_date: date,
+          notes: notes
+        }));
+        if (!response.success) return false;
+      }
+      
+      return true;
     }
-    return true;
+  }
+
+  async vatReturnExists(period: string) {
+    const response = await lastValueFrom(this.dataService.processData('vat-history-by-group-id', period));
+    return response.length > 0;
   }
 }
 
