@@ -1,33 +1,96 @@
 @import '../variables';
 .container {
     display: flex;
+    flex-direction: column;
     margin: 15px 15px 15px 16%;
-    .date-container {
+    .options-container {
+        display: flex;
+        .date-container {
+            padding: 15px;
+            margin-left: 10px;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+            border-radius: 10px;
+            flex-direction: column;
+            display: flex;
+            width: 20%;
+            text-align: center;
+            label {
+                margin: 10px;
+            }
+            input {
+                padding: 10px;
+                border-radius: 5px;
+                border: none;
+                outline: none;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+            }
+            button {
+                width: 90%;
+                margin: 20px auto;
+                padding: 10px;
+                border-radius: 12px;
+                font-size: 18px;
+            }
+        }
+        .vat-return-options-container {
+            padding: 15px;
+            margin-left: 10px;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+            border-radius: 10px;
+            flex-direction: column;
+            display: flex;
+            width: 15%;
+            text-align: center;
+            height: 100%;
+            gap: 10px;
+            select {
+                font-size: 16px;
+                background-color: white;
+                outline: none;
+                border: 1px solid black;
+                border-radius: 5px;
+                cursor: pointer;
+                padding: 4px 8px;
+            }
+            button {
+                border-radius: 12px;
+                font-size: 16px;
+                padding: 10px;
+            }
+        }
+    }
+    .vat-returns-table-container {
         padding: 15px;
-        margin-left: 10px;
+        margin: 10px;
         background-color: white;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
         border-radius: 10px;
-        flex-direction: column;
-        display: flex;
-        width: 20%;
-        text-align: center;
-        label {
-            margin: 10px;
-        }
-        input {
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            outline: none;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
-        }
-        button {
-            width: 90%;
-            margin: 20px auto;
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 18px;
+        table {
+            border-radius: 10px;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 15px;
+            thead {
+                background-color: #000000;
+                color: #ffffff;
+                th {
+                    padding: 4px 8px;
+                }
+            }
+            tbody {
+                border: 2px solid #cccccc;
+                .label {
+                    font-weight: bold;
+                }
+                tr:nth-child(even) {
+                    background-color: #f3f3f3;
+                }
+                td {
+                    padding: 8px;
+                }
+            }
         }
     }
 }

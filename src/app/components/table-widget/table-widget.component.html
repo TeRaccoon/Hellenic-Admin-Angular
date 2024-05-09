@@ -1,9 +1,47 @@
 <div class="container">
-    <div *ngIf="displayDateRange" class="date-container">
-        <label>Start date:</label>
-        <input type="date" [(ngModel)]="startDate">
-        <label>End date:</label>
-        <input type="date" [(ngModel)]="endDate">
-        <button class="button" (click)="collectData()">Calculate</button>
+    <div class="options-container">
+        <div *ngIf="displayDateRange" class="date-container">
+            <label>Start date:</label>
+            <input type="date" [(ngModel)]="startDate">
+            <label>End date:</label>
+            <input type="date" [(ngModel)]="endDate">
+            <button class="button" (click)="collectData()">Calculate</button>
+        </div>
+        <div class="vat-return-options-container" *ngIf="tableName == 'vat-returns'">
+            <select [(ngModel)]="selectedVatGroup">
+                <option *ngFor="let return of vatHistory" [ngValue]="return">{{ return }}</option>
+            </select>
+            <button class="button" (click)="loadVATReturns()">Show VAT Return</button>
+        </div>
+    </div>
+    <div *ngIf="vatReturnHistory.length > 0" class="vat-returns-table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Box Number</th>
+                    <th>Accounts Value</th>
+                    <th>Previous Adjustments</th>
+                    <th>Current Adjustments</th>
+                    <th>New Adjustments</th>
+                    <th>Fuel Scale Charge</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of this.alternativeData.altText; let index = index">
+                    <td></td>
+                    <td>{{ row }}</td>
+                    <td>{{ vatReturnHistory[index].accounts_value }}</td>
+                    <td>{{ vatReturnHistory[index].previous_adjustments }}</td>
+                    <td>{{ vatReturnHistory[index].current_adjustments }}</td>
+                    <td>{{ vatReturnHistory[index].new_adjustments }}</td>
+                    <td>{{ vatReturnHistory[index].fuel_scale_charge }}</td>
+                    <td>{{ vatReturnHistory[index].total }}</td>
+                </tr>
+            </tbody>
+            <h4>Notes:</h4>
+            <p>{{ vatReturnHistory[0].notes }}</p>
+        </table>
     </div>
 </div>
