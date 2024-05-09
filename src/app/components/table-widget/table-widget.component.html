@@ -30,14 +30,14 @@
             </thead>
             <tbody>
                 <tr *ngFor="let row of this.alternativeData.altText; let index = index">
-                    <td></td>
                     <td>{{ row }}</td>
-                    <td>{{ vatReturnHistory[index].accounts_value }}</td>
-                    <td>{{ vatReturnHistory[index].previous_adjustments }}</td>
-                    <td>{{ vatReturnHistory[index].current_adjustments }}</td>
-                    <td>{{ vatReturnHistory[index].new_adjustments }}</td>
-                    <td>{{ vatReturnHistory[index].fuel_scale_charge }}</td>
-                    <td>{{ vatReturnHistory[index].total }}</td>
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ vatReturnHistory[index].accounts_value | currency: 'GBP' }}</td>
+                    <td>{{ vatReturnHistory[index].previous_adjustments | currency: 'GBP' }}</td>
+                    <td>{{ vatReturnHistory[index].current_adjustments | currency: 'GBP' }}</td>
+                    <td>{{ vatReturnHistory[index].new_adjustments | currency: 'GBP' }}</td>
+                    <td>{{ vatReturnHistory[index].fuel_scale_charge | currency: 'GBP' }}</td>
+                    <td>{{ vatReturnHistory[index].total | currency: 'GBP' }}</td>
                 </tr>
             </tbody>
             <h4>Notes:</h4>
