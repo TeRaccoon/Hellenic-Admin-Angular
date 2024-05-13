@@ -47,7 +47,7 @@ export class ChangePasswordFormComponent {
   }
 
   async formSubmit() {
-    let submissionResponse = await lastValueFrom(this.dataService.submitFormData(this.changePasswordForm.value));
+    let submissionResponse = await this.dataService.submitFormData(this.changePasswordForm.value);
     this.formService.setMessageFormData({
       title: submissionResponse.success ? 'Success!' : 'Error!',
       message: submissionResponse.message,

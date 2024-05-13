@@ -103,10 +103,13 @@
                                     <th>Discount</th>
                                 </thead>
                                 <tbody *ngIf="invoicedItemsList.length > 0">
-                                    <tr *ngFor="let invoicedItem of invoicedItemsList">
-                                        <td>{{ invoicedItem.item_id }}</td>
+                                    <tr *ngFor="let invoicedItem of invoicedItemsList; let index = index">
+                                        <td>{{ invoicedItem.name }}</td>
                                         <td>{{ invoicedItem.quantity }}</td>
                                         <td>{{ invoicedItem.discount }}</td>
+                                        <td (click)="deleteRow(invoicedItemsList[index].id)">
+                                            <fa-icon [icon]="faX" />
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -179,7 +179,7 @@ export class TablelessViewComponent {
       }
 
       for (let boxNumber = 1; boxNumber < 10; boxNumber++) {
-        const response = await lastValueFrom(this.dataService.submitFormData({
+        const response = await this.dataService.submitFormData({
           action: "add",
           table_name: "vat_returns",
           vat_group_id: period,
@@ -191,7 +191,7 @@ export class TablelessViewComponent {
           total: returnData.total[boxNumber],
           return_date: date,
           notes: notes
-        }));
+        });
         if (!response.success) return false;
       }
       

@@ -4,7 +4,7 @@ import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCheck, faCloudUpload, faSpinner, faX, faAsterisk, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
-import _, { add, replace } from 'lodash';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-add-form',
@@ -78,7 +78,7 @@ export class AddFormComponent {
   selectOpen: {[key: string]: {opened: boolean}} = {};
 
   invoiceId: number | null = null;
-  invoicedItemsList: {item_id: string, quantity: number, discount: number}[] = [];
+  invoicedItemsList: any[] = [];
 
   constructor(
     private dataService: DataService,
@@ -97,6 +97,18 @@ export class AddFormComponent {
         this.loadForm();
       }
     });
+
+    this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
+      if (reloadRequested) {
+        await this.reload();
+      }
+    });
+  }
+
+  async reload() {
+    this.invoicedItemsList = await lastValueFrom(this.dataService.processData('invoiced-items', this.invoiceId?.toString()))
+    this.invoicedItemsList = Array.isArray(this.invoicedItemsList) ? this.invoicedItemsList : [this.invoicedItemsList];
+    this.formService.performReload();
   }
 
   async loadForm() {
@@ -316,7 +328,7 @@ export class AddFormComponent {
   }
 
   async submissionWithoutImage(hideForm: boolean) {
-    let submissionResponse = await lastValueFrom(this.dataService.submitFormData(this.addForm.value));
+    let submissionResponse = await this.dataService.submitFormData(this.addForm.value);
     this.formService.setMessageFormData({
       title: submissionResponse.success ? 'Success!' : 'Error!',
       message: submissionResponse.message,
@@ -329,7 +341,7 @@ export class AddFormComponent {
 
     if (uploadResponse.success) {
       this.addForm.get('image_file_name')?.setValue(uploadResponse.imageFileName);
-      const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(this.addForm.value))
+      const formSubmitResponse = await this.dataService.submitFormData(this.addForm.value)
 
       this.formService.setMessageFormData({
         title: formSubmitResponse.success ? 'Success!' : 'Error!',
@@ -444,20 +456,12 @@ export class AddFormComponent {
     }
 
     let itemIdNames = this.replacementData["Item ID"];
-    
-    let itemName = itemIdNames.data.find((data) => data.id == Number(this.addInvoicedItemForm.get("item_id")?.value))?.replacement;
-    let quantity = this.addInvoicedItemForm.get("quantity")?.value;
-    let discount = this.addInvoicedItemForm.get("discount")?.value;
-
-    if (itemName != null && quantity != null) {
-      this.invoicedItemsList.push({item_id: itemName, quantity: quantity, discount: discount});
-    }
 
     this.addInvoicedItemForm.addControl('action', this.fb.control('add'));
     this.addInvoicedItemForm.addControl('table_name', this.fb.control("invoiced_items"));
     this.addInvoicedItemForm.addControl('invoice_id', this.fb.control(this.invoiceId));
 
-    let submissionResponse = await lastValueFrom(this.dataService.submitFormData(this.addInvoicedItemForm.value));
+    let submissionResponse = await this.dataService.submitFormData(this.addInvoicedItemForm.value);
     if (!submissionResponse.success) {
       this.formService.setMessageFormData({
         title: 'Error!',
@@ -465,6 +469,9 @@ export class AddFormComponent {
       });
       this.formService.showMessageForm();
     }
+
+    this.invoicedItemsList = await lastValueFrom(this.dataService.processData('invoiced-items', this.invoiceId?.toString()))
+    this.invoicedItemsList = Array.isArray(this.invoicedItemsList) ? this.invoicedItemsList : [this.invoicedItemsList];
 
     event.preventDefault();
     this.findInvalidControls();
@@ -519,5 +526,11 @@ export class AddFormComponent {
         return true;
     }
     return false;
+  }
+
+  deleteRow(id: number) {
+    this.formService.setSelectedTable('invoiced_items');
+    this.formService.setDeleteFormIds([id]);
+    this.formService.showDeleteForm();
   }
 }

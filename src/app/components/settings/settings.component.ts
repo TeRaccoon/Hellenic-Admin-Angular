@@ -88,7 +88,7 @@ export class SettingsComponent {
       }
     });
 
-    const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(formData));
+    const formSubmitResponse = await this.dataService.submitFormData(formData);
     this.endSubmission(formSubmitResponse);
   }
 
@@ -125,7 +125,7 @@ export class SettingsComponent {
       table_name: 'bands'
     };
 
-    let response = await lastValueFrom(this.dataService.submitFormData(formData));
+    let response = await this.dataService.submitFormData(formData);
     this.formService.setMessageFormData({
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,

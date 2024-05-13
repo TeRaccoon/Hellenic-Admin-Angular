@@ -35,7 +35,7 @@ export class LoginComponent {
 
   async formSubmit() {
     if (this.loginForm.valid) {
-      let loginResponse = await lastValueFrom(this.dataService.submitFormData(this.loginForm.value));
+      let loginResponse = await this.dataService.submitFormData(this.loginForm.value);
       if (loginResponse.success) {
         let accessLevel = loginResponse.data == null ? 'low' : loginResponse.data;
         this.authService.login(accessLevel);

@@ -484,7 +484,7 @@ export class ViewComponent {
     data[columnName] = checked ? "Yes" : "No";
     data['action'] = 'append';
     data['table_name'] = String(this.tableName);
-    await lastValueFrom(this.dataService.submitFormData(data));
+    await this.dataService.submitFormData(data);
   }
 
   selectRow(event: Event, rowId: number) {
@@ -671,7 +671,7 @@ export class ViewComponent {
           data['action'] = 'append';
           data['table_name'] = String(this.tableName);
 
-          let submissionResponse = await lastValueFrom(this.dataService.submitFormData(data));
+          let submissionResponse = await this.dataService.submitFormData(data);
 
           if (submissionResponse.success) {
             this.reloadTable();

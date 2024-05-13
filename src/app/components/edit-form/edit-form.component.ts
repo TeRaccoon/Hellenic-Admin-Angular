@@ -125,10 +125,13 @@ export class EditFormComponent {
         if (!Array.isArray(this.filteredReplacementData[key].data)) {
           this.filteredReplacementData[key].data = [this.filteredReplacementData[key].data];
         }
-        var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))!.replacement;
-        this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
-        this.selectedReplacementFilter[key] = { selectFilter: ''};
-        this.selectOpen[key] = {opened: false};
+
+        if (this.filteredReplacementData[key].data.length > 0) {
+          var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))!.replacement;
+          this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
+          this.selectedReplacementFilter[key] = { selectFilter: ''};
+          this.selectOpen[key] = {opened: false};
+        }
       });
       this.loaded = true;
     }
@@ -314,7 +317,7 @@ export class EditFormComponent {
   }  
   
   async submissionWithoutImage(hideForm: boolean) {
-    let submissionResponse = await lastValueFrom(this.dataService.submitFormData(this.editForm.value));
+    let submissionResponse = await this.dataService.submitFormData(this.editForm.value);
     this.formService.setMessageFormData({
       title: submissionResponse.success ? 'Success!' : 'Error!',
       message: submissionResponse.message,
@@ -327,7 +330,7 @@ export class EditFormComponent {
 
     if (uploadResponse.success) {
       this.editForm.get('image_file_name')?.setValue(uploadResponse.imageFileName);
-      const formSubmitResponse = await lastValueFrom(this.dataService.submitFormData(this.editForm.value))
+      const formSubmitResponse = await this.dataService.submitFormData(this.editForm.value)
 
       this.formService.setMessageFormData({
         title: formSubmitResponse.success ? 'Success!' : 'Error!',
@@ -372,7 +375,7 @@ export class EditFormComponent {
       'image_file_name': this.fileName
     };
 
-    let insertResponse = await lastValueFrom(this.dataService.submitFormData(imageFormData));
+    let insertResponse = await this.dataService.submitFormData(imageFormData);
     if (insertResponse.success) {
       this.formService.setMessageFormData({
         title: 'Success!',

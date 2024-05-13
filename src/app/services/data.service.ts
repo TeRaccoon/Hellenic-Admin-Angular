@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, throwError } from 'rxjs';
+import { Observable, Subject, lastValueFrom, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 export const apiUrlBase = "http://localhost/API/";
@@ -37,21 +37,42 @@ export class DataService {
     return this.http.get<any>(url);
   }
 
-  submitFormData(data: any): Observable<any> {
+  // submitFormData(data: any): Observable<any> {
+  //   const url = apiUrlBase + 'manage_data.php';
+  //   return this.http.post(url, data, {withCredentials: true}).pipe(
+  //     map((response: any) => {
+  //       if (response) {
+  //         return response;
+  //       } else {
+  //         throw new Error('Unexpected response format');
+  //       }
+  //     }),
+  //     catchError((error: any) => {
+  //       console.error('HTTP error occurred:', error);
+  //       return throwError(error);
+  //     })
+  //   );
+  // }
+
+  async submitFormData(data: any) {
     const url = apiUrlBase + 'manage_data.php';
-    return this.http.post(url, data, {withCredentials: true}).pipe(
-      map((response: any) => {
-        if (response) {
-          return response;
-        } else {
-          throw new Error('Unexpected response format');
-        }
-      }),
-      catchError((error: any) => {
-        console.error('HTTP error occurred:', error);
-        return throwError(error);
-      })
-    );
+    let submissionResponse = await lastValueFrom<any>(this.http.post(url, data, {withCredentials: true}));
+    return submissionResponse;
+  }
+
+  async syncInsert(tableName: string, id: string, quantity: number, url: string) {
+    let data = {
+      id: id,
+      quantity: quantity,
+      table: tableName,
+      query: `${tableName}_insert`
+    };
+
+    switch(tableName) {
+      case "invoiced_items":
+        let syncResponse = await lastValueFrom(this.http.post(url, data, {withCredentials: true}))
+        break;
+    }
   }
 
   uploadImage(formData: FormData): Observable<any> {

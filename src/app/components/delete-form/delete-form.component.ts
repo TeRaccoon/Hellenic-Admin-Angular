@@ -39,7 +39,7 @@ export class DeleteFormComponent {
       idString = String(this.ids[0]);
     }
     
-    let deletionResponse = await lastValueFrom(this.dataService.submitFormData({action: 'delete', id: idString, table_name: this.tableName}));
+    let deletionResponse = await this.dataService.submitFormData({action: 'delete', id: idString, table_name: this.tableName});
     this.formService.setMessageFormData({title: deletionResponse.success ? 'Success!' : 'Error!', message: deletionResponse.message});
     this.formService.showMessageForm();
     this.hide();
