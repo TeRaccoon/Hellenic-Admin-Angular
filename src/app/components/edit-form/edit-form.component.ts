@@ -131,7 +131,7 @@ export class EditFormComponent {
         if (!Array.isArray(this.filteredReplacementData[key].data)) {
           this.filteredReplacementData[key].data = [this.filteredReplacementData[key].data];
         }
-
+        
         if (this.filteredReplacementData[key].data.length > 0) {
           var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))!.replacement;
           this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
@@ -139,11 +139,21 @@ export class EditFormComponent {
           this.selectOpen[key] = {opened: false};
         }
       });
+
+      if (this.tableName == "invoices") {
+        let customerId = this.editForm.get("customer_id")?.value;
+        if (customerId != null) {
+          let addresses = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", String(customerId)));
+          this.updateCustomerAddresses(addresses, "Delivery Address");
+          this.updateCustomerAddresses(addresses, "Billing Address");
+        }
+      }
+
       this.loaded = true;
     }
   }
 
-  buildForm() {
+  async buildForm() {
     this.isLocked();
     
     let formDataArray = Object.entries(this.formData);
@@ -178,6 +188,7 @@ export class EditFormComponent {
         }
       }
     }
+
     this.editForm.addControl('action', this.fb.control('append'));
     this.editForm.addControl('id', this.fb.control(this.id));
     this.editForm.addControl('table_name', this.fb.control(this.tableName));
