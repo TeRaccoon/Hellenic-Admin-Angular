@@ -177,7 +177,6 @@ export class TablelessViewComponent {
       if (await this.vatReturnExists(period)) {
         await lastValueFrom(this.dataService.processData("delete-vat-returns-by-group-id", period));
       }
-
       for (let boxNumber = 1; boxNumber < 10; boxNumber++) {
         const response = await this.dataService.submitFormData({
           action: "add",
