@@ -456,7 +456,7 @@ export class EditFormComponent {
     this.selectedReplacementData[key];
     const filter = event.target.value;
 
-    if (!this.searchWaiting && this.filteredReplacementData[key].data.length > 0) {
+    if (!this.searchWaiting && this.replacementData[key].data.length > 0) {
         this.searchWaiting = true;
         _.debounce(() => {
             this.filteredReplacementData = _.cloneDeep(this.replacementData);
