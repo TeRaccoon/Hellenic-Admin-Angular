@@ -69,6 +69,11 @@ export class EditFormComponent {
   error: string | null = null;
   submitted = false;
   submissionEnded = false;
+
+  debounceSearch: (key: string, filter: string, field: string | null) => void = _.debounce(
+    (key: string, filter: string, field: string | null) => this.performSearch(key, filter, field),
+    1000
+  );
   
   alternativeSelectedData: { [key: string]: {selectData: string} } = {};
   selectedReplacementData: { [key:string]: {selectData: string, selectDataId: Number | null } | null} = {};
@@ -82,6 +87,7 @@ export class EditFormComponent {
     private fb: FormBuilder
   ) {
     this.editForm = this.fb.group({});
+    this.debounceSearch = _.debounce(this.performSearch.bind(this), 1000);
   }
 
   ngOnInit() {
@@ -453,21 +459,22 @@ export class EditFormComponent {
   }
 
   filterDropSelect(key: string, event: any, field: string | null) {
-    this.selectedReplacementData[key];
-    const filter = event.target.value;
+    const filter = event.target.value || '';
+    this.selectedReplacementData[key]!.selectData = filter;
+  
+    if (this.replacementData[key]?.data.length > 0) {
+      this.debounceSearch(key, filter, field);
+    }
+  }
 
-    if (!this.searchWaiting && this.replacementData[key].data.length > 0) {
-        this.searchWaiting = true;
-        _.debounce(() => {
-            this.filteredReplacementData = _.cloneDeep(this.replacementData);
-            this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data) => {
-                return data.replacement && data.replacement.toLowerCase().includes(filter.toLowerCase());
-            });
-            if (field) {
-                this.editForm.get(field)?.setValue(filter);
-            }
-            this.searchWaiting = false;
-        }, 1000)();
+  performSearch(key: string, filter: string, field: string | null) {
+    this.filteredReplacementData = _.cloneDeep(this.replacementData);
+    this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data: any) => {
+      return data.replacement && data.replacement.toLowerCase().includes(filter.toLowerCase());
+    });
+
+    if (field) {
+      this.editForm.get(field)?.setValue(filter);
     }
   }
 
