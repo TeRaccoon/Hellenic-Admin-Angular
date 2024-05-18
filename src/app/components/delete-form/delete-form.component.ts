@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
-import { lastValueFrom } from 'rxjs';
+import { faX } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-delete-form',
@@ -12,6 +12,8 @@ export class DeleteFormComponent {
   formVisible = 'hidden';
   ids: number[] = [];
   tableName: string = "";
+
+  faX = faX;
 
   constructor(private dataService: DataService, private formService: FormService) {  }
 

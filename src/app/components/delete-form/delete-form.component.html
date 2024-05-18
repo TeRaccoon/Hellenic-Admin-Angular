@@ -2,7 +2,9 @@
     <div class="content">
         <div class="header-section">
             <h1>Deleting...</h1>
-            <a (click)="hide()">X</a>
+            <a (click)="hide()">
+                <fa-icon [icon]="faX" />
+            </a>
         </div>
         <div class="content-section">
             <ng-container *ngIf="ids.length == 1 else elseBlock">
