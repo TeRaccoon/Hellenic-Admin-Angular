@@ -112,7 +112,10 @@ export class InvoiceViewComponent {
     });
   }
 
-  print() {
+  async print() {
+    this.dataService.retrievePrintInvoiceIds().forEach(async (id: string) => {
+      await lastValueFrom(this.dataService.processData('set-to-printed', id));
+    });
     window.print();
   }
 }
