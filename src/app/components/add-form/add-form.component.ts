@@ -428,6 +428,14 @@ export class AddFormComponent {
         replacement: replacement
       };
     });
+
+    if (addressReplacement.length == 1) {
+      this.selectedReplacementData[key] = {
+        selectData: addressReplacement[0].replacement,
+        selectDataId: addressReplacement[0].id
+      };
+    }
+    
     this.replacementData[key].data = addressReplacement;
     this.filteredReplacementData[key].data = addressReplacement;
   }

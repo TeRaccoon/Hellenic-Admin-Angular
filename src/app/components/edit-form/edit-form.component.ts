@@ -466,6 +466,7 @@ export class EditFormComponent {
         replacement: replacement
       };
     });
+
     this.replacementData[key].data = addressReplacement;
     this.filteredReplacementData[key].data = addressReplacement;
   }
