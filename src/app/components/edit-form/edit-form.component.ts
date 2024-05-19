@@ -72,7 +72,7 @@ export class EditFormComponent {
 
   debounceSearch: (key: string, filter: string, field: string | null) => void = _.debounce(
     (key: string, filter: string, field: string | null) => this.performSearch(key, filter, field),
-    1000
+    750
   );
   
   alternativeSelectedData: { [key: string]: {selectData: string} } = {};
@@ -485,6 +485,13 @@ export class EditFormComponent {
     this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data: any) => {
       return data.replacement && data.replacement.toLowerCase().includes(filter.toLowerCase());
     });
+
+    if (this.filteredReplacementData[key].data.length == 1) {
+      this.selectedReplacementData[key] = {
+        selectData: this.filteredReplacementData[key].data[0].replacement,
+        selectDataId: this.filteredReplacementData[key].data[0].id
+      };
+    }
 
     if (field) {
       this.editForm.get(field)?.setValue(filter);
