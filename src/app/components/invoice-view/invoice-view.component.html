@@ -6,130 +6,131 @@
             <input [ngModel]="deliveryOnly" (change)="deliveryOnly = !deliveryOnly" type="checkbox" class="checkbox">
         </div>
     </div>
-    <div *ngFor="let invoice of invoiceData; let key = index" class="container" [ngClass]="deliveryOnly ? 'print-exclude' : ''">
-        <div class="header-section">
-            <div class="row">
-                <span class="label">
-                    <h2>Sales Invoice / Delivery</h2>
-                </span>
-                <span class="image-container">
-                    <img style="width:100px;height:100px;" [src]="imageUrlBase + 'static/logo.jpg'" alt="Logo">
-                </span>
+    <ng-container *ngIf="!deliveryOnly">
+        <div *ngFor="let invoice of invoiceData; let key = index" class="container" [ngClass]="deliveryOnly ? 'print-exclude' : ''">
+            <div class="header-section">
+                <div class="row">
+                    <span class="label">
+                        <h2>Sales Invoice</h2>
+                    </span>
+                    <span class="image-container">
+                        <img style="width:100px;height:100px;" [src]="imageUrlBase + 'static/logo.jpg'" alt="Logo">
+                    </span>
+                </div>
+            </div>
+            <div class="invoice-container">
+                <div class="row">
+                    <div class="section">
+                        <div class="row">
+                            <span class="label">Invoice Title: </span>
+                            <span class="value">{{ invoice['title'] }}</span>
+                        </div>
+                        <div class="row">
+                            <span class="label">Invoice Date: </span>
+                            <span class="value">{{ date | date: 'dd/MM/yyyy' }}</span>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="row">
+                            <span class="label">Estimated Delivery Date:</span>
+                            <span class="value">{{ invoice['delivery_date'] | date: 'dd/MM/yyyy' }}</span>
+                        </div>
+                        <div class="row">
+                            <span class="label">Created At:</span>
+                            <span class="value">{{ invoice['created_at'] | date: 'dd/MM/yyyy' }}</span><br>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="section card">
+                        <p> Unit 15<br> Hilsea Industrial Estate<br> Limberline Spur<br> Portsmouth
+                            <br> PO3 5JW</p>
+                    </div>
+                    <div class="section card">
+                        <p>Tel.: 023 9250 2120<br> Email: accounts.hellenicgrocery.co.uk<br> Company No.: 8603006<br> VAT No.: 171817403<br> AWRS: XRAW00000106442<br> EORI No.: GB171817403000</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="section card">
+                        <h1>Invoice Address:</h1>
+                        <p>{{ invoice['invoice_address_one'] }}</p>
+                        <p>{{ invoice['invoice_address_two'] }}</p>
+                        <p>{{ invoice['invoice_address_three'] }}</p>
+                        <p>{{ invoice['invoice_postcode'] }}</p>
+                    </div>
+                    <div class="section card">
+                        <h1>Delivery Address:</h1>
+                        <p>{{ invoice['address_line_1'] }}</p>
+                        <p>{{ invoice['address_line_2'] }}</p>
+                        <p>{{ invoice['address_line_3'] }}</p>
+                        <p>{{ invoice['address_line_4'] }}</p>
+                        <p>{{ invoice['postcode'] }}</p>
+                    </div>
+                    <div class="section card">
+                        <h1>Payment Details:</h1>
+                        <p><u>Hellenic Grocery Ltd</u><br> Account No: 63868745<br> Sort Code: 20-69-40<br><br> Please use this account for any payment</p>
+                    </div>
+                </div>
+                <div class="row splitteable">
+                    <div class="items section card">
+                        <div class="row item-headers">
+                            <span style="width: 40%;">Item Name</span>
+                            <span style="width: 15%;">Quantity</span>
+                            <span style="width: 15%;">Unit Price</span>
+                            <span style="width: 15%;">Net Amount</span>
+                            <span style="width: 15%;">VAT</span>
+                        </div>
+                        <div *ngFor="let item of invoiceItems[key]" class="row">
+                            <p style="width: 40%;">{{ item['item_name'] }}</p>
+                            <p style="width: 15%;">{{ item['quantity'] }}</p>
+                            <p style="width: 15%;">{{ item['price'] | currency:'GBP' }}</p>
+                            <p style="width: 15%;">{{ (item['quantity'] * item['price']) | currency:'GBP' }}</p>
+                            <p style="width: 15%;">{{ item['vat_charge'] | currency:'GBP' }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row splitteable">
+                    <div class="balance section card">
+                        <h1>Previous Outstanding Balance</h1>
+                        <p>{{ invoice['outstanding_balance'] | currency:'GBP' }}</p>
+                        <h1>Current Outstanding Balance</h1>
+                        <p>{{ invoice['outstanding_balance'] + invoice['total'] | currency:'GBP' }}</p>
+                    </div>
+                    <div class="section card">
+                        <div class="row">
+                            <span class="label">Net Value:</span>
+                            <span class="value">{{ invoice['net_value'] | currency:'GBP' }}</span>
+                        </div>
+                        <div class="row">
+                            <span class="label">VAT Value:</span>
+                            <span class="value">{{ invoice['vat'] | currency:'GBP' }}</span><br>
+                        </div>
+                        <div class="row">
+                            <span class="label">Total:</span>
+                            <span class="value">{{ invoice['total'] | currency:'GBP' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row splitteable">
+                    <div class="agreement section card">
+                        <h1>Agreement:</h1>
+                        <p>This serves as an acknowledgment that I have received my order in its entirety, with no missing or damaged products. I have verified that all items listed on the invoice are accounted for. Additionally, I confirm that all products
+                            have been delivered at the appropriate temperature, meeting the necessary requirements.</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="section card">
+                        <h1>Customer Signature:</h1>
+                    </div>
+                    <div class="section card">
+                        <h1>Driver Signature:</h1>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="invoice-container">
-            <div class="row">
-                <div class="section">
-                    <div class="row">
-                        <span class="label">Invoice Title: </span>
-                        <span class="value">{{ invoice['title'] }}</span>
-                    </div>
-                    <div class="row">
-                        <span class="label">Invoice Date: </span>
-                        <span class="value">{{ date | date: 'dd/MM/yyyy' }}</span>
-                    </div>
-                </div>
-                <div class="section">
-                    <div class="row">
-                        <span class="label">Estimated Delivery Date:</span>
-                        <span class="value">{{ invoice['delivery_date'] | date: 'dd/MM/yyyy' }}</span>
-                    </div>
-                    <div class="row">
-                        <span class="label">Created At:</span>
-                        <span class="value">{{ invoice['created_at'] | date: 'dd/MM/yyyy' }}</span><br>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="section card">
-                    <p> Unit 15<br> Hilsea Industrial Estate<br> Limberline Spur<br> Portsmouth
-                        <br> PO3 5JW</p>
-                </div>
-                <div class="section card">
-                    <p>Tel.: 023 9250 2120<br> Email: accounts.hellenicgrocery.co.uk<br> Company No.: 8603006<br> VAT No.: 171817403<br> AWRS: XRAW00000106442<br> EORI No.: GB171817403000</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="section card">
-                    <h1>Invoice Address:</h1>
-                    <p>{{ invoice['invoice_address_one'] }}</p>
-                    <p>{{ invoice['invoice_address_two'] }}</p>
-                    <p>{{ invoice['invoice_address_three'] }}</p>
-                    <p>{{ invoice['invoice_postcode'] }}</p>
-                </div>
-                <div class="section card">
-                    <h1>Delivery Address:</h1>
-                    <p>{{ invoice['address_line_1'] }}</p>
-                    <p>{{ invoice['address_line_2'] }}</p>
-                    <p>{{ invoice['address_line_3'] }}</p>
-                    <p>{{ invoice['address_line_4'] }}</p>
-                    <p>{{ invoice['postcode'] }}</p>
-                </div>
-                <div class="section card">
-                    <h1>Payment Details:</h1>
-                    <p><u>Hellenic Grocery Ltd</u><br> Account No: 63868745<br> Sort Code: 20-69-40<br><br> Please use this account for any payment</p>
-                </div>
-            </div>
-            <div class="row splitteable">
-                <div class="items section card">
-                    <div class="row item-headers">
-                        <span style="width: 40%;">Item Name</span>
-                        <span style="width: 15%;">Quantity</span>
-                        <span style="width: 15%;">Unit Price</span>
-                        <span style="width: 15%;">Net Amount</span>
-                        <span style="width: 15%;">VAT</span>
-                    </div>
-                    <div *ngFor="let item of invoiceItems[key]" class="row">
-                        <p style="width: 40%;">{{ item['item_name'] }}</p>
-                        <p style="width: 15%;">{{ item['quantity'] }}</p>
-                        <p style="width: 15%;">{{ item['price'] | currency:'GBP' }}</p>
-                        <p style="width: 15%;">{{ (item['quantity'] * item['price']) | currency:'GBP' }}</p>
-                        <p style="width: 15%;">{{ item['vat_charge'] | currency:'GBP' }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row splitteable">
-                <div class="balance section card">
-                    <h1>Previous Outstanding Balance</h1>
-                    <p>{{ invoice['outstanding_balance'] | currency:'GBP' }}</p>
-                    <h1>Current Outstanding Balance</h1>
-                    <p>{{ invoice['outstanding_balance'] + invoice['total'] | currency:'GBP' }}</p>
-                </div>
-                <div class="section card">
-                    <div class="row">
-                        <span class="label">Net Value:</span>
-                        <span class="value">{{ invoice['net_value'] | currency:'GBP' }}</span>
-                    </div>
-                    <div class="row">
-                        <span class="label">VAT Value:</span>
-                        <span class="value">{{ invoice['vat'] | currency:'GBP' }}</span><br>
-                    </div>
-                    <div class="row">
-                        <span class="label">Total:</span>
-                        <span class="value">{{ invoice['total'] | currency:'GBP' }}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="row splitteable">
-                <div class="agreement section card">
-                    <h1>Agreement:</h1>
-                    <p>This serves as an acknowledgment that I have received my order in its entirety, with no missing or damaged products. I have verified that all items listed on the invoice are accounted for. Additionally, I confirm that all products
-                        have been delivered at the appropriate temperature, meeting the necessary requirements.</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="section card">
-                    <h1>Customer Signature:</h1>
-                </div>
-                <div class="section card">
-                    <h1>Driver Signature:</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container delivery">
-        <h1>Deliveries</h1>
-        <ng-container *ngFor="let invoice of deliveryData; let index = index">
+    </ng-container>
+    <ng-container *ngFor="let invoice of deliveryData; let index = index">
+        <div class="container delivery-container">
             <h2>INV{{ invoice.invoice_id }}</h2>
             <table>
                 <thead>
@@ -173,8 +174,8 @@
             <ng-template #noItems>
                 <h3>There are no items for this invoice</h3>
             </ng-template>
-        </ng-container>
-    </div>
+        </div>
+    </ng-container>
 </ng-container>
 <ng-template #loading>
     <ng-container *ngIf="!loaded">

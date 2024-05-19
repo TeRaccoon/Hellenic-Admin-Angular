@@ -12,6 +12,13 @@
     font-size: 17px;
 }
 
+.menu-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
 .container {
     width: 21cm;
     margin-left: auto;
@@ -73,18 +80,69 @@
     }
 }
 
-.delivery {
-    table {
-        border-collapse: collapse;
+.delivery-container {
+    width: 21cm;
+    page-break-inside: avoid;
+    font-family: Arial, sans-serif;
+    height: 29.7cm;
+    color: #333;
+    padding: 20px;
+    box-sizing: border-box;
+    margin: 10px;
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2em;
+        color: #444;
     }
-    table,
-    th {
-        border: 1px solid black;
+    h2 {
+        margin-top: 20px;
+        font-size: 1.5em;
+        color: #555;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        thead {
+            background-color: #f9f9f9;
+            th {
+                font-weight: bold;
+            }
+        }
+        tbody {
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+            .data-row {
+                td {
+                    vertical-align: top;
+                }
+            }
+        }
     }
     .delivery-items-table {
-        .item-image {
-            max-width: 20%;
+        margin-top: 10px;
+        th,
+        td {
+            text-align: center;
         }
+        .item-image {
+            max-width: 50px;
+            max-height: 50px;
+            display: block;
+            margin: 0 auto;
+        }
+    }
+    h3 {
+        text-align: center;
+        color: #888;
     }
 }
 
