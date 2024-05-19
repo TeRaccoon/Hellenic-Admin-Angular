@@ -406,6 +406,7 @@ export class AddFormComponent {
 
     if (this.tableName == "invoices" && field == "customer_id") {
       let addresses = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", String(dataId)));
+      addresses = Array.isArray(addresses) ? addresses : [addresses];
       this.updateCustomerAddresses(addresses, "Delivery Address");
       this.updateCustomerAddresses(addresses, "Billing Address");
     }

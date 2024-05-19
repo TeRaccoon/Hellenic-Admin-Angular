@@ -144,6 +144,7 @@ export class EditFormComponent {
         let customerId = this.editForm.get("customer_id")?.value;
         if (customerId != null) {
           let addresses = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", String(customerId)));
+          addresses = Array.isArray(addresses) ? addresses : [addresses];
           this.updateCustomerAddresses(addresses, "Delivery Address");
           this.updateCustomerAddresses(addresses, "Billing Address");
         }
