@@ -538,7 +538,7 @@ export class AddFormComponent {
   canDisplayInputField(key: string) {
     switch(this.tableName) {
       case "invoices":
-        return !(key == "VAT" || key == "Total" || key == "Net Value" || key == "Status" || key == "Printed" || key == "Paid");
+        return !(key == "VAT" || key == "Total" || key == "Net Value" || key == "Status" || key == "Printed" || key == "Paid" || key == "Outstanding Balance");
     }
     return true;
   }
