@@ -20,6 +20,7 @@ export class AddFormComponent {
   faCheck = faCheck;
 
   searchWaiting = false;
+  disabled = false;
 
   addForm: FormGroup;
   addInvoicedItemForm: FormGroup;
@@ -144,6 +145,7 @@ export class AddFormComponent {
     this.file = null;
     this.invoicedItemsList = [];
     this.invoiceCreated = false;
+    this.disabled = false;
   }
 
   async replaceAmbiguousData() {
@@ -361,22 +363,31 @@ export class AddFormComponent {
   }
 
   endSubmission(reset: boolean, hideForm: boolean) {
-    this.formService.sync(this.addForm.value, 'add', this.tableName)
-    !reset && this.formService.showMessageForm();
-    hideForm && this.hide();
-    if (reset) {
-      this.formService.requestReload();
-      this.addForm.reset();
-      this.alternativeSelectData = {};
-      this.submitted = false;
-      this.addForm.get('action')?.setValue('add');
-      this.addForm.get('table_name')?.setValue(this.tableName);
-      this.error = null;
-      if (this.tableName == "invoices") {
-        this.invoiceCreated = true;
+    this.formService.sync(this.addForm.value, 'add', this.tableName);
+    if (this.tableName == "invoices") {
+      this.invoiceCreated = true;
+      this.disableControls();
+    } else {
+      !reset && this.formService.showMessageForm();
+      hideForm && this.hide();
+      if (reset) {
+        this.formService.requestReload();
+        this.addForm.reset();
+        this.alternativeSelectData = {};
+        this.submitted = false;
+        this.addForm.get('action')?.setValue('add');
+        this.addForm.get('table_name')?.setValue(this.tableName);
+        this.error = null;
       }
     }
     this.submissionEnded = true;
+  }
+
+  disableControls() {
+    Object.keys(this.addForm.controls).forEach((controlKey: string) => {
+      this.addForm.get(controlKey)?.disable();
+    });
+    this.disabled = true;
   }
 
   primeImage(event: any) {
@@ -478,8 +489,6 @@ export class AddFormComponent {
       await this.formSubmit(false);
     }
 
-    let itemIdNames = this.replacementData["Item ID"];
-
     this.addInvoicedItemForm.addControl('action', this.fb.control('add'));
     this.addInvoicedItemForm.addControl('table_name', this.fb.control("invoiced_items"));
     this.addInvoicedItemForm.addControl('invoice_id', this.fb.control(this.invoiceId));
@@ -529,7 +538,7 @@ export class AddFormComponent {
   canDisplayInputField(key: string) {
     switch(this.tableName) {
       case "invoices":
-        return !(key == "VAT" || key == "Total" || key == "Net Value");
+        return !(key == "VAT" || key == "Total" || key == "Net Value" || key == "Status" || key == "Printed" || key == "Paid");
     }
     return true;
   }
