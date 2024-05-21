@@ -355,7 +355,7 @@ export class EditFormComponent {
         message: formSubmitResponse.message,
       });
 
-      this.endSubmission(formSubmitResponse.success, hideForm);
+      this.endSubmission(formSubmitResponse.success, hideForm && formSubmitResponse.success);
     } else {
       hideForm && this.hide();
     }
