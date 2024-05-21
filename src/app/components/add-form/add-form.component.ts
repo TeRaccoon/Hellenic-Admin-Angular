@@ -247,7 +247,6 @@ export class AddFormComponent {
 
   async formSubmit(hideForm: boolean) {
     this.submitted = true;
-
     if (this.addForm.valid) {
       if (this.tableName != "categories" && this.tableName != 'image_locations') {
         const validationResult = this.imageSubmissionValidation();
