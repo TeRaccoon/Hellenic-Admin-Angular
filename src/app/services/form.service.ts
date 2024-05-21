@@ -323,9 +323,9 @@ export class FormService {
         break;
 
       case 'customer_payments':
-        var data = await this.getIdReplacementData('customers_id_name', dataService);
-        formData['Customer ID'].inputType = 'replacement';        
-        replacementData['Customer ID'] = { data: data };
+        var data = await this.getIdReplacementData('invoice_id_title', dataService);
+        formData['Invoice ID'].inputType = 'replacement';        
+        replacementData['Invoice ID'] = { data: data };
         break;
 
       case 'customer_address':
