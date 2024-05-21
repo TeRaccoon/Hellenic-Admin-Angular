@@ -418,13 +418,13 @@ export class AddFormComponent {
     if (this.tableName == "invoices" && field == "customer_id") {
       let addresses = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", String(dataId)));
       addresses = Array.isArray(addresses) ? addresses : [addresses];
-      this.updateCustomerAddresses(addresses, "Delivery Address");
-      this.updateCustomerAddresses(addresses, "Billing Address");
+      this.updateCustomerAddresses(addresses, "Delivery Address", 'address_id');
+      this.updateCustomerAddresses(addresses, "Billing Address", 'billing_address_id');
     }
     this.selectOpen[key].opened = false;
   }
 
-  async updateCustomerAddresses(addressData: [], key: string) {
+  async updateCustomerAddresses(addressData: [], key: string, secondaryKey: string) {
     let addressReplacement = addressData.map((address: any) => {
       let replacement;
       if (key == "Delivery Address") {
@@ -445,6 +445,7 @@ export class AddFormComponent {
         selectData: addressReplacement[0].replacement,
         selectDataId: addressReplacement[0].id
       };
+      this.addForm.get(secondaryKey)?.setValue(addressReplacement[0].id);
     }
     
     this.replacementData[key].data = addressReplacement;
