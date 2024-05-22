@@ -477,6 +477,8 @@ export class AddFormComponent {
         selectData: this.filteredReplacementData[key].data[0].replacement,
         selectDataId: this.filteredReplacementData[key].data[0].id
       };
+      
+      field != null && this.addForm.get(field.toString())?.setValue(this.filteredReplacementData[key].data[0].id)
     }
 
     if (field) {
@@ -538,7 +540,7 @@ export class AddFormComponent {
   canDisplayInputField(key: string) {
     switch(this.tableName) {
       case "invoices":
-        return !(key == "VAT" || key == "Total" || key == "Net Value" || key == "Status" || key == "Printed" || key == "Paid" || key == "Outstanding Balance");
+        return !(key == "VAT" || key == "Total" || key == "Net Value" || key == "Status" || key == "Printed" || key == "Paid" || key == "Outstanding Balance" || key == "Delivery Type" || key == "Type");
     }
     return true;
   }
