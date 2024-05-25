@@ -541,7 +541,7 @@ export class AddFormComponent {
     if (this.addForm.get('customer_id')?.value != '') {
       this.addressNotListedKeys.push(key);
     } else {
-      this.error = "Please select a customer ID first!";
+      this.error = "Please select a customer first!";
       this.submissionEnded = true;
     }
   }
