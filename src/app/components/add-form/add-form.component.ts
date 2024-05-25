@@ -65,6 +65,22 @@ export class AddFormComponent {
 
   itemData: any = [];
 
+  addressNotListedKeys: string[] = [];
+  addresses: {[key: string]: any } = {
+    'Delivery Address': {
+      line1: "",
+      line2: "",
+      line3: "",
+      postcode: ""
+    },
+    'Billing Address': {
+      line1: "",
+      line2: "",
+      line3: "",
+      postcode: ""
+    }
+  };
+
   error: string | null = null;
   loaded = false;
   submitted = false;
@@ -451,6 +467,15 @@ export class AddFormComponent {
     this.filteredReplacementData[key].data = addressReplacement;
   }
 
+  updateAddressValues(key: string, field: string, event: any): void {
+    let value = event.target.value;
+    this.addresses[key][field] = value;
+  }
+
+  addAddressToBook(key: string): void {
+    console.log('Address for', key, ':', this.addresses[key]);
+  }
+
   updateAlternativeSelectData(field: string, data: any, key: string) {
     this.alternativeSelectedData[key] = { selectData: data };
       this.addForm.get(field)?.setValue(data);
@@ -509,6 +534,16 @@ export class AddFormComponent {
 
     event.preventDefault();
     this.findInvalidControls();
+  }
+
+  addressNotListed(key: string) {
+    this.submissionEnded = false;
+    if (this.addForm.get('customer_id')?.value != '') {
+      this.addressNotListedKeys.push(key);
+    } else {
+      this.error = "Please select a customer ID first!";
+      this.submissionEnded = true;
+    }
   }
 
   findInvalidControls() {
