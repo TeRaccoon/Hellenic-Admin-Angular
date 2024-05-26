@@ -252,10 +252,7 @@ export class ViewComponent {
 
       this.applyFilter();
 
-      this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit);
-      if (this.pageCount != 1) {
-        this.pageCount += 1;
-      }
+      this.pageCount = this.calculatePageCount();
 
       this.changePage(this.currentPage);
 
@@ -406,7 +403,7 @@ export class ViewComponent {
   changeEntries(event: Event) {
     const option = event.target as HTMLInputElement;
     this.entryLimit = Number(option.value);
-    this.pageCount = Math.ceil(this.displayData.length / this.entryLimit);
+    this.pageCount = this.calculatePageCount();
     this.currentPage = 1;
     this.loadPage();
   }
@@ -439,7 +436,7 @@ export class ViewComponent {
       this.filteredDisplayData = this.displayData.slice(start, end);
     } else {
       this.filteredDisplayData = this.applyTemporaryFilter();
-      this.pageCount = Math.floor(this.filteredDisplayData.length / this.entryLimit) + 1;
+      this.pageCount = this.calculatePageCount();
       this.filteredDisplayData = this.filteredDisplayData.slice(start, end);
     }
   }
@@ -684,6 +681,10 @@ export class ViewComponent {
     }
   }
 
+  calculatePageCount() {
+    return Math.ceil(this.filteredDisplayData.length / this.entryLimit);
+  }
+
   //Filter
   
   applyFilter() {
@@ -712,6 +713,7 @@ export class ViewComponent {
       }
     });
     this.filteredDisplayData = this.displayData;
+    this.pageCount = this.calculatePageCount();
   }
 
   filterDateColumns(columnDateFilter: { column: any; startDate: Date; endDate: Date; }) {
