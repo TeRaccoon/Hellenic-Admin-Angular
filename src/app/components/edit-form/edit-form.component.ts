@@ -66,6 +66,22 @@ export class EditFormComponent {
     }
   } = {};
 
+  addressNotListedKeys: string[] = [];
+  addresses: {[key: string]: any } = {
+    'Delivery Address': {
+      line1: "",
+      line2: "",
+      line3: "",
+      postcode: ""
+    },
+    'Billing Address': {
+      line1: "",
+      line2: "",
+      line3: "",
+      postcode: ""
+    }
+  };
+
   error: string | null = null;
   submitted = false;
   submissionEnded = false;
@@ -469,6 +485,51 @@ export class EditFormComponent {
 
     this.replacementData[key].data = addressReplacement;
     this.filteredReplacementData[key].data = addressReplacement;
+  }  updateAddressValues(key: string, field: string, event: any): void {
+    let value = event.target.value;
+    this.addresses[key][field] = value;
+  }
+
+  async addAddressToBook(key: string) {
+    let payload = {
+      invoice_address_one: this.addresses['Billing Address'].line1,
+      invoice_address_two: this.addresses['Billing Address'].line2,
+      invoice_address_three: this.addresses['Billing Address'].line3,
+      invoice_postcode: this.addresses['Billing Address'].postcode,
+      delivery_address_one: this.addresses['Delivery Address'].line1,
+      delivery_address_two: this.addresses['Delivery Address'].line2,
+      delivery_address_three: this.addresses['Delivery Address'].line3,
+      delivery_postcode: this.addresses['Delivery Address'].postcode,
+      customer_id: this.editForm.get("customer_id")?.value,
+      action: "add",
+      table_name: "customer_address"
+    }
+
+    let response = await this.dataService.submitFormData(payload);
+    if (response.success) {
+      let id = response.id;
+      console.log(this.editForm);
+
+      this.addressNotListedKeys = this.addressNotListedKeys.filter(addressKey => addressKey != key);
+      await this.updateSelectedReplacementDataFromKey(this.editForm.get('customer_id')?.value, this.selectedReplacementData['Customer Name']!.selectData, 'Customer Name', 'customer_id')
+      await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'address_id' : 'billing_address_id');
+      console.log(this.editForm);
+    } else {
+      this.formService.setMessageFormData({
+        title: "Error!",
+        message: "There was an issue adding the address to the address book!",
+      });
+    }
+  }
+
+  addressNotListed(key: string) {
+    this.submissionEnded = false;
+    if (this.editForm.get('customer_id')?.value != '') {
+      this.addressNotListedKeys.push(key);
+    } else {
+      this.error = "Please select a customer first!";
+      this.submissionEnded = true;
+    }
   }
 
   filterDropSelect(key: string, event: any, field: string | null) {
