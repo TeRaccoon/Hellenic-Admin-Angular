@@ -493,7 +493,7 @@ export class AddFormComponent {
 
       this.addressNotListedKeys = this.addressNotListedKeys.filter(addressKey => addressKey != key);
       await this.updateSelectedReplacementDataFromKey(this.addForm.get('customer_id')?.value, this.selectedReplacementData['Customer Name']!.selectData, 'Customer Name', 'customer_id', false)
-      await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'delivery_address_id' : 'billing_address_id', false);
+      await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'address_id' : 'billing_address_id', false);
     } else {
       this.formService.setMessageFormData({
         title: "Error!",
