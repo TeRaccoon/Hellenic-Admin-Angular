@@ -42,7 +42,7 @@
                                     <ng-container *ngSwitchCase="'replacement'">
                                         <ng-container *ngIf="(key == 'Delivery Address' || key == 'Billing Address') && addressNotListedKeys.includes(key) else standardSelect">
                                             <div class="input-container">
-                                                <label>Line 1</label>
+                                                <label>Line 1 <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
                                                 <input class="text" type="text" (input)="updateAddressValues(key, 'line1', $event)">
                                             </div>
                                             <div class="input-container">
@@ -54,7 +54,7 @@
                                                 <input class="text" type="text" (input)="updateAddressValues(key, 'line3', $event)">
                                             </div>
                                             <div class="input-container">
-                                                <label>Postcode</label>
+                                                <label>Postcode <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
                                                 <input class="text" type="text" (input)="updateAddressValues(key, 'postcode', $event)">
                                             </div>
                                             <div class="form-footer">
@@ -65,7 +65,9 @@
                                             <div class="drop-select-container">
                                                 <input autocomplete="off" [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" [disabled]="disabled" (input)="filterDropSelect(key, $event, null)" type="text" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)" [value]="selectedReplacementData[key]?.selectData">
                                                 <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? 'input-visible' : 'input-hidden'">
-                                                    <p *ngFor="let option of filteredReplacementData[key].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, key, mappedFormData.get(key)!.fields, false)">{{ option.replacement }}</p>
+                                                    <ng-container *ngFor="let option of filteredReplacementData[key].data">
+                                                        <p *ngIf="option.replacement != ''" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, key, mappedFormData.get(key)!.fields, false)">{{ option.replacement }}</p>
+                                                    </ng-container>
                                                 </div>
                                             </div>
                                         </ng-template>

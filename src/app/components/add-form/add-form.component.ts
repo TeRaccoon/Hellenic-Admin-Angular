@@ -472,8 +472,34 @@ export class AddFormComponent {
     this.addresses[key][field] = value;
   }
 
-  addAddressToBook(key: string): void {
-    console.log('Address for', key, ':', this.addresses[key]);
+  async addAddressToBook(key: string) {
+    let payload = {
+      invoice_address_one: this.addresses['Billing Address'].line1,
+      invoice_address_two: this.addresses['Billing Address'].line2,
+      invoice_address_three: this.addresses['Billing Address'].line3,
+      invoice_postcode: this.addresses['Billing Address'].postcode,
+      delivery_address_one: this.addresses['Delivery Address'].line1,
+      delivery_address_two: this.addresses['Delivery Address'].line2,
+      delivery_address_three: this.addresses['Delivery Address'].line3,
+      delivery_postcode: this.addresses['Delivery Address'].postcode,
+      customer_id: this.addForm.get("customer_id")?.value,
+      action: "add",
+      table_name: "customer_address"
+    }
+
+    let response = await this.dataService.submitFormData(payload);
+    if (response.success) {
+      let id = response.id;
+
+      this.addressNotListedKeys = this.addressNotListedKeys.filter(addressKey => addressKey != key);
+      await this.updateSelectedReplacementDataFromKey(this.addForm.get('customer_id')?.value, this.selectedReplacementData['Customer Name']!.selectData, 'Customer Name', 'customer_id', false)
+      await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'delivery_address_id' : 'billing_address_id', false);
+    } else {
+      this.formService.setMessageFormData({
+        title: "Error!",
+        message: "There was an issue adding the address to the address book!",
+      });
+    }
   }
 
   updateAlternativeSelectData(field: string, data: any, key: string) {
