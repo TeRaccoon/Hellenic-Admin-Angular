@@ -22,6 +22,8 @@ export class AddFormComponent {
   searchWaiting = false;
   disabled = false;
 
+  noCustomer = false;
+
   addForm: FormGroup;
   addInvoicedItemForm: FormGroup;
 
@@ -162,6 +164,7 @@ export class AddFormComponent {
     this.invoicedItemsList = [];
     this.invoiceCreated = false;
     this.disabled = false;
+    this.noCustomer = false;
   }
 
   async replaceAmbiguousData() {
@@ -485,14 +488,16 @@ export class AddFormComponent {
       customer_id: this.addForm.get("customer_id")?.value,
       action: "add",
       table_name: "customer_address"
-    }
-
+    };
+    
     let response = await this.dataService.submitFormData(payload);
     if (response.success) {
       let id = response.id;
 
       this.addressNotListedKeys = this.addressNotListedKeys.filter(addressKey => addressKey != key);
-      await this.updateSelectedReplacementDataFromKey(this.addForm.get('customer_id')?.value, this.selectedReplacementData['Customer Name']!.selectData, 'Customer Name', 'customer_id', false)
+      if (!this.noCustomer) {
+        await this.updateSelectedReplacementDataFromKey(this.addForm.get('customer_id')?.value, this.selectedReplacementData['Customer Name']!.selectData, 'Customer Name', 'customer_id', false)
+      }
       await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'address_id' : 'billing_address_id', false);
     } else {
       this.formService.setMessageFormData({
@@ -564,12 +569,20 @@ export class AddFormComponent {
 
   addressNotListed(key: string) {
     this.submissionEnded = false;
-    if (this.addForm.get('customer_id')?.value != '') {
+    if (this.addForm.get('customer_id')?.value != '' || this.noCustomer) {
       this.addressNotListedKeys.push(key);
+      console.log("🚀 ~ AddFormComponent ~ addressNotListed ~ this.addressNotListedKeys:", this.addressNotListedKeys)
     } else {
       this.error = "Please select a customer first!";
       this.submissionEnded = true;
     }
+  }
+
+  disableCustomer() {
+    this.noCustomer = true;
+
+    this.addressNotListed('Delivery Address');
+    this.addressNotListed('Billing Address');
   }
 
   findInvalidControls() {
@@ -601,7 +614,7 @@ export class AddFormComponent {
   canDisplayInputField(key: string) {
     switch(this.tableName) {
       case "invoices":
-        return !(key == "VAT" || key == "Total" || key == "Net Value" || key == "Status" || key == "Printed" || key == "Paid" || key == "Outstanding Balance" || key == "Delivery Type" || key == "Type");
+        return !(key == "VAT" || key == "Total" || key == "Net Value" || key == "Status" || key == "Printed" || key == "Paid" || key == "Outstanding Balance" || key == "Delivery Type" || key == "Type" || (key == "Customer Name" && this.noCustomer));
     }
     return true;
   }
