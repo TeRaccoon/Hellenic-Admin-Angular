@@ -442,7 +442,7 @@ export class AddFormComponent {
     this.selectOpen[key].opened = false;
   }
 
-  async updateCustomerAddresses(addressData: [], key: string, secondaryKey: string) {
+  async updateCustomerAddresses(addressData: any, key: string, secondaryKey: string) {
     let addressReplacement = addressData.map((address: any) => {
       let replacement;
       if (key == "Delivery Address") {
@@ -463,6 +463,7 @@ export class AddFormComponent {
         selectData: addressReplacement[0].replacement,
         selectDataId: addressReplacement[0].id
       };
+
       this.addForm.get(secondaryKey)?.setValue(addressReplacement[0].id);
     }
     
@@ -497,6 +498,9 @@ export class AddFormComponent {
       this.addressNotListedKeys = this.addressNotListedKeys.filter(addressKey => addressKey != key);
       if (!this.noCustomer) {
         await this.updateSelectedReplacementDataFromKey(this.addForm.get('customer_id')?.value, this.selectedReplacementData['Customer Name']!.selectData, 'Customer Name', 'customer_id', false)
+      } else {
+        let address = await lastValueFrom(this.dataService.processData('customer-addresses', id));
+        await this.updateCustomerAddresses([address], key, key == 'Billing Address' ? 'billing_address_id' : 'address_id');
       }
       await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'address_id' : 'billing_address_id', false);
     } else {
@@ -571,7 +575,6 @@ export class AddFormComponent {
     this.submissionEnded = false;
     if (this.addForm.get('customer_id')?.value != '' || this.noCustomer) {
       this.addressNotListedKeys.push(key);
-      console.log("🚀 ~ AddFormComponent ~ addressNotListed ~ this.addressNotListedKeys:", this.addressNotListedKeys)
     } else {
       this.error = "Please select a customer first!";
       this.submissionEnded = true;
@@ -580,7 +583,8 @@ export class AddFormComponent {
 
   disableCustomer() {
     this.noCustomer = true;
-
+    this.addForm.get('customer_id')?.setValidators(null);
+    this.addForm.get('customer_id')?.setValue(null);
     this.addressNotListed('Delivery Address');
     this.addressNotListed('Billing Address');
   }
