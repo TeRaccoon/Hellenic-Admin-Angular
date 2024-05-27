@@ -467,7 +467,7 @@ export class EditFormComponent {
     this.selectOpen[key].opened = false;
   }
 
-  async updateCustomerAddresses(addressData: [], key: string) {
+  async updateCustomerAddresses(addressData: any, key: string) {
     let addressReplacement = addressData.map((address: any) => {
       let replacement;
       if (key == "Delivery Address") {
@@ -508,12 +508,15 @@ export class EditFormComponent {
     let response = await this.dataService.submitFormData(payload);
     if (response.success) {
       let id = response.id;
-      console.log(this.editForm);
 
       this.addressNotListedKeys = this.addressNotListedKeys.filter(addressKey => addressKey != key);
-      await this.updateSelectedReplacementDataFromKey(this.editForm.get('customer_id')?.value, this.selectedReplacementData['Customer Name']!.selectData, 'Customer Name', 'customer_id')
+      if (this.editForm.get('customer_id')?.value != null) {
+        await this.updateSelectedReplacementDataFromKey(this.editForm.get('customer_id')?.value, this.selectedReplacementData['Customer Name']!.selectData, 'Customer Name', 'customer_id')
+      } else {
+        let address = await lastValueFrom(this.dataService.processData('customer-addresses', id));
+        await this.updateCustomerAddresses([address], key);
+      }
       await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'address_id' : 'billing_address_id');
-      console.log(this.editForm);
     } else {
       this.formService.setMessageFormData({
         title: "Error!",
