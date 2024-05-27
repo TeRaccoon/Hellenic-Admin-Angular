@@ -482,6 +482,7 @@ export class ViewComponent {
     data['action'] = 'append';
     data['table_name'] = String(this.tableName);
     await this.dataService.submitFormData(data);
+    this.reloadTable();
   }
 
   selectRow(event: Event, rowId: number) {
