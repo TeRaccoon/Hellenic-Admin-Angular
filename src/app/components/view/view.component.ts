@@ -643,6 +643,12 @@ export class ViewComponent {
       }
     }
 
+    if (this.authService.getAccessLevel() == 'High') {
+      if (column == 'delete-row') {
+        return false;
+      }
+    }
+
     switch (this.tableName) {
       case "customers":
       case "users":
