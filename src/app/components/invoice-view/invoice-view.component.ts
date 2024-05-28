@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { imageUrlBase } from '../../services/data.service';
 import { faSpinner, faPrint } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-invoice-view',
@@ -23,14 +24,16 @@ export class InvoiceViewComponent {
   imageUrlBase = imageUrlBase;
 
   loaded = false;
+  driver = false;
 
   deliveryOnly = false;
 
-  constructor(private router: Router, private dataService: DataService) {}
+  constructor(private router: Router, private dataService: DataService, private authService: AuthService) {}
 
   ngOnInit() {
     this.loaded = false;
     this.getInvoiceData();
+    this.driver = this.authService.getAccessLevel() == "Driver";
   }
 
   async getInvoiceData() {
