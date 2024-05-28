@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class AuthService {
   private isAuthenticated = new BehaviorSubject<boolean>(false);
-  private accessLevel = 'low';
+  private accessLevel = 'Low';
   private accessGranted = false;
 
   constructor(
@@ -42,7 +42,7 @@ export class AuthService {
   login(accessLevel = this.accessLevel) {
     this.isAuthenticated.next(true);
     this.accessLevel = accessLevel;
-    if (accessLevel == 'full') {
+    if (accessLevel == 'Full') {
       this.accessGranted = true;
     }
   }
@@ -80,7 +80,7 @@ export class AuthService {
   }
 
   queryAccessURL() {
-    if (this.accessLevel == 'full') {
+    if (this.accessLevel == 'Full') {
       return true;
     }
     switch (this.router.url) {
@@ -94,7 +94,7 @@ export class AuthService {
   }
 
   queryAccessTable(table: any, redirect = true) {
-    if (this.accessLevel == 'full') {
+    if (this.accessLevel == 'Full') {
       return true;
     }
     switch (table) {

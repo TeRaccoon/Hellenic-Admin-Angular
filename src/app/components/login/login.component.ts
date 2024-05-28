@@ -37,7 +37,7 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       let loginResponse = await this.dataService.submitFormData(this.loginForm.value);
       if (loginResponse.success) {
-        let accessLevel = loginResponse.data == null ? 'low' : loginResponse.data;
+        let accessLevel = loginResponse.data == null ? 'Low' : loginResponse.data;
         this.authService.login(accessLevel);
         this.router.navigate(['/home'])
       } else {

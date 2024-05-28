@@ -641,13 +641,13 @@ export class ViewComponent {
     switch (this.tableName) {
       case "customers":
       case "users":
-        if (column == "password") {
+        if (column == "password" || column == "Password") {
           return false;
         }
         break;
 
       case "invoices":
-        if (this.authService.getAccessLevel() == 'low') {
+        if (this.authService.getAccessLevel() == 'Driver') {
           switch (column) {
             case "net_value":
             case "VAT":
@@ -661,6 +661,10 @@ export class ViewComponent {
             case "edit-row":
             case "delete-row":
             case "invoiced-items":
+            case "ID":
+            case "id":
+            case "Printed":
+            case "printed":
               return false;
           }
           return true;
