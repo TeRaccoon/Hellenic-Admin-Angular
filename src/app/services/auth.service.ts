@@ -35,6 +35,10 @@ export class AuthService {
       );
   }
 
+  getAccessLevel() {
+    return this.accessLevel;
+  }
+
   login(accessLevel = this.accessLevel) {
     this.isAuthenticated.next(true);
     this.accessLevel = accessLevel;
@@ -82,11 +86,14 @@ export class AuthService {
     switch (this.router.url) {
       case '/print/invoice':
         return true;
+
+      case '/view?table=invoices':
+        return true;
     }
     return false;
   }
 
-  queryAccessTable(table: any) {
+  queryAccessTable(table: any, redirect = true) {
     if (this.accessLevel == 'full') {
       return true;
     }
@@ -95,10 +102,12 @@ export class AuthService {
         return true;
 
       default:
-        this.router.navigate(['/home'], {});
+        redirect && this.router.navigate(['/home'], {});
         return false;
     }
   }
+
+
 
   returnAccess() {
     return this.accessGranted;
