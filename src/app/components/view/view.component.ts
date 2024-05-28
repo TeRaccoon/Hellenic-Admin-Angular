@@ -4,7 +4,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { apiUrlBase, imageUrlBase } from '../../services/data.service';
-import { faUserLock, faAddressBook, faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck } from '@fortawesome/free-solid-svg-icons';
+import { faUserLock, faAddressBook, faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck, faL } from '@fortawesome/free-solid-svg-icons';
 import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
@@ -637,7 +637,12 @@ export class ViewComponent {
   }
 
   canDisplayColumn(column: string) {
-    console.log(column);
+    if (this.authService.getAccessLevel() == 'Low') {
+      if (column == 'edit-row' || column == 'delete-row') {
+        return false;
+      }
+    }
+
     switch (this.tableName) {
       case "customers":
       case "users":
@@ -667,8 +672,8 @@ export class ViewComponent {
             case "printed":
               return false;
           }
-          return true;
         }
+        return true;
     }
     return true;
   }
