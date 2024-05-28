@@ -84,14 +84,14 @@
                                             <th>Items</th>
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'invoices'">
-                                            <th>Items</th>
+                                            <th *ngIf="canDisplayColumn('invoiced-items')">Items</th>
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'customers'">
                                             <th>Addresses</th>
                                         </ng-container>
                                     </ng-container>
                                 </ng-container>
-                                <th (click)="sortColumn(column)">
+                                <th *ngIf="canDisplayColumn(column.toString())" (click)="sortColumn(column)">
                                     {{ column }}
                                     <fa-icon *ngIf="this.sortedColumn.columnName == column.toString()" [icon]="this.sortedColumn.ascending ? faArrowUp : faArrowDown" />
                                 </th>
@@ -100,8 +100,8 @@
                                 <th>Allergen Information</th>
                                 <th>Nutrition Information</th>
                             </ng-container>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            <th *ngIf="canDisplayColumn('edit-row')">Edit</th>
+                            <th *ngIf="canDisplayColumn('delete-row')">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -125,12 +125,12 @@
                                                 </td>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'supplier_invoices'">
-                                                <td (click)="supplierInvoiceSearch(item.id)">
+                                                <td *ngIf="canDisplayColumn('invoiced-items')" (click)="supplierInvoiceSearch(item.id)">
                                                     <fa-icon [icon]="faBasketShopping" />
                                                 </td>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'invoices'">
-                                                <td (click)="invoiceSearch(item.id)">
+                                                <td *ngIf="canDisplayColumn('invoiced-items')" (click)="invoiceSearch(item.id)">
                                                     <fa-icon [icon]="faBasketShopping" />
                                                 </td>
                                             </ng-container>
@@ -141,24 +141,22 @@
                                             </ng-container>
                                         </ng-container>
                                     </ng-container>
-                                    <td [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
-                                        <ng-container *ngIf="canDisplayColumn(column)">
-                                            <ng-container [ngSwitch]="dataTypes[columnIndex]">
-                                                <img *ngSwitchCase="'file'" [src]="item[column] == null ? imageUrlBase + 'placeholder.jpg' : imageUrlBase + item[column]" />
-                                                <ng-container *ngSwitchCase="'enum(\'No\',\'Yes\')'">
-                                                    <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
-                                                </ng-container>
-                                                <ng-container *ngSwitchCase="'float'">
-                                                    {{ item[column] == null ? '---' : item[column] | currency:'GBP' }}
-                                                </ng-container>
-                                                <ng-container *ngSwitchCase="'double'">
-                                                    {{ item[column] == null ? '---' : item[column] + '%' }}
-                                                </ng-container>
-                                                <ng-container *ngSwitchDefault>
-                                                    {{ item[column] == null ? '---' : item[column] }}
-                                                    <ng-container *ngIf="displayWithIcon(column, item)" class="icon-container">
-                                                        <fa-icon class="row-icon" (click)="iconClick($event, key + (currentPage - 1) * entryLimit, column, item)" [icon]="icon"></fa-icon>
-                                                    </ng-container>
+                                    <td *ngIf="canDisplayColumn(column)" [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
+                                        <ng-container [ngSwitch]="dataTypes[columnIndex]">
+                                            <img *ngSwitchCase="'file'" [src]="item[column] == null ? imageUrlBase + 'placeholder.jpg' : imageUrlBase + item[column]" />
+                                            <ng-container *ngSwitchCase="'enum(\'No\',\'Yes\')'">
+                                                <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'float'">
+                                                {{ item[column] == null ? '---' : item[column] | currency:'GBP' }}
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'double'">
+                                                {{ item[column] == null ? '---' : item[column] + '%' }}
+                                            </ng-container>
+                                            <ng-container *ngSwitchDefault>
+                                                {{ item[column] == null ? '---' : item[column] }}
+                                                <ng-container *ngIf="displayWithIcon(column, item)" class="icon-container">
+                                                    <fa-icon class="row-icon" (click)="iconClick($event, key + (currentPage - 1) * entryLimit, column, item)" [icon]="icon"></fa-icon>
                                                 </ng-container>
                                             </ng-container>
                                         </ng-container>
@@ -172,12 +170,12 @@
                                         <fa-icon [icon]="faBookOpen"></fa-icon>
                                     </td>
                                 </ng-container>
-                                <td>
+                                <td *ngIf="canDisplayColumn('edit-row')">
                                     <a (click)="editRow(item.id, '')">
                                         <fa-icon [icon]="faPencil"></fa-icon>
                                     </a>
                                 </td>
-                                <td class="bin">
+                                <td *ngIf="canDisplayColumn('delete-row')" class="bin">
                                     <a (click)="deleteRow(item.id)">
                                         <fa-icon [icon]="faTrashCan"></fa-icon>
                                     </a>

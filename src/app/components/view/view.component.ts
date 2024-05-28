@@ -4,7 +4,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { apiUrlBase, imageUrlBase } from '../../services/data.service';
-import { faAddressBook, faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck } from '@fortawesome/free-solid-svg-icons';
+import { faUserLock, faAddressBook, faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck } from '@fortawesome/free-solid-svg-icons';
 import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
@@ -20,6 +20,7 @@ export class ViewComponent {
   apiUrlBase = apiUrlBase;
   imageUrlBase = imageUrlBase;
 
+  faUserLock = faUserLock;
   faAddressBook = faAddressBook;
   faBox = faBox;
   faLock = faLock;
@@ -636,6 +637,7 @@ export class ViewComponent {
   }
 
   canDisplayColumn(column: string) {
+    console.log(column);
     switch (this.tableName) {
       case "customers":
       case "users":
@@ -643,6 +645,26 @@ export class ViewComponent {
           return false;
         }
         break;
+
+      case "invoices":
+        if (this.authService.getAccessLevel() == 'low') {
+          switch (column) {
+            case "net_value":
+            case "VAT":
+            case "total":
+            case "outstanding_balance":
+            case "payment_status":
+            case "Net Value":
+            case "Total":
+            case "Outstanding Balance":
+            case "Paid":
+            case "edit-row":
+            case "delete-row":
+            case "invoiced-items":
+              return false;
+          }
+          return true;
+        }
     }
     return true;
   }
