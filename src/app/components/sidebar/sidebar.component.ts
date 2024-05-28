@@ -63,6 +63,10 @@ export class SidebarComponent {
   
   constructor(private router: Router, private dataService: DataService, private authService: AuthService, private formService: FormService) {}
 
+  canDisplayTable(tableName: string) {
+    return this.authService.queryAccessTable(tableName, false);
+  }
+
   changeTable(tableName: string) {
     if (!this.authService.queryAccessTable(tableName)) {
       this.formService.setMessageFormData({title: "Warning!", message: "You don't have permission to access this page! If you think you should, contact the site administrator."});
