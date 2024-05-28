@@ -80,9 +80,10 @@ export class AuthService {
   }
 
   queryAccessURL() {
-    if (this.accessLevel == 'Full') {
+    if (this.accessLevel != 'Driver') {
       return true;
     }
+
     switch (this.router.url) {
       case '/print/invoice':
         return true;
@@ -94,9 +95,10 @@ export class AuthService {
   }
 
   queryAccessTable(table: any, redirect = true) {
-    if (this.accessLevel == 'Full') {
+    if (this.accessLevel != 'Driver' || table == undefined) {
       return true;
     }
+
     switch (table) {
       case 'invoices':
         return true;
