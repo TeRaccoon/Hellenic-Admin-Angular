@@ -619,6 +619,9 @@ export class AddFormComponent {
     switch(this.tableName) {
       case "invoices":
         return !(key == "VAT" || key == "Total" || key == "Net Value" || key == "Status" || key == "Printed" || key == "Paid" || key == "Outstanding Balance" || key == "Delivery Type" || key == "Type" || (key == "Customer Name" && this.noCustomer));
+
+      case "items":
+        return !(key == "Total Sold");
     }
     return true;
   }
