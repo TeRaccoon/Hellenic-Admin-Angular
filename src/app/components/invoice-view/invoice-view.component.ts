@@ -69,10 +69,10 @@ export class InvoiceViewComponent {
       }
 
       deliveryDataItem['full_address'] = [
-        deliveryDataItem.delivery_info.address_line_1,
-        deliveryDataItem.delivery_info.address_line_2,
-        deliveryDataItem.delivery_info.address_line_3,
-        deliveryDataItem.delivery_info.address_line_4
+        deliveryDataItem.delivery_info[0],
+        deliveryDataItem.delivery_info[1],
+        deliveryDataItem.delivery_info[2],
+        deliveryDataItem.delivery_info[3],
       ].join(' ');
 
       deliveryData.push(deliveryDataItem);
@@ -89,6 +89,7 @@ export class InvoiceViewComponent {
     this.calculateVat();
     error && this.formService.showMessageForm();
     this.loaded = true;
+    console.log(this.deliveryData);
   }
 
   sortDistance() {

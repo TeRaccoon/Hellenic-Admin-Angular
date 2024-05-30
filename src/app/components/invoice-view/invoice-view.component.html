@@ -145,9 +145,9 @@
                 <tbody>
                     <tr class="data-row">
                         <td>{{ invoice.invoice_id }}</td>
-                        <td>{{ invoice.delivery_info.account_name }}</td>
+                        <td>{{ invoice.account_name }}</td>
                         <td>{{ invoice.full_address }}</td>
-                        <td>{{ invoice.delivery_info.postcode }}</td>
+                        <td>{{ invoice.delivery_info[4] ?? '' }}</td>
                         <td>{{ invoice.warehouse_name }}</td>
                         <td>{{ invoice.distance }}</td>
                         <td>{{ invoice.delivery_date | date: 'dd/MM/yyyy' }}</td>
