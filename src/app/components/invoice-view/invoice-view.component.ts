@@ -59,7 +59,6 @@ export class InvoiceViewComponent {
       this.invoiceItems.push(Array.isArray(productData) ? productData : [productData]);
       
       let deliveryDataItem: any = await lastValueFrom(this.dataService.processData("delivery-info", invoiceId.toString()));
-      deliveryDataItem = this.calculateDistance(deliveryDataItem);
 
       if (deliveryDataItem.customer_coordinates.length == 0) {
         error = true;
@@ -81,19 +80,46 @@ export class InvoiceViewComponent {
     }
       
     let combinedData = invoiceData.map((invoice, index) => ({ invoice, delivery: deliveryData[index] }));
-    combinedData.sort((a, b) => parseFloat(a.delivery.distance) - parseFloat(b.delivery.distance));
 
     this.invoiceData = combinedData.map(item => item.invoice);
     this.deliveryData = combinedData.map(item => item.delivery);
+
+    this.sortDistance()
 
     this.calculateVat();
     error && this.formService.showMessageForm();
     this.loaded = true;
   }
 
-  calculateDistance(deliveryData: any) {
-    deliveryData['distance'] = this.calculateHaversine(deliveryData.customer_coordinates, deliveryData.warehouse_coordinates);
-    return deliveryData
+  sortDistance() {
+    let tempData = [...this.deliveryData];
+    let sortedDeliveries = [];
+    let currentLocation = tempData[0].warehouse_coordinates;
+  
+    while (tempData.length > 0) {
+      let distances = tempData.map((data, index) => {
+        return {
+          index: index,
+          distance: this.calculateDistance(currentLocation, data.customer_coordinates)
+        };
+      });
+  
+      distances.sort((a: any, b: any) => a.distance - b.distance);
+      let nearestDeliveryIndex = distances[0].index;
+      let nearestDelivery = tempData.splice(nearestDeliveryIndex, 1)[0];
+      
+      sortedDeliveries.push({ ...nearestDelivery, distance: distances[0].distance });
+  
+      currentLocation = nearestDelivery.customer_coordinates;
+    }
+  
+    this.deliveryData = sortedDeliveries;
+  
+    console.log(this.deliveryData);
+  }
+
+  calculateDistance(startLocation: any, endLocation: any) {
+    return this.calculateHaversine(startLocation, endLocation);
   }
 
   calculateHaversine(coord1: any, coord2: any): string {
