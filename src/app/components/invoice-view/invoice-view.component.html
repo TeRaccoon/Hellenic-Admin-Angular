@@ -21,21 +21,21 @@
             <div class="invoice-container">
                 <div class="row">
                     <div class="section">
-                        <div class="row">
-                            <span class="label">Invoice Title: </span>
-                            <span class="value">{{ invoice['title'] }}</span>
+                        <div class="row label-row">
+                            <span class="label">Invoice</span>
+                            <span class="value"> #{{ invoice.invoice_id }}</span>
                         </div>
-                        <div class="row">
+                        <div class="row label-row">
                             <span class="label">Invoice Date: </span>
                             <span class="value">{{ date | date: 'dd/MM/yyyy' }}</span>
                         </div>
                     </div>
                     <div class="section">
-                        <div class="row">
+                        <div class="row label-row">
                             <span class="label">Estimated Delivery Date:</span>
                             <span class="value">{{ invoice['delivery_date'] | date: 'dd/MM/yyyy' }}</span>
                         </div>
-                        <div class="row">
+                        <div class="row label-row">
                             <span class="label">Created At:</span>
                             <span class="value">{{ invoice['created_at'] | date: 'dd/MM/yyyy' }}</span><br>
                         </div>

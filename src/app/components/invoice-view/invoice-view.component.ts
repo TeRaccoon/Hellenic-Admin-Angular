@@ -53,7 +53,7 @@ export class InvoiceViewComponent {
     // Retrieve and process data for each invoice
     for (const invoiceId of invoiceIds) {
       const invoiceDataItem: any = await lastValueFrom(this.dataService.processData("invoice-info", invoiceId.toString()));
-      invoiceData.push(invoiceDataItem);
+      invoiceData.push({...invoiceDataItem, invoice_id: invoiceId});
       
       const productData: any = await lastValueFrom(this.dataService.processData("invoice-products", invoiceId.toString()));
       this.invoiceItems.push(Array.isArray(productData) ? productData : [productData]);
@@ -89,7 +89,6 @@ export class InvoiceViewComponent {
     this.calculateVat();
     error && this.formService.showMessageForm();
     this.loaded = true;
-    console.log(this.deliveryData);
   }
 
   sortDistance() {
@@ -115,8 +114,6 @@ export class InvoiceViewComponent {
     }
   
     this.deliveryData = sortedDeliveries;
-  
-    console.log(this.deliveryData);
   }
 
   calculateDistance(startLocation: any, endLocation: any) {
