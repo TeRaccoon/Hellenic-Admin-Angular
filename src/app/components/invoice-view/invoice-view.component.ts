@@ -5,6 +5,7 @@ import { imageUrlBase } from '../../services/data.service';
 import { faSpinner, faPrint } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { FormService } from '../../services/form.service';
 
 @Component({
   selector: 'app-invoice-view',
@@ -28,7 +29,7 @@ export class InvoiceViewComponent {
 
   deliveryOnly = false;
 
-  constructor(private router: Router, private dataService: DataService, private authService: AuthService) {}
+  constructor(private formService: FormService, private router: Router, private dataService: DataService, private authService: AuthService) {}
 
   ngOnInit() {
     this.loaded = false;
@@ -37,45 +38,57 @@ export class InvoiceViewComponent {
   }
 
   async getInvoiceData() {
+    let error = false;
+    
     var invoiceIds = this.dataService.retrievePrintInvoiceIds();
     if (invoiceIds.length == 0) {
       this.router.navigate(['/view'], { queryParams: {table: 'invoices'}});
       return;
     }
 
-  // Arrays to store invoice and delivery data
-  let invoiceData: any[] = [];
-  let deliveryData: any[] = [];
+    // Arrays to store invoice and delivery data
+    let invoiceData: any[] = [];
+    let deliveryData: any[] = [];
 
-  // Retrieve and process data for each invoice
-  for (const invoiceId of invoiceIds) {
-    const invoiceDataItem: any = await lastValueFrom(this.dataService.processData("invoice-info", invoiceId.toString()));
-    invoiceData.push(invoiceDataItem);
-    
-    const productData: any = await lastValueFrom(this.dataService.processData("invoice-products", invoiceId.toString()));
-    this.invoiceItems.push(Array.isArray(productData) ? productData : [productData]);
-    
-    let deliveryDataItem: any = await lastValueFrom(this.dataService.processData("delivery-info", invoiceId.toString()));
-    deliveryDataItem = this.calculateDistance(deliveryDataItem);
-    deliveryDataItem['full_address'] = [
-      deliveryDataItem.delivery_info.address_line_1,
-      deliveryDataItem.delivery_info.address_line_2,
-      deliveryDataItem.delivery_info.address_line_3,
-      deliveryDataItem.delivery_info.address_line_4
-    ].join(' ');
+    // Retrieve and process data for each invoice
+    for (const invoiceId of invoiceIds) {
+      const invoiceDataItem: any = await lastValueFrom(this.dataService.processData("invoice-info", invoiceId.toString()));
+      invoiceData.push(invoiceDataItem);
+      
+      const productData: any = await lastValueFrom(this.dataService.processData("invoice-products", invoiceId.toString()));
+      this.invoiceItems.push(Array.isArray(productData) ? productData : [productData]);
+      
+      let deliveryDataItem: any = await lastValueFrom(this.dataService.processData("delivery-info", invoiceId.toString()));
+      deliveryDataItem = this.calculateDistance(deliveryDataItem);
 
-    deliveryData.push(deliveryDataItem);
-    this.customerIds.push(deliveryDataItem.customer_id);    
-  }
-    
-  let combinedData = invoiceData.map((invoice, index) => ({ invoice, delivery: deliveryData[index] }));
-  combinedData.sort((a, b) => parseFloat(a.delivery.distance) - parseFloat(b.delivery.distance));
+      if (deliveryDataItem.customer_coordinates.length == 0) {
+        error = true;
+        this.formService.setMessageFormData({
+          title: "Warning!",
+          message: "There was an issue with one of the postcodes! The distance could not be calculated!"
+        });
+      }
 
-  this.invoiceData = combinedData.map(item => item.invoice);
-  this.deliveryData = combinedData.map(item => item.delivery);
+      deliveryDataItem['full_address'] = [
+        deliveryDataItem.delivery_info.address_line_1,
+        deliveryDataItem.delivery_info.address_line_2,
+        deliveryDataItem.delivery_info.address_line_3,
+        deliveryDataItem.delivery_info.address_line_4
+      ].join(' ');
 
-  this.calculateVat();
-  this.loaded = true;
+      deliveryData.push(deliveryDataItem);
+      this.customerIds.push(deliveryDataItem.customer_id);    
+    }
+      
+    let combinedData = invoiceData.map((invoice, index) => ({ invoice, delivery: deliveryData[index] }));
+    combinedData.sort((a, b) => parseFloat(a.delivery.distance) - parseFloat(b.delivery.distance));
+
+    this.invoiceData = combinedData.map(item => item.invoice);
+    this.deliveryData = combinedData.map(item => item.delivery);
+
+    this.calculateVat();
+    error && this.formService.showMessageForm();
+    this.loaded = true;
   }
 
   calculateDistance(deliveryData: any) {
