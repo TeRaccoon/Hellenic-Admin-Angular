@@ -7,7 +7,9 @@ import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { NgChartsModule } from 'ng2-charts';
 import * as _ from 'lodash';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {LocationStrategy, HashLocationStrategy} from '@angular/common';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha'
+import { recaptcha } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -69,10 +71,15 @@ import { VatViewComponent } from './components/vat-view/vat-view.component';
     ReactiveFormsModule,
     FormsModule,
     NgChartsModule,
-    NgxDaterangepickerMd.forRoot()
+    NgxDaterangepickerMd.forRoot(),
+    RecaptchaV3Module,
   ],
   providers: [
-    {provide: LocationStrategy, useClass: HashLocationStrategy}
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    {
+      provide: RECAPTCHA_V3_SITE_KEY,
+      useValue: recaptcha.siteKey,
+    },
   ],
   bootstrap: [AppComponent]
 })

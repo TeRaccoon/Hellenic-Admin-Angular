@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { lastValueFrom } from 'rxjs';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +15,7 @@ export class LoginComponent {
   error: string | null = null;
   loaded = false;
 
-  constructor(private router: Router, private authService: AuthService, private dataService: DataService, private fb: FormBuilder) { 
+  constructor(private router: Router, private authService: AuthService, private dataService: DataService, private fb: FormBuilder, private recaptchaV3Service: ReCaptchaV3Service) { 
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]]
@@ -35,14 +35,23 @@ export class LoginComponent {
 
   async formSubmit() {
     if (this.loginForm.valid) {
-      let loginResponse = await this.dataService.submitFormData(this.loginForm.value);
-      if (loginResponse.success) {
-        let accessLevel = loginResponse.data == null ? 'Low' : loginResponse.data;
-        this.authService.login(accessLevel);
-        this.router.navigate(['/home'])
-      } else {
-        this.error = loginResponse.message;
+      try {
+        const token = await this.recaptchaV3Service.execute('loginAction').toPromise();
+        this.loginForm.value.recaptchaToken = token;
+
+        const loginResponse = await this.dataService.submitFormData(this.loginForm.value);
+        if (loginResponse.success) {
+          const accessLevel = loginResponse.data == null ? 'Low' : loginResponse.data;
+          this.authService.login(accessLevel);
+          this.router.navigate(['/home']);
+        } else {
+          this.error = loginResponse.message;
+        }
+      } catch (error) {
+        this.error = 'reCAPTCHA verification failed. Please try again.';
       }
+    } else {
+      this.loginForm.markAllAsTouched();
     }
   }
 }
