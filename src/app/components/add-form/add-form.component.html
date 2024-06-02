@@ -58,7 +58,11 @@
                                                 <label>Postcode <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
                                                 <input class="text" type="text" (input)="updateAddressValues(key, 'postcode', $event)">
                                             </div>
-                                            <div class="form-footer">
+                                            <div class="footer-options">
+                                                <div>
+                                                    <label>Save address?</label>
+                                                    <input type="checkbox" (input)="updateAddressValues(key, 'save', $event)">
+                                                </div>
                                                 <button class="button" type="button" (click)="addAddressToBook(key)">Add</button>
                                             </div>
                                         </ng-container>

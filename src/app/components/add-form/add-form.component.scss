@@ -15,13 +15,6 @@
         height: 50px;
         border-radius: 0 0 15px 15px;
         margin-bottom: 10px;
-        button {
-            border-radius: 10px;
-            padding: 10px;
-            font-weight: bold;
-            font-size: 17px;
-            margin: 5px 10px 5px 5px;
-        }
     }
     .content-fullscreen {
         margin: 7% 15px 15px 16.5% !important;
@@ -197,7 +190,9 @@
                         margin-left: 2px;
                     }
                 }
-                input {
+                input[type="text"],
+                input[type="number"],
+                input[type="date"] {
                     background-color: #ffffff;
                     border-radius: 8px;
                     outline: none;
@@ -238,6 +233,16 @@
                     opacity: 1;
                     max-height: 500px;
                     transition: max-height 0.5s ease 0.1s, opacity 0.5s ease;
+                }
+                .footer-options {
+                    margin: 5px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    gap: 10px;
+                    div {
+                        display: flex;
+                    }
                 }
             }
             .table-container {
@@ -280,6 +285,14 @@
             }
         }
     }
+}
+
+button {
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 17px;
+    margin: 5px 10px 5px 5px;
 }
 
 .hidden {

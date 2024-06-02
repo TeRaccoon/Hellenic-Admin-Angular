@@ -72,13 +72,15 @@ export class EditFormComponent {
       line1: "",
       line2: "",
       line3: "",
-      postcode: ""
+      postcode: "",
+      save: false
     },
     'Billing Address': {
       line1: "",
       line2: "",
       line3: "",
-      postcode: ""
+      postcode: "",
+      save: false
     }
   };
 
@@ -491,6 +493,9 @@ export class EditFormComponent {
   }
 
   async addAddressToBook(key: string) {
+    let customerId = this.addresses[key].save == false ? null : this.editForm.get("customer_id")?.value;
+    let secondaryKey = key == 'Billing Address' ? 'billing_address_id' : 'address_id';
+
     let payload = {
       invoice_address_one: this.addresses['Billing Address'].line1,
       invoice_address_two: this.addresses['Billing Address'].line2,
@@ -500,7 +505,7 @@ export class EditFormComponent {
       delivery_address_two: this.addresses['Delivery Address'].line2,
       delivery_address_three: this.addresses['Delivery Address'].line3,
       delivery_postcode: this.addresses['Delivery Address'].postcode,
-      customer_id: this.editForm.get("customer_id")?.value,
+      customer_id: customerId,
       action: "add",
       table_name: "customer_address"
     }
@@ -511,12 +516,23 @@ export class EditFormComponent {
 
       this.addressNotListedKeys = this.addressNotListedKeys.filter(addressKey => addressKey != key);
       if (this.editForm.get('customer_id')?.value != null) {
-        await this.updateSelectedReplacementDataFromKey(this.editForm.get('customer_id')?.value, this.selectedReplacementData['Customer Name']!.selectData, 'Customer Name', 'customer_id')
+        this.selectedReplacementData[key] = {
+          selectData: [this.addresses[key].line1, this.addresses[key].line2, this.addresses[key].line3, this.addresses[key].postcode].join(' '),
+          selectDataId: id
+        };
+
+        let replacement = {
+          id: id,
+          replacement: [this.addresses[key].line1, this.addresses[key].line2, this.addresses[key].line3, this.addresses[key].postcode].join(' ')
+        };
+
+        this.replacementData[key].data.push(replacement);
+        this.editForm.get(secondaryKey)?.setValue(id);
       } else {
         let address = await lastValueFrom(this.dataService.processData('customer-addresses', id));
         await this.updateCustomerAddresses([address], key);
+        await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'address_id' : 'billing_address_id');
       }
-      await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'address_id' : 'billing_address_id');
     } else {
       this.formService.setMessageFormData({
         title: "Error!",

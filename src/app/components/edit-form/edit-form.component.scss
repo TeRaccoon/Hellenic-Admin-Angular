@@ -212,7 +212,9 @@
                         margin-left: 2px;
                     }
                 }
-                input {
+                input[type="text"],
+                input[type="number"],
+                input[type="date"] {
                     border-radius: 8px;
                     outline: none;
                     border: 1px solid rgb(215, 215, 215);
@@ -246,9 +248,27 @@
                     max-height: 500px;
                     transition: max-height 0.5s ease 0.1s, opacity 0.5s ease;
                 }
+                .footer-options {
+                    margin: 5px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    gap: 10px;
+                    div {
+                        display: flex;
+                    }
+                }
             }
         }
     }
+}
+
+button {
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 17px;
+    margin: 5px 10px 5px 5px;
 }
 
 .hidden {
