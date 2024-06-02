@@ -660,12 +660,12 @@ export class ViewComponent {
       case "invoices":
         if (this.authService.getAccessLevel() == 'Driver') {
           switch (column) {
-            case "net_value":
+            case "gross_value":
             case "VAT":
             case "total":
             case "outstanding_balance":
             case "payment_status":
-            case "Net Value":
+            case "Gross Value":
             case "Total":
             case "Outstanding Balance":
             case "Paid":
