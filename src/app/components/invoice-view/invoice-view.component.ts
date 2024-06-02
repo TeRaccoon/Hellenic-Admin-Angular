@@ -139,16 +139,21 @@ export class InvoiceViewComponent {
   calculateVat() {
     this.invoiceData.forEach((invoices: any, index) => {
       var vatTotal = 0;
+      var discountTotal = 0;
       this.invoiceItems[index].forEach((item: any) => {
         if (item['vat_charge'] == 'Yes') {
-          var vatAmount = item['quantity'] * item['price'] * 0.2;
-          item['vat_charge'] = vatAmount;
-          vatTotal += vatAmount;
+          item['sub_total'] = item['price'] * item['quantity'];
+          item['discounted_sub_total'] = item['sub_total'] * (100 - item['discount']) / 100;
+          item['vat_charge'] = item['discounted_sub_total']  * 0.2;
+          item['net_total'] = (item['discounted_sub_total'] + item['vat_charge']);
+          vatTotal += item['vat_charge'];
         } else {
           item['vat_charge'] = 0;
         }
       });
       invoices['vat'] = vatTotal;
+      console.log(invoices);
+      invoices['discount'] = invoices['gross_value'] + invoices['vat'] - invoices['total'];
     });
   }
 
