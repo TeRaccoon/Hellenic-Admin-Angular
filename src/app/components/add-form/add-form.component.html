@@ -133,13 +133,19 @@
                                 <thead>
                                     <th>Item Name</th>
                                     <th>Quantity</th>
+                                    <th>Price</th>
                                     <th>Discount</th>
+                                    <th>VAT</th>
+                                    <th>Total</th>
                                 </thead>
                                 <tbody *ngIf="invoicedItemsList.length > 0">
                                     <tr *ngFor="let invoicedItem of invoicedItemsList; let index = index">
                                         <td>{{ invoicedItem.name }}</td>
                                         <td>{{ invoicedItem.quantity }}</td>
-                                        <td>{{ invoicedItem.discount }}</td>
+                                        <td>{{ invoicedItem.price | currency:'GBP' }}</td>
+                                        <td>{{ invoicedItem.discount }}%</td>
+                                        <td>{{ invoicedItem.vat }}</td>
+                                        <td>{{ invoicedItem.total * ((100 - invoicedItem.discount) / 100 ) | currency:'GBP' }}</td>
                                         <td (click)="deleteRow(invoicedItemsList[index].id)">
                                             <fa-icon [icon]="faX" />
                                         </td>

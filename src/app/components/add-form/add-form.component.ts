@@ -133,7 +133,7 @@ export class AddFormComponent {
   }
 
   async reload() {
-    this.invoicedItemsList = await lastValueFrom(this.dataService.processData('invoiced-items', this.invoiceId?.toString()))
+    this.invoicedItemsList = await lastValueFrom(this.dataService.collectDataComplex('invoiced-items', { 'id': this.invoiceId?.toString(), 'complex': true }));
     this.invoicedItemsList = Array.isArray(this.invoicedItemsList) ? this.invoicedItemsList : [this.invoicedItemsList];
     this.formService.performReload();
   }
@@ -591,7 +591,7 @@ export class AddFormComponent {
       this.formService.showMessageForm();
     }
 
-    this.invoicedItemsList = await lastValueFrom(this.dataService.processData('invoiced-items', this.invoiceId?.toString()))
+    this.invoicedItemsList = await lastValueFrom(this.dataService.collectDataComplex('invoiced-items', { 'id': this.invoiceId?.toString(), 'complex': true }));
     this.invoicedItemsList = Array.isArray(this.invoicedItemsList) ? this.invoicedItemsList : [this.invoicedItemsList];
 
     event.preventDefault();
