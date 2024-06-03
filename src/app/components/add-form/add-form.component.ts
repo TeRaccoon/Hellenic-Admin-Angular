@@ -67,6 +67,8 @@ export class AddFormComponent {
 
   itemData: any = [];
 
+  invoiceDetails: any = [];
+
   addressNotListedKeys: string[] = [];
   addresses: {[key: string]: any } = {
     'Delivery Address': {
@@ -452,6 +454,11 @@ export class AddFormComponent {
       this.updateCustomerAddresses(addresses, "Delivery Address", 'address_id');
       this.updateCustomerAddresses(addresses, "Billing Address", 'billing_address_id');
     }
+
+    if (this.tableName == "customer_payments" && field == "invoice_id") {
+      this.invoiceDetails = await lastValueFrom(this.dataService.processData("invoice", dataId.toString()));
+    }
+
     this.selectOpen[key].opened = false;
   }
 
