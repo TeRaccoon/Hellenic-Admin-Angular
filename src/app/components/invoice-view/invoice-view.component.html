@@ -53,18 +53,17 @@
                 <div class="row">
                     <div class="section card">
                         <h1>Billing Address:</h1>
-                        <p>{{ invoice['invoice_address_one'] }}</p>
-                        <p>{{ invoice['invoice_address_two'] }}</p>
-                        <p>{{ invoice['invoice_address_three'] }}</p>
-                        <p>{{ invoice['invoice_postcode'] }}</p>
+                        <p>{{ deliveryData[key]['delivery_info']['billing_address_one'] }}</p>
+                        <p>{{ deliveryData[key]['delivery_info']['billing_address_two'] }}</p>
+                        <p>{{ deliveryData[key]['delivery_info']['billing_address_three'] }}</p>
+                        <p>{{ deliveryData[key]['delivery_info']['billing_postcode'] }}</p>
                     </div>
                     <div class="section card">
                         <h1>Delivery Address:</h1>
-                        <p>{{ invoice['address_line_1'] }}</p>
-                        <p>{{ invoice['address_line_2'] }}</p>
-                        <p>{{ invoice['address_line_3'] }}</p>
-                        <p>{{ invoice['address_line_4'] }}</p>
-                        <p>{{ invoice['postcode'] }}</p>
+                        <p>{{ deliveryData[key]['delivery_info']['delivery_address_one'] }}</p>
+                        <p>{{ deliveryData[key]['delivery_info']['delivery_address_two'] }}</p>
+                        <p>{{ deliveryData[key]['delivery_info']['delivery_address_three'] }}</p>
+                        <p>{{ deliveryData[key]['delivery_info']['delivery_postcode'] }}</p>
                     </div>
                     <div class="section card">
                         <h1>Payment Details:</h1>
@@ -104,7 +103,7 @@
                             <span class="value">{{ invoice['gross_value'] | currency:'GBP' }}</span>
                         </div>
                         <div class="row label-row">
-                            <span class="label">Savings: </span>
+                            <span class="label">Discount: </span>
                             <span class="value">{{ invoice['discount'] | currency:'GBP' }}</span><br>
                         </div>
                         <div class="row label-row">
