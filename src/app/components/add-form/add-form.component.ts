@@ -458,7 +458,6 @@ export class AddFormComponent {
     if (this.tableName == "customer_payments" && field == "invoice_id") {
       this.invoiceDetails = await lastValueFrom(this.dataService.processData("invoice", dataId.toString()));
     }
-
     this.selectOpen[key].opened = false;
   }
 
@@ -566,7 +565,7 @@ export class AddFormComponent {
 
   updateAlternativeSelectData(field: string, data: any, key: string) {
     this.alternativeSelectedData[key] = { selectData: data };
-      this.addForm.get(field)?.setValue(data);
+    this.addForm.get(field)?.setValue(data);
     this.selectOpen[key].opened = false;
   }
 
@@ -592,6 +591,8 @@ export class AddFormComponent {
       };
       
       field != null && this.addForm.get(field.toString())?.setValue(this.filteredReplacementData[key].data[0].id)
+
+      this.selectOpen[key].opened = false;
     }
 
     if (field) {
