@@ -169,6 +169,7 @@ export class AddFormComponent {
     this.invoiceCreated = false;
     this.disabled = false;
     this.noCustomer = false;
+    this.addressNotListedKeys = [];
   }
 
   async replaceAmbiguousData() {
