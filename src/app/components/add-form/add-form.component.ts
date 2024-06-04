@@ -495,7 +495,7 @@ export class AddFormComponent {
   }
 
   async addAddressToBook(key: string) {
-    let customerId = this.addresses[key].save == false ? null : this.addForm.get("customer_id")?.value;
+    let customerId = this.addresses[key]?.save == false ? null : this.addForm.get("customer_id")?.value;
     let secondaryKey = key == 'Billing Address' ? 'billing_address_id' : 'address_id';
 
     let payload = {
@@ -535,11 +535,32 @@ export class AddFormComponent {
         await this.updateCustomerAddresses([address], key, secondaryKey);
         await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'address_id' : 'billing_address_id', false);
       }
+      
+      this.resetAddresses();
     } else {
       this.formService.setMessageFormData({
         title: "Error!",
         message: "There was an issue adding the address to the address book!",
       });
+    }
+  }
+
+  resetAddresses() {
+    this.addresses = {
+      'Delivery Address': {
+        line1: "",
+        line2: "",
+        line3: "",
+        postcode: "",
+        save: false
+      },
+      'Billing Address': {
+        line1: "",
+        line2: "",
+        line3: "",
+        postcode: "",
+        save: false
+      }
     }
   }
 
