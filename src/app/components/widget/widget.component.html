@@ -8,6 +8,7 @@
         </div>
         <ng-container *ngIf="tableData.rows && tableData.rows.length > 0 && tableData.rows[0] != null else noData">
             <div class="table-container">
+                <p class="warning-message" *ngIf="tableData.disabled.value">{{ tableData.disabled.message }}</p>
                 <table>
                     <thead>
                         <th *ngFor="let header of tableData.headers">{{ header.name }}</th>
@@ -26,11 +27,11 @@
                                     </ng-container>
                                 </ng-container>
                             </td>
-                            <td (click)="editRow(row['id'])">
-                                <fa-icon [icon]="faPenToSquare" />
+                            <td (click)="!tableData.disabled.value && editRow(row['id'])">
+                                <fa-icon [class]="tableData.disabled.value ? 'disabled-icon' : ''" [icon]="faPenToSquare" />
                             </td>
-                            <td (click)="deleteRow(row['id'])">
-                                <fa-icon [icon]="faTrashCan" />
+                            <td (click)="!tableData.disabled.value && deleteRow(row['id'])">
+                                <fa-icon [class]="tableData.disabled.value ? 'disabled-icon' : ''" [icon]="faTrashCan" />
                             </td>
                         </tr>
                         <tr *ngIf="tableData.query == 'stocked-items'">

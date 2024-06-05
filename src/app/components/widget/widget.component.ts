@@ -35,17 +35,27 @@ export class WidgetComponent {
       columnName: "",
     },
     query: "",
+    disabled: {
+      value: false,
+      message: ""
+    }
   };
 
   constructor(private dataService: DataService, private formService: FormService) {}
   
   ngOnInit() {
+    this.subscriptionHandler();
+  }
+
+  subscriptionHandler() {
     this.formService.getWidgetVisibility().subscribe((visible: boolean) => {
       this.visible = visible;
     });
+
     this.dataService.retrieveWidgetData().subscribe((tableData: any) => {
       this.tableData = tableData;
     });
+
     this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
       if (reloadRequested) {
         await this.reload();

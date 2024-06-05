@@ -51,6 +51,11 @@
         overflow-x: auto;
         margin: 0 auto;
         border-radius: 15px;
+        .warning-message {
+            border-left: 3px solid red;
+            padding: 10px;
+            background-color: #e0e0e0;
+        }
         .widget-footer {
             display: flex;
             justify-content: right;
@@ -79,6 +84,10 @@
             }
             .ng-fa-icon {
                 cursor: pointer;
+            }
+            .disabled-icon {
+                color: #e5e5e5;
+                cursor: default;
             }
         }
         thead {
