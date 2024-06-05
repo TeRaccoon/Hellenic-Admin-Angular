@@ -126,20 +126,8 @@ export class AddFormComponent {
         this.loadForm();
       }
     });
-
-    this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
-      if (reloadRequested) {
-        await this.reload();
-      }
-    });
   }
-
-  async reload() {
-    this.invoicedItemsList = await lastValueFrom(this.dataService.collectDataComplex('invoiced-items', { 'id': this.invoiceId?.toString(), 'complex': true }));
-    this.invoicedItemsList = Array.isArray(this.invoicedItemsList) ? this.invoicedItemsList : [this.invoicedItemsList];
-    this.formService.performReload();
-  }
-
+  
   async loadForm() {
     this.clearForm();
     this.formData = this.formService.getAddFormData();
@@ -405,7 +393,7 @@ export class AddFormComponent {
       !reset && this.formService.showMessageForm();
       hideForm && this.hide();
       if (reset) {
-        this.formService.requestReload();
+        this.formService.requestReload('invoiced-items');
         this.addForm.reset();
         this.alternativeSelectData = {};
         this.submitted = false;
@@ -693,6 +681,7 @@ export class AddFormComponent {
   fullscreen() {
     switch(this.tableName) {
       case "invoices":
+      case "supplier_invoices":
         return true;
     }
     return false;
