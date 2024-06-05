@@ -27,10 +27,10 @@
                                     </ng-container>
                                 </ng-container>
                             </td>
-                            <td (click)="!tableData.disabled.value && editRow(row['id'])">
+                            <td (click)="!tableData.disabled?.value && editRow(row['id'])">
                                 <fa-icon [class]="tableData.disabled?.value ? 'disabled-icon' : ''" [icon]="faPenToSquare" />
                             </td>
-                            <td (click)="!tableData.disabled.value && deleteRow(row['id'])">
+                            <td (click)="!tableData.disabled?.value && deleteRow(row['id'])">
                                 <fa-icon [class]="tableData.disabled?.value ? 'disabled-icon' : ''" [icon]="faTrashCan" />
                             </td>
                         </tr>
@@ -41,14 +41,14 @@
                     </tbody>
                 </table>
                 <div class="widget-footer">
-                    <button class="button" (click)="addRow()">Add more</button>
+                    <button class="button" (click)="!tableData.disabled?.value && addRow()">Add more</button>
                 </div>
             </div>
         </ng-container>
         <ng-template #noData>
             <div class="error-container">
                 <p>Error! There is no data. Would you like to add some?</p>
-                <button (click)="addRow()" class="button">Add Data</button>
+                <button (click)="!tableData.disabled?.value && addRow()" class="button">Add Data</button>
             </div>
         </ng-template>
     </div>
