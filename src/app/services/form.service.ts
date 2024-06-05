@@ -64,7 +64,8 @@ export class FormService {
     this.waitingToReload.next(false);
   }
 
-  requestReload() {
+  requestReload(reloadType: string | null = null) {
+    reloadType != null && this.setReloadType(reloadType);
     this.waitingToReload.next(true);
   }
 
