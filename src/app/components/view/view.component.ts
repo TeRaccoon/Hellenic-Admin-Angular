@@ -550,26 +550,21 @@ export class ViewComponent {
   async invoiceSearch(invoiceId: string) {
     var row = this.data.filter((row: any) => row.id == invoiceId)[0];
     
-    // if (row['status'] == 'Complete') {
-    //   this.formService.setMessageFormData({title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!'});
-    //   this.formService.showMessageForm();
-    // } else {
-      let tableColumns = [
-        { name: "ID", type: "number" },
-        { name: "Item Name", type: "string" },
-        { name: "Picture", type: "image" },
-        { name: "Quantity", type: "number" },
-        { name: "VAT Charge", type: "enum" },
-        { name: "Discount", type: "number" }
-      ];
-      let tableRows = await lastValueFrom(this.dataService.processData("invoiced-items", invoiceId));
-      tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
-      let tableName = "invoiced_items";
-      let title = `Invoiced Items for ${row['title']}`;
+    let tableColumns = [
+      { name: "ID", type: "number" },
+      { name: "Item Name", type: "string" },
+      { name: "Picture", type: "image" },
+      { name: "Quantity", type: "number" },
+      { name: "VAT Charge", type: "enum" },
+      { name: "Discount", type: "number" }
+    ];
+    let tableRows = await lastValueFrom(this.dataService.processData("invoiced-items", invoiceId));
+    tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
+    let tableName = "invoiced_items";
+    let title = `Invoiced Items for ${row['title']}`;
 
-      this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: invoiceId, columnName: "Invoice ID"}, query: "invoiced-items", disabled: { value: row['status'] == 'Complete', message: 'This invoice is locked and cannot be modified!'}});
-      this.formService.showWidget();
-    // }
+    this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: invoiceId, columnName: "Invoice ID"}, query: "invoiced-items", disabled: { value: row['status'] == 'Complete', message: 'This invoice is locked and cannot be modified!'}});
+    this.formService.showWidget();
   }
 
   async supplierInvoiceSearch(invoiceId: string) {
