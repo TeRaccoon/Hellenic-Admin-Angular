@@ -127,7 +127,7 @@ export class AddFormComponent {
       }
     });
   }
-  
+
   async loadForm() {
     this.clearForm();
     this.formData = this.formService.getAddFormData();
@@ -393,7 +393,7 @@ export class AddFormComponent {
       !reset && this.formService.showMessageForm();
       hideForm && this.hide();
       if (reset) {
-        this.formService.requestReload('invoiced-items');
+        this.formService.requestReload('hard');
         this.addForm.reset();
         this.alternativeSelectData = {};
         this.submitted = false;
