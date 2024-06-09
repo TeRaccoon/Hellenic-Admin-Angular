@@ -388,17 +388,35 @@ export class ViewComponent {
   }
 
   deleteRow(id: number) {
-    this.formService.setSelectedTable(String(this.tableName));
-    this.formService.setDeleteFormIds([id]);
-    this.formService.showDeleteForm();
-    this.formService.setReloadType("hard");
+    if (this.canDelete(id)) {
+      this.formService.setSelectedTable(String(this.tableName));
+      this.formService.setDeleteFormIds([id]);
+      this.formService.showDeleteForm();
+      this.formService.setReloadType("hard");
+    }
   }
 
   deleteRows() {
-    this.formService.setSelectedTable(String(this.tableName));
-    this.formService.setDeleteFormIds(this.selectedRows);
-    this.formService.showDeleteForm();
-    this.formService.setReloadType("hard");
+    if (this.selectedRows.every(id => this.canDelete(id))) {
+      this.formService.setSelectedTable(String(this.tableName));
+      this.formService.setDeleteFormIds(this.selectedRows);
+      this.formService.showDeleteForm();
+      this.formService.setReloadType("hard");
+    }
+  }
+
+  canDelete(id: number) {
+    var row = this.data.filter((row: any) => row.id == id)[0];
+    switch (this.tableName) {
+      case "customer_payments":
+        if (row['linked_payment_id'] != null) {
+          this.formService.setMessageFormData({title: "Error", message: "You cannot delete this payment because it is linked. Please delete or alter the linked payment instead!"});
+          this.formService.showMessageForm();
+          return false;
+        }
+        break;
+    }
+    return true;
   }
 
   changeEntries(event: Event) {
