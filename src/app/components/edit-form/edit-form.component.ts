@@ -66,6 +66,8 @@ export class EditFormComponent {
     }
   } = {};
 
+  invoiceDetails: any = [];
+
   addressNotListedKeys: string[] = [];
   addresses: {[key: string]: any } = {
     'Delivery Address': {
@@ -165,6 +167,13 @@ export class EditFormComponent {
           addresses = Array.isArray(addresses) ? addresses : [addresses];
           this.updateCustomerAddresses(addresses, "Delivery Address");
           this.updateCustomerAddresses(addresses, "Billing Address");
+        }
+      }
+
+      if (this.tableName == "customer_payments") {
+        let invoiceId = this.editForm.get("invoice_id")?.value;
+        if (invoiceId != null) {
+          this.invoiceDetails = await lastValueFrom(this.dataService.processData("invoice", invoiceId.toString()));
         }
       }
 
@@ -270,6 +279,7 @@ export class EditFormComponent {
     this.submissionEnded = false;
     this.error = null;
     this.file = null;
+    this.invoiceDetails = [];
   }
 
   async handleImages() {
@@ -466,6 +476,9 @@ export class EditFormComponent {
       this.updateCustomerAddresses(addresses, "Billing Address");
     }
 
+    if (this.tableName == "customer_payments" && field == "invoice_id") {
+      this.invoiceDetails = await lastValueFrom(this.dataService.processData("invoice", dataId.toString()));
+    }
     this.selectOpen[key].opened = false;
   }
 

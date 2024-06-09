@@ -81,6 +81,26 @@
                                         <button class="button" type="button" (click)="addAddressToBook(key)">Add</button>
                                     </div>
                                 </ng-container>
+                                <ng-container *ngIf="key == 'Invoice ID' && tableName == 'customer_payments'">
+                                    <div class="invoice-details-container">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Due date</th>
+                                                    <th>Total</th>
+                                                    <th>Outstanding balance</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ invoiceDetails['delivery_date'] }}</td>
+                                                    <td>{{ invoiceDetails['total'] | currency: 'GBP' }}</td>
+                                                    <td>{{ invoiceDetails['outstanding_balance'] | currency: 'GBP' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </ng-container>
                                 <ng-template #standardSelect>
                                     <div class="drop-select-container">
                                         <input autocomplete="off" [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" (input)="filterDropSelect(key, $event, null)" type="text" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)" [value]="selectedReplacementData[key]?.selectData">

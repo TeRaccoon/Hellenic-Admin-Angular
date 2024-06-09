@@ -259,6 +259,37 @@
                     }
                 }
             }
+            .invoice-details-container {
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border-radius: 10px;
+                    thead {
+                        background-color: #f5f5f5;
+                        font-weight: bold;
+                        th {
+                            padding: 10px;
+                            border: 1px solid #ddd;
+                            text-align: left;
+                        }
+                    }
+                    tbody {
+                        tr:nth-child(even) {
+                            background-color: #f9f9f9;
+                        }
+                        tr {
+                            &:hover {
+                                background-color: #f0f0f0;
+                            }
+                            td {
+                                padding: 10px;
+                                border: 1px solid #ddd;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
