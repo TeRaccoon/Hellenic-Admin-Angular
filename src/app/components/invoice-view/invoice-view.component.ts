@@ -143,9 +143,9 @@ export class InvoiceViewComponent {
       this.invoiceItems[index].forEach((item: any) => {
         if (item['vat_charge'] == 'Yes') {
           item['sub_total'] = item['price'] * item['quantity'];
-          item['discounted_sub_total'] = item['sub_total'] * (100 - item['discount']) / 100;
-          item['vat_charge'] = item['discounted_sub_total']  * 0.2;
-          item['net_total'] = (item['discounted_sub_total'] + item['vat_charge']);
+          item['net_total'] = item['sub_total'] * (100 - item['discount']) / 100;
+          item['vat_charge'] = item['net_total']  * 0.2;
+          item['total'] = (item['net_total'] + item['vat_charge']);
           vatTotal += item['vat_charge'];
         } else {
           item['vat_charge'] = 0;

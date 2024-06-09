@@ -73,20 +73,22 @@
                 <div class="row splitteable">
                     <div class="items section card">
                         <div class="row item-headers">
-                            <span style="width: 40%;">Item Name</span>
-                            <span style="width: 10%;">Quantity</span>
-                            <span style="width: 10%;">Unit Price</span>
+                            <span style="width: 37.5%;">Item Name</span>
+                            <span style="width: 9%;">Quantity</span>
+                            <span style="width: 12.5%;">Unit Price</span>
                             <span style="width: 10%;">Discount</span>
-                            <span style="width: 10%;">VAT</span>
-                            <span style="width: 15%;">Net Amount</span>
+                            <span style="width: 12.5%;">Net Amount</span>
+                            <span style="width: 8%;">VAT</span>
+                            <span style="width: 10%;">Total</span>
                         </div>
                         <div *ngFor="let item of invoiceItems[key]" class="row">
-                            <p style="width: 40%;">{{ item['item_name'] }}</p>
-                            <p style="width: 10%;">{{ item['quantity'] }}</p>
-                            <p style="width: 10%;">{{ item['price'] | currency:'GBP' }}</p>
+                            <p style="width: 37.5%;">{{ item['item_name'] }}</p>
+                            <p style="width: 9%;">{{ item['quantity'] }}</p>
+                            <p style="width: 12.5%;">{{ item['price'] | currency:'GBP' }}</p>
                             <p style="width: 10%;">{{ item['discount'] }}%</p>
-                            <p style="width: 10%;">{{ item['vat_charge'] | currency:'GBP' }}</p>
-                            <p style="width: 15%;">{{ item['net_total'] | currency:'GBP' }}</p>
+                            <p style="width: 12.5%;">{{ item['net_total'] | currency:'GBP' }}</p>
+                            <p style="width: 8%;">{{ item['vat_charge'] | currency:'GBP' }}</p>
+                            <p style="width: 10%;">{{ item['total'] | currency:'GBP' }}</p>
                         </div>
                     </div>
                 </div>
