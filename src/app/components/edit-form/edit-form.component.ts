@@ -430,7 +430,7 @@ export class EditFormComponent {
     hideForm && this.formService.showMessageForm();
     hideForm && this.hide();
     if (reset) {
-      this.formService.requestReload();
+      this.formService.requestReload('hard');
       this.editForm.reset();
       this.alternativeSelectData = {};
       this.selectedReplacementData = {};

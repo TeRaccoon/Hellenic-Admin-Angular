@@ -45,6 +45,6 @@ export class DeleteFormComponent {
     this.formService.setMessageFormData({title: deletionResponse.success ? 'Success!' : 'Error!', message: deletionResponse.message});
     this.formService.showMessageForm();
     this.hide();
-    this.formService.requestReload();
+    this.formService.requestReload('hard');
   }
 }
