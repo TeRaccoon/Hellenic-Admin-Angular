@@ -8,7 +8,7 @@ import { faUserLock, faAddressBook, faBox, faLock, faLockOpen, faBasketShopping,
 import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { formSettings } from '../../common/forms/types'; 
+import { columnFilter, columnDateFilter, editableData, sortedColumn } from '../../common/view/types';
 
 @Component({
   selector: 'app-view',
@@ -47,15 +47,16 @@ export class ViewComponent {
   tableFilter: string | null = null;
   queryFilter: string | null = null;
   displayColumnFilters: string[] = [];
-  columnFilters: { column: string, filter: string, caseSensitive: boolean }[] = [];
-  columnDateFilters: { column: string, startDate: Date, endDate: Date }[] = [];
+
+  columnFilters: columnFilter[] = [];
+  columnDateFilters: columnDateFilter[] = [];
 
   data: { [key: string]: any }[] = [];
   displayNames: { [key: string]: any }[] = [];
   displayData: any[] = [];
   dataTypes: any[] = [];
   filteredDisplayData: any[] = [];
-  editable = {
+  editable: editableData = {
     columns: [],
     types: [],
     names: [],
@@ -83,7 +84,7 @@ export class ViewComponent {
 
   tabs: {displayName: string, tableName: string}[] = [];
 
-  sortedColumn: { columnName: string, ascending: boolean } = {columnName: '', ascending: false};
+  sortedColumn: sortedColumn = {columnName: '', ascending: false};
 
   constructor(private authService: AuthService, private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {
     this.accessible = this.authService.returnAccess();
