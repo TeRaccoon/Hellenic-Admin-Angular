@@ -8,7 +8,8 @@ import { faUserLock, faAddressBook, faBox, faLock, faLockOpen, faBasketShopping,
 import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { columnFilter, columnDateFilter, editableData, sortedColumn } from '../../common/view/types';
+import { columnFilter, columnDateFilter, editableData, sortedColumn } from '../../common/types/view/types';
+import { tableIcons } from '../../common/icons/table-icons'
 
 @Component({
   selector: 'app-view',
@@ -18,29 +19,10 @@ import { columnFilter, columnDateFilter, editableData, sortedColumn } from '../.
 export class ViewComponent {
   accessible = false;
 
+  icons = tableIcons;
+
   apiUrlBase = apiUrlBase;
   imageUrlBase = imageUrlBase;
-
-  faUserLock = faUserLock;
-  faAddressBook = faAddressBook;
-  faBox = faBox;
-  faLock = faLock;
-  faLockOpen = faLockOpen;
-  faBasketShopping = faBasketShopping;
-  faSpinner = faSpinner;
-  faPencil = faPencil;
-  faSearch = faSearch;
-  faPrint = faPrint;
-  faTrashCan = faTrashCan;
-  faFilter = faFilter;
-  faX = faX;
-  faArrowsLeftRight = faArrowsLeftRight;
-  faArrowLeft = faArrowLeft;
-  faArrowUp = faArrowUp;
-  faArrowDown = faArrowDown;
-  faBookMedical = faBookMedical;
-  faBookOpen = faBookOpen;
-  faTruck = faTruckFront;
   
   tableName: string = "";
   displayName: string = "";

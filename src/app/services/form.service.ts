@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
 import { formatDate } from '@angular/common';
-import { formSettings } from '../common/forms/types';
+import { formSettings } from '../common/types/forms/types';
 
 @Injectable({
   providedIn: 'root',

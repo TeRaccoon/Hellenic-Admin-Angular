@@ -5,12 +5,12 @@
             <div class="options-container">
                 <div class="row">
                     <button class="button" (click)="addRow(null)">Add New +</button>
-                    <button *ngIf="this.selectedRows.length > 0 && tableName == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="faPrint"/></button>
-                    <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon [icon]="faTrashCan"/></button>
+                    <button *ngIf="this.selectedRows.length > 0 && tableName == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="icons.faPrint"/></button>
+                    <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon [icon]="icons.faTrashCan"/></button>
                     <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button" (click)="calculateDistance()">
-                        <fa-icon *ngIf="!distanceLoading; else loading" [icon]="faTruck"></fa-icon>
+                        <fa-icon *ngIf="!distanceLoading; else loading" [icon]="icons.faTruck"></fa-icon>
                         <ng-template #loading>
-                            <fa-icon [icon]="faSpinner" spinPulse [spin]="true"></fa-icon>
+                            <fa-icon [icon]="icons.faSpinner" spinPulse [spin]="true"></fa-icon>
                         </ng-template>
                     </button>
                 </div>
@@ -26,34 +26,34 @@
                     <div class="filter-container">
                         <div *ngIf="queryFilter != null" class="filter" (click)="clearFilter('query', true)">
                             <p>{{ queryFilter }}</p>
-                            <fa-icon [icon]="faX" />
+                            <fa-icon [icon]="icons.faX" />
                         </div>
                         <ng-container *ngIf="displayColumnFilters.length > 0">
                             <div *ngFor="let filter of displayColumnFilters; let i = index" class="filter" (click)="removeColumnFilter(i)">
                                 <p>{{ filter }}</p>
-                                <fa-icon [icon]="faX" />
+                                <fa-icon [icon]="icons.faX" />
                             </div>
                         </ng-container>
                         <div *ngIf="tableFilter != null" class="filter" (click)="clearFilter('table', true)">
                             <p>{{ tableFilter }}</p>
-                            <fa-icon [icon]="faX" />
+                            <fa-icon [icon]="icons.faX" />
                         </div>
                         <ng-container *ngIf="columnDateFilters.length > 0">
                             <div *ngFor="let filter of columnDateFilters; let i = index" class="filter" (click)="removeColumnDateFilter(i)">
                                 <p>{{ filter.startDate }}</p>
-                                <fa-icon [icon]="faArrowsLeftRight" />
+                                <fa-icon [icon]="icons.faArrowsLeftRight" />
                                 <p>{{ filter.endDate }}</p>
-                                <fa-icon [icon]="faX" />
+                                <fa-icon [icon]="icons.faX" />
                             </div>
                         </ng-container>
                         <div class="advanced-filter-container">
-                            <button class="button" (click)="showAdvancedFilter()"><fa-icon [icon]="faFilter" /></button>
+                            <button class="button" (click)="showAdvancedFilter()"><fa-icon [icon]="icons.faFilter" /></button>
                         </div>
                         <div class="search-container">
                             <form>
                                 <input type="text" placeholder="Search..." [(ngModel)]="searchText" name="searchText" />
                                 <button type="submit" (click)="setTableFilter()">
-                                    <fa-icon [icon]="faSearch"></fa-icon>
+                                    <fa-icon [icon]="icons.faSearch"></fa-icon>
                                 </button>
                             </form>
                         </div>
@@ -115,7 +115,7 @@
                                         <ng-container [ngSwitch]="tableName">
                                             <ng-container *ngSwitchCase="'items'">
                                                 <td (click)="stockSearch(item.id)" [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
-                                                    <fa-icon [icon]="faBox"></fa-icon>
+                                                    <fa-icon [icon]="icons.faBox"></fa-icon>
                                                 </td>
                                                 <td>{{ stockData[item['id']] ? stockData[item['id']] : 0 }}</td>
                                             </ng-container>
@@ -126,17 +126,17 @@
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'supplier_invoices'">
                                                 <td *ngIf="canDisplayColumn('invoiced-items')" (click)="supplierInvoiceSearch(item.id)">
-                                                    <fa-icon [icon]="faBasketShopping" />
+                                                    <fa-icon [icon]="icons.faBasketShopping" />
                                                 </td>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'invoices'">
                                                 <td *ngIf="canDisplayColumn('invoiced-items')" (click)="invoiceSearch(item.id)">
-                                                    <fa-icon [icon]="faBasketShopping" />
+                                                    <fa-icon [icon]="icons.faBasketShopping" />
                                                 </td>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'customers'">
                                                 <td (click)="addressSearch(item.id, item.account_name)">
-                                                    <fa-icon [icon]="faAddressBook" />
+                                                    <fa-icon [icon]="icons.faAddressBook" />
                                                 </td>
                                             </ng-container>
                                         </ng-container>
@@ -164,20 +164,20 @@
                                 </ng-container>
                                 <ng-container *ngIf="tableName == 'items' || tableName == 'retail_items'">
                                     <td (click)="editRow(item.id, 'allergen_information')">
-                                        <fa-icon [icon]="faBookMedical"></fa-icon>
+                                        <fa-icon [icon]="icons.faBookMedical"></fa-icon>
                                     </td>
                                     <td (click)="editRow(item.id, 'nutrition_info')">
-                                        <fa-icon [icon]="faBookOpen"></fa-icon>
+                                        <fa-icon [icon]="icons.faBookOpen"></fa-icon>
                                     </td>
                                 </ng-container>
                                 <td *ngIf="canDisplayColumn('edit-row')">
                                     <a (click)="editRow(item.id, '')">
-                                        <fa-icon [icon]="faPencil"></fa-icon>
+                                        <fa-icon [icon]="icons.faPencil"></fa-icon>
                                     </a>
                                 </td>
                                 <td *ngIf="canDisplayColumn('delete-row')" class="bin">
                                     <a (click)="deleteRow(item.id)">
-                                        <fa-icon [icon]="faTrashCan"></fa-icon>
+                                        <fa-icon [icon]="icons.faTrashCan"></fa-icon>
                                     </a>
                                 </td>
                             </ng-container>
@@ -188,7 +188,7 @@
                     <div *ngIf="data.length === 0 && loaded" class="alternate-container">
                         <div class="no-data-container">
                             <div class="header">
-                                <fa-icon (click)="back()" [icon]="faArrowLeft" />
+                                <fa-icon (click)="back()" [icon]="icons.faArrowLeft" />
                             </div>
                             <div class="content">
                                 <h1>Whoops! No data was found for {{ displayName }}!</h1>
@@ -218,7 +218,7 @@
     <ng-template #loading>
         <ng-container *ngIf="!loaded">
             <div class="loading-container">
-                <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true" />
+                <fa-icon class="loading-icon" [icon]="icons.faSpinner" spinPulse [spin]="true" />
             </div>
         </ng-container>
     </ng-template>
