@@ -37,23 +37,6 @@ export class DataService {
     return this.http.get<any>(url);
   }
 
-  // submitFormData(data: any): Observable<any> {
-  //   const url = apiUrlBase + 'manage_data.php';
-  //   return this.http.post(url, data, {withCredentials: true}).pipe(
-  //     map((response: any) => {
-  //       if (response) {
-  //         return response;
-  //       } else {
-  //         throw new Error('Unexpected response format');
-  //       }
-  //     }),
-  //     catchError((error: any) => {
-  //       console.error('HTTP error occurred:', error);
-  //       return throwError(error);
-  //     })
-  //   );
-  // }
-
   async submitFormData(data: any) {
     const url = apiUrlBase + 'manage_data.php';
     let submissionResponse = await lastValueFrom<any>(this.http.post(url, data, {withCredentials: true}));
