@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, last, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
 import { formatDate } from '@angular/common';
+import { formSettings } from '../common/forms/types';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,6 @@ export class FormService {
   private isChangePasswordFormVisible = new BehaviorSubject<boolean>(false);
   private isInvoicedItemsFormVisible = new BehaviorSubject<boolean>(false);
   private isWidgetVisible = new BehaviorSubject<boolean>(false);
-
 
   private editFormData: {
     [key: string]: {
@@ -36,6 +36,11 @@ export class FormService {
       value: any;
     };
   } = {};
+
+  private formSettings: formSettings = {
+    showAddMore: false
+  };
+
   private alternativeSelectData: {
     [key: string]: {
       data: {value: string}[]
@@ -168,6 +173,10 @@ export class FormService {
 
   showWidget() {
     this.isWidgetVisible.next(true);
+  }
+
+  getFormSettings(): formSettings {
+    return this.formSettings;
   }
 
   setEditFormData(editFormData: {
@@ -431,7 +440,7 @@ export class FormService {
     });
   }
 
-  processAddFormData(editableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[], values: any[]}) {
+  processAddFormData(editableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[], values: any[]}, settings: formSettings) {
     this.addFormData = {};
     var inputDataTypes: string[] = this.dataTypeToInputType(editableData.types);
     editableData.columns.forEach((_, index) => {
@@ -443,6 +452,7 @@ export class FormService {
         value: editableData.values ? editableData.values[index] : null,
       };
     });
+    this.formSettings = settings;
   }
 
   dataTypeToInputType(dataTypes: any[]) {
@@ -597,5 +607,15 @@ export class FormService {
         
         break;
     }
+  }
+
+  constructFormSettings(tableName: string) {
+    let settings: formSettings = { showAddMore: false };
+    switch (tableName) {
+      case 'price_list':
+          settings.showAddMore = true;
+          break;
+    }
+    return settings;
   }
 }

@@ -8,6 +8,7 @@ import { faUserLock, faAddressBook, faBox, faLock, faLockOpen, faBasketShopping,
 import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { formSettings } from '../../common/forms/types'; 
 
 @Component({
   selector: 'app-view',
@@ -41,7 +42,7 @@ export class ViewComponent {
   faBookOpen = faBookOpen;
   faTruck = faTruckFront;
   
-  tableName: string | null = null;
+  tableName: string = "";
   displayName: string = "";
   tableFilter: string | null = null;
   queryFilter: string | null = null;
@@ -348,7 +349,10 @@ export class ViewComponent {
                 const itemIdIndex = editFormData.names.indexOf('Item ID');
                 values[itemIdIndex] = id;
                 editFormData.values = values;
-                this.formService.processAddFormData(editFormData);
+
+                this.formService.processAddFormData(editFormData, {
+                  showAddMore: false
+                });
                 this.prepareAddFormService(table);
               }
             break;
@@ -384,7 +388,7 @@ export class ViewComponent {
       fields: this.editable.fields,
       values: values,
     }
-    this.formService.processAddFormData(addFormData);
+    this.formService.processAddFormData(addFormData, this.formService.constructFormSettings(this.tableName));
     this.formService.setSelectedTable(String(this.tableName));
     this.formService.showAddForm();
     this.formService.setReloadType("hard");

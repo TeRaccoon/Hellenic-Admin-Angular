@@ -6,6 +6,9 @@ import { faCheck, faCloudUpload, faSpinner, faX, faAsterisk, faPlus } from '@for
 import { lastValueFrom } from 'rxjs';
 import _ from 'lodash';
 
+type addFormSettings = {
+  showAddMore: boolean;
+}
 @Component({
   selector: 'app-add-form',
   templateUrl: './add-form.component.html',
@@ -33,6 +36,10 @@ export class AddFormComponent {
     dataType: string;
     required: boolean;
     fields: string;}> = new Map(); 
+
+  formSettings: addFormSettings = {
+    showAddMore: false,
+  };
     
   formData: {
     [key: string]: {
@@ -132,6 +139,8 @@ export class AddFormComponent {
     this.clearForm();
     this.formData = this.formService.getAddFormData();
     this.tableName = this.formService.getSelectedTable();
+    this.formSettings = this.formService.getFormSettings();
+    console.log(this.formSettings);
 
     if (this.tableName !== '' && Object.keys(this.formData).length != 0 && !this.loaded) {
       this.buildForm();
@@ -401,6 +410,7 @@ export class AddFormComponent {
         this.addForm.get('action')?.setValue('add');
         this.addForm.get('table_name')?.setValue(this.tableName);
         this.error = null;
+        this.selectedReplacementData = {};
       }
     }
     this.submissionEnded = true;

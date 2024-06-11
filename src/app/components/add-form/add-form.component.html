@@ -126,6 +126,9 @@
                                 </ng-template>
                             </button>
                         </ng-template>
+                        <ng-container *ngIf="formSettings.showAddMore">
+                            <button class="button" (click)="formSubmit(false)" type="submit">Add more</button>
+                        </ng-container>
                     </div>
                 </form>
                 <ng-container *ngIf="tableName == 'invoices'">

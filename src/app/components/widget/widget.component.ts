@@ -4,7 +4,7 @@ import { FormService } from '../../services/form.service';
 import { faX, faTrashCan, faPenToSquare, faFileCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
 import { imageUrlBase } from '../../services/data.service';
-
+import { formSettings } from '../../common/forms/types'; 
 @Component({
   selector: 'app-widget',
   templateUrl: './widget.component.html',
@@ -101,7 +101,7 @@ export class WidgetComponent {
       values[idIndex] = this.tableData.idData.id;
       formData.values = values;
 
-      this.formService.processAddFormData(formData);
+      this.formService.processAddFormData(formData, this.formService.constructFormSettings(this.tableData.tableName));
       this.formService.setSelectedTable(this.tableData.tableName);
       this.formService.showAddForm();
       this.formService.setReloadType("widget");
