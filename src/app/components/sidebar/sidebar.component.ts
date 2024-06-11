@@ -19,8 +19,9 @@ export class SidebarComponent {
   tables: { [category: string]: any[] } = {
     "Customers": [
       { tableName: "customers", displayName: "Overview" },
-      { tableName: "payments", displayName: "Payments"},
+      { tableName: "payments", displayName: "Payments" },
       { tableName: "invoices", displayName: "Invoices" },
+      { tableName: "price_list", displayName: "Price List" }
     ],
     "Products": [
       { tableName: "items", displayName: "Products" },
@@ -80,6 +81,7 @@ export class SidebarComponent {
       case "customers":
       case "invoices":
       case "payments":
+      case "price_list":
         this.dataService.setTabs(this.tables['Customers']);
         break;
 

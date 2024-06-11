@@ -172,6 +172,9 @@ export class ViewComponent {
       case 'payments':
         this.displayName = 'Payments';
         break;
+      case 'price_list':
+        this.displayName = 'Price List';
+        break;
       case 'retail_item_images':
         this.displayName = 'Retail Item Images';
         break;
