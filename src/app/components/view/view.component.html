@@ -8,7 +8,7 @@
                     <button *ngIf="this.selectedRows.length > 0 && tableName == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="icons.faPrint"/></button>
                     <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon [icon]="icons.faTrashCan"/></button>
                     <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button" (click)="calculateDistance()">
-                        <fa-icon *ngIf="!distanceLoading; else loading" [icon]="icons.faTruck"></fa-icon>
+                        <fa-icon *ngIf="!distanceLoading; else loading" [icon]="icons.faTruckFront"></fa-icon>
                         <ng-template #loading>
                             <fa-icon [icon]="icons.faSpinner" spinPulse [spin]="true"></fa-icon>
                         </ng-template>
@@ -93,7 +93,7 @@
                                 </ng-container>
                                 <th *ngIf="canDisplayColumn(column.toString())" (click)="sortColumn(column)">
                                     {{ column }}
-                                    <fa-icon *ngIf="this.sortedColumn.columnName == column.toString()" [icon]="this.sortedColumn.ascending ? faArrowUp : faArrowDown" />
+                                    <fa-icon *ngIf="this.sortedColumn.columnName == column.toString()" [icon]="this.sortedColumn.ascending ? icons.faArrowUp : icons.faArrowDown" />
                                 </th>
                             </ng-container>
                             <ng-container *ngIf="tableName == 'items' || tableName == 'retail_items'">
