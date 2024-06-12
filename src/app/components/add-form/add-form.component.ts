@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { lastValueFrom } from 'rxjs';
 import _ from 'lodash';
 import { formIcons } from '../../common/icons/form-icons'
+import { keyedData, settings, data, message, editableData, address, keyedAddress } from '../../common/types/forms/types';
 
 type addFormSettings = {
   showAddMore: boolean;
@@ -26,25 +27,13 @@ export class AddFormComponent {
   addInvoicedItemForm: FormGroup;
 
   mappedFormDataKeys: any;
-  mappedFormData: Map<string, {value: any;
-    inputType: string;
-    dataType: string;
-    required: boolean;
-    fields: string;}> = new Map(); 
+  mappedFormData: Map<string, data> = new Map(); 
 
   formSettings: addFormSettings = {
     showAddMore: false,
   };
     
-  formData: {
-    [key: string]: {
-      inputType: string;
-      dataType: string;
-      required: boolean;
-      fields: string;
-      value: string
-    };
-  } = {};
+  formData: keyedData = {};
   formVisible = 'hidden';
   tableName: string = '';
 
@@ -72,7 +61,8 @@ export class AddFormComponent {
   invoiceDetails: any = [];
 
   addressNotListedKeys: string[] = [];
-  addresses: {[key: string]: any } = {
+
+  addresses: keyedAddress = {
     'Delivery Address': {
       line1: "",
       line2: "",
@@ -105,7 +95,7 @@ export class AddFormComponent {
   alternativeSelectedData: { [key: string]: {selectData: string} } = {};
   selectedReplacementData: { [key:string]: { selectData: string, selectDataId: Number | null } | null} = {};
   selectedReplacementFilter: { [key:string]: {selectFilter: string } } = {};
-  selectOpen: {[key: string]: {opened: boolean}} = {};
+  selectOpen: {[key: string]: {opened: boolean | null}} = {};
 
   invoiceId: number | null = null;
   invoicedItemsList: any[] = [];
@@ -258,7 +248,7 @@ export class AddFormComponent {
         }
         
         this.addForm.addControl(
-          field.fields,
+          field.field,
           this.fb.control({ value: fieldValue != null ? fieldValue : '', disabled: false }, controlValidators),
         );
       }
@@ -483,10 +473,11 @@ export class AddFormComponent {
     this.filteredReplacementData[key].data = addressReplacement;
   }
 
-  updateAddressValues(key: string, field: string, event: any): void {
-    let value = event.target.value;
-    this.addresses[key][field] = value;
+  updateAddressValues(key: any, field: any, event: any): void {
+    let value: string | boolean = event.target.value;
+    this.addresses[key] = {...this.addresses[key], [field]: value};
   }
+
 
   async addAddressToBook(key: string) {
     let customerId = this.addresses[key]?.save == false ? null : this.addForm.get("customer_id")?.value;
