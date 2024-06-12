@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
 import { formatDate } from '@angular/common';
-import { formSettings } from '../common/types/forms/types';
+import { settings, data, message, editableData } from '../common/types/forms/types';
 
 @Injectable({
   providedIn: 'root',
@@ -18,26 +18,10 @@ export class FormService {
   private isInvoicedItemsFormVisible = new BehaviorSubject<boolean>(false);
   private isWidgetVisible = new BehaviorSubject<boolean>(false);
 
-  private editFormData: {
-    [key: string]: {
-      value: any;
-      inputType: string;
-      dataType: string;
-      required: boolean;
-      fields: string;
-    };
-  } = {};
-  private addFormData: {
-    [key: string]: {
-      inputType: string;
-      dataType: string;
-      required: boolean;
-      fields: string;
-      value: any;
-    };
-  } = {};
+  private editFormData: data = {};
+  private addFormData: data = {};
 
-  private formSettings: formSettings = {
+  private formSettings: settings = {
     showAddMore: false
   };
 
@@ -46,12 +30,14 @@ export class FormService {
       data: {value: string}[]
     }
   } = {};
+
   private deleteFormIds: number[] = [];
-  private messageFormData: { title: string; message: string, secondaryMessage?: string } = {
+  private messageFormData: message = {
     title: "",
     message: "",
-    secondaryMessage: ""
+    footer: ""
   };
+
   private selectedTable: string = '';
   private selectedId: string = '';
   private reloadType: string = '';
@@ -175,31 +161,15 @@ export class FormService {
     this.isWidgetVisible.next(true);
   }
 
-  getFormSettings(): formSettings {
+  getFormSettings(): settings {
     return this.formSettings;
   }
 
-  setEditFormData(editFormData: {
-    [key: string]: {
-      value: any;
-      inputType: string;
-      dataType: string;
-      required: boolean;
-      fields: string;
-    };
-  }) {
+  setEditFormData(editFormData: data) {
     this.editFormData = editFormData;
   }
 
-  setAddFormData(addFormData: {
-    [key: string]: {
-      inputType: string;
-      dataType: string;
-      required: boolean;
-      fields: string;
-      value: any;
-    };
-  }) {
+  setAddFormData(addFormData: data) {
     this.addFormData = addFormData;
   }
 
@@ -207,7 +177,7 @@ export class FormService {
     this.deleteFormIds = deleteFormIds;
   }
 
-  setMessageFormData(messageFormData: { title: string; message: string, secondaryMessage?: string }) {
+  setMessageFormData(messageFormData: message) {
     this.messageFormData = messageFormData;
   }
 
@@ -426,7 +396,7 @@ export class FormService {
     return this.reloadId;
   }
 
-  processEditFormData(id: number, row: any, editableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[]}) {
+  processEditFormData(id: number, row: any, editableData: editableData) {
     this.editFormData = {};
     var inputDataTypes = this.dataTypeToInputType(editableData.types);
     editableData.columns.forEach((columnName, index) => {
@@ -435,12 +405,12 @@ export class FormService {
         inputType: inputDataTypes[index],
         dataType: editableData.types[index],
         required: editableData.required[index],
-        fields: editableData.fields[index],
+        field: editableData.fields[index],
       };
     });
   }
 
-  processAddFormData(editableData: {columns: any[], types: any[], names: any[], required: any[], fields: any[], values: any[]}, settings: formSettings) {
+  processAddFormData(editableData: editableData, settings: settings) {
     this.addFormData = {};
     var inputDataTypes: string[] = this.dataTypeToInputType(editableData.types);
     editableData.columns.forEach((_, index) => {
@@ -448,7 +418,7 @@ export class FormService {
         inputType: inputDataTypes[index],
         dataType: editableData.types[index],
         required: editableData.required[index],
-        fields: editableData.fields[index],
+        field: editableData.fields[index],
         value: editableData.values ? editableData.values[index] : null,
       };
     });
@@ -610,7 +580,7 @@ export class FormService {
   }
 
   constructFormSettings(tableName: string) {
-    let settings: formSettings = { showAddMore: false };
+    let settings: settings = { showAddMore: false };
     switch (tableName) {
       case 'price_list':
           settings.showAddMore = true;
