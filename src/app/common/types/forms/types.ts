@@ -3,13 +3,15 @@ export interface settings {
 };
 
 export interface data {
-    [key: string] : {
-        inputType: string,
-        dataType: string,
-        field: string,
-        required: boolean,
-        value: any
-    };
+    inputType: string,
+    dataType: string,
+    field: string,
+    required: boolean,
+    value: any
+}
+
+export interface keyedData {
+    [key: string] : data
 };
 
 export interface editableData {
@@ -26,3 +28,15 @@ export interface message {
     message: string,
     footer?: string
 };
+
+export interface address {
+    line1: string,
+    line2: string,
+    line3: string,
+    postcode: string,
+    save: boolean
+}
+
+export interface keyedAddress {
+    [key: string] : address
+}

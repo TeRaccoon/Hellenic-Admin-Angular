@@ -14,11 +14,3 @@ export interface sortedColumn {
     columnName: string,
     ascending: boolean
 };
-
-export interface editableData {
-    columns: [],
-    types: [],
-    names: [],
-    required: [],
-    fields: []
-};
