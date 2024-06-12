@@ -3,7 +3,7 @@
         <div class="header-section">
             <h1>Adding...</h1>
             <a (click)="hide()">
-                <fa-icon class="fa-icon" [icon]="faX" />
+                <fa-icon class="icons.fa-icon" [icon]="icons.faX" />
             </a>
         </div>
         <div class="content-section">
@@ -14,7 +14,7 @@
                     <ng-container *ngFor="let key of mappedFormDataKeys">
                         <div *ngIf="canDisplayInputField(key)" class="input-container" [ngClass]="mappedFormData.get(key)?.inputType">
                             <div class="label-container">
-                                <label>{{ key }}<fa-icon *ngIf="mappedFormData.get(key)?.required" class="asterisk" [icon]="faAsterisk" /></label>
+                                <label>{{ key }}<fa-icon *ngIf="mappedFormData.get(key)?.required" class="asterisk" [icon]="icons.faAsterisk" /></label>
                                 <label class="label-link" *ngIf="(key == 'Delivery Address' || key =='Billing Address') && !addressNotListedKeys.includes(key)" (click)="addressNotListed(key)"><a>Address not listed?</a></label>
                                 <label class="label-link" *ngIf="key == 'Customer Name' && tableName == 'invoices'" (click)="disableCustomer()">No customer?</label>
                             </div>
@@ -25,7 +25,7 @@
                                 <ng-container [ngSwitch]="mappedFormData.get(key)?.inputType">
                                     <label *ngSwitchCase="'file'" class="file-upload">
                                         <input [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" accept="image/*" [type]="mappedFormData.get(key)!.inputType" (change)="primeImage($event)">
-                                        <fa-icon [ngClass]="file == null ? '' : 'success'" [icon]="faCloudUpload" /> {{ file == null ? "Upload Image" : file.name }}
+                                        <fa-icon [ngClass]="file == null ? '' : 'success'" [icon]="icons.faCloudUpload" /> {{ file == null ? "Upload Image" : file.name }}
                                     </label>
                                     <ng-container *ngSwitchCase="'alternative-select'">
                                         <input autocomplete="off" [class]="inputHasError(mappedFormData.get(key)!.fields) ? 'error-input' : ''" [disabled]="disabled" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.fields)" type="text" [id]="key" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)"
@@ -43,7 +43,7 @@
                                     <ng-container *ngSwitchCase="'replacement'">
                                         <ng-container *ngIf="(key == 'Delivery Address' || key == 'Billing Address') && addressNotListedKeys.includes(key) else standardSelect">
                                             <div class="input-container">
-                                                <label>Line 1 <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
+                                                <label>Line 1 <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                                                 <input class="text" type="text" (input)="updateAddressValues(key, 'line1', $event)">
                                             </div>
                                             <div class="input-container">
@@ -55,7 +55,7 @@
                                                 <input class="text" type="text" (input)="updateAddressValues(key, 'line3', $event)">
                                             </div>
                                             <div class="input-container">
-                                                <label>Postcode <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
+                                                <label>Postcode <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                                                 <input class="text" type="text" (input)="updateAddressValues(key, 'postcode', $event)">
                                             </div>
                                             <div class="footer-options">
@@ -108,7 +108,7 @@
                     <ng-container *ngIf="tableName == 'retail_items'">
                         <div class="image-upload-container">
                             <input accept="image/*" type="file" (change)="primeImage($event)">
-                            <fa-icon [icon]="faCloudUpload" [ngClass]="file == null ? '' : 'success'" /> Drop Image Here to Upload
+                            <fa-icon [icon]="icons.faCloudUpload" [ngClass]="file == null ? '' : 'success'" /> Drop Image Here to Upload
                             <button class="button" (click)="submitImageOnly()">Upload</button>
                         </div>
                     </ng-container>
@@ -119,7 +119,7 @@
                         <ng-template #invoicedItems>
                             <button class="button" [ngClass]="invoiceCreated ? 'button-success' : ''" (click)="formSubmit(false)" type="submit">
                                 <ng-container *ngIf="invoiceCreated else invoiceNotCreated">
-                                    <fa-icon [icon]="faCheck" />
+                                    <fa-icon [icon]="icons.faCheck" />
                                 </ng-container>
                                 <ng-template #invoiceNotCreated>
                                     Create
@@ -135,7 +135,7 @@
                     <form class="form-container" [formGroup]="addInvoicedItemForm">
                         <h1>Add Invoiced Items</h1>
                         <div class="input-container replacement">
-                            <label>Item Name <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
+                            <label>Item Name <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                             <div class="drop-select-container">
                                 <input (input)="filterDropSelect('Item ID', $event, null)" type="text" (focus)="onInputFocus('Item ID')" (blur)="onInputBlur('Item ID')" [value]="selectedReplacementData['Item ID']?.selectData" formControlName="item_id">
                                 <div class="drop-select" [ngClass]="selectOpen['Item ID']?.opened ? 'input-visible' : 'input-hidden'" required>
@@ -144,7 +144,7 @@
                             </div>
                         </div>
                         <div class="input-container number">
-                            <label>Quantity <fa-icon class="asterisk" [icon]="faAsterisk" /></label>
+                            <label>Quantity <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                             <input class="number" type="number" formControlName="quantity">
                         </div>
                         <div class="input-container number">
@@ -170,7 +170,7 @@
                                         <td>{{ invoicedItem.vat }}</td>
                                         <td>{{ invoicedItem.total * ((100 - invoicedItem.discount) / 100 ) | currency:'GBP' }}</td>
                                         <td (click)="deleteRow(invoicedItemsList[index].id)">
-                                            <fa-icon [icon]="faX" />
+                                            <fa-icon [icon]="icons.faX" />
                                         </td>
                                     </tr>
                                 </tbody>
@@ -185,7 +185,7 @@
             </ng-container>
             <ng-template #loading>
                 <div class="loading-container">
-                    <fa-icon class="loading-icon" [icon]="faSpinner" spinPulse [spin]="true" />
+                    <fa-icon class="loading-icon" [icon]="icons.faSpinner" spinPulse [spin]="true" />
                 </div>
             </ng-template>
         </div>

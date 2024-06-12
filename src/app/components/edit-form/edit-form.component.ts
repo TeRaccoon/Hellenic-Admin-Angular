@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { DataService, imageUrlBase } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faCloudUpload, faSpinner, faX, faAsterisk } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
 import _ from 'lodash';
+import { formIcons } from '../../common/icons/form-icons'
 
 @Component({
   selector: 'app-edit-form',
@@ -12,10 +12,7 @@ import _ from 'lodash';
   styleUrls: ['./edit-form.component.scss'],
 })
 export class EditFormComponent {
-  faCloudUpload = faCloudUpload;
-  faSpinner = faSpinner;
-  faX = faX;
-  faAsterisk = faAsterisk;
+  icons = formIcons;
 
   searchWaiting = false;
 

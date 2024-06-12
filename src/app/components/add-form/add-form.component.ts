@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faCheck, faCloudUpload, faSpinner, faX, faAsterisk, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
 import _ from 'lodash';
+import { formIcons } from '../../common/icons/form-icons'
 
 type addFormSettings = {
   showAddMore: boolean;
@@ -15,12 +15,7 @@ type addFormSettings = {
   styleUrls: ['./add-form.component.scss'],
 })
 export class AddFormComponent {
-  faCloudUpload = faCloudUpload;
-  faSpinner = faSpinner;
-  faX = faX;
-  faAsterisk = faAsterisk;
-  faPlus = faPlus;
-  faCheck = faCheck;
+  icons = formIcons;
 
   searchWaiting = false;
   disabled = false;
