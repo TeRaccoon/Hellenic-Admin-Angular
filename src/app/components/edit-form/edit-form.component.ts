@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { lastValueFrom } from 'rxjs';
 import _ from 'lodash';
 import { formIcons } from '../../common/icons/form-icons'
+import { settings, data, keyedData, keyedAddress, formState } from '../../common/types/forms/types';
 
 @Component({
   selector: 'app-edit-form',
@@ -19,27 +20,17 @@ export class EditFormComponent {
   imageUrlBase = imageUrlBase;
 
   editForm: FormGroup;
-  mappedFormDataKeys: any;
-  mappedFormData: Map<string, {value: any;
-    inputType: string;
-    dataType: string;
-    required: boolean;
-    fields: string;}> = new Map(); 
 
-  formData: {
-    [key: string]: {
-      value: any;
-      inputType: string;
-      dataType: string;
-      required: boolean;
-      fields: string;
-    };
-  } = {};
+  mappedFormDataKeys: any;
+  mappedFormData: Map<string, data> = new Map(); 
+  formData: keyedData = {};
+
+  formSettings: settings = {
+    showAddMore: false,
+  };
+  
   tableName: string = '';
   id: string = '';
-  formVisible = 'hidden';
-  locked = false;
-  loaded = false;
 
   file: File | null = null;
   fileName = '';
@@ -66,26 +57,9 @@ export class EditFormComponent {
   invoiceDetails: any = [];
 
   addressNotListedKeys: string[] = [];
-  addresses: {[key: string]: any } = {
-    'Delivery Address': {
-      line1: "",
-      line2: "",
-      line3: "",
-      postcode: "",
-      save: false
-    },
-    'Billing Address': {
-      line1: "",
-      line2: "",
-      line3: "",
-      postcode: "",
-      save: false
-    }
-  };
+  addresses: keyedAddress;
 
-  error: string | null = null;
-  submitted = false;
-  submissionEnded = false;
+  formState!: formState;
 
   debounceSearch: (key: string, filter: string, field: string | null) => void = _.debounce(
     (key: string, filter: string, field: string | null) => this.performSearch(key, filter, field),
@@ -97,24 +71,53 @@ export class EditFormComponent {
   selectedReplacementFilter: { [key:string]: {selectFilter: string } } = {};
   selectOpen: {[key: string]: {opened: boolean}} = {};
 
-
   constructor(
     private dataService: DataService,
     private formService: FormService,
     private fb: FormBuilder
   ) {
     this.editForm = this.fb.group({});
+    this.addresses = {
+      'Delivery Address': {
+        line1: "",
+        line2: "",
+        line3: "",
+        postcode: "",
+        save: false
+      },
+      'Billing Address': {
+        line1: "",
+        line2: "",
+        line3: "",
+        postcode: "",
+        save: false
+      }
+    }
+
+    this.resetFormState();
+
     this.debounceSearch = _.debounce(this.performSearch.bind(this), 1000);
   }
 
   ngOnInit() {
     this.formService.getEditFormVisibility().subscribe((visible) => {
       this.clearForm();
-      this.formVisible = visible ? 'visible' : 'hidden';
+      this.formState.visible = visible ? 'visible' : 'hidden';
       if (visible) {
         this.loadForm();
       }
     });
+  }
+
+  resetFormState(): void {
+    this.formState = {
+      loaded: false,
+      submissionAttempted: false,
+      submitted: false,
+      error: null,
+      locked: false,
+      visible: 'hidden'
+    };
   }
 
   async loadForm() {
@@ -174,7 +177,7 @@ export class EditFormComponent {
         }
       }
 
-      this.loaded = true;
+      this.formState.loaded = true;
     }
   }
 
@@ -203,12 +206,12 @@ export class EditFormComponent {
 
         const validators = field.required ? [Validators.required] : [];
 
-        if (this.editForm.contains(field.fields)) {
-          this.editForm.get(field.fields)?.setValue(field.value);
+        if (this.editForm.contains(field.field)) {
+          this.editForm.get(field.field)?.setValue(field.value);
         } else {
           this.editForm.addControl(
-            field.fields,
-            this.fb.control({ value: field.inputType == 'file' ? null : field.value, disabled: this.locked }, validators)
+            field.field,
+            this.fb.control({ value: field.inputType == 'file' ? null : field.value, disabled: this.formState.locked }, validators)
           );
         }
       }
@@ -224,7 +227,7 @@ export class EditFormComponent {
     inputType: string;
     dataType: string;
     required: boolean;
-    fields: string;}][])
+    field: string;}][])
   {
     formDataArray.forEach(subArray => {
       if (subArray[0] === "Password") {
@@ -264,17 +267,13 @@ export class EditFormComponent {
   }
 
   clearForm() {
-    this.loaded = false;
-    this.locked = false;
     this.selectedImage = "";
     this.imageReplacements = [];
     this.formData = {};
     this.replacementData = {};
     this.editForm = this.fb.group({});
     this.editForm.reset();
-    this.submitted = false;
-    this.submissionEnded = false;
-    this.error = null;
+    this.resetFormState();
     this.file = null;
     this.invoiceDetails = [];
   }
@@ -299,7 +298,7 @@ export class EditFormComponent {
   }
 
   async formSubmit(hideForm: boolean) {
-    this.submitted = true;
+    this.formState.submissionAttempted = true;
 
     if (this.editForm.valid) {
       if (this.tableName != "categories") {
@@ -334,14 +333,14 @@ export class EditFormComponent {
     }
 
     if (this.file == null || this.editForm.get('image_file_name') == null) {
-      this.error = "Please choose an image to upload before trying to upload!";
+      this.formState.error = "Please choose an image to upload before trying to upload!";
       return false;
     }
 
     let id = this.getImageDependentId();
     let name = this.getImageDependentName();
     if (id == null || name == null) {
-      this.error = "Please fill out the relevant fields to upload an image for before trying to upload!";
+      this.formState.error = "Please fill out the relevant fields to upload an image for before trying to upload!";
       return false;
     }
 
@@ -356,7 +355,7 @@ export class EditFormComponent {
         this.editForm.get('image_file_name')?.setValue(uploadResponse.imageFileName);
       }
     }
-    this.submissionEnded = true;
+    this.formState.submitted = true;
   }  
   
   async submissionWithoutImage(hideForm: boolean) {
@@ -441,12 +440,12 @@ export class EditFormComponent {
       this.editForm.reset();
       this.alternativeSelectData = {};
       this.selectedReplacementData = {};
-      this.submitted = false;
+      this.formState.submissionAttempted = false;
       this.editForm.get('action')?.setValue('add');
       this.editForm.get('table_name')?.setValue(this.tableName);
-      this.error = null;
+      this.formState.error = null;
     }
-    this.submissionEnded = true;
+    this.formState.submitted = true;
   }
 
   selectDataFromKey(key: string) {
@@ -497,9 +496,11 @@ export class EditFormComponent {
 
     this.replacementData[key].data = addressReplacement;
     this.filteredReplacementData[key].data = addressReplacement;
-  }  updateAddressValues(key: string, field: string, event: any): void {
+  }  
+  
+  updateAddressValues(key: string, field: string, event: any): void {
     let value = event.target.value;
-    this.addresses[key][field] = value;
+    this.addresses[key] = {...this.addresses[key], [field]: value};
   }
 
   async addAddressToBook(key: string) {
@@ -552,12 +553,12 @@ export class EditFormComponent {
   }
 
   addressNotListed(key: string) {
-    this.submissionEnded = false;
+    this.formState.submitted = false;
     if (this.editForm.get('customer_id')?.value != '') {
       this.addressNotListedKeys.push(key);
     } else {
-      this.error = "Please select a customer first!";
-      this.submissionEnded = true;
+      this.formState.error = "Please select a customer first!";
+      this.formState.submitted = true;
     }
   }
 
@@ -597,12 +598,12 @@ export class EditFormComponent {
   isLocked() {
     switch (this.tableName) {
       case 'invoices':
-        this.locked = this.formData['Status'].value == 'Complete';
+        this.formState.locked = this.formData['Status'].value == 'Complete';
     }
   }
 
   inputHasError(field: string) {
-    return this.editForm.get(field)?.invalid && this.submitted;
+    return this.editForm.get(field)?.invalid && this.formState.submissionAttempted;
   }
 
   onInputFocus(key: string) {

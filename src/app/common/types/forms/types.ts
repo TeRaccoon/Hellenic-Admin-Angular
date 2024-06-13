@@ -35,8 +35,17 @@ export interface address {
     line3: string,
     postcode: string,
     save: boolean
-}
+};
 
 export interface keyedAddress {
     [key: string] : address
-}
+};
+
+export interface formState {
+    loaded: boolean,
+    submissionAttempted: boolean,
+    submitted: boolean,
+    error: string | null,
+    locked: boolean,
+    visible: 'visible' | 'hidden'
+};
