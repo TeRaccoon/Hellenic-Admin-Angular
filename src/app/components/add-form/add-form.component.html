@@ -7,10 +7,10 @@
             </a>
         </div>
         <div class="content-section">
-            <ng-container *ngIf="formData && loaded else loading">
+            <ng-container *ngIf="formData && formState.loaded else loading">
                 <form [formGroup]="addForm" class="form-container">
                     <h1 *ngIf="fullscreen()">{{ 'Adding Invoices' }}</h1>
-                    <div *ngIf="error && submissionEnded" class="error-section">{{ error }}</div>
+                    <div *ngIf="formState.error && formState.submitted" class="error-section">{{ formState.error }}</div>
                     <ng-container *ngFor="let key of mappedFormDataKeys">
                         <div *ngIf="canDisplayInputField(key)" class="input-container" [ngClass]="mappedFormData.get(key)?.inputType">
                             <div class="label-container">
