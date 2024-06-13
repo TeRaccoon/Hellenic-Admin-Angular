@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="content-section">
-            <div *ngIf="formState.error && formState.submitted" class="error-section">{{ error }}</div>
+            <div *ngIf="formState.error && formState.submitted" class="error-section">{{ formState.error }}</div>
             <ng-container *ngIf="mappedFormData && formState.loaded else loading">
                 <form [formGroup]="editForm" class="form-container">
                     <div class="input-container" *ngFor="let key of mappedFormDataKeys" [ngClass]="mappedFormData.get(key)?.inputType">
