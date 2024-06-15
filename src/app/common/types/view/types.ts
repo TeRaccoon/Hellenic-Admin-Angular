@@ -24,5 +24,5 @@ export interface viewMetadata {
 
 export interface filterData {
     searchFilter: string,
-    searchFilterApplied: boolean
+    searchFilterApplied: boolean,
 }

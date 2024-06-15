@@ -26,7 +26,6 @@ export class ViewComponent {
   
   tableName: string = "";
   displayName: string = "";
-  queryFilter: string | null = null;
   displayColumnFilters: string[] = [];
 
   columnFilters: columnFilter[] = [];
@@ -78,7 +77,7 @@ export class ViewComponent {
     };
 
     this.filterData = {
-      searchFilter: "",
+      searchFilter: '',
       searchFilterApplied: false,
     }
   }
@@ -212,15 +211,9 @@ export class ViewComponent {
   
   async loadTable(table: string) {
     this.viewMetaData.loaded = false;
-    this.queryFilter = this.filterService.getTableFilter();
-    var queryString = this.queryFilter == null ? "table" : this.queryFilter;
-
-    if (this.queryFilter == null) {
-      queryString = "table"
-    }
-
-    if (this.tableName == "items") {
-      let totalStockData = await lastValueFrom(this.dataService.processData("total-stock"));
+    
+    if (this.tableName == 'items') {
+      let totalStockData = await lastValueFrom(this.dataService.processData('total-stock'));
       totalStockData = Array.isArray(totalStockData) ? totalStockData : [totalStockData];
 
       totalStockData.forEach((stock: any) => {
@@ -228,8 +221,8 @@ export class ViewComponent {
       });
     }
 
-    if (this.tableName == "stocked_items") {
-      let images = await lastValueFrom(this.dataService.processData("stocked-item-images"));
+    if (this.tableName == 'stocked_items') {
+      let images = await lastValueFrom(this.dataService.processData('stocked-item-images'));
       images = Array.isArray(images) ? images : [images];
       
       if (images != null) {
@@ -239,7 +232,7 @@ export class ViewComponent {
       };
     }
 
-    let tableData = await lastValueFrom(this.dataService.processData(queryString, table));
+    let tableData = await lastValueFrom(this.dataService.processData('table', table));
 
     if (tableData != null) {
       this.data = Array.isArray(tableData.data) ? tableData.data : [tableData.data];
@@ -452,7 +445,8 @@ export class ViewComponent {
   loadPage() {
     var start = (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
     var end = start + this.viewMetaData.entryLimit;
-    if (this.filterData.searchFilter == "") {
+
+    if (this.filterData.searchFilter === '') {
       this.filteredDisplayData = this.displayData.slice(start, end);
     } else {
       this.filteredDisplayData = this.applyTemporaryFilter();
@@ -462,7 +456,7 @@ export class ViewComponent {
   }
 
   resetTable() {
-    this.clearFilter("all", true);
+    this.clearFilter('all', true);
     this.filterService.clearFilter();
     this.viewMetaData.pageCount = 0;
     this.viewMetaData.currentPage = 1;
@@ -825,6 +819,7 @@ export class ViewComponent {
   }
 
   setTableFilter() {
+    this.filterData.searchFilterApplied = true;
     this.loadPage();
   }
 
