@@ -14,3 +14,15 @@ export interface sortedColumn {
     columnName: string,
     ascending: boolean
 };
+
+export interface viewMetadata {
+    loaded: boolean,
+    entryLimit: number,
+    pageCount: number,
+    currentPage: number
+}
+
+export interface filterData {
+    searchFilter: string,
+    searchFilterApplied: boolean
+}
