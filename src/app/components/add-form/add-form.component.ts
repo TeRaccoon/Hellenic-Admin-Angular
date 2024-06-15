@@ -102,13 +102,11 @@ export class AddFormComponent {
         save: false
       }
     }
-
-    this.resetFormState();
-    
-    this.debounceSearch = _.debounce(this.performSearch.bind(this), 1000);
   }
 
   ngOnInit() {
+    this.debounceSearch = _.debounce(this.performSearch.bind(this), 1000);
+
     this.formService.getAddFormVisibility().subscribe(async (visible) => {
       this.clearForm();
       this.formVisible = visible ? 'visible' : 'hidden';
@@ -131,6 +129,8 @@ export class AddFormComponent {
 
   async loadForm() {
     this.clearForm();
+    this.resetFormState();
+    
     this.formData = this.formService.getAddFormData();
     this.tableName = this.formService.getSelectedTable();
     this.formSettings = this.formService.getFormSettings();
@@ -574,18 +574,10 @@ export class AddFormComponent {
     this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data: any) => {
       return data.replacement && data.replacement.toLowerCase().includes(filter.toLowerCase());
     });
-    console.log(field);
+
     if (this.filteredReplacementData[key].data.length == 1 && field) {
-      // this.selectedReplacementData[key] = {
-      //   selectData: this.filteredReplacementData[key].data[0].replacement,
-      //   selectDataId: this.filteredReplacementData[key].data[0].id
-      // };
-
       this.updateSelectedReplacementDataFromKey(this.filteredReplacementData[key].data[0].id, this.filteredReplacementData[key].data[0].replacement, key, field, false);
-      
-      // field != null && this.addForm.get(field.toString())?.setValue(this.filteredReplacementData[key].data[0].id)
-
-      // this.selectOpen[key].opened = false;
+      this.selectOpen[key].opened = false;
     }
 
     if (field) {
