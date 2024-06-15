@@ -579,10 +579,6 @@ export class AddFormComponent {
       this.updateSelectedReplacementDataFromKey(this.filteredReplacementData[key].data[0].id, this.filteredReplacementData[key].data[0].replacement, key, field, false);
       this.selectOpen[key].opened = false;
     }
-
-    if (field) {
-      this.addForm.get(field)?.setValue(filter);
-    }
   }
 
   async addInvoicedItem(event: Event) {
