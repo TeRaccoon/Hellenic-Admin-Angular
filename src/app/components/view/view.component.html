@@ -1,5 +1,5 @@
 <div class="container" *ngIf="accessible">
-    <ng-container *ngIf="loaded else loading">
+    <ng-container *ngIf="viewMetaData.loaded else loading">
         <h2>Data for {{ displayName }}</h2>
         <div class="table-container">
             <div class="options-container">
@@ -34,8 +34,8 @@
                                 <fa-icon [icon]="icons.faX" />
                             </div>
                         </ng-container>
-                        <div *ngIf="tableFilter != null" class="filter" (click)="clearFilter('table', true)">
-                            <p>{{ tableFilter }}</p>
+                        <div *ngIf="filterData.searchFilter != '' && filterData.searchFilterApplied" class="filter" (click)="clearFilter('table', true)">
+                            <p>{{ filterData.searchFilter }}</p>
                             <fa-icon [icon]="icons.faX" />
                         </div>
                         <ng-container *ngIf="columnDateFilters.length > 0">
@@ -51,7 +51,7 @@
                         </div>
                         <div class="search-container">
                             <form>
-                                <input type="text" placeholder="Search..." [(ngModel)]="searchText" name="searchText" />
+                                <input type="text" placeholder="Search..." [(ngModel)]="filterData.searchFilter" name="searchText" />
                                 <button type="submit" (click)="setTableFilter()">
                                     <fa-icon [icon]="icons.faSearch"></fa-icon>
                                 </button>
@@ -105,7 +105,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="data-row" *ngFor="let item of filteredDisplayData.slice(0, entryLimit); let key = index;">
+                        <tr class="data-row" *ngFor="let item of filteredDisplayData.slice(0, viewMetaData.entryLimit); let key = index;">
                             <ng-container *ngIf="itemContainsFilter(item)">
                                 <td>
                                     <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox" [checked]="selectedRows.indexOf(item['id']) != -1">
@@ -145,7 +145,7 @@
                                         <ng-container [ngSwitch]="dataTypes[columnIndex]">
                                             <img *ngSwitchCase="'file'" [src]="item[column] == null ? imageUrlBase + 'placeholder.jpg' : imageUrlBase + item[column]" />
                                             <ng-container *ngSwitchCase="'enum(\'No\',\'Yes\')'">
-                                                <input (change)="changeCheckBox($event, key + (currentPage - 1) * entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
+                                                <input (change)="changeCheckBox($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'float'">
                                                 {{ item[column] == null ? '---' : item[column] | currency:'GBP' }}
@@ -156,7 +156,7 @@
                                             <ng-container *ngSwitchDefault>
                                                 {{ item[column] == null ? '---' : item[column] }}
                                                 <ng-container *ngIf="displayWithIcon(column, item)" class="icon-container">
-                                                    <fa-icon class="row-icon" (click)="iconClick($event, key + (currentPage - 1) * entryLimit, column, item)" [icon]="icon"></fa-icon>
+                                                    <fa-icon class="row-icon" (click)="iconClick($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column, item)" [icon]="icon"></fa-icon>
                                                 </ng-container>
                                             </ng-container>
                                         </ng-container>
@@ -185,7 +185,7 @@
                     </tbody>
                 </table>
                 <ng-template #noData>
-                    <div *ngIf="data.length === 0 && loaded" class="alternate-container">
+                    <div *ngIf="data.length === 0 && viewMetaData.loaded" class="alternate-container">
                         <div class="no-data-container">
                             <div class="header">
                                 <fa-icon (click)="back()" [icon]="icons.faArrowLeft" />
@@ -200,11 +200,11 @@
                 </ng-template>
             </div>
             <div class="table-footer">
-                <p>Showing page {{ currentPage }} out of {{ pageCount }}</p>
+                <p>Showing page {{ viewMetaData.currentPage }} out of {{ viewMetaData.pageCount }}</p>
                 <div class="page-section">
                     <button (click)="previousPage()">Previous</button>
-                    <button [class]="currentPage == 1 ? 'active-page' : ''" (click)="changePage(1)"> {{ 1 }}</button>
-                    <button *ngFor="let pageNumber of getPageRange()" (click)="changePage(pageNumber)" [class]="currentPage == pageNumber ? 'active-page' : ''">{{ pageNumber }}</button>
+                    <button [class]="viewMetaData.currentPage == 1 ? 'active-page' : ''" (click)="changePage(1)"> {{ 1 }}</button>
+                    <button *ngFor="let pageNumber of getPageRange()" (click)="changePage(pageNumber)" [class]="viewMetaData.currentPage == pageNumber ? 'active-page' : ''">{{ pageNumber }}</button>
                     <button (click)="nextPage()">Next</button>
                 </div>
             </div>
@@ -216,7 +216,7 @@
         </div>
     </ng-container>
     <ng-template #loading>
-        <ng-container *ngIf="!loaded">
+        <ng-container *ngIf="!viewMetaData.loaded">
             <div class="loading-container">
                 <fa-icon class="loading-icon" [icon]="icons.faSpinner" spinPulse [spin]="true" />
             </div>

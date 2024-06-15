@@ -4,11 +4,11 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { apiUrlBase, imageUrlBase } from '../../services/data.service';
-import { faUserLock, faAddressBook, faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faTruck, faL } from '@fortawesome/free-solid-svg-icons';
 import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { columnFilter, columnDateFilter, editableData, sortedColumn } from '../../common/types/view/types';
+import { columnFilter, columnDateFilter, sortedColumn, viewMetadata, filterData } from '../../common/types/view/types';
+import { editableData } from '../../common/types/forms/types';
 import { tableIcons } from '../../common/icons/table-icons'
 
 @Component({
@@ -26,7 +26,6 @@ export class ViewComponent {
   
   tableName: string = "";
   displayName: string = "";
-  tableFilter: string | null = null;
   queryFilter: string | null = null;
   displayColumnFilters: string[] = [];
 
@@ -38,31 +37,22 @@ export class ViewComponent {
   displayData: any[] = [];
   dataTypes: any[] = [];
   filteredDisplayData: any[] = [];
-  editable: editableData = {
-    columns: [],
-    types: [],
-    names: [],
-    required: [],
-    fields: [],
-  };
+  editable: editableData;
   stockData: any = {};
 
   selectedRows: number[] = [];
 
   images: { [key:string]: any}[] = [];
 
-  entryLimit: number = 10;
-  pageCount: number = 0;
-  currentPage: number = 1;
-
-  loaded = false;
   distanceLoading = false;
 
-  icon = faLock;
+  icon = tableIcons.faLock;
 
-  searchText: string = '';
   filter: string = '';
-  setFilter = false;
+
+  filterData: filterData;
+
+  viewMetaData: viewMetadata;
 
   tabs: {displayName: string, tableName: string}[] = [];
 
@@ -70,6 +60,27 @@ export class ViewComponent {
 
   constructor(private authService: AuthService, private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {
     this.accessible = this.authService.returnAccess();
+
+    this.viewMetaData = {
+      loaded: false,
+      entryLimit: 10,
+      pageCount: 0,
+      currentPage: 1
+    };
+
+    this.editable = {
+      columns: [],
+      types: [],
+      names: [],
+      required: [],
+      fields: [],
+      values: []
+    };
+
+    this.filterData = {
+      searchFilter: "",
+      searchFilterApplied: false,
+    }
   }
 
   ngOnInit() {
@@ -200,7 +211,7 @@ export class ViewComponent {
   }
   
   async loadTable(table: string) {
-    this.loaded = false;
+    this.viewMetaData.loaded = false;
     this.queryFilter = this.filterService.getTableFilter();
     var queryString = this.queryFilter == null ? "table" : this.queryFilter;
 
@@ -240,11 +251,11 @@ export class ViewComponent {
 
       this.applyFilter();
 
-      this.pageCount = this.calculatePageCount();
+      this.viewMetaData.pageCount = this.calculatePageCount();
 
-      this.changePage(this.currentPage);
+      this.changePage(this.viewMetaData.currentPage);
 
-      this.loaded = true;
+      this.viewMetaData.loaded = true;
     }    
   }
 
@@ -411,9 +422,9 @@ export class ViewComponent {
 
   changeEntries(event: Event) {
     const option = event.target as HTMLInputElement;
-    this.entryLimit = Number(option.value);
-    this.pageCount = this.calculatePageCount();
-    this.currentPage = 1;
+    this.viewMetaData.entryLimit = Number(option.value);
+    this.viewMetaData.pageCount = this.calculatePageCount();
+    this.viewMetaData.currentPage = 1;
     this.loadPage();
   }
 
@@ -422,30 +433,30 @@ export class ViewComponent {
   }
 
   nextPage() {
-    if (this.currentPage < this.pageCount) {
-      this.currentPage++;
+    if (this.viewMetaData.currentPage < this.viewMetaData.pageCount) {
+      this.viewMetaData.currentPage++;
       this.loadPage();
     }
   }
   previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
+    if (this.viewMetaData.currentPage > 1) {
+      this.viewMetaData.currentPage--;
       this.loadPage();
     }
   }
   changePage(page: number) {
-    this.currentPage = page;
+    this.viewMetaData.currentPage = page;
     this.loadPage();
   }
 
   loadPage() {
-    var start = (this.currentPage - 1) * this.entryLimit;
-    var end = start + this.entryLimit;
-    if (this.tableFilter == null && this.searchText == '') {
+    var start = (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
+    var end = start + this.viewMetaData.entryLimit;
+    if (this.filterData.searchFilter == "") {
       this.filteredDisplayData = this.displayData.slice(start, end);
     } else {
       this.filteredDisplayData = this.applyTemporaryFilter();
-      this.pageCount = this.calculatePageCount();
+      this.viewMetaData.pageCount = this.calculatePageCount();
       this.filteredDisplayData = this.filteredDisplayData.slice(start, end);
     }
   }
@@ -453,31 +464,31 @@ export class ViewComponent {
   resetTable() {
     this.clearFilter("all", true);
     this.filterService.clearFilter();
-    this.pageCount = 0;
-    this.currentPage = 1;
+    this.viewMetaData.pageCount = 0;
+    this.viewMetaData.currentPage = 1;
     this.selectedRows = [];
     this.sortedColumn.columnName = '';
   }
 
   getPageRange(): number[] {
     const range = [];
-    var start = this.currentPage;
+    var start = this.viewMetaData.currentPage;
     
-    if (this.currentPage > this.pageCount -2 && this.pageCount -2 > 0) {
-      start = this.pageCount - 2;
+    if (this.viewMetaData.currentPage > this.viewMetaData.pageCount -2 && this.viewMetaData.pageCount -2 > 0) {
+      start = this.viewMetaData.pageCount - 2;
     }
-    if (start == 1 && this.pageCount > 1) {
+    if (start == 1 && this.viewMetaData.pageCount > 1) {
       start += 2;
     }
-    else if (start == 2 && this.pageCount > 1) {
+    else if (start == 2 && this.viewMetaData.pageCount > 1) {
       start += 1;
     }
-    for (let i = start - 1; i < start + 2 && i < this.pageCount && this.pageCount > 1; i++) {
+    for (let i = start - 1; i < start + 2 && i < this.viewMetaData.pageCount && this.viewMetaData.pageCount > 1; i++) {
       range.push(i);
     }
 
-    if (this.pageCount > 1) {
-      range.push(this.pageCount);
+    if (this.viewMetaData.pageCount > 1) {
+      range.push(this.viewMetaData.pageCount);
     }
 
     return range;
@@ -691,7 +702,7 @@ export class ViewComponent {
     switch (this.tableName) {
       case "invoices":
         if (column == "id") {
-          this.icon = row['status'] == "Complete" ? faLock : faLockOpen;
+          this.icon = row['status'] == "Complete" ? tableIcons.faLock : tableIcons.faLockOpen;
           return true;
         }
         break;
@@ -723,7 +734,7 @@ export class ViewComponent {
   }
 
   calculatePageCount() {
-    return Math.ceil(this.filteredDisplayData.length / this.entryLimit);
+    return Math.ceil(this.filteredDisplayData.length / this.viewMetaData.entryLimit);
   }
 
   //Filter
@@ -754,7 +765,7 @@ export class ViewComponent {
       }
     });
     this.filteredDisplayData = this.displayData;
-    this.pageCount = this.calculatePageCount();
+    this.viewMetaData.pageCount = this.calculatePageCount();
   }
 
   filterDateColumns(columnDateFilter: { column: any; startDate: Date; endDate: Date; }) {
@@ -790,8 +801,8 @@ export class ViewComponent {
     }
   
     if (filter === "all" || filter === "table") {
-      this.searchText = "";
-      this.tableFilter = null;
+      this.filterData.searchFilter = '';
+      this.filterData.searchFilterApplied = false;
     }
   
     if (reload) {
@@ -814,15 +825,14 @@ export class ViewComponent {
   }
 
   setTableFilter() {
-    this.tableFilter = this.searchText;
     this.loadPage();
   }
 
   applyTemporaryFilter() {
     var temporaryData: any[] = [];
-    if (this.tableFilter != null) {
+    if (this.filterData.searchFilter != '') {
       this.displayData.forEach(data => {
-        if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.tableFilter).toUpperCase()))) {
+        if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.filterData.searchFilter).toUpperCase()))) {
           temporaryData.push(data);
         }
       });
