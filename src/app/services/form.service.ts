@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
 import { formatDate } from '@angular/common';
-import { settings, data, message, editableData } from '../common/types/forms/types';
+import { settings, keyedData, message, editableData } from '../common/types/forms/types';
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +18,8 @@ export class FormService {
   private isInvoicedItemsFormVisible = new BehaviorSubject<boolean>(false);
   private isWidgetVisible = new BehaviorSubject<boolean>(false);
 
-  private editFormData: data = {};
-  private addFormData: data = {};
+  private editFormData: keyedData = {};
+  private addFormData: keyedData = {};
 
   private formSettings: settings = {
     showAddMore: false
@@ -165,11 +165,11 @@ export class FormService {
     return this.formSettings;
   }
 
-  setEditFormData(editFormData: data) {
+  setEditFormData(editFormData: keyedData) {
     this.editFormData = editFormData;
   }
 
-  setAddFormData(addFormData: data) {
+  setAddFormData(addFormData: keyedData) {
     this.addFormData = addFormData;
   }
 
