@@ -4,7 +4,7 @@ import { FormService } from '../../services/form.service';
 import { faX, faTrashCan, faPenToSquare, faFileCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
 import { imageUrlBase } from '../../services/data.service';
-import { formSettings } from '../../common/types/forms/types'; 
+
 @Component({
   selector: 'app-widget',
   templateUrl: './widget.component.html',
