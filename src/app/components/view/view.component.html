@@ -24,10 +24,6 @@
                         </select> entries
                     </p>
                     <div class="filter-container">
-                        <div *ngIf="queryFilter != null" class="filter" (click)="clearFilter('query', true)">
-                            <p>{{ queryFilter }}</p>
-                            <fa-icon [icon]="icons.faX" />
-                        </div>
                         <ng-container *ngIf="displayColumnFilters.length > 0">
                             <div *ngFor="let filter of displayColumnFilters; let i = index" class="filter" (click)="removeColumnFilter(i)">
                                 <p>{{ filter }}</p>

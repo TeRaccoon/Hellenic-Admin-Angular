@@ -789,11 +789,6 @@ export class ViewComponent {
       this.displayColumnFilters = [];
     }
   
-    if (filter === "all" || filter === "query") {
-      this.filterService.clearFilter();
-      this.queryFilter = null;
-    }
-  
     if (filter === "all" || filter === "table") {
       this.filterData.searchFilter = '';
       this.filterData.searchFilterApplied = false;
