@@ -559,11 +559,12 @@ export class AddFormComponent {
     this.selectOpen[key].opened = false;
   }
 
-  filterDropSelect(key: string, event: any, field: string | null) {
+  filterDropSelect(key: string, event: any, includeField: boolean) {
     const filter = event.target.value || '';
     this.selectedReplacementData[key]!.selectData = filter;
   
     if (this.replacementData[key]?.data.length > 0) {
+      let field = includeField ? this.mappedFormData.get(key)!.field : null;
       this.debounceSearch(key, filter, field);
     }
   }
@@ -573,16 +574,18 @@ export class AddFormComponent {
     this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data: any) => {
       return data.replacement && data.replacement.toLowerCase().includes(filter.toLowerCase());
     });
+    console.log(field);
+    if (this.filteredReplacementData[key].data.length == 1 && field) {
+      // this.selectedReplacementData[key] = {
+      //   selectData: this.filteredReplacementData[key].data[0].replacement,
+      //   selectDataId: this.filteredReplacementData[key].data[0].id
+      // };
 
-    if (this.filteredReplacementData[key].data.length == 1) {
-      this.selectedReplacementData[key] = {
-        selectData: this.filteredReplacementData[key].data[0].replacement,
-        selectDataId: this.filteredReplacementData[key].data[0].id
-      };
+      this.updateSelectedReplacementDataFromKey(this.filteredReplacementData[key].data[0].id, this.filteredReplacementData[key].data[0].replacement, key, field, false);
       
-      field != null && this.addForm.get(field.toString())?.setValue(this.filteredReplacementData[key].data[0].id)
+      // field != null && this.addForm.get(field.toString())?.setValue(this.filteredReplacementData[key].data[0].id)
 
-      this.selectOpen[key].opened = false;
+      // this.selectOpen[key].opened = false;
     }
 
     if (field) {

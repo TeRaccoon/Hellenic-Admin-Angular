@@ -28,8 +28,7 @@
                                         <fa-icon [ngClass]="file == null ? '' : 'success'" [icon]="icons.faCloudUpload" /> {{ file == null ? "Upload Image" : file.name }}
                                     </label>
                                     <ng-container *ngSwitchCase="'alternative-select'">
-                                        <input autocomplete="off" [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''" [disabled]="disabled" (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.field)" type="text" [id]="key" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)"
-                                            [value]="alternativeSelectedData[key].selectData">
+                                        <input autocomplete="off" [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''" [disabled]="disabled" (input)="filterDropSelect(key, $event, true)" type="text" [id]="key" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)" [value]="alternativeSelectedData[key].selectData">
                                         <div class="drop-select" [ngClass]="selectOpen[key].opened ? 'input-visible' : 'input-hidden'">
                                             <p *ngFor="let option of alternativeSelectData[key].data" (click)="updateAlternativeSelectData(mappedFormData.get(key)!.field, option, key)">{{ option }}</p>
                                         </div>
@@ -88,7 +87,7 @@
                                         </ng-container>
                                         <ng-template #standardSelect>
                                             <div class="drop-select-container">
-                                                <input autocomplete="off" [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''" [disabled]="disabled" (input)="filterDropSelect(key, $event, null)" type="text" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)" [value]="selectedReplacementData[key]?.selectData">
+                                                <input autocomplete="off" [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''" [disabled]="disabled" (input)="filterDropSelect(key, $event, true)" type="text" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)" [value]="selectedReplacementData[key]?.selectData">
                                                 <div class="drop-select" [ngClass]="selectOpen[key].opened ? 'input-visible' : 'input-hidden'">
                                                     <ng-container *ngFor="let option of filteredReplacementData[key].data">
                                                         <p *ngIf="option.replacement != ''" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, key, mappedFormData.get(key)!.field, false)">{{ option.replacement }}</p>
@@ -137,7 +136,7 @@
                         <div class="input-container replacement">
                             <label>Item Name <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                             <div class="drop-select-container">
-                                <input (input)="filterDropSelect('Item ID', $event, null)" type="text" (focus)="onInputFocus('Item ID')" (blur)="onInputBlur('Item ID')" [value]="selectedReplacementData['Item ID']?.selectData" formControlName="item_id">
+                                <input (input)="filterDropSelect('Item ID', $event, false)" type="text" (focus)="onInputFocus('Item ID')" (blur)="onInputBlur('Item ID')" [value]="selectedReplacementData['Item ID']?.selectData" formControlName="item_id">
                                 <div class="drop-select" [ngClass]="selectOpen['Item ID']?.opened ? 'input-visible' : 'input-hidden'" required>
                                     <p *ngFor="let option of filteredReplacementData['Item ID'].data" (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, 'Item ID', 'item_id', true)">{{ option.replacement }}</p>
                                 </div>
