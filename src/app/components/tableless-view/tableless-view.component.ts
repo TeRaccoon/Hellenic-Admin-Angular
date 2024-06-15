@@ -168,7 +168,7 @@ export class TablelessViewComponent {
       this.formService.setMessageFormData({
         title: "Are you sure?",
         message: "There is already a VAT return that exists for this period. Creating a new one will overwrite the old!",
-        secondaryMessage: "Click submit again to overwrite the old VAT return"
+        footer: "Click submit again to overwrite the old VAT return"
       });
       this.formService.showMessageForm();
 
