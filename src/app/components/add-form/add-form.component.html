@@ -130,7 +130,7 @@
                         </ng-container>
                     </div>
                 </form>
-                <ng-container *ngIf="shouldDisplayItemWidget">
+                <ng-container *ngIf="shouldDisplayItemWidget()">
                     <form class="form-container" [formGroup]="addInvoicedItemForm">
                         <h1>Add Items</h1>
                         <div class="input-container replacement">
