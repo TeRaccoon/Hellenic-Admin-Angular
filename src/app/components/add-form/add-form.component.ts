@@ -386,7 +386,7 @@ export class AddFormComponent {
 
   endSubmission(reset: boolean, hideForm: boolean) {
     this.formService.sync(this.addForm.value, 'add', this.tableName);
-    if (this.tableName == "invoices") {
+    if (this.shouldDisplayItemWidget()) {
       this.invoiceCreated = true;
       this.disableControls();
     } else {
@@ -581,7 +581,7 @@ export class AddFormComponent {
     }
   }
 
-  async addInvoicedItem(event: Event) {
+  async addItem(event: Event) {
     if (!this.invoiceCreated) {
       await this.formSubmit(false);
     }
@@ -655,6 +655,9 @@ export class AddFormComponent {
       case "invoices":
         return !(key == "VAT" || key == "Total" || key == "Gross Value" || key == "Status" || key == "Printed" || key == "Paid" || key == "Outstanding Balance" || key == "Delivery Type" || key == "Type" || (key == "Customer Name" && this.noCustomer));
 
+      case 'supplier_invoices':
+        return !(key == 'Net Value' || key == 'VAT' || key == 'Total');
+      
       case "items":
         return !(key == "Total Sold");
     }
@@ -663,25 +666,26 @@ export class AddFormComponent {
 
   close() {
     this.formService.setMessageFormData({
-      title: "Success",
-      message: "Invoice saved successfully!"
+      title: 'Success',
+      message: 'Invoice saved successfully!'
     });
     this.formService.showMessageForm();
     this.hide();
   }
 
   fullscreen() {
-    switch(this.tableName) {
-      case "invoices":
-      case "supplier_invoices":
-        return true;
-    }
-    return false;
+    let includedTables = ['invoices', 'supplier_invoices'];
+    return includedTables.includes(this.tableName);
   }
 
   deleteRow(id: number) {
     this.formService.setSelectedTable('invoiced_items');
     this.formService.setDeleteFormIds([id]);
     this.formService.showDeleteForm();
+  }
+
+  shouldDisplayItemWidget() {
+    let includedTables = ['invoices', 'supplier_invoices'];
+    return includedTables.includes(this.tableName);
   }
 }
