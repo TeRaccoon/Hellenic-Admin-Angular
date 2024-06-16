@@ -340,7 +340,7 @@ export class FormService {
         break;
 
       case 'supplier_invoices':
-        var data = await this.getIdReplacementData('supplier_id_name', dataService);
+        var data = await this.getIdReplacementData('supplier_id_name_code', dataService);
         formData['Supplier ID'].inputType = 'replacement';
         replacementData['Supplier ID'] = { data: data };
         break;
