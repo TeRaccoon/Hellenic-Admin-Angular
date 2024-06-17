@@ -112,7 +112,7 @@
                         </div>
                     </ng-container>
                     <div class="form-footer">
-                        <ng-container *ngIf="shouldDisplayItemWidget() else invoicedItems">
+                        <ng-container *ngIf="!shouldDisplayItemWidget() else invoicedItems">
                             <button class="button" (click)="formSubmit(true)" type="submit">Submit</button>
                         </ng-container>
                         <ng-template #invoicedItems>
@@ -131,7 +131,7 @@
                     </div>
                 </form>
                 <ng-container *ngIf="shouldDisplayItemWidget()">
-                    <form class="form-container" [formGroup]="addInvoicedItemForm">
+                    <form class="form-container" [formGroup]="addItemForm">
                         <h1>Add Items</h1>
                         <div class="input-container replacement">
                             <label>Item Name <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
@@ -142,33 +142,78 @@
                                 </div>
                             </div>
                         </div>
+                        <ng-container *ngIf="tableName == 'supplier_invoices'">
+                            <div class="input-container number">
+                                <label>Purchase Price <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
+                                <input class="number" type="number" formControlName="purchase_price">
+                            </div>
+                            <div class="input-container date">
+                                <label>Purchase Date <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
+                                <input class="date" type="date" formControlName="purchase_date">
+                            </div>
+                            <div class="input-container date">
+                                <label>Expiry Date <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
+                                <input class="date" type="date" formControlName="expiry_date">
+                            </div>
+                            <div class="input-container text">
+                                <label>Barcode <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
+                                <input class="text" type="text" formControlName="barcode">
+                            </div>
+                            <div class="input-container select">
+                                <label>Packing Format <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
+                                <select class="select-input" formControlName="packing_format">
+                                    <option selected value="Individual">Individual</option>
+                                    <option value="Box">Box</option>
+                                    <option value="Pallet">Pallet</option>
+                                </select>
+                            </div>
+                        </ng-container>
                         <div class="input-container number">
                             <label>Quantity <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                             <input class="number" type="number" formControlName="quantity">
                         </div>
-                        <div class="input-container number">
-                            <label>Discount</label>
-                            <input class="number" type="number" formControlName="discount">
-                        </div>
+                        <ng-container *ngIf="tableName == 'invoices'">
+                            <div class="input-container number">
+                                <label>Discount</label>
+                                <input class="number" type="number" formControlName="discount">
+                            </div>
+                        </ng-container>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <th>Item Name</th>
                                     <th>Quantity</th>
                                     <th>Price</th>
-                                    <th>Discount</th>
-                                    <th>VAT</th>
-                                    <th>Total</th>
+                                    <ng-container *ngIf="tableName == 'invoices'">
+                                        <th>Discount</th>
+                                        <th>VAT</th>
+                                        <th>Total</th>
+                                    </ng-container>
+                                    <ng-container *ngIf="tableName == 'supplier_invoices'">
+                                        <th>Purchase Date</th>
+                                        <th>Expiry Date</th>
+                                        <th>Packing Format</th>
+                                        <th>Barcode</th>
+                                    </ng-container>
                                 </thead>
-                                <tbody *ngIf="invoicedItemsList.length > 0">
-                                    <tr *ngFor="let invoicedItem of invoicedItemsList; let index = index">
-                                        <td>{{ invoicedItem.name }}</td>
-                                        <td>{{ invoicedItem.quantity }}</td>
-                                        <td>{{ invoicedItem.price | currency:'GBP' }}</td>
-                                        <td>{{ invoicedItem.discount }}%</td>
-                                        <td>{{ invoicedItem.vat }}</td>
-                                        <td>{{ invoicedItem.total * ((100 - invoicedItem.discount) / 100 ) | currency:'GBP' }}</td>
-                                        <td (click)="deleteRow(invoicedItemsList[index].id)">
+                                <tbody *ngIf="itemsList.length > 0">
+                                    <tr *ngFor="let item of itemsList; let index = index">
+                                        <td>{{ item.name ?? item.item_name }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <ng-container *ngIf="tableName == 'invoices'">
+                                            <td>{{ item.price | currency:'GBP' }}</td>
+                                            <td>{{ item.discount }}%</td>
+                                            <td>{{ item.vat }}</td>
+                                            <td>{{ item.total * ((100 - item.discount) / 100 ) | currency:'GBP' }}</td>
+                                        </ng-container>
+                                        <ng-container *ngIf="tableName == 'supplier_invoices'">
+                                            <td>{{ item.purchase_price }}</td>
+                                            <td>{{ item.purchase_date }}</td>
+                                            <td>{{ item.expiry_date }}</td>
+                                            <td>{{ item.packing_format }}</td>
+                                            <td>{{ item.barcode }}</td>
+                                        </ng-container>
+                                        <td (click)="deleteRow(itemsList[index].id)">
                                             <fa-icon [icon]="icons.faX" />
                                         </td>
                                     </tr>
@@ -176,7 +221,7 @@
                             </table>
                         </div>
                         <div class="form-footer">
-                            <button *ngIf="tableName == 'invoices'" (click)="addItem($event)" class="button">Add invoiced items</button>
+                            <button *ngIf="shouldDisplayItemWidget()" (click)="addItem($event)" class="button">Add invoiced items</button>
                             <button (click)="close()" class="button">Save</button>
                         </div>
                     </form>

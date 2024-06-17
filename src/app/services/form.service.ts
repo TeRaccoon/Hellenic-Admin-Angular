@@ -278,8 +278,8 @@ export class FormService {
         replacementData['Item ID'] = { data: data };
 
         var data = await this.getIdReplacementData('warehouse_id_name', dataService);
-        formData['Warehouse ID'].inputType = 'replacement';
-        replacementData['Warehouse ID'] = { data: data };
+        formData['Warehouse'].inputType = 'replacement';
+        replacementData['Warehouse'] = { data: data };
 
         var data = await this.getIdReplacementData('supplier_invoice_id_reference', dataService);
         formData['Supplier Invoice ID'].inputType = 'replacement';
@@ -343,6 +343,14 @@ export class FormService {
         var data = await this.getIdReplacementData('supplier_id_name_code', dataService);
         formData['Supplier ID'].inputType = 'replacement';
         replacementData['Supplier ID'] = { data: data };
+
+        data = await this.getIdReplacementData('items_id_name_sku', dataService);
+        formData['Item ID'] = {
+          inputType: 'replacement',
+          value: null,
+          fields: 'item_id',
+        };
+        replacementData['Item ID'] = { data: data };
         break;
         
     }
