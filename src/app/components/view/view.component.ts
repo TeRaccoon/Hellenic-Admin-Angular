@@ -102,10 +102,10 @@ export class ViewComponent {
     this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
       if (reloadRequested) {
         let reloadType = this.formService.getReloadType();
-        if (reloadType == "hard") {
+        if (reloadType == 'hard') {
           this.selectedRows = [];
           await this.loadTable(String(this.tableName));
-        } else if (reloadType == "filter") {
+        } else if (reloadType == 'filter') {
           this.applyFilter();
         }
         this.formService.performReload();

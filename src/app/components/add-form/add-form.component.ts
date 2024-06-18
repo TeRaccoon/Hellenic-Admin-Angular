@@ -409,7 +409,6 @@ export class AddFormComponent {
   }
 
   endSubmission(reset: boolean, hideForm: boolean) {
-    this.formService.sync(this.addForm.value, 'add', this.tableName);
     if (this.shouldDisplayItemWidget()) {
       this.invoiceCreated = true;
       this.disableControls();
@@ -703,6 +702,7 @@ export class AddFormComponent {
   }
 
   close() {
+    this.formService.requestReload('hard');
     this.formService.setMessageFormData({
       title: 'Success',
       message: 'Invoice saved successfully!'
