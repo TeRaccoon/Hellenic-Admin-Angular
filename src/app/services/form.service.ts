@@ -579,14 +579,6 @@ export class FormService {
       .map((option: any) => option.replace(/'/g, '').trim());
   }
 
-  sync(formData: any, queryType: string, tableName: string) {
-    switch(tableName) {
-      case "stocked_items":
-        
-        break;
-    }
-  }
-
   constructFormSettings(tableName: string) {
     let settings: settings = { showAddMore: false };
     switch (tableName) {
