@@ -586,6 +586,8 @@ export class ViewComponent {
       { name: "ID", type: "number" },
       { name: "Item Name", type: "string" },
       { name: "Picture", type: "image" },
+      { name: "Price", type: "currency" },
+      { name: "Purchase Date", type: "date" },
       { name: "Quantity", type: "number" },
       { name: "Expiry Date", type: "string" },
       { name: "Packing Format", type: "enum" },

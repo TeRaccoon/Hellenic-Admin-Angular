@@ -22,6 +22,9 @@
                                     <ng-container *ngSwitchCase="'image'">
                                         <img [src]="imageUrlBase + row[key]">
                                     </ng-container>
+                                    <ng-container *ngSwitchCase="'currency'">
+                                        {{ row[key] | currency: 'GBP' }}
+                                    </ng-container>
                                     <ng-container *ngSwitchDefault>
                                         {{ row[key] }}
                                     </ng-container>
