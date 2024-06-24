@@ -1,23 +1,50 @@
-<div class="container">
+<div class="chart-container">
     <div class="toolbar">
         <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange" (change)="updateDateRange()" />
     </div>
     <div class="content">
-        <div>
-            <h1>Average Order Value</h1>
-            <canvas baseChart [data]="averageOrderValueChartData" [options]="averageOrderValueChartOptions" [type]="averageOrderValueChartType"></canvas>
+        <div class="chart" *ngFor="let chart of charts; let index = index">
+            <div class="header">
+                <h3>{{ chart.heading }}</h3>
+                <fa-icon (click)="setReportChart(chart, index)" [icon]="icons.faFileContract" />
+            </div>
+            <h1>{{ chart.subheading }}</h1>
+            <canvas class="canvas" baseChart [data]="chart.data" [options]="chart.options" [type]="chart.type"></canvas>
         </div>
-        <div>
-            <h1>Total Orders</h1>
-            <canvas baseChart [data]="totalOrdersChartData" [options]="totalOrdersChartOptions" [type]="averageOrderValueChartType"></canvas>
+    </div>
+</div>
+<div *ngIf="reportChart != null" class="report-container">
+    <div class="report">
+        <div class="heading">
+            <h1>{{ reportChart.chart.heading }} Report</h1>
+            <fa-icon (click)="setReportChart(null)" [icon]="icons.faX" />
         </div>
-        <div>
-            <h1>Top Selling Products</h1>
-            <canvas baseChart [data]="topSellingProductsChartData" [options]="topSellingProductsChartOptions" [type]="topSellingProductsChartType"></canvas>
-        </div>
-        <div>
-            <h1>Invoice Values</h1>
-            <canvas baseChart [data]="invoiceValueChartData" [options]="invoiceValueChartOptions" [type]="invoiceValueChartType"></canvas>
+        <div class="data-container">
+            <div class="container chart">
+                <div class="header">
+                    <h3>{{ reportChart.chart.heading }}</h3>
+                </div>
+                <h1>{{ reportChart.chart.subheading }}</h1>
+                <canvas class="canvas" baseChart [data]="reportChart.chart.data" [options]="reportChart.chart.options" [type]="reportChart.chart.type"></canvas>
+            </div>
+            <div class="container table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th *ngFor="let header of reportChart.report.headers">{{ header }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of reportChart.report.data">
+                            <td *ngFor="let key of getKeys(row); let index = index">
+                                <ng-container [ngSwitch]="reportChart.report.dataTypes[index]">
+                                    {{ row[key] }}
+                                </ng-container>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
