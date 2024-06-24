@@ -1,4 +1,4 @@
-.container {
+.chart-container {
     margin: 15px 15px 15px 16%;
     display: flex;
     flex-direction: column;
@@ -23,7 +23,7 @@
         flex-wrap: wrap;
         gap: 15px;
         margin: 10px;
-        div {
+        .chart {
             width: calc(33% - 35px);
             max-width: calc(33% - 35px);
             padding: 15px;
@@ -31,6 +31,134 @@
             background: white;
             border-radius: 10px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            h1 {
+                margin: 15px 10px;
+                font-size: 24px;
+            }
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                fa-icon {
+                    font-size: 20px;
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+                h3 {
+                    margin: 5px 10px;
+                    border-bottom: 3px dotted #5c5c5c;
+                    font-weight: normal;
+                    display: inline-flex;
+                    font-size: 16px;
+                }
+            }
+            .canvas {
+                margin: 10px;
+            }
+        }
+    }
+}
+
+.report-container {
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    .report {
+        margin: auto;
+        width: 80%;
+        background-color: white;
+        .heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            h1 {
+                margin: 5px;
+            }
+            fa-icon {
+                font-size: 20px;
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+        .data-container {
+            display: flex;
+            flex-direction: column;
+            .container {
+                border-radius: 10px;
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                margin: 20px;
+            }
+            .chart {
+                padding: 10px;
+                h1 {
+                    margin: 15px 10px;
+                    font-size: 24px;
+                }
+                .header {
+                    h3 {
+                        margin: 5px 10px;
+                        border-bottom: 3px dotted #5c5c5c;
+                        font-weight: normal;
+                        display: inline-flex;
+                        font-size: 16px;
+                    }
+                }
+                .canvas {
+                    max-height: 50vh;
+                    margin: 10px;
+                }
+            }
+            .table {
+                max-height: 600px;
+                overflow-y: auto;
+                overflow-x: auto;
+                table {
+                    width: 100%;
+                    border-collapse: separate;
+                    border-spacing: 0;
+                }
+                tr:nth-child(even) {
+                    background-color: #f9f9f9;
+                }
+                tbody {
+                    tr {
+                        &:hover {
+                            background-color: #f0f0f0;
+                        }
+                        td {
+                            padding: 10px;
+                            border: 1px solid #ddd;
+                        }
+                    }
+                }
+                th,
+                td {
+                    padding: 10px;
+                    text-align: left;
+                    font-size: 16px;
+                }
+                td {
+                    .ng-fa-icon {
+                        cursor: pointer;
+                    }
+                }
+                thead {
+                    position: sticky;
+                    top: 0;
+                    z-index: 1;
+                    background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
+                    color: white;
+                }
+            }
         }
     }
 }
