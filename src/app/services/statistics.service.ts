@@ -32,16 +32,22 @@ export class StatisticsService {
     return this.months;
   }
 
-  getLineChartData(dataset: any[], label: string, fill: boolean) {
+  getLineChartData(
+    dataset: any[],
+    label: string,
+    fill: boolean,
+    colour: string | null = null,
+    backgroundColor: string | null = null
+  ) {
     return {
       datasets: {
         data: dataset,
         label: label,
-        borderColor: 'rgb(0, 140, 255)',
-        pointBackgroundColor: 'rgb(0, 140, 255)',
-        backgroundColor: 'rgb(0, 140, 255, 0.4)',
-        fill: fill
-      }
+        borderColor: colour ?? 'rgb(0, 140, 255)',
+        pointBackgroundColor: colour ?? 'rgb(0, 140, 255)',
+        backgroundColor: backgroundColor ?? 'rgb(0, 140, 255, 0.4)',
+        fill: fill,
+      },
     };
   }
 
@@ -54,11 +60,19 @@ export class StatisticsService {
         borderColor: 'rgb(0, 140, 255)',
         borderRadius: borderRadius,
         borderWidth: 3,
-      }
+      },
     };
   }
 
-  getBarChartOptions(yTitle: string, xTitle: string, displayLegend: boolean, stacked: boolean, currency: boolean, displayTitles: boolean, labels: any[]): ChartConfiguration['options'] {
+  getBarChartOptions(
+    yTitle: string,
+    xTitle: string,
+    displayLegend: boolean,
+    stacked: boolean,
+    currency: boolean,
+    displayTitles: boolean,
+    labels: any[]
+  ): ChartConfiguration['options'] {
     return {
       plugins: {
         legend: {
@@ -66,7 +80,7 @@ export class StatisticsService {
         },
         tooltip: {
           callbacks: {
-            label: function(tooltipData) {
+            label: function (tooltipData) {
               if (tooltipData.dataset.label) {
                 const formatter = new Intl.NumberFormat('en-US', {
                   style: 'currency',
@@ -75,17 +89,20 @@ export class StatisticsService {
 
                 const labels = tooltipData.dataset.label.toString();
 
-                let values = tooltipData.dataset.data[tooltipData.dataIndex]?.toString();
+                let values =
+                  tooltipData.dataset.data[tooltipData.dataIndex]?.toString();
                 if (currency) {
-                  values = formatter.format(Number(tooltipData.dataset.data[tooltipData.dataIndex]));
+                  values = formatter.format(
+                    Number(tooltipData.dataset.data[tooltipData.dataIndex])
+                  );
                 }
 
                 return `${labels}: ${values}`;
               }
-              return "";
-            }
-          }
-        }
+              return '';
+            },
+          },
+        },
       },
       scales: {
         y: {
@@ -99,7 +116,7 @@ export class StatisticsService {
           },
           stacked: stacked,
           ticks: {
-            callback: function(value) {
+            callback: function (value) {
               if (currency) {
                 return '£' + value;
               }
@@ -108,7 +125,7 @@ export class StatisticsService {
               }
               return;
             },
-          }
+          },
         },
         x: {
           title: {
@@ -121,21 +138,30 @@ export class StatisticsService {
           },
           stacked: stacked,
           ticks: {
-            callback: function(value) {
+            callback: function (value) {
               if (labels[Number(value)].toString().length > 10) {
-                return labels[Number(value)].toString().substring(0, 7) + "...";
+                return labels[Number(value)].toString().substring(0, 7) + '...';
               }
               return labels[Number(value)];
             },
             maxRotation: 0,
-            autoSkipPadding: 25
-          }
-        }
+            autoSkipPadding: 25,
+          },
+        },
       },
     };
   }
 
-  getLineChartOptions(tension: number, yTitle: string, xTitle: string, displayLegend: boolean, currency: boolean, aboveZero: boolean, displayTitles: boolean, labels: any[]): ChartConfiguration['options'] {
+  getLineChartOptions(
+    tension: number,
+    yTitle: string,
+    xTitle: string,
+    displayLegend: boolean,
+    currency: boolean,
+    aboveZero: boolean,
+    displayTitles: boolean,
+    labels: any[]
+  ): ChartConfiguration['options'] {
     return {
       plugins: {
         legend: {
@@ -143,7 +169,7 @@ export class StatisticsService {
         },
         tooltip: {
           callbacks: {
-            label: function(tooltipData) {
+            label: function (tooltipData) {
               if (tooltipData.dataset.label) {
                 const formatter = new Intl.NumberFormat('en-US', {
                   style: 'currency',
@@ -152,17 +178,20 @@ export class StatisticsService {
 
                 const labels = tooltipData.dataset.label.toString();
 
-                let values = tooltipData.dataset.data[tooltipData.dataIndex]?.toString();
+                let values =
+                  tooltipData.dataset.data[tooltipData.dataIndex]?.toString();
                 if (currency) {
-                  values = formatter.format(Number(tooltipData.dataset.data[tooltipData.dataIndex]));
+                  values = formatter.format(
+                    Number(tooltipData.dataset.data[tooltipData.dataIndex])
+                  );
                 }
 
                 return `${labels}: ${values}`;
               }
-              return "";
-            }
-          }
-        }
+              return '';
+            },
+          },
+        },
       },
       elements: {
         line: {
@@ -181,7 +210,7 @@ export class StatisticsService {
             },
           },
           ticks: {
-            callback: function(value) {
+            callback: function (value) {
               if (currency) {
                 return '£' + value;
               }
@@ -203,16 +232,16 @@ export class StatisticsService {
             },
           },
           ticks: {
-            callback: function(value) {
+            callback: function (value) {
               if (labels[Number(value)].toString().length > 10) {
-                return labels[Number(value)].toString().substring(0, 7) + "...";
+                return labels[Number(value)].toString().substring(0, 7) + '...';
               }
               return labels[Number(value)];
             },
             maxRotation: 0,
-            autoSkipPadding: 25
-          }
-        }
+            autoSkipPadding: 25,
+          },
+        },
       },
     };
   }
@@ -224,62 +253,91 @@ export class StatisticsService {
     dateRange: { startDate: Dayjs; endDate: Dayjs },
     dayQuery: string,
     monthQuery: string,
-    ignoreDate: boolean,
+    ignoreDate: boolean
   ) {
     let data = [];
     let xLabels = [];
-    let queryData = null;
     let keyModifier = monthStart + 1;
     let startKey = monthStart;
     let endKey = monthEnd;
     let monthLabels = this.getMonths();
 
+    let queryParams = this.deriveDatePayload(monthStart, monthEnd, year, dateRange, monthQuery, dayQuery);
+
+    let queryData = await lastValueFrom<any>(this.dataService.collectDataComplex(queryParams.query, queryParams.date))
+    let chartData: any[] = queryData['chart'];
+
     if (monthStart != monthEnd) {
       xLabels = monthLabels.slice(monthStart, monthEnd + 1);
-      queryData = await lastValueFrom(
-        this.dataService.collectDataComplex(monthQuery, {
-          monthStart: monthStart + 1,
-          monthEnd: monthEnd + 1,
-          year: year,
-        })
-      );
+
     } else {
       startKey = dateRange.startDate.date();
       endKey = dateRange.endDate.date();
 
-      queryData = await lastValueFrom(
-        this.dataService.collectDataComplex(dayQuery, {
-          dayStart: startKey,
-          dayEnd: endKey,
-          month: monthStart + 1,
-          year: year,
-        })
-      );
-
-      xLabels = Array(endKey - startKey + 1).fill(null).map((_, index) => monthLabels[monthStart] + ' ' + (startKey + index));
+      xLabels = Array(endKey - startKey + 1)
+        .fill(null)
+        .map((_, index) => monthLabels[monthStart] + ' ' + (startKey + index));
 
       keyModifier = startKey;
     }
 
     data = Array(endKey - startKey + 1).fill(0);
-    queryData = Array.isArray(queryData) ? queryData : [queryData];
+    chartData = Array.isArray(chartData) ? chartData : [chartData];
 
     if (ignoreDate) {
-      xLabels = Array(queryData.length);
-      for (let order in queryData) {
-        data[order] = queryData[order].total;
-        xLabels[order] = queryData[order].dateKey;
+      xLabels = Array(chartData.length);
+      for (let order in chartData) {
+        data[order] = chartData[order].total;
+        xLabels[order] = chartData[order].dateKey;
       }
     } else {
-      for (let order in queryData) {
-        data[queryData[order].dateKey - keyModifier] =
-          queryData[order].total;
+      for (let order in chartData) {
+        data[chartData[order].dateKey - keyModifier] = chartData[order].total;
       }
     }
 
     return {
-      data,
-      labels: xLabels,
+      chart: {
+        data,
+        labels: xLabels,
+      },
+      report : {
+        data: queryData['report'],
+      },
+    };
+  }
+
+  deriveDatePayload(
+    monthStart: number,
+    monthEnd: number,
+    year: number,
+    dateRange: { startDate: Dayjs; endDate: Dayjs },
+    monthQuery: string,
+    dayQuery: string
+  ) {
+    if (monthStart != monthEnd) {
+      return { 
+        query: monthQuery, 
+        date: 
+        {
+          monthStart: monthStart + 1,
+          monthEnd: monthEnd + 1,
+          year: year,
+        }
+      };
+    }
+
+    let startKey = dateRange.startDate.date();
+    let endKey = dateRange.endDate.date();
+
+    return {
+      query: dayQuery,
+      date: {
+        dayStart: startKey,
+        dayEnd: endKey,
+        month: monthStart + 1,
+        year: year,
+      }
     };
   }
 }
