@@ -13,7 +13,8 @@ export interface report {
     data: any[],
     headers: string[] | null,
     dataTypes: string[],
-    type: string
+    type: string,
+    formatted: boolean
 }
 
 export const REPORT_TYPE = {

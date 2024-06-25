@@ -102,7 +102,8 @@ export class StatisticsComponent {
       data: statisticsData.report.data,
       headers: ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'],
       dataTypes: ['text', 'currency', 'percentage', 'int', 'currency'],
-      type: REPORT_TYPE.table
+      type: REPORT_TYPE.table,
+      formatted: false
     });
 
     //Total Orders
@@ -154,7 +155,8 @@ export class StatisticsComponent {
       data: statisticsData.report.data,
       headers: ['Date', 'Orders', 'Average Units Ordered', 'Average Order Value'],
       dataTypes: ['text', 'int', 'number', 'currency'],
-      type: REPORT_TYPE.table
+      type: REPORT_TYPE.table,
+      formatted: false
     });
 
     //Top Selling Products
@@ -203,7 +205,8 @@ export class StatisticsComponent {
       data: statisticsData.report.data,
       headers: ['Item Name', 'Product Vendor', 'Product Type', 'Net Quantity', 'Gross Sales', 'Discounts', 'Net Sales', 'VAT', 'Total Sales'],
       dataTypes: ['text', 'text', 'text', 'int', 'int', 'percentage', 'currency', 'currency', 'currency'],
-      type: REPORT_TYPE.table
+      type: REPORT_TYPE.table,
+      formatted: false
     });
 
     //Total Invoice Value
@@ -249,6 +252,14 @@ export class StatisticsComponent {
         dayQueries: ['total-invoice-value-per-day'],
         monthQueries: ['total-invoice-value-per-month'],
       },
+    });
+
+    this.reports.push({
+      data: statisticsData.report.data,
+      headers: ['Date', 'Orders', 'Discounts', 'Net Sales', 'Tax', 'Gross Sales'],
+      dataTypes: ['text', 'int', 'currency', 'currency', 'currency', 'currency'],
+      type: REPORT_TYPE.table,
+      formatted: false
     });
 
     //Recurring Customer
@@ -329,51 +340,60 @@ export class StatisticsComponent {
       data: statisticsData.report.data,
       headers: ['Customer Type', 'Customers'],
       dataTypes: ['text', 'int'],
-      type: REPORT_TYPE.table
+      type: REPORT_TYPE.table,
+      formatted: false
     });
   }
 
   async setReportChart(chart: chart | null, index?: number) {
-    if (chart != null && index != null) {
-      let monthStart = this.selected.startDate.month();
-      let monthEnd = this.selected.endDate.month();
-      
+    if (chart != null && index != null) {  
       let report: report = this.reports[index];
-      console.log(report);
 
-      let keys = Object.keys(report.data[0]);
-      let dataTypes = report.dataTypes;
-
-      if (report.data[0].dateKey) {
-        if (monthStart == monthEnd) {
-          report.data.forEach((reportRow: any) => {
-            this.formatObject(reportRow, keys, dataTypes);           
-          });
-
-          for (let day = 1; day <= this.selected.endDate.daysInMonth(); day++) {
-            if (!report.data.find((data: any) => data.dateKey == day)) {
-              let newData = keys.reduce((acc, key, index) => {
-                acc[key] = this.formatValue(report.dataTypes[index]);
-                return acc;
-              }, {} as any);
-
-              newData['dateKey'] = day;
-              report.data.push(newData);
-            }
-          }
-        }
-      } else {
-        report.data.forEach((reportRow: any) => {
-          this.formatObject(reportRow, keys, dataTypes);           
-        });
+      if (!report.formatted) {
+        report = this.formatReport(report);
       }
-
-      report.data.sort((a: any, b: any) => a.dateKey - b.dateKey);
 
       this.reportChart = {chart, report};
     } else {
       this.reportChart = null;
     }
+  }
+
+  formatReport(report: report) {
+    let keys = Object.keys(report.data[0]);
+    let dataTypes = report.dataTypes;
+
+    let monthStart = this.selected.startDate.month();
+    let monthEnd = this.selected.endDate.month();
+
+    if (report.data[0].dateKey) {
+      if (monthStart == monthEnd) {
+        report.data.forEach((reportRow: any) => {
+          this.formatObject(reportRow, keys, dataTypes);           
+        });
+
+        for (let day = 1; day <= this.selected.endDate.daysInMonth(); day++) {
+          if (!report.data.find((data: any) => data.dateKey == day)) {
+            let newData = keys.reduce((acc, key, index) => {
+              acc[key] = this.formatValue(report.dataTypes[index]);
+              return acc;
+            }, {} as any);
+
+            newData['dateKey'] = day;
+            report.data.push(newData);
+          }
+        }
+      }
+    } else {
+      report.data.forEach((reportRow: any) => {
+        this.formatObject(reportRow, keys, dataTypes);           
+      });
+    }
+
+    report.data.sort((a: any, b: any) => a.dateKey - b.dateKey);
+    report.formatted = true;
+
+    return report;
   }
 
   formatObject(reportRow: any, keys: string[], dataTypes: string[]) {
@@ -415,12 +435,6 @@ export class StatisticsComponent {
   }
 
   hasKey(row: any, key: any) {
-    if (row[key] != undefined) {
-      console.log(row[key]);
-      return true;
-    } else {
-      console.log("HERE");
-      return false;
-    }
+    return row[key] != undefined;
   }
 }
