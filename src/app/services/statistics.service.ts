@@ -86,9 +86,9 @@ export class StatisticsService {
                   style: 'currency',
                   currency: 'GBP',
                 });
-
+                
                 const labels = tooltipData.dataset.label.toString();
-
+                
                 let values =
                   tooltipData.dataset.data[tooltipData.dataIndex]?.toString();
                 if (currency) {
@@ -96,7 +96,7 @@ export class StatisticsService {
                     Number(tooltipData.dataset.data[tooltipData.dataIndex])
                   );
                 }
-
+                
                 return `${labels}: ${values}`;
               }
               return '';
@@ -265,7 +265,9 @@ export class StatisticsService {
     let queryParams = this.deriveDatePayload(monthStart, monthEnd, year, dateRange, monthQuery, dayQuery);
 
     let queryData = await lastValueFrom<any>(this.dataService.collectDataComplex(queryParams.query, queryParams.date))
+    
     let chartData: any[] = queryData['chart'];
+    queryData['report'] = Array.isArray(queryData['report']) ? queryData['report'] : [queryData['report']];
 
     if (monthStart != monthEnd) {
       xLabels = monthLabels.slice(monthStart, monthEnd + 1);
@@ -283,6 +285,7 @@ export class StatisticsService {
 
     data = Array(endKey - startKey + 1).fill(0);
     chartData = Array.isArray(chartData) ? chartData : [chartData];
+
 
     if (ignoreDate) {
       xLabels = Array(chartData.length);

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { StatisticsService } from '../../services/statistics.service';
 import dayjs, { Dayjs } from 'dayjs';
 import utcPlugin from 'dayjs/plugin/utc';
-import { chart, report, REPORT_TYPE } from '../../common/types/statistics/types';
+import { chart, report } from '../../common/types/statistics/types';
 import { chartIcons } from '../../common/icons/chart-icons';
 import { lastValueFrom } from 'rxjs';
 
@@ -40,12 +40,17 @@ export class StatisticsComponent {
   constructor(private statisticsService: StatisticsService) {}
 
   updateDateRange() {
+    this.reset();
     this.buildCharts();
   }
 
-  async buildCharts() {
+  reset() {
     this.charts = [];
+    this.reports = [];
+    this.reportChart = null;
+  }
 
+  async buildCharts() {
     let monthStart = this.selected.startDate.month();
     let monthEnd = this.selected.endDate.month();
     let year = this.selected.startDate.year();
@@ -102,7 +107,6 @@ export class StatisticsComponent {
       data: statisticsData.report.data,
       headers: ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'],
       dataTypes: ['text', 'currency', 'percentage', 'int', 'currency'],
-      type: REPORT_TYPE.table,
       formatted: false
     });
 
@@ -155,7 +159,6 @@ export class StatisticsComponent {
       data: statisticsData.report.data,
       headers: ['Date', 'Orders', 'Average Units Ordered', 'Average Order Value'],
       dataTypes: ['text', 'int', 'number', 'currency'],
-      type: REPORT_TYPE.table,
       formatted: false
     });
 
@@ -205,7 +208,6 @@ export class StatisticsComponent {
       data: statisticsData.report.data,
       headers: ['Item Name', 'Product Vendor', 'Product Type', 'Net Quantity', 'Gross Sales', 'Discounts', 'Net Sales', 'VAT', 'Total Sales'],
       dataTypes: ['text', 'text', 'text', 'int', 'int', 'percentage', 'currency', 'currency', 'currency'],
-      type: REPORT_TYPE.table,
       formatted: false
     });
 
@@ -258,12 +260,12 @@ export class StatisticsComponent {
       data: statisticsData.report.data,
       headers: ['Date', 'Orders', 'Discounts', 'Net Sales', 'Tax', 'Gross Sales'],
       dataTypes: ['text', 'int', 'currency', 'currency', 'currency', 'currency'],
-      type: REPORT_TYPE.table,
       formatted: false
     });
 
     //Recurring Customer
     let chartDatasetArray: any[] = [];
+    let reportDatasetArray: any[] = [];
     statisticsData = await this.statisticsService.buildChart(
       monthStart,
       monthEnd,
@@ -279,6 +281,7 @@ export class StatisticsComponent {
       true
     );
     chartDatasetArray.push(chartDataset);
+    reportDatasetArray = statisticsData.report.data;
 
     let recurringTotal = statisticsData.chart.data.reduce((sum, data) => (sum += data));
 
@@ -299,6 +302,7 @@ export class StatisticsComponent {
       'rgb(255, 97, 18, 0.4)'
     );
     chartDatasetArray.push(chartDataset);
+    reportDatasetArray = reportDatasetArray.concat(statisticsData.report.data);
 
     let firstTimeTotal = statisticsData.chart.data.reduce((sum, data) => (sum += data));
     let percentage = (
@@ -336,11 +340,14 @@ export class StatisticsComponent {
       },
     });
 
+    reportDatasetArray.forEach((row: any) => {
+      row.customer_type = row.total == 1 ? 'First Time' : 'Recurring';
+    });
+
     this.reports.push({
-      data: statisticsData.report.data,
-      headers: ['Customer Type', 'Customers'],
-      dataTypes: ['text', 'int'],
-      type: REPORT_TYPE.table,
+      data: reportDatasetArray,
+      headers: ['Date', 'Customers', 'Customer Type'],
+      dataTypes: ['text', 'int', 'text'],
       formatted: false
     });
   }
@@ -348,7 +355,7 @@ export class StatisticsComponent {
   async setReportChart(chart: chart | null, index?: number) {
     if (chart != null && index != null) {  
       let report: report = this.reports[index];
-
+      
       if (!report.formatted) {
         report = this.formatReport(report);
       }
@@ -365,23 +372,22 @@ export class StatisticsComponent {
 
     let monthStart = this.selected.startDate.month();
     let monthEnd = this.selected.endDate.month();
-
     if (report.data[0].dateKey) {
-      if (monthStart == monthEnd) {
-        report.data.forEach((reportRow: any) => {
-          this.formatObject(reportRow, keys, dataTypes);           
-        });
+      report.data.forEach((reportRow: any) => {
+        this.formatObject(reportRow, keys, dataTypes);           
+      });
 
-        for (let day = 1; day <= this.selected.endDate.daysInMonth(); day++) {
-          if (!report.data.find((data: any) => data.dateKey == day)) {
-            let newData = keys.reduce((acc, key, index) => {
-              acc[key] = this.formatValue(report.dataTypes[index]);
-              return acc;
-            }, {} as any);
+      let limit = monthStart == monthEnd ? this.selected.endDate.daysInMonth() : 12;
 
-            newData['dateKey'] = day;
-            report.data.push(newData);
-          }
+      for (let day = 1; day <= limit; day++) {
+        if (!report.data.find((data: any) => data.dateKey == day)) {
+          let newData = keys.reduce((acc, key, index) => {
+            acc[key] = this.formatValue(report.dataTypes[index]);
+            return acc;
+          }, {} as any);
+
+          newData['dateKey'] = day;
+          report.data.push(newData);
         }
       }
     } else {
