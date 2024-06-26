@@ -13,7 +13,8 @@ export interface report {
     data: any[],
     headers: string[] | null,
     dataTypes: string[],
-    formatted: boolean
+    formatted: boolean,
+    filters: string[]
 }
 
 interface query {

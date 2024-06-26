@@ -4,7 +4,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import utcPlugin from 'dayjs/plugin/utc';
 import { chart, report } from '../../common/types/statistics/types';
 import { chartIcons } from '../../common/icons/chart-icons';
-import { lastValueFrom } from 'rxjs';
+import _ from 'lodash';
 
 dayjs.extend(utcPlugin);
 
@@ -36,6 +36,10 @@ export class StatisticsComponent {
     ],
     'This Year': [dayjs().startOf('year'), dayjs().endOf('year')],
   };
+
+  filterShown = false;
+  filters: string[] = [];
+  filteredReportData: any = null;
 
   constructor(private statisticsService: StatisticsService) {}
 
@@ -87,8 +91,8 @@ export class StatisticsComponent {
     );
 
     let average =
-    statisticsData.chart.data.reduce((sum, data) => (sum += data)) /
-    statisticsData.chart.data.filter((data) => data != 0).length;
+      statisticsData.chart.data.reduce((sum, data) => (sum += data)) /
+      statisticsData.chart.data.filter((data) => data != 0).length;
     let subheading = `£${average.toFixed(2)}`;
 
     this.charts.push({
@@ -105,9 +109,16 @@ export class StatisticsComponent {
 
     this.reports.push({
       data: statisticsData.report.data,
-      headers: ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'],
+      headers: [
+        'Date',
+        'Gross Sales',
+        'Discounts',
+        'Orders',
+        'Average Order Value',
+      ],
       dataTypes: ['text', 'currency', 'percentage', 'int', 'currency'],
-      formatted: false
+      formatted: false,
+      filters: ['Exclude Empty Rows'],
     });
 
     //Total Orders
@@ -157,9 +168,15 @@ export class StatisticsComponent {
 
     this.reports.push({
       data: statisticsData.report.data,
-      headers: ['Date', 'Orders', 'Average Units Ordered', 'Average Order Value'],
+      headers: [
+        'Date',
+        'Orders',
+        'Average Units Ordered',
+        'Average Order Value',
+      ],
       dataTypes: ['text', 'int', 'number', 'currency'],
-      formatted: false
+      formatted: false,
+      filters: ['Exclude Empty Rows'],
     });
 
     //Top Selling Products
@@ -206,9 +223,30 @@ export class StatisticsComponent {
 
     this.reports.push({
       data: statisticsData.report.data,
-      headers: ['Item Name', 'Product Vendor', 'Product Type', 'Net Quantity', 'Gross Sales', 'Discounts', 'Net Sales', 'VAT', 'Total Sales'],
-      dataTypes: ['text', 'text', 'text', 'int', 'int', 'percentage', 'currency', 'currency', 'currency'],
-      formatted: false
+      headers: [
+        'Item Name',
+        'Product Vendor',
+        'Product Type',
+        'Net Quantity',
+        'Gross Sales',
+        'Discounts',
+        'Net Sales',
+        'VAT',
+        'Total Sales',
+      ],
+      dataTypes: [
+        'text',
+        'text',
+        'text',
+        'int',
+        'int',
+        'percentage',
+        'currency',
+        'currency',
+        'currency',
+      ],
+      formatted: false,
+      filters: ['Exclude Empty Rows'],
     });
 
     //Total Invoice Value
@@ -242,7 +280,9 @@ export class StatisticsComponent {
       statisticsData.chart.labels
     );
 
-    total = statisticsData.chart.data.reduce((sum, data) => (sum += data)).toFixed(2);
+    total = statisticsData.chart.data
+      .reduce((sum, data) => (sum += data))
+      .toFixed(2);
 
     this.charts.push({
       data: chartConfigData,
@@ -258,9 +298,24 @@ export class StatisticsComponent {
 
     this.reports.push({
       data: statisticsData.report.data,
-      headers: ['Date', 'Orders', 'Discounts', 'Net Sales', 'Tax', 'Gross Sales'],
-      dataTypes: ['text', 'int', 'currency', 'currency', 'currency', 'currency'],
-      formatted: false
+      headers: [
+        'Date',
+        'Orders',
+        'Discounts',
+        'Net Sales',
+        'Tax',
+        'Gross Sales',
+      ],
+      dataTypes: [
+        'text',
+        'int',
+        'currency',
+        'currency',
+        'currency',
+        'currency',
+      ],
+      formatted: false,
+      filters: ['Exclude Empty Rows'],
     });
 
     //Recurring Customer
@@ -283,7 +338,9 @@ export class StatisticsComponent {
     chartDatasetArray.push(chartDataset);
     reportDatasetArray = statisticsData.report.data;
 
-    let recurringTotal = statisticsData.chart.data.reduce((sum, data) => (sum += data));
+    let recurringTotal = statisticsData.chart.data.reduce(
+      (sum, data) => (sum += data)
+    );
 
     statisticsData = await this.statisticsService.buildChart(
       monthStart,
@@ -304,7 +361,9 @@ export class StatisticsComponent {
     chartDatasetArray.push(chartDataset);
     reportDatasetArray = reportDatasetArray.concat(statisticsData.report.data);
 
-    let firstTimeTotal = statisticsData.chart.data.reduce((sum, data) => (sum += data));
+    let firstTimeTotal = statisticsData.chart.data.reduce(
+      (sum, data) => (sum += data)
+    );
     let percentage = (
       (recurringTotal / (firstTimeTotal + recurringTotal)) *
       100
@@ -348,19 +407,21 @@ export class StatisticsComponent {
       data: reportDatasetArray,
       headers: ['Date', 'Customers', 'Customer Type'],
       dataTypes: ['text', 'int', 'text'],
-      formatted: false
+      formatted: false,
+      filters: ['Exclude Empty Rows'],
     });
   }
 
   async setReportChart(chart: chart | null, index?: number) {
-    if (chart != null && index != null) {  
+    if (chart != null && index != null) {
       let report: report = this.reports[index];
-      
+
       if (!report.formatted) {
         report = this.formatReport(report);
       }
 
-      this.reportChart = {chart, report};
+      this.reportChart = { chart, report };
+      this.filteredReportData = report.data;
     } else {
       this.reportChart = null;
     }
@@ -374,10 +435,11 @@ export class StatisticsComponent {
     let monthEnd = this.selected.endDate.month();
     if (report.data[0].dateKey) {
       report.data.forEach((reportRow: any) => {
-        this.formatObject(reportRow, keys, dataTypes);           
+        this.formatObject(reportRow, keys, dataTypes);
       });
 
-      let limit = monthStart == monthEnd ? this.selected.endDate.daysInMonth() : 12;
+      let limit =
+        monthStart == monthEnd ? this.selected.endDate.daysInMonth() : 12;
 
       for (let day = 1; day <= limit; day++) {
         if (!report.data.find((data: any) => data.dateKey == day)) {
@@ -385,14 +447,14 @@ export class StatisticsComponent {
             acc[key] = this.formatValue(report.dataTypes[index]);
             return acc;
           }, {} as any);
-
+          newData['empty'] = true;
           newData['dateKey'] = day;
           report.data.push(newData);
         }
       }
     } else {
       report.data.forEach((reportRow: any) => {
-        this.formatObject(reportRow, keys, dataTypes);           
+        this.formatObject(reportRow, keys, dataTypes);
       });
     }
 
@@ -406,6 +468,7 @@ export class StatisticsComponent {
     keys.forEach((key, index) => {
       if (key !== 'dateKey' && key !== 'key') {
         reportRow[key] = this.formatValue(dataTypes[index], reportRow[key]);
+        reportRow['empty'] = false;
       }
     });
 
@@ -415,9 +478,12 @@ export class StatisticsComponent {
   formatValue(type: string, value: string | null = null) {
     switch (type) {
       case 'currency':
-        return value == null ? '£0.00' : 
-        new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' })
-        .format(Number(value));
+        return value == null
+          ? '£0.00'
+          : new Intl.NumberFormat('en-GB', {
+              style: 'currency',
+              currency: 'GBP',
+            }).format(Number(value));
 
       case 'percentage':
         return value == null ? '0.00%' : `${Number(value).toFixed(2)}%`;
@@ -437,10 +503,42 @@ export class StatisticsComponent {
   }
 
   getKeys(row: any) {
-    return Object.keys(row);
+    let keys = Object.keys(row);
+    keys.pop();
+    return keys;
   }
 
   hasKey(row: any, key: any) {
     return row[key] != undefined;
+  }
+
+  toggleFilter() {
+    this.filterShown = !this.filterShown;
+  }
+
+  applyFilter(filter: string) {
+    if (this.filters.includes(filter)) {
+      this.filters.splice(this.filters.indexOf(filter), 1);
+      this.redoFilters();
+    } else {
+      switch (filter) {
+        case 'Exclude Empty Rows':
+          if (this.reportChart?.report) {
+            this.filteredReportData = this.filteredReportData.filter(
+              (value: any) => !value.empty
+            );
+          }
+          break;
+      }
+  
+      this.filters.includes(filter)
+      ? this.filters.splice(this.filters.indexOf(filter), 1)
+      : this.filters.push(filter);
+    }
+  }
+
+  redoFilters() {
+    this.filteredReportData = this.reportChart?.report.data;
+    this.filters.forEach((filter: string) => this.applyFilter(filter));
   }
 }
