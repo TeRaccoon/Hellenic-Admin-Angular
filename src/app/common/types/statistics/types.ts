@@ -1,4 +1,5 @@
 import { ChartConfiguration, ChartType } from 'chart.js';
+import dayjs, { Dayjs } from 'dayjs';
 
 export interface chart {
     data: ChartConfiguration['data'],
@@ -14,10 +15,20 @@ export interface report {
     headers: string[] | null,
     dataTypes: string[],
     formatted: boolean,
-    filters: string[]
+    filters: filter[]
 }
 
 interface query {
     dayQueries: string[],
     monthQueries: string[],
+}
+
+export interface filter {
+    name: string,
+    predicate: Function,
+}
+
+export interface selectedDate {
+    startDate: Dayjs,
+    endDate: Dayjs
 }

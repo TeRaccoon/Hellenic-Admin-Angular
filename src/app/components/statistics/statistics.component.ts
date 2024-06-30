@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
 import { StatisticsService } from '../../services/statistics.service';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import utcPlugin from 'dayjs/plugin/utc';
-import { chart, report } from '../../common/types/statistics/types';
+import {
+  chart,
+  report,
+  filter,
+  selectedDate,
+} from '../../common/types/statistics/types';
 import { chartIcons } from '../../common/icons/chart-icons';
 import _ from 'lodash';
 
@@ -18,7 +23,7 @@ export class StatisticsComponent {
 
   reportChart: { chart: chart; report: report } | null = null;
 
-  selected: { startDate: Dayjs; endDate: Dayjs } = {
+  selected: selectedDate = {
     startDate: dayjs().startOf('month'),
     endDate: dayjs().endOf('month'),
   };
@@ -37,9 +42,10 @@ export class StatisticsComponent {
     'This Year': [dayjs().startOf('year'), dayjs().endOf('year')],
   };
 
-  filterShown = false;
-  filters: string[] = [];
+  optionsShown: string | boolean = false;
+  filters: filter[] = [];
   filteredReportData: any = null;
+  headerToSort = { name: '', field: '' };
 
   constructor(private statisticsService: StatisticsService) {}
 
@@ -118,7 +124,13 @@ export class StatisticsComponent {
       ],
       dataTypes: ['text', 'currency', 'percentage', 'int', 'currency'],
       formatted: false,
-      filters: ['Exclude Empty Rows'],
+      filters: [
+        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+        {
+          name: 'Show Only Empty Rows',
+          predicate: (value: any) => value.empty,
+        },
+      ],
     });
 
     //Total Orders
@@ -176,7 +188,13 @@ export class StatisticsComponent {
       ],
       dataTypes: ['text', 'int', 'number', 'currency'],
       formatted: false,
-      filters: ['Exclude Empty Rows'],
+      filters: [
+        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+        {
+          name: 'Show Only Empty Rows',
+          predicate: (value: any) => value.empty,
+        },
+      ],
     });
 
     //Top Selling Products
@@ -246,7 +264,13 @@ export class StatisticsComponent {
         'currency',
       ],
       formatted: false,
-      filters: ['Exclude Empty Rows'],
+      filters: [
+        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+        {
+          name: 'Show Only Empty Rows',
+          predicate: (value: any) => value.empty,
+        },
+      ],
     });
 
     //Total Invoice Value
@@ -315,7 +339,13 @@ export class StatisticsComponent {
         'currency',
       ],
       formatted: false,
-      filters: ['Exclude Empty Rows'],
+      filters: [
+        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+        {
+          name: 'Show Only Empty Rows',
+          predicate: (value: any) => value.empty,
+        },
+      ],
     });
 
     //Recurring Customer
@@ -408,7 +438,21 @@ export class StatisticsComponent {
       headers: ['Date', 'Customers', 'Customer Type'],
       dataTypes: ['text', 'int', 'text'],
       formatted: false,
-      filters: ['Exclude Empty Rows'],
+      filters: [
+        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+        {
+          name: 'Show Only Empty Rows',
+          predicate: (value: any) => value.empty,
+        },
+        {
+          name: 'Recurring Only',
+          predicate: (value: any) => value.customer_type == 'First Time',
+        },
+        {
+          name: 'First Time Only',
+          predicate: (value: any) => value.customer_type == 'Recurring',
+        },
+      ],
     });
   }
 
@@ -417,88 +461,17 @@ export class StatisticsComponent {
       let report: report = this.reports[index];
 
       if (!report.formatted) {
-        report = this.formatReport(report);
+        report = this.statisticsService.formatReport(report, this.selected);
       }
 
       this.reportChart = { chart, report };
       this.filteredReportData = report.data;
+      this.headerToSort = {
+        name: report.headers ? report.headers[0] : '',
+        field: Object.keys(report.data[0])[0],
+      };
     } else {
       this.reportChart = null;
-    }
-  }
-
-  formatReport(report: report) {
-    let keys = Object.keys(report.data[0]);
-    let dataTypes = report.dataTypes;
-
-    let monthStart = this.selected.startDate.month();
-    let monthEnd = this.selected.endDate.month();
-    if (report.data[0].dateKey) {
-      report.data.forEach((reportRow: any) => {
-        this.formatObject(reportRow, keys, dataTypes);
-      });
-
-      let limit =
-        monthStart == monthEnd ? this.selected.endDate.daysInMonth() : 12;
-
-      for (let day = 1; day <= limit; day++) {
-        if (!report.data.find((data: any) => data.dateKey == day)) {
-          let newData = keys.reduce((acc, key, index) => {
-            acc[key] = this.formatValue(report.dataTypes[index]);
-            return acc;
-          }, {} as any);
-          newData['empty'] = true;
-          newData['dateKey'] = day;
-          report.data.push(newData);
-        }
-      }
-    } else {
-      report.data.forEach((reportRow: any) => {
-        this.formatObject(reportRow, keys, dataTypes);
-      });
-    }
-
-    report.data.sort((a: any, b: any) => a.dateKey - b.dateKey);
-    report.formatted = true;
-
-    return report;
-  }
-
-  formatObject(reportRow: any, keys: string[], dataTypes: string[]) {
-    keys.forEach((key, index) => {
-      if (key !== 'dateKey' && key !== 'key') {
-        reportRow[key] = this.formatValue(dataTypes[index], reportRow[key]);
-        reportRow['empty'] = false;
-      }
-    });
-
-    return reportRow;
-  }
-
-  formatValue(type: string, value: string | null = null) {
-    switch (type) {
-      case 'currency':
-        return value == null
-          ? '£0.00'
-          : new Intl.NumberFormat('en-GB', {
-              style: 'currency',
-              currency: 'GBP',
-            }).format(Number(value));
-
-      case 'percentage':
-        return value == null ? '0.00%' : `${Number(value).toFixed(2)}%`;
-
-      case 'number':
-        return value == null ? '0.00' : `${Number(value).toFixed(2)}`;
-
-      case 'int':
-        return value == null ? '0' : `${Number(value).toFixed(0)}`;
-
-      case 'text':
-        return value ?? '---';
-
-      default:
-        return '---';
     }
   }
 
@@ -512,33 +485,74 @@ export class StatisticsComponent {
     return row[key] != undefined;
   }
 
-  toggleFilter() {
-    this.filterShown = !this.filterShown;
+  toggleTableOptions(option: string) {
+    this.optionsShown = this.optionsShown == option ? false : option;
   }
 
-  applyFilter(filter: string) {
+  setFilter(filter: filter) {
     if (this.filters.includes(filter)) {
-      this.filters.splice(this.filters.indexOf(filter), 1);
-      this.redoFilters();
+      this.removeFilter(filter, true);
     } else {
-      switch (filter) {
-        case 'Exclude Empty Rows':
-          if (this.reportChart?.report) {
-            this.filteredReportData = this.filteredReportData.filter(
-              (value: any) => !value.empty
-            );
-          }
-          break;
+      if (this.reportChart?.report) {
+        this.applyFilter(filter.predicate);
+        this.filters.push(filter);
       }
-  
-      this.filters.includes(filter)
-      ? this.filters.splice(this.filters.indexOf(filter), 1)
-      : this.filters.push(filter);
     }
+  }
+
+  applyFilter(predicate: Function, reset = true) {
+    reset && this.resetFilter();
+    this.filteredReportData = this.filteredReportData.filter(predicate);
+  }
+
+  removeFilter(filter: filter, checked = false, reapply = true) {
+    if (checked || (!checked && this.filters.includes(filter))) {
+      this.filters.splice(this.filters.indexOf(filter), 1);
+      reapply && this.redoFilters();
+    }
+  }
+
+  resetFilter() {
+    this.filters = [];
+    this.filteredReportData = this.reportChart?.report.data;
   }
 
   redoFilters() {
     this.filteredReportData = this.reportChart?.report.data;
-    this.filters.forEach((filter: string) => this.applyFilter(filter));
+    this.filters.forEach((filter: filter) => this.setFilter(filter));
+  }
+
+  filterActive(filter: filter) {
+    return this.filters.includes(filter);
+  }
+
+  selectHeaderToSort(event: Event) {
+    const index = (event.target as HTMLSelectElement).value;
+    this.headerToSort = {
+      name: this.reportChart?.report.headers
+        ? this.reportChart.report.headers[Number(index)]
+        : '',
+      field: Object.keys(this.reportChart!.report.data[0])[Number(index)],
+    };
+  }
+
+  sortTable(direction: string) {
+    this.filteredReportData =
+      direction == 'down'
+        ? this.filteredReportData.sort(
+            (a: any, b: any) =>
+              this.stripAndConvert(a[this.headerToSort.field]) - this.stripAndConvert(b[this.headerToSort.field])
+          )
+        : this.filteredReportData.sort(
+            (a: any, b: any) =>
+              this.stripAndConvert(b[this.headerToSort.field]) - this.stripAndConvert(a[this.headerToSort.field])
+          );
+  }
+
+  stripAndConvert(value: string): any {
+    if (typeof value === 'string') {
+      return parseFloat(value.replace(/[£,]/g, ''));
+    }
+    return value;
   }
 }

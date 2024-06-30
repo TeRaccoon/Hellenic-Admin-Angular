@@ -1,3 +1,4 @@
+@import "../variables";
 .chart-container {
     margin: 15px 15px 15px 16%;
     display: flex;
@@ -39,12 +40,6 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                fa-icon {
-                    font-size: 20px;
-                    &:hover {
-                        cursor: pointer;
-                    }
-                }
                 h3 {
                     margin: 5px 10px;
                     border-bottom: 3px dotted #5c5c5c;
@@ -87,6 +82,7 @@
             fa-icon {
                 font-size: 20px;
                 text-align: end;
+                transition: color 0.6s ease;
                 &:hover {
                     cursor: pointer;
                     color: red;
@@ -101,6 +97,25 @@
                 border-radius: 10px;
                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
                 margin: 20px;
+                .options {
+                    padding: 10px;
+                    .option-icons {
+                        display: flex;
+                        gap: 10px;
+                    }
+                    .table-options {
+                        display: flex;
+                        gap: 10px;
+                        padding: 10px 0;
+                        align-items: center;
+                        .option-item {
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+                            margin: 10px 0;
+                        }
+                    }
+                }
             }
             .chart {
                 padding: 10px;
@@ -118,50 +133,66 @@
                     }
                 }
                 .canvas {
-                    max-height: 50vh;
+                    max-height: 40vh;
                     margin: 10px;
                 }
             }
             .table {
                 overflow-y: auto;
-                table {
-                    width: 100%;
-                    border-collapse: separate;
-                    border-spacing: 0;
-                }
-                tr:nth-child(even) {
-                    background-color: #f9f9f9;
-                }
-                tbody {
-                    tr {
-                        &:hover {
-                            background-color: #f0f0f0;
-                        }
-                        td {
-                            padding: 10px;
-                            border: 1px solid #ddd;
+                padding: 10px;
+                .table-container {
+                    border-radius: 10px;
+                    border: 2px solid black;
+                    table {
+                        width: 100%;
+                        border-collapse: separate;
+                        border-spacing: 0;
+                        border-radius: 8px;
+                        overflow: hidden;
+                    }
+                    tr:nth-child(even) {
+                        background-color: #f9f9f9;
+                    }
+                    tbody {
+                        tr {
+                            &:hover {
+                                background-color: #f0f0f0;
+                            }
+                            td {
+                                padding: 10px;
+                            }
                         }
                     }
-                }
-                th,
-                td {
-                    padding: 10px;
-                    text-align: left;
-                    font-size: 16px;
-                }
-                td {
-                    .ng-fa-icon {
-                        cursor: pointer;
+                    th,
+                    td {
+                        padding: 10px;
+                        text-align: left;
+                        font-size: 16px;
                     }
-                }
-                thead {
-                    position: sticky;
-                    top: 0;
-                    z-index: 1;
-                    background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
-                    color: white;
+                    td {
+                        .ng-fa-icon {
+                            cursor: pointer;
+                        }
+                    }
+                    thead {
+                        position: sticky;
+                        top: 0;
+                        z-index: 1;
+                        background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
+                        color: white;
+                    }
                 }
             }
         }
+    }
+}
+
+.icon {
+    cursor: pointer;
+    font-size: 22px;
+    transition: color 0.6s ease;
+    &:hover {
+        color: $hellenicblue;
+        transition: color 0.6s ease;
     }
 }

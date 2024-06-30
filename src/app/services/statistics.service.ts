@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import dayjs, { Dayjs } from 'dayjs';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
-import { ChartConfiguration, Ticks } from 'chart.js';
+import { ChartConfiguration } from 'chart.js';
+import { report, selectedDate } from '../common/types/statistics/types';
 
 @Injectable({
   providedIn: 'root',
@@ -342,5 +343,80 @@ export class StatisticsService {
         year: year,
       }
     };
+  }
+
+  formatReport(report: report, selectedDate: selectedDate) {
+    let keys = Object.keys(report.data[0]);
+    let dataTypes = report.dataTypes;
+
+    let monthStart = selectedDate.startDate.month();
+    let monthEnd = selectedDate.endDate.month();
+    if (report.data[0].dateKey) {
+      report.data.forEach((reportRow: any) => {
+        this.formatObject(reportRow, keys, dataTypes);
+      });
+
+      let limit =
+        monthStart == monthEnd ? selectedDate.endDate.daysInMonth() : 12;
+
+      for (let day = 1; day <= limit; day++) {
+        if (!report.data.find((data: any) => data.dateKey == day)) {
+          let newData = keys.reduce((acc, key, index) => {
+            acc[key] = this.formatValue(report.dataTypes[index]);
+            return acc;
+          }, {} as any);
+          newData['empty'] = true;
+          newData['dateKey'] = day;
+          report.data.push(newData);
+        }
+      }
+    } else {
+      report.data.forEach((reportRow: any) => {
+        this.formatObject(reportRow, keys, dataTypes);
+      });
+    }
+
+    report.data.sort((a: any, b: any) => a.dateKey - b.dateKey);
+    report.formatted = true;
+
+    return report;
+  }
+
+  formatObject(reportRow: any, keys: string[], dataTypes: string[]) {
+    keys.forEach((key, index) => {
+      if (key !== 'dateKey' && key !== 'key') {
+        reportRow[key] = this.formatValue(dataTypes[index], reportRow[key]);
+        reportRow['empty'] = false;
+      }
+    });
+
+    return reportRow;
+  }
+
+  formatValue(type: string, value: string | null = null) {
+    switch (type) {
+      case 'currency':
+        return value == null
+          ? '£0.00'
+          : new Intl.NumberFormat('en-GB', {
+              style: 'currency',
+              currency: 'GBP',
+            }).format(Number(value));
+
+      case 'percentage':
+        return value == null ? '0.00%' : `${Number(value).toFixed(2)}%`;
+
+      case 'number':
+        return value == null ? '0.00' : `${Number(value).toFixed(2)}`;
+
+      case 'int':
+        return value == null ? '0' : `${Number(value).toFixed(0)}`;
+
+      case 'text':
+        return value ?? '---';
+
+      default:
+        return '---';
+    }
   }
 }
