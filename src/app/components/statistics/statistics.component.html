@@ -27,7 +27,7 @@
                 <h1>{{ reportChart.chart.subheading }}</h1>
                 <canvas class="canvas" baseChart [data]="reportChart.chart.data" [options]="reportChart.chart.options" [type]="reportChart.chart.type"></canvas>
             </div>
-            <div class="container table">
+            <div *ngIf="reportChart.report.data.length > 0 else noData" class="container table">
                 <div class="options">
                     <div class="option-icons">
                         <fa-icon (click)="toggleTableOptions('filter')" [icon]="icons.faFilter" class="icon" />
@@ -66,6 +66,12 @@
                     </table>
                 </div>
             </div>
+            <ng-template #noData>
+                <div class="container error">
+                    <fa-icon [icon]="icons.warning" />
+                    <h3>There is no data for this given filter!</h3>
+                </div>
+            </ng-template>
         </div>
     </div>
 </div>

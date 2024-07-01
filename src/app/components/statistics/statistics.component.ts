@@ -96,9 +96,13 @@ export class StatisticsComponent {
       statisticsData.chart.labels
     );
 
+    let filteredData = statisticsData.chart.data.filter((data) => data !== 0);
+
     let average =
-      statisticsData.chart.data.reduce((sum, data) => (sum += data)) /
-      statisticsData.chart.data.filter((data) => data != 0).length;
+    filteredData.length > 0
+      ? filteredData.reduce((sum, data) => sum + data, 0) / filteredData.length
+      : 0;  
+
     let subheading = `£${average.toFixed(2)}`;
 
     this.charts.push({
@@ -164,7 +168,8 @@ export class StatisticsComponent {
       statisticsData.chart.labels
     );
 
-    let total = statisticsData.chart.data.reduce((sum, data) => (sum += data));
+    filteredData = statisticsData.chart.data.filter((data) => data !== 0);
+    let total = filteredData.length > 0 ? statisticsData.chart.data.reduce((sum, data) => (sum += data)) : 0;
 
     this.charts.push({
       data: chartConfigData,
@@ -304,9 +309,10 @@ export class StatisticsComponent {
       statisticsData.chart.labels
     );
 
-    total = statisticsData.chart.data
+    filteredData = statisticsData.chart.data.filter((data) => data !== 0);
+    total = filteredData.length > 0 ? statisticsData.chart.data
       .reduce((sum, data) => (sum += data))
-      .toFixed(2);
+      .toFixed(2) : 0;
 
     this.charts.push({
       data: chartConfigData,
@@ -394,10 +400,13 @@ export class StatisticsComponent {
     let firstTimeTotal = statisticsData.chart.data.reduce(
       (sum, data) => (sum += data)
     );
-    let percentage = (
+
+    filteredData = statisticsData.chart.data.filter((data) => data !== 0);
+
+    let percentage = filteredData.length > 0 ? (
       (recurringTotal / (firstTimeTotal + recurringTotal)) *
       100
-    ).toFixed(2);
+    ).toFixed(2) : 0;
 
     chartConfigData = {
       datasets: chartDatasetArray.map(({ datasets }) => datasets),
@@ -458,18 +467,24 @@ export class StatisticsComponent {
 
   async setReportChart(chart: chart | null, index?: number) {
     if (chart != null && index != null) {
-      let report: report = this.reports[index];
+      this.filteredReportData = null;
+      this.headerToSort = { name: '', field: '' };
+      this.optionsShown = false;
 
-      if (!report.formatted) {
-        report = this.statisticsService.formatReport(report, this.selected);
+      let report: report = this.reports[index];
+      if (report.data.length > 0) {
+        if (!report.formatted) {
+          report = this.statisticsService.formatReport(report, this.selected);
+        }
+  
+        this.filteredReportData = report.data;
+        this.headerToSort = {
+          name: report.headers ? report.headers[0] : '',
+          field: Object.keys(report.data[0])[0],
+        };
       }
 
       this.reportChart = { chart, report };
-      this.filteredReportData = report.data;
-      this.headerToSort = {
-        name: report.headers ? report.headers[0] : '',
-        field: Object.keys(report.data[0])[0],
-      };
     } else {
       this.reportChart = null;
     }
