@@ -65,6 +65,22 @@ export class StatisticsService {
     };
   }
 
+  getPieChartData(
+    data: any[],
+    labels: string,
+    backgroundColor: string[] | string = 'rgb(0, 140, 255, 0.4)',
+    borderColour: string[] | string = 'rgb(0, 140, 255)'
+  ) {
+    return {
+      datasets: {
+        data: data,
+        label: labels,
+        backgroundColor: backgroundColor,
+        borderColor: borderColour,
+      },
+    };
+  }
+
   getBarChartOptions(
     yTitle: string,
     xTitle: string,
@@ -87,9 +103,9 @@ export class StatisticsService {
                   style: 'currency',
                   currency: 'GBP',
                 });
-                
+
                 const labels = tooltipData.dataset.label.toString();
-                
+
                 let values =
                   tooltipData.dataset.data[tooltipData.dataIndex]?.toString();
                 if (currency) {
@@ -97,7 +113,7 @@ export class StatisticsService {
                     Number(tooltipData.dataset.data[tooltipData.dataIndex])
                   );
                 }
-                
+
                 return `${labels}: ${values}`;
               }
               return '';
@@ -247,57 +263,99 @@ export class StatisticsService {
     };
   }
 
+  getPieChartOptions(displayLegend: boolean, currency: boolean, rotation = 0) {
+    return {
+      plugins: {
+        legend: {
+          display: displayLegend,
+        },
+        tooltip: {
+          callbacks: {
+            label: function (tooltipData: any) {
+              const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'GBP',
+              });
+  
+              const label = tooltipData.label || '';
+              let value = tooltipData.raw;
+  
+              if (currency) {
+                value = formatter.format(Number(value));
+              }
+  
+              return `${label}: ${value}`;
+            },
+          },
+        },
+      },
+      rotation: rotation,
+    };
+  }
+
   async buildChart(
-    monthStart: number,
-    monthEnd: number,
-    year: number,
     dateRange: { startDate: Dayjs; endDate: Dayjs },
-    dayQuery: string,
-    monthQuery: string,
-    ignoreDate: boolean
+    query: string,
+    ignoreDate: boolean,
+    format = 'standard'
   ) {
     let data = [];
     let xLabels = [];
+    let monthStart = dateRange.startDate.month();
+    let monthEnd = dateRange.endDate.month();
+    let group = monthStart != monthEnd ? 'month' : 'day';
+
     let keyModifier = monthStart + 1;
     let startKey = monthStart;
     let endKey = monthEnd;
     let monthLabels = this.getMonths();
 
-    let queryParams = this.deriveDatePayload(monthStart, monthEnd, year, dateRange, monthQuery, dayQuery);
+    let queryData = await lastValueFrom<any>(
+      this.dataService.collectDataComplex(query, {
+        start: dateRange.startDate.toISOString().slice(0, 19).replace('T', ' '),
+        end: dateRange.endDate.toISOString().slice(0, 19).replace('T', ' '),
+        group: group,
+      })
+    );
 
-    let queryData = await lastValueFrom<any>(this.dataService.collectDataComplex(queryParams.query, queryParams.date))
-    
     let chartData: any[] = queryData['chart'];
-    queryData['report'] = Array.isArray(queryData['report']) ? queryData['report'] : [queryData['report']];
+    queryData['report'] = Array.isArray(queryData['report'])
+      ? queryData['report']
+      : [queryData['report']];
 
-    if (monthStart != monthEnd) {
-      xLabels = monthLabels.slice(monthStart, monthEnd + 1);
+    if (format == 'standard') {
+      if (monthStart != monthEnd) {
+        xLabels = monthLabels.slice(monthStart, monthEnd + 1);
+      } else {
+        startKey = dateRange.startDate.date();
+        endKey = dateRange.endDate.date();
 
-    } else {
-      startKey = dateRange.startDate.date();
-      endKey = dateRange.endDate.date();
+        xLabels = Array(endKey - startKey + 1)
+          .fill(null)
+          .map(
+            (_, index) => monthLabels[monthStart] + ' ' + (startKey + index)
+          );
 
-      xLabels = Array(endKey - startKey + 1)
-        .fill(null)
-        .map((_, index) => monthLabels[monthStart] + ' ' + (startKey + index));
+        keyModifier = startKey;
+      }
 
-      keyModifier = startKey;
-    }
+      data = Array(endKey - startKey + 1).fill(0);
+      chartData = Array.isArray(chartData) ? chartData : [chartData];
 
-    data = Array(endKey - startKey + 1).fill(0);
-    chartData = Array.isArray(chartData) ? chartData : [chartData];
-
-
-    if (ignoreDate) {
-      xLabels = Array(chartData.length);
-      for (let order in chartData) {
-        data[order] = chartData[order].total;
-        xLabels[order] = chartData[order].dateKey;
+      if (ignoreDate) {
+        xLabels = Array(chartData.length);
+        for (let order in chartData) {
+          data[order] = chartData[order].total;
+          xLabels[order] = chartData[order].dateKey;
+        }
+      } else {
+        for (let order in chartData) {
+          data[chartData[order].dateKey - keyModifier] = chartData[order].total;
+        }
       }
     } else {
-      for (let order in chartData) {
-        data[chartData[order].dateKey - keyModifier] = chartData[order].total;
-      }
+      xLabels = Object.keys(chartData);
+      data = Object.values(chartData);
     }
 
     return {
@@ -305,7 +363,7 @@ export class StatisticsService {
         data,
         labels: xLabels,
       },
-      report : {
+      report: {
         data: queryData['report'],
       },
     };
@@ -320,14 +378,13 @@ export class StatisticsService {
     dayQuery: string
   ) {
     if (monthStart != monthEnd) {
-      return { 
-        query: monthQuery, 
-        date: 
-        {
+      return {
+        query: monthQuery,
+        date: {
           monthStart: monthStart + 1,
           monthEnd: monthEnd + 1,
           year: year,
-        }
+        },
       };
     }
 
@@ -341,12 +398,12 @@ export class StatisticsService {
         dayEnd: endKey,
         month: monthStart + 1,
         year: year,
-      }
+      },
     };
   }
 
   formatReport(report: report, selectedDate: selectedDate) {
-    let keys = Object.keys(report.data[0]);
+    let keys = report.keys;
     let dataTypes = report.dataTypes;
 
     let monthStart = selectedDate.startDate.month();
@@ -383,12 +440,15 @@ export class StatisticsService {
   }
 
   formatObject(reportRow: any, keys: string[], dataTypes: string[]) {
+    let empty = true;
     keys.forEach((key, index) => {
       if (key !== 'dateKey' && key !== 'key') {
         reportRow[key] = this.formatValue(dataTypes[index], reportRow[key]);
-        reportRow['empty'] = false;
+        empty = false;
       }
     });
+
+    reportRow['empty'] = empty;
 
     return reportRow;
   }
