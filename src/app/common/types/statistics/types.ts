@@ -7,7 +7,7 @@ export interface chart {
     type: ChartType, 
     heading: string, 
     subheading: string,
-    query: query,
+    queries: string | string[],
 }
 
 export interface report {
@@ -15,12 +15,8 @@ export interface report {
     headers: string[] | null,
     dataTypes: string[],
     formatted: boolean,
-    filters: filter[]
-}
-
-interface query {
-    dayQueries: string[],
-    monthQueries: string[],
+    filters: filter[],
+    keys: string[],
 }
 
 export interface filter {

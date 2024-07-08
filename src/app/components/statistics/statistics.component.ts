@@ -61,18 +61,11 @@ export class StatisticsComponent {
   }
 
   async buildCharts() {
-    let monthStart = this.selected.startDate.month();
-    let monthEnd = this.selected.endDate.month();
-    let year = this.selected.startDate.year();
 
     //Average order value
     let statisticsData = await this.statisticsService.buildChart(
-      monthStart,
-      monthEnd,
-      year,
       this.selected,
-      'average-invoice-value-per-day',
-      'average-invoice-value-per-month',
+      'average-invoice-value',
       false
     );
     let chartDataset = this.statisticsService.getLineChartData(
@@ -86,7 +79,7 @@ export class StatisticsComponent {
       labels: statisticsData.chart.labels,
     };
     let chartOptions = this.statisticsService.getLineChartOptions(
-      0.5,
+      0.3,
       'Order Value (£)',
       'Date',
       false,
@@ -111,10 +104,7 @@ export class StatisticsComponent {
       type: 'line',
       heading: 'Average Order Value',
       subheading: subheading,
-      query: {
-        dayQueries: ['average-invoice-value-per-day'],
-        monthQueries: ['average-invoice-value-per-month'],
-      },
+      queries: 'average-invoice-value'
     });
 
     this.reports.push({
@@ -135,16 +125,19 @@ export class StatisticsComponent {
           predicate: (value: any) => value.empty,
         },
       ],
+      keys: [
+        'dateKey',
+        'total',
+        'discounts',
+        'orders',
+        'average',
+      ]
     });
 
     //Total Orders
     statisticsData = await this.statisticsService.buildChart(
-      monthStart,
-      monthEnd,
-      year,
       this.selected,
-      'total-invoices-per-day',
-      'total-invoices-per-month',
+      'total-invoices',
       false
     );
     chartDataset = this.statisticsService.getLineChartData(
@@ -158,7 +151,7 @@ export class StatisticsComponent {
       labels: statisticsData.chart.labels,
     };
     chartOptions = this.statisticsService.getLineChartOptions(
-      0.5,
+      0.3,
       'Order Amount',
       'Date',
       false,
@@ -177,10 +170,7 @@ export class StatisticsComponent {
       type: 'line',
       heading: 'Total Orders',
       subheading: total,
-      query: {
-        dayQueries: ['total-invoices-per-day'],
-        monthQueries: ['total-invoices-per-month'],
-      },
+      queries: 'total-invoices'
     });
 
     this.reports.push({
@@ -200,16 +190,18 @@ export class StatisticsComponent {
           predicate: (value: any) => value.empty,
         },
       ],
+      keys: [
+        'dateKey',
+        'total_orders',
+        'average_units_ordered',
+        'average_order_value'
+      ]
     });
 
     //Top Selling Products
     statisticsData = await this.statisticsService.buildChart(
-      monthStart,
-      monthEnd,
-      year,
       this.selected,
-      'top-selling-item-per-day',
-      'top-selling-item-per-month',
+      'top-selling-item',
       true
     );
     let barChartDataset = this.statisticsService.getBarChartData(
@@ -238,10 +230,7 @@ export class StatisticsComponent {
       type: 'bar',
       heading: 'Top Selling Products',
       subheading: statisticsData.chart.labels[0],
-      query: {
-        dayQueries: ['top-selling-item-per-day'],
-        monthQueries: ['top-selling-item-per-month'],
-      },
+      queries: 'top-selling-item'
     });
 
     this.reports.push({
@@ -276,16 +265,23 @@ export class StatisticsComponent {
           predicate: (value: any) => value.empty,
         },
       ],
+      keys: [
+        'dateKey',
+        'brand',
+        'category',
+        'net_quantity',
+        'gross_sales_before_discount',
+        'total_discount',
+        'net_sales',
+        'vat',
+        'total_sales',
+      ]
     });
 
     //Total Invoice Value
     statisticsData = await this.statisticsService.buildChart(
-      monthStart,
-      monthEnd,
-      year,
       this.selected,
-      'total-invoice-value-per-day',
-      'total-invoice-value-per-month',
+      'total-invoice-value',
       false
     );
     chartDataset = this.statisticsService.getLineChartData(
@@ -299,7 +295,7 @@ export class StatisticsComponent {
       labels: statisticsData.chart.labels,
     };
     chartOptions = this.statisticsService.getLineChartOptions(
-      0.5,
+      0.3,
       'Total Value',
       'Date',
       false,
@@ -320,12 +316,9 @@ export class StatisticsComponent {
       type: 'line',
       heading: 'Total Invoices Value',
       subheading: `£${total}`,
-      query: {
-        dayQueries: ['total-invoice-value-per-day'],
-        monthQueries: ['total-invoice-value-per-month'],
-      },
+      queries: 'total-invoice-value'
     });
-
+    
     this.reports.push({
       data: statisticsData.report.data,
       headers: [
@@ -352,18 +345,88 @@ export class StatisticsComponent {
           predicate: (value: any) => value.empty,
         },
       ],
+      keys: [
+        'dateKey',
+        'total_orders',
+        'discounts',
+        'net',
+        'tax',
+        'total'
+      ]
+    });
+
+    //Store / Cart Conversion Rate
+    statisticsData = await this.statisticsService.buildChart(
+      this.selected,
+      'store-conversion-rate',
+      false,
+      'pie'
+    );
+    let pieChartDataset = this.statisticsService.getPieChartData(
+      statisticsData.chart.data.flat(),
+      'Total',
+      ['rgba(255, 99, 132, 0.5)','rgba(54, 162, 235, 0.5)','rgba(255, 205, 86, 0.5)'],
+      ['rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(255, 205, 86)']
+    );
+    
+    const pieChartConfigData = {
+      datasets: [pieChartDataset.datasets],
+      labels: statisticsData.chart.labels,
+    };
+    
+    chartOptions = this.statisticsService.getPieChartOptions(
+      true,
+      false,
+    );
+
+    this.charts.push({
+      data: pieChartConfigData,
+      options: chartOptions,
+      type: 'pie',
+      heading: 'Online Store Conversion Rate',
+      subheading: total,
+      queries: 'total-invoices'
+    });
+
+    this.reports.push({
+      data: statisticsData.report.data,
+      headers: [
+        'Date',
+        'Reached checkout',
+        'Added to cart',
+        'Payments made',
+        'Total sessions'
+      ],
+      dataTypes: [
+        'text',
+        'int',
+        'int',
+        'int',
+        'int'
+      ],
+      formatted: false,
+      filters: [
+        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+        {
+          name: 'Show Only Empty Rows',
+          predicate: (value: any) => value.empty,
+        },
+      ],
+      keys: [
+        'dateKey',
+        'Reached checkout',
+        'Added to cart',
+        'Invoiced customers',
+        'Total sessions',
+      ]
     });
 
     //Recurring Customer
     let chartDatasetArray: any[] = [];
     let reportDatasetArray: any[] = [];
     statisticsData = await this.statisticsService.buildChart(
-      monthStart,
-      monthEnd,
-      year,
       this.selected,
-      'recurring-customers-day',
-      'recurring-customers-month',
+      'recurring-customers',
       false
     );
     chartDataset = this.statisticsService.getLineChartData(
@@ -379,12 +442,8 @@ export class StatisticsComponent {
     );
 
     statisticsData = await this.statisticsService.buildChart(
-      monthStart,
-      monthEnd,
-      year,
       this.selected,
-      'non-recurring-customers-day',
-      'non-recurring-customers-month',
+      'non-recurring-customers',
       false
     );
     chartDataset = this.statisticsService.getLineChartData(
@@ -413,7 +472,7 @@ export class StatisticsComponent {
       labels: statisticsData.chart.labels,
     };
     chartOptions = this.statisticsService.getLineChartOptions(
-      0.5,
+      0.3,
       'Total Sales',
       '',
       true,
@@ -429,13 +488,7 @@ export class StatisticsComponent {
       type: 'line',
       heading: 'Recurring Customers',
       subheading: `${percentage}%`,
-      query: {
-        dayQueries: ['recurring-customers-day', 'non-recurring-customers-day'],
-        monthQueries: [
-          'recurring-customers-month',
-          'non-recurring-customers-month',
-        ],
-      },
+      queries: ['recurring-customers', 'non-recurring-customers']
     });
 
     reportDatasetArray.forEach((row: any) => {
@@ -462,6 +515,10 @@ export class StatisticsComponent {
           predicate: (value: any) => value.customer_type == 'Recurring',
         },
       ],
+      keys: [
+        'dateKey',
+        'total',
+      ]
     });
   }
 
