@@ -416,7 +416,7 @@ export class StatisticsComponent {
         'dateKey',
         'Reached checkout',
         'Added to cart',
-        'Invoiced customers',
+        'Payments made',
         'Total sessions',
       ]
     });
