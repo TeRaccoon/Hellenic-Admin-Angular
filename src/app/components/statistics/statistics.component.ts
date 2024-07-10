@@ -379,6 +379,8 @@ export class StatisticsComponent {
       false,
     );
 
+    let sum = pieChartDataset.datasets.data.reduce((sum, n) => sum += n);
+
     this.charts.push({
       data: pieChartConfigData,
       options: chartOptions,
@@ -545,12 +547,6 @@ export class StatisticsComponent {
     } else {
       this.reportChart = null;
     }
-  }
-
-  getKeys(row: any) {
-    let keys = Object.keys(row);
-    keys.pop();
-    return keys;
   }
 
   hasKey(row: any, key: any) {

@@ -56,7 +56,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let row of filteredReportData">
-                                <td *ngFor="let key of getKeys(row); let index = index">
+                                <td *ngFor="let key of reportChart.report.keys; let index = index">
                                     <ng-container [ngSwitch]="reportChart.report.dataTypes[index]">
                                         {{ row[key] }}
                                     </ng-container>

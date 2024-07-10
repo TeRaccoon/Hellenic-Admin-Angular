@@ -442,6 +442,7 @@ export class StatisticsService {
   formatObject(reportRow: any, keys: string[], dataTypes: string[]) {
     let empty = true;
     keys.forEach((key, index) => {
+      empty = true;
       if (key !== 'dateKey' && key !== 'key') {
         reportRow[key] = this.formatValue(dataTypes[index], reportRow[key]);
         empty = false;
