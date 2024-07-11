@@ -379,14 +379,20 @@ export class StatisticsComponent {
       false,
     );
 
-    let sum = pieChartDataset.datasets.data.reduce((sum, n) => sum += n);
+    let totalSessions = pieChartDataset.datasets.data.reduce((sum, n) => sum += n);
+
+    const totalPaymentsMade = statisticsData.report.data.reduce((sum: number, current: any) => {
+      return sum + (current["Payments made"] || 0);
+    }, 0);
+
+    let sessionPercentage = (totalPaymentsMade / totalSessions * 100).toFixed(2).toString();
 
     this.charts.push({
       data: pieChartConfigData,
       options: chartOptions,
       type: 'pie',
       heading: 'Online Store Conversion Rate',
-      subheading: total,
+      subheading: sessionPercentage + '%',
       queries: 'total-invoices'
     });
 
