@@ -152,7 +152,6 @@ export class InvoiceViewComponent {
         }
       });
       invoices['vat'] = vatTotal;
-      console.log(invoices);
       invoices['discount'] = invoices['gross_value'] + invoices['vat'] - invoices['total'];
     });
   }
