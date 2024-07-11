@@ -25,6 +25,6 @@ export interface filter {
 }
 
 export interface selectedDate {
-    startDate: Dayjs,
-    endDate: Dayjs
+    startDate: Dayjs | null,
+    endDate: Dayjs | null
 }

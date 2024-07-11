@@ -27,6 +27,10 @@ export class StatisticsComponent {
     startDate: dayjs().startOf('month'),
     endDate: dayjs().endOf('month'),
   };
+  comparison: selectedDate = {
+    startDate: null,
+    endDate: null,
+  };
 
   reports: report[] = [];
   charts: chart[] = [];
@@ -47,11 +51,28 @@ export class StatisticsComponent {
   filteredReportData: any = null;
   headerToSort = { name: '', field: '' };
 
-  constructor(private statisticsService: StatisticsService) {}
+  constructor(private statisticsService: StatisticsService) { }
+
+  ngOnInit() {
+    // this.buildCharts(this.selected);
+  }
 
   updateDateRange() {
-    this.reset();
-    this.buildCharts();
+    if (this.selected.startDate && this.selected.endDate) {
+      this.reset();
+      this.buildCharts(this.selected);
+      
+      if (this.comparison && this.comparison.startDate && this.comparison.endDate) {
+        this.buildCharts(this.comparison);
+      }
+    }
+  }
+
+  updateComparisonRange() {
+    if (this.comparison && this.comparison.startDate && this.comparison.endDate) {
+      this.reset();
+      this.buildCharts(this.comparison);
+    }
   }
 
   reset() {
@@ -60,28 +81,32 @@ export class StatisticsComponent {
     this.reportChart = null;
   }
 
-  async buildCharts() {
-
+  async buildCharts(date: selectedDate) {
     //Average order value
-    let statisticsData = await this.statisticsService.buildChart(
-      this.selected,
-      'average-invoice-value',
-      false
-    );
+    const averageOrderHeading = 'Average Order Value';
+    const averageOrderLabel = 'Total Value';
+    const averageOrderAxisLabels = {x: 'Date', y: 'Order Value (£)'}
+    const averageOrderHeaders = ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'];
+    const averageOrderDataTypes = ['text', 'currency', 'percentage', 'int', 'currency'];
+    const averageOrderQuery = 'average-invoice-value';
+    const averageOrderFilters = [
+      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty,}
+    ];
+    const averageOrderKeys = ['dateKey', 'total', 'discounts', 'orders', 'average'];
+
+    let statisticsData = await this.statisticsService.buildChart(date, averageOrderQuery, false);
+
     let chartDataset = this.statisticsService.getLineChartData(
       statisticsData.chart.data,
-      'Total Value',
+      averageOrderLabel,
       true
     );
 
-    let chartConfigData = {
-      datasets: [chartDataset.datasets],
-      labels: statisticsData.chart.labels,
-    };
     let chartOptions = this.statisticsService.getLineChartOptions(
       0.3,
-      'Order Value (£)',
-      'Date',
+      averageOrderAxisLabels.y,
+      averageOrderAxisLabels.x,
       false,
       true,
       true,
@@ -92,68 +117,61 @@ export class StatisticsComponent {
     let filteredData = statisticsData.chart.data.filter((data) => data !== 0);
 
     let average =
-    filteredData.length > 0
-      ? filteredData.reduce((sum, data) => sum + data, 0) / filteredData.length
-      : 0;  
+      filteredData.length > 0
+        ? filteredData.reduce((sum, data) => sum + data, 0) /
+        filteredData.length
+        : 0;
 
     let subheading = `£${average.toFixed(2)}`;
 
     this.charts.push({
-      data: chartConfigData,
+      data: {
+        datasets: [chartDataset.datasets],
+        labels: statisticsData.chart.labels,
+      },
       options: chartOptions,
       type: 'line',
-      heading: 'Average Order Value',
+      heading: averageOrderHeading,
       subheading: subheading,
-      queries: 'average-invoice-value'
+      queries: averageOrderQuery,
     });
 
     this.reports.push({
       data: statisticsData.report.data,
-      headers: [
-        'Date',
-        'Gross Sales',
-        'Discounts',
-        'Orders',
-        'Average Order Value',
-      ],
-      dataTypes: ['text', 'currency', 'percentage', 'int', 'currency'],
+      headers: averageOrderHeaders,
+      dataTypes: averageOrderDataTypes,
       formatted: false,
-      filters: [
-        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-        {
-          name: 'Show Only Empty Rows',
-          predicate: (value: any) => value.empty,
-        },
-      ],
-      keys: [
-        'dateKey',
-        'total',
-        'discounts',
-        'orders',
-        'average',
-      ]
+      filters: averageOrderFilters,
+      keys: averageOrderKeys,
     });
 
     //Total Orders
+    const totalOrdersHeading = 'Total Orders';
+    const totalOrdersQuery = 'total-invoices';
+    const totalOrdersAxisLabels = {x: 'Date', y: 'Order Amount'};
+    const totalOrdersHeaders = ['Date', 'Orders', 'Average Units Ordered', 'Average Order Value'];
+    const totalOrdersDataTypes = ['text', 'int', 'number', 'currency'];
+    const totalOrdersFilters = [
+      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
+    ]
+    const totalOrdersKeys = ['dateKey', 'total_orders', 'average_units_ordered', 'average_order_value'];
+
     statisticsData = await this.statisticsService.buildChart(
       this.selected,
-      'total-invoices',
+      totalOrdersQuery,
       false
     );
     chartDataset = this.statisticsService.getLineChartData(
       statisticsData.chart.data,
-      'Total Orders',
+      totalOrdersHeading,
       true
     );
 
-    chartConfigData = {
-      datasets: [chartDataset.datasets],
-      labels: statisticsData.chart.labels,
-    };
     chartOptions = this.statisticsService.getLineChartOptions(
       0.3,
-      'Order Amount',
-      'Date',
+      totalOrdersAxisLabels.y,
+      totalOrdersAxisLabels.x,
       false,
       false,
       true,
@@ -162,51 +180,53 @@ export class StatisticsComponent {
     );
 
     filteredData = statisticsData.chart.data.filter((data) => data !== 0);
-    let total = filteredData.length > 0 ? statisticsData.chart.data.reduce((sum, data) => (sum += data)) : 0;
+    let total =
+      filteredData.length > 0
+        ? statisticsData.chart.data.reduce((sum, data) => (sum += data))
+        : 0;
 
     this.charts.push({
-      data: chartConfigData,
+      data: {
+        datasets: [chartDataset.datasets],
+        labels: statisticsData.chart.labels,
+      },
       options: chartOptions,
       type: 'line',
-      heading: 'Total Orders',
+      heading: totalOrdersHeading,
       subheading: total,
-      queries: 'total-invoices'
+      queries: totalOrdersQuery,
     });
 
     this.reports.push({
       data: statisticsData.report.data,
-      headers: [
-        'Date',
-        'Orders',
-        'Average Units Ordered',
-        'Average Order Value',
-      ],
-      dataTypes: ['text', 'int', 'number', 'currency'],
+      headers: totalOrdersHeaders,
+      dataTypes: totalOrdersDataTypes,
       formatted: false,
-      filters: [
-        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-        {
-          name: 'Show Only Empty Rows',
-          predicate: (value: any) => value.empty,
-        },
-      ],
-      keys: [
-        'dateKey',
-        'total_orders',
-        'average_units_ordered',
-        'average_order_value'
-      ]
+      filters: totalOrdersFilters,
+      keys: totalOrdersKeys,
     });
 
     //Top Selling Products
+    const topSellingHeading = 'Top Selling Products';
+    const topSellingLabel = 'Total Sales';
+    const topSellingQuery = 'top-selling-item';
+    const topSellingAxisLabels = {x: 'Item Name', y: 'Total Sales'};
+    const topSellingHeaders = ['Item Name', 'Product Vendor', 'Product Type', 'Net Quantity', 'Gross Sales','Discounts','Net Sales','VAT','Total Sales'];
+    const topSellingDataTypes = ['text', 'text', 'text', 'int', 'int', 'percentage', 'currency', 'currency', 'currency'];
+    const topSellingFilters = [
+      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
+    ];
+    const topSellingKeys = ['dateKey', 'brand', 'category', 'net_quantity', 'gross_sales_before_discount', 'total_discount', 'net_sales', 'vat', 'total_sales'];
+
     statisticsData = await this.statisticsService.buildChart(
       this.selected,
-      'top-selling-item',
+      topSellingQuery,
       true
     );
     let barChartDataset = this.statisticsService.getBarChartData(
       statisticsData.chart.data,
-      'Total Sales',
+      topSellingLabel,
       10
     );
 
@@ -215,8 +235,8 @@ export class StatisticsComponent {
       datasets: [barChartDataset.datasets],
     };
     chartOptions = this.statisticsService.getBarChartOptions(
-      'Total Sales',
-      'Item Name',
+      topSellingAxisLabels.y,
+      topSellingAxisLabels.x,
       false,
       false,
       false,
@@ -228,76 +248,49 @@ export class StatisticsComponent {
       data: barChartConfigData,
       options: chartOptions,
       type: 'bar',
-      heading: 'Top Selling Products',
+      heading: topSellingHeading,
       subheading: statisticsData.chart.labels[0],
-      queries: 'top-selling-item'
+      queries: topSellingQuery,
     });
 
     this.reports.push({
       data: statisticsData.report.data,
-      headers: [
-        'Item Name',
-        'Product Vendor',
-        'Product Type',
-        'Net Quantity',
-        'Gross Sales',
-        'Discounts',
-        'Net Sales',
-        'VAT',
-        'Total Sales',
-      ],
-      dataTypes: [
-        'text',
-        'text',
-        'text',
-        'int',
-        'int',
-        'percentage',
-        'currency',
-        'currency',
-        'currency',
-      ],
+      headers: topSellingHeaders,
+      dataTypes: topSellingDataTypes,
       formatted: false,
-      filters: [
-        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-        {
-          name: 'Show Only Empty Rows',
-          predicate: (value: any) => value.empty,
-        },
-      ],
-      keys: [
-        'dateKey',
-        'brand',
-        'category',
-        'net_quantity',
-        'gross_sales_before_discount',
-        'total_discount',
-        'net_sales',
-        'vat',
-        'total_sales',
-      ]
+      filters: topSellingFilters,
+      keys: topSellingKeys,
     });
 
     //Total Invoice Value
+    const totalInvoiceValueHeading = 'Total Invoices Value';
+    const totalInvoiceValueLabel = 'Total Value';
+    const totalInvoiceValueQuery = 'total-invoice-value';
+    const totalInvoiceValueAxisLabels = {x: 'Date', y: 'Total Value'};
+    const totalInvoiceValueHeaders = ['Date', 'Orders', 'Discounts', 'Net Sales', 'Tax', 'Gross Sales'];
+    const totalInvoiceValueDataTypes = ['text', 'int', 'currency', 'currency', 'currency', 'currency'];
+    const totalInvoiceValueFilters = [
+      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
+    ];
+    const totalInvoiceValueKeys = ['dateKey', 'total_orders', 'discounts', 'net', 'tax', 'total'];
+
     statisticsData = await this.statisticsService.buildChart(
       this.selected,
-      'total-invoice-value',
+      totalInvoiceValueQuery,
       false
     );
+
     chartDataset = this.statisticsService.getLineChartData(
       statisticsData.chart.data,
-      'Total Value',
+      totalInvoiceValueLabel,
       true
     );
 
-    chartConfigData = {
-      datasets: [chartDataset.datasets],
-      labels: statisticsData.chart.labels,
-    };
     chartOptions = this.statisticsService.getLineChartOptions(
       0.3,
-      'Total Value',
-      'Date',
+      totalInvoiceValueAxisLabels.y,
+      totalInvoiceValueAxisLabels.x,
       false,
       true,
       true,
@@ -306,140 +299,128 @@ export class StatisticsComponent {
     );
 
     filteredData = statisticsData.chart.data.filter((data) => data !== 0);
-    total = filteredData.length > 0 ? statisticsData.chart.data
-      .reduce((sum, data) => (sum += data))
-      .toFixed(2) : 0;
+    total =
+      filteredData.length > 0
+        ? statisticsData.chart.data
+          .reduce((sum, data) => (sum += data))
+          .toFixed(2)
+        : 0;
 
     this.charts.push({
-      data: chartConfigData,
+      data: { 
+        datasets: [chartDataset.datasets],
+        labels: statisticsData.chart.labels,
+      },
       options: chartOptions,
       type: 'line',
-      heading: 'Total Invoices Value',
+      heading: totalInvoiceValueHeading,
       subheading: `£${total}`,
-      queries: 'total-invoice-value'
+      queries: totalInvoiceValueQuery,
     });
-    
+
     this.reports.push({
       data: statisticsData.report.data,
-      headers: [
-        'Date',
-        'Orders',
-        'Discounts',
-        'Net Sales',
-        'Tax',
-        'Gross Sales',
-      ],
-      dataTypes: [
-        'text',
-        'int',
-        'currency',
-        'currency',
-        'currency',
-        'currency',
-      ],
+      headers: totalInvoiceValueHeaders,
+      dataTypes: totalInvoiceValueDataTypes,
       formatted: false,
-      filters: [
-        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-        {
-          name: 'Show Only Empty Rows',
-          predicate: (value: any) => value.empty,
-        },
-      ],
-      keys: [
-        'dateKey',
-        'total_orders',
-        'discounts',
-        'net',
-        'tax',
-        'total'
-      ]
+      filters: totalInvoiceValueFilters,
+      keys: totalInvoiceValueKeys
     });
 
     //Store / Cart Conversion Rate
+    const storeConversionHeading = 'Online Store Conversion Rate';
+    const storeConversionLabel = 'Total';
+    const storeConversionQuery = 'store-conversion-rate';
+    const storeConversionHeaders = ['Date', 'Reached checkout', 'Added to cart', 'Payments made', 'Total sessions'];
+    const storeConversionDataTypes = ['text', 'int', 'int', 'int', 'int'];
+    const storeConversionFilters = [
+      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
+    ];
+    const storeConversionKeys = ['dateKey', 'Reached checkout', 'Added to cart', 'Payments made', 'Total sessions'];
+    
     statisticsData = await this.statisticsService.buildChart(
       this.selected,
-      'store-conversion-rate',
+      storeConversionQuery,
       false,
       'pie'
     );
     let pieChartDataset = this.statisticsService.getPieChartData(
       statisticsData.chart.data.flat(),
-      'Total',
-      ['rgba(255, 99, 132, 0.5)','rgba(54, 162, 235, 0.5)','rgba(255, 205, 86, 0.5)'],
-      ['rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(255, 205, 86)']
+      storeConversionLabel,
+      [
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(54, 162, 235, 0.5)',
+        'rgba(255, 205, 86, 0.5)',
+      ],
+      ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)']
     );
-    
+
     const pieChartConfigData = {
       datasets: [pieChartDataset.datasets],
       labels: statisticsData.chart.labels,
     };
-    
-    chartOptions = this.statisticsService.getPieChartOptions(
-      true,
-      false,
+
+    chartOptions = this.statisticsService.getPieChartOptions(true, false);
+
+    let totalSessions = pieChartDataset.datasets.data.reduce(
+      (sum, n) => (sum += n)
     );
 
-    let totalSessions = pieChartDataset.datasets.data.reduce((sum, n) => sum += n);
+    const totalPaymentsMade = statisticsData.report.data.reduce(
+      (sum: number, current: any) => {
+        return sum + (current['Payments made'] || 0);
+      },
+      0
+    );
 
-    const totalPaymentsMade = statisticsData.report.data.reduce((sum: number, current: any) => {
-      return sum + (current["Payments made"] || 0);
-    }, 0);
-
-    let sessionPercentage = (totalPaymentsMade / totalSessions * 100).toFixed(2).toString();
+    let sessionPercentage = ((totalPaymentsMade / totalSessions) * 100)
+      .toFixed(2)
+      .toString();
 
     this.charts.push({
       data: pieChartConfigData,
       options: chartOptions,
       type: 'pie',
-      heading: 'Online Store Conversion Rate',
+      heading: storeConversionHeading,
       subheading: sessionPercentage + '%',
-      queries: 'total-invoices'
+      queries: 'total-invoices',
     });
 
     this.reports.push({
       data: statisticsData.report.data,
-      headers: [
-        'Date',
-        'Reached checkout',
-        'Added to cart',
-        'Payments made',
-        'Total sessions'
-      ],
-      dataTypes: [
-        'text',
-        'int',
-        'int',
-        'int',
-        'int'
-      ],
+      headers: storeConversionHeaders,
+      dataTypes: storeConversionDataTypes,
       formatted: false,
-      filters: [
-        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-        {
-          name: 'Show Only Empty Rows',
-          predicate: (value: any) => value.empty,
-        },
-      ],
-      keys: [
-        'dateKey',
-        'Reached checkout',
-        'Added to cart',
-        'Payments made',
-        'Total sessions',
-      ]
+      filters: storeConversionFilters,
+      keys: storeConversionKeys,
     });
 
     //Recurring Customer
+    const recurringCustomersHeading = 'Recurring Customers';
+    const recurringCustomersLabel = ['Recurring', 'First Time'];
+    const recurringCustomersQuery = ['recurring-customers', 'non-recurring-customers'];
+    const recurringCustomersAxisLabels = {x: '', y: 'Total Sales'};
+    const recurringCustomersHeaders = ['Date', 'Customers', 'Customer Type'];
+    const recurringCustomersDataTypes = ['text', 'int', 'text'];
+    const recurringCustomersFilters = [
+      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+      { name: 'Recurring Only', predicate: (value: any) => value.customer_type == 'First Time' },
+      { name: 'First Time Only', predicate: (value: any) => value.customer_type == 'Recurring' }
+    ];
+    const recurringCustomersKeys = ['dateKey', 'total'];
+
     let chartDatasetArray: any[] = [];
     let reportDatasetArray: any[] = [];
     statisticsData = await this.statisticsService.buildChart(
       this.selected,
-      'recurring-customers',
+      recurringCustomersQuery[0],
       false
     );
     chartDataset = this.statisticsService.getLineChartData(
       statisticsData.chart.data,
-      'Recurring',
+      recurringCustomersLabel[0],
       true
     );
     chartDatasetArray.push(chartDataset);
@@ -451,12 +432,12 @@ export class StatisticsComponent {
 
     statisticsData = await this.statisticsService.buildChart(
       this.selected,
-      'non-recurring-customers',
+      recurringCustomersQuery[1],
       false
     );
     chartDataset = this.statisticsService.getLineChartData(
       statisticsData.chart.data,
-      'First Time',
+      recurringCustomersLabel[1],
       true,
       'rgb(255, 97, 18)',
       'rgb(255, 97, 18, 0.4)'
@@ -470,19 +451,17 @@ export class StatisticsComponent {
 
     filteredData = statisticsData.chart.data.filter((data) => data !== 0);
 
-    let percentage = filteredData.length > 0 ? (
-      (recurringTotal / (firstTimeTotal + recurringTotal)) *
-      100
-    ).toFixed(2) : 0;
+    let percentage =
+      filteredData.length > 0
+        ? ((recurringTotal / (firstTimeTotal + recurringTotal)) * 100).toFixed(
+          2
+        )
+        : 0;
 
-    chartConfigData = {
-      datasets: chartDatasetArray.map(({ datasets }) => datasets),
-      labels: statisticsData.chart.labels,
-    };
     chartOptions = this.statisticsService.getLineChartOptions(
       0.3,
-      'Total Sales',
-      '',
+      recurringCustomersAxisLabels.y,
+      recurringCustomersAxisLabels.x,
       true,
       false,
       true,
@@ -491,12 +470,15 @@ export class StatisticsComponent {
     );
 
     this.charts.push({
-      data: chartConfigData,
+      data: {
+        datasets: chartDatasetArray.map(({ datasets }) => datasets),
+        labels: statisticsData.chart.labels,
+      },
       options: chartOptions,
       type: 'line',
-      heading: 'Recurring Customers',
+      heading: recurringCustomersHeading,
       subheading: `${percentage}%`,
-      queries: ['recurring-customers', 'non-recurring-customers']
+      queries: recurringCustomersQuery,
     });
 
     reportDatasetArray.forEach((row: any) => {
@@ -505,28 +487,11 @@ export class StatisticsComponent {
 
     this.reports.push({
       data: reportDatasetArray,
-      headers: ['Date', 'Customers', 'Customer Type'],
-      dataTypes: ['text', 'int', 'text'],
+      headers: recurringCustomersHeaders,
+      dataTypes: recurringCustomersDataTypes,
       formatted: false,
-      filters: [
-        { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-        {
-          name: 'Show Only Empty Rows',
-          predicate: (value: any) => value.empty,
-        },
-        {
-          name: 'Recurring Only',
-          predicate: (value: any) => value.customer_type == 'First Time',
-        },
-        {
-          name: 'First Time Only',
-          predicate: (value: any) => value.customer_type == 'Recurring',
-        },
-      ],
-      keys: [
-        'dateKey',
-        'total',
-      ]
+      filters: recurringCustomersFilters,
+      keys: recurringCustomersKeys,
     });
   }
 
@@ -541,7 +506,7 @@ export class StatisticsComponent {
         if (!report.formatted) {
           report = this.statisticsService.formatReport(report, this.selected);
         }
-  
+
         this.filteredReportData = report.data;
         this.headerToSort = {
           name: report.headers ? report.headers[0] : '',
@@ -614,13 +579,15 @@ export class StatisticsComponent {
     this.filteredReportData =
       direction == 'down'
         ? this.filteredReportData.sort(
-            (a: any, b: any) =>
-              this.stripAndConvert(a[this.headerToSort.field]) - this.stripAndConvert(b[this.headerToSort.field])
-          )
+          (a: any, b: any) =>
+            this.stripAndConvert(a[this.headerToSort.field]) -
+            this.stripAndConvert(b[this.headerToSort.field])
+        )
         : this.filteredReportData.sort(
-            (a: any, b: any) =>
-              this.stripAndConvert(b[this.headerToSort.field]) - this.stripAndConvert(a[this.headerToSort.field])
-          );
+          (a: any, b: any) =>
+            this.stripAndConvert(b[this.headerToSort.field]) -
+            this.stripAndConvert(a[this.headerToSort.field])
+        );
   }
 
   stripAndConvert(value: string): any {

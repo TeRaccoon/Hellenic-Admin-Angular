@@ -1,6 +1,10 @@
 <div class="chart-container">
     <div class="toolbar">
-        <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange" (change)="updateDateRange()" />
+        <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange" (datesUpdated)="updateDateRange()" />
+        <div>
+            <label>Compare to: </label>
+            <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="comparison" name="daterange" (datesUpdated)="updateDateRange()" />
+        </div>
     </div>
     <div class="content">
         <div class="chart" *ngFor="let chart of charts; let index = index">

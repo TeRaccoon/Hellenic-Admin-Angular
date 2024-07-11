@@ -294,15 +294,15 @@ export class StatisticsService {
   }
 
   async buildChart(
-    dateRange: { startDate: Dayjs; endDate: Dayjs },
+    dateRange: selectedDate,
     query: string,
     ignoreDate: boolean,
     format = 'standard'
   ) {
     let data = [];
     let xLabels = [];
-    let monthStart = dateRange.startDate.month();
-    let monthEnd = dateRange.endDate.month();
+    let monthStart = dateRange!.startDate?.month() ?? dayjs().startOf('month').month();
+    let monthEnd = dateRange!.endDate?.month() ?? dayjs().endOf('month').month();
     let group = monthStart != monthEnd ? 'month' : 'day';
 
     let keyModifier = monthStart + 1;
@@ -310,63 +310,74 @@ export class StatisticsService {
     let endKey = monthEnd;
     let monthLabels = this.getMonths();
 
-    let queryData = await lastValueFrom<any>(
-      this.dataService.collectDataComplex(query, {
-        start: dateRange.startDate.toISOString().slice(0, 19).replace('T', ' '),
-        end: dateRange.endDate.toISOString().slice(0, 19).replace('T', ' '),
-        group: group,
-      })
-    );
-
-    let chartData: any[] = queryData['chart'];
-    queryData['report'] = Array.isArray(queryData['report'])
-      ? queryData['report']
-      : [queryData['report']];
-
-    if (format == 'standard') {
-      if (monthStart != monthEnd) {
-        xLabels = monthLabels.slice(monthStart, monthEnd + 1);
-      } else {
-        startKey = dateRange.startDate.date();
-        endKey = dateRange.endDate.date();
-
-        xLabels = Array(endKey - startKey + 1)
-          .fill(null)
-          .map(
-            (_, index) => monthLabels[monthStart] + ' ' + (startKey + index)
-          );
-
-        keyModifier = startKey;
-      }
-
-      data = Array(endKey - startKey + 1).fill(0);
-      chartData = Array.isArray(chartData) ? chartData : [chartData];
-
-      if (ignoreDate) {
-        xLabels = Array(chartData.length);
-        for (let order in chartData) {
-          data[order] = chartData[order].total;
-          xLabels[order] = chartData[order].dateKey;
+    if (dateRange.startDate != null && dateRange.endDate != null) {
+      let queryData = await lastValueFrom<any>(
+        this.dataService.collectDataComplex(query, {
+          start: dateRange.startDate.toISOString().slice(0, 19).replace('T', ' '),
+          end: dateRange.endDate.toISOString().slice(0, 19).replace('T', ' '),
+          group: group,
+        })
+      );
+  
+      let chartData: any[] = queryData['chart'];
+      queryData['report'] = Array.isArray(queryData['report'])
+        ? queryData['report']
+        : [queryData['report']];
+  
+      if (format == 'standard') {
+        if (monthStart != monthEnd) {
+          xLabels = monthLabels.slice(monthStart, monthEnd + 1);
+        } else {
+          startKey = dateRange.startDate.date();
+          endKey = dateRange.endDate.date();
+  
+          xLabels = Array(endKey - startKey + 1)
+            .fill(null)
+            .map(
+              (_, index) => monthLabels[monthStart] + ' ' + (startKey + index)
+            );
+  
+          keyModifier = startKey;
+        }
+  
+        data = Array(endKey - startKey + 1).fill(0);
+        chartData = Array.isArray(chartData) ? chartData : [chartData];
+  
+        if (ignoreDate) {
+          xLabels = Array(chartData.length);
+          for (let order in chartData) {
+            data[order] = chartData[order].total;
+            xLabels[order] = chartData[order].dateKey;
+          }
+        } else {
+          for (let order in chartData) {
+            data[chartData[order].dateKey - keyModifier] = chartData[order].total;
+          }
         }
       } else {
-        for (let order in chartData) {
-          data[chartData[order].dateKey - keyModifier] = chartData[order].total;
-        }
+        xLabels = Object.keys(chartData);
+        data = Object.values(chartData);
       }
-    } else {
-      xLabels = Object.keys(chartData);
-      data = Object.values(chartData);
+
+      return {
+        chart: {
+          data,
+          labels: xLabels,
+        },
+        report: {
+          data: queryData['report'],
+        },
+      };
     }
-
     return {
       chart: {
-        data,
-        labels: xLabels,
+        data: [],
+        labels: [],
       },
       report: {
-        data: queryData['report'],
+        data: [],
       },
-    };
+    }
   }
 
   deriveDatePayload(
@@ -406,36 +417,39 @@ export class StatisticsService {
     let keys = report.keys;
     let dataTypes = report.dataTypes;
 
-    let monthStart = selectedDate.startDate.month();
-    let monthEnd = selectedDate.endDate.month();
-    if (report.data[0].dateKey) {
-      report.data.forEach((reportRow: any) => {
-        this.formatObject(reportRow, keys, dataTypes);
-      });
-
-      let limit =
-        monthStart == monthEnd ? selectedDate.endDate.daysInMonth() : 12;
-
-      for (let day = 1; day <= limit; day++) {
-        if (!report.data.find((data: any) => data.dateKey == day)) {
-          let newData = keys.reduce((acc, key, index) => {
-            acc[key] = this.formatValue(report.dataTypes[index]);
-            return acc;
-          }, {} as any);
-          newData['empty'] = true;
-          newData['dateKey'] = day;
-          report.data.push(newData);
+    if (selectedDate.startDate != null && selectedDate.endDate != null) {
+      let monthStart = selectedDate.startDate.month();
+      let monthEnd = selectedDate.endDate.month();
+      if (report.data[0].dateKey) {
+        report.data.forEach((reportRow: any) => {
+          this.formatObject(reportRow, keys, dataTypes);
+        });
+  
+        let limit =
+          monthStart == monthEnd ? selectedDate.endDate.daysInMonth() : 12;
+  
+        for (let day = 1; day <= limit; day++) {
+          if (!report.data.find((data: any) => data.dateKey == day)) {
+            let newData = keys.reduce((acc, key, index) => {
+              acc[key] = this.formatValue(report.dataTypes[index]);
+              return acc;
+            }, {} as any);
+            newData['empty'] = true;
+            newData['dateKey'] = day;
+            report.data.push(newData);
+          }
         }
+      } else {
+        report.data.forEach((reportRow: any) => {
+          this.formatObject(reportRow, keys, dataTypes);
+        });
       }
-    } else {
-      report.data.forEach((reportRow: any) => {
-        this.formatObject(reportRow, keys, dataTypes);
-      });
+  
+      report.data.sort((a: any, b: any) => a.dateKey - b.dateKey);
+      report.formatted = true;
+  
+      return report;
     }
-
-    report.data.sort((a: any, b: any) => a.dateKey - b.dateKey);
-    report.formatted = true;
-
     return report;
   }
 
