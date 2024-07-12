@@ -7,6 +7,12 @@ import {
   report,
   filter,
   selectedDate,
+  chartLabels,
+  axisLabels,
+  LineChartOptions,
+  LineChartDataOptions,
+  SubheadingOptions,
+  ReportOptions,
 } from '../../common/types/statistics/types';
 import { chartIcons } from '../../common/icons/chart-icons';
 import _ from 'lodash';
@@ -61,17 +67,13 @@ export class StatisticsComponent {
     if (this.selected.startDate && this.selected.endDate) {
       this.reset();
       this.buildCharts(this.selected);
-      
-      if (this.comparison && this.comparison.startDate && this.comparison.endDate) {
-        this.buildCharts(this.comparison);
-      }
     }
   }
 
   updateComparisonRange() {
     if (this.comparison && this.comparison.startDate && this.comparison.endDate) {
       this.reset();
-      this.buildCharts(this.comparison);
+      this.buildCharts(this.selected, this.comparison);
     }
   }
 
@@ -81,10 +83,15 @@ export class StatisticsComponent {
     this.reportChart = null;
   }
 
-  async buildCharts(date: selectedDate) {
+  async buildCharts(date: selectedDate, compareDate: selectedDate | null = null) {
+    const lineTension = 0.3;
+    const primaryColour = 'rgb(0, 140, 255)';
+    const secondaryColour = 'rgb(255, 97, 18)';
+    const primaryBackgroundColour = 'rgb(0, 140, 255, 0.4)'
+    const secondaryBackgroundColour = 'rgb(255, 97, 18, 0.4)';
+
     //Average order value
     const averageOrderHeading = 'Average Order Value';
-    const averageOrderLabel = 'Total Value';
     const averageOrderAxisLabels = {x: 'Date', y: 'Order Value (£)'}
     const averageOrderHeaders = ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'];
     const averageOrderDataTypes = ['text', 'currency', 'percentage', 'int', 'currency'];
@@ -94,56 +101,31 @@ export class StatisticsComponent {
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty,}
     ];
     const averageOrderKeys = ['dateKey', 'total', 'discounts', 'orders', 'average'];
+    const averageOrderDateLabels = {
+      primary: compareDate != null ? date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString() : 'Total Value',
+      secondary: compareDate?.startDate && compareDate.endDate ? compareDate.startDate!.format('DD MMM').toString() + ' to ' + compareDate.endDate!.format('DD MMM').toString() : 'Total Value'
+    }
 
-    let statisticsData = await this.statisticsService.buildChart(date, averageOrderQuery, false);
-
-    let chartDataset = this.statisticsService.getLineChartData(
-      statisticsData.chart.data,
-      averageOrderLabel,
-      true
-    );
-
-    let chartOptions = this.statisticsService.getLineChartOptions(
-      0.3,
-      averageOrderAxisLabels.y,
-      averageOrderAxisLabels.x,
-      false,
-      true,
-      true,
-      false,
-      statisticsData.chart.labels
-    );
-
-    let filteredData = statisticsData.chart.data.filter((data) => data !== 0);
-
-    let average =
-      filteredData.length > 0
-        ? filteredData.reduce((sum, data) => sum + data, 0) /
-        filteredData.length
-        : 0;
-
-    let subheading = `£${average.toFixed(2)}`;
-
-    this.charts.push({
-      data: {
-        datasets: [chartDataset.datasets],
-        labels: statisticsData.chart.labels,
+    await this.constructLineChart({
+        date: date,
+        compareDate: compareDate,
+        queries: averageOrderQuery,
+        chartLabels: averageOrderDateLabels,
+        axisLabels: averageOrderAxisLabels,
       },
-      options: chartOptions,
-      type: 'line',
-      heading: averageOrderHeading,
-      subheading: subheading,
-      queries: averageOrderQuery,
-    });
-
-    this.reports.push({
-      data: statisticsData.report.data,
-      headers: averageOrderHeaders,
-      dataTypes: averageOrderDataTypes,
-      formatted: false,
-      filters: averageOrderFilters,
-      keys: averageOrderKeys,
-    });
+      {
+          type: 'average-currency',
+          filter: true
+      },
+      {
+        headers: averageOrderHeaders,
+        dataTypes: averageOrderDataTypes,
+        formatted: false,
+        filters: averageOrderFilters,
+        keys: averageOrderKeys,
+      },
+      averageOrderHeading
+    );
 
     //Total Orders
     const totalOrdersHeading = 'Total Orders';
@@ -156,55 +138,31 @@ export class StatisticsComponent {
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
     ]
     const totalOrdersKeys = ['dateKey', 'total_orders', 'average_units_ordered', 'average_order_value'];
+    const totalOrdersDateLabels = {
+      primary: compareDate != null ? date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString() : 'Total Orders',
+      secondary: compareDate?.startDate && compareDate.endDate ? compareDate.startDate!.format('DD MMM').toString() + ' to ' + compareDate.endDate!.format('DD MMM').toString() : 'Total Orders'
+    }
 
-    statisticsData = await this.statisticsService.buildChart(
-      this.selected,
-      totalOrdersQuery,
-      false
-    );
-    chartDataset = this.statisticsService.getLineChartData(
-      statisticsData.chart.data,
-      totalOrdersHeading,
-      true
-    );
-
-    chartOptions = this.statisticsService.getLineChartOptions(
-      0.3,
-      totalOrdersAxisLabels.y,
-      totalOrdersAxisLabels.x,
-      false,
-      false,
-      true,
-      false,
-      statisticsData.chart.labels
-    );
-
-    filteredData = statisticsData.chart.data.filter((data) => data !== 0);
-    let total =
-      filteredData.length > 0
-        ? statisticsData.chart.data.reduce((sum, data) => (sum += data))
-        : 0;
-
-    this.charts.push({
-      data: {
-        datasets: [chartDataset.datasets],
-        labels: statisticsData.chart.labels,
+    await this.constructLineChart({
+        date: date,
+        compareDate: compareDate,
+        queries: totalOrdersQuery,
+        chartLabels: totalOrdersDateLabels,
+        axisLabels: totalOrdersAxisLabels,
       },
-      options: chartOptions,
-      type: 'line',
-      heading: totalOrdersHeading,
-      subheading: total,
-      queries: totalOrdersQuery,
-    });
-
-    this.reports.push({
-      data: statisticsData.report.data,
-      headers: totalOrdersHeaders,
-      dataTypes: totalOrdersDataTypes,
-      formatted: false,
-      filters: totalOrdersFilters,
-      keys: totalOrdersKeys,
-    });
+      {
+          type: 'average-currency',
+          filter: true
+      },
+      {
+        headers: totalOrdersHeaders,
+        dataTypes: totalOrdersDataTypes,
+        formatted: false,
+        filters: totalOrdersFilters,
+        keys: totalOrdersKeys,
+      },
+      totalOrdersHeading
+    );
 
     //Top Selling Products
     const topSellingHeading = 'Top Selling Products';
@@ -219,7 +177,7 @@ export class StatisticsComponent {
     ];
     const topSellingKeys = ['dateKey', 'brand', 'category', 'net_quantity', 'gross_sales_before_discount', 'total_discount', 'net_sales', 'vat', 'total_sales'];
 
-    statisticsData = await this.statisticsService.buildChart(
+    let statisticsData = await this.statisticsService.buildChart(
       this.selected,
       topSellingQuery,
       true
@@ -234,7 +192,7 @@ export class StatisticsComponent {
       labels: statisticsData.chart.labels,
       datasets: [barChartDataset.datasets],
     };
-    chartOptions = this.statisticsService.getBarChartOptions(
+    let chartOptions = this.statisticsService.getBarChartOptions(
       topSellingAxisLabels.y,
       topSellingAxisLabels.x,
       false,
@@ -264,68 +222,40 @@ export class StatisticsComponent {
 
     //Total Invoice Value
     const totalInvoiceValueHeading = 'Total Invoices Value';
-    const totalInvoiceValueLabel = 'Total Value';
-    const totalInvoiceValueQuery = 'total-invoice-value';
     const totalInvoiceValueAxisLabels = {x: 'Date', y: 'Total Value'};
     const totalInvoiceValueHeaders = ['Date', 'Orders', 'Discounts', 'Net Sales', 'Tax', 'Gross Sales'];
     const totalInvoiceValueDataTypes = ['text', 'int', 'currency', 'currency', 'currency', 'currency'];
+    const totalInvoiceValueQuery = 'total-invoice-value';
     const totalInvoiceValueFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
     ];
     const totalInvoiceValueKeys = ['dateKey', 'total_orders', 'discounts', 'net', 'tax', 'total'];
+    const totalInvoiceValueDateLabels = {
+      primary: compareDate != null ? date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString() : 'Total Value',
+      secondary: compareDate?.startDate && compareDate.endDate ? compareDate.startDate!.format('DD MMM').toString() + ' to ' + compareDate.endDate!.format('DD MMM').toString() : 'Total Value'
+    }
 
-    statisticsData = await this.statisticsService.buildChart(
-      this.selected,
-      totalInvoiceValueQuery,
-      false
-    );
-
-    chartDataset = this.statisticsService.getLineChartData(
-      statisticsData.chart.data,
-      totalInvoiceValueLabel,
-      true
-    );
-
-    chartOptions = this.statisticsService.getLineChartOptions(
-      0.3,
-      totalInvoiceValueAxisLabels.y,
-      totalInvoiceValueAxisLabels.x,
-      false,
-      true,
-      true,
-      false,
-      statisticsData.chart.labels
-    );
-
-    filteredData = statisticsData.chart.data.filter((data) => data !== 0);
-    total =
-      filteredData.length > 0
-        ? statisticsData.chart.data
-          .reduce((sum, data) => (sum += data))
-          .toFixed(2)
-        : 0;
-
-    this.charts.push({
-      data: { 
-        datasets: [chartDataset.datasets],
-        labels: statisticsData.chart.labels,
+    await this.constructLineChart({
+        date: date,
+        compareDate: compareDate,
+        queries: totalInvoiceValueQuery,
+        chartLabels: totalInvoiceValueDateLabels,
+        axisLabels: totalInvoiceValueAxisLabels,
       },
-      options: chartOptions,
-      type: 'line',
-      heading: totalInvoiceValueHeading,
-      subheading: `£${total}`,
-      queries: totalInvoiceValueQuery,
-    });
-
-    this.reports.push({
-      data: statisticsData.report.data,
-      headers: totalInvoiceValueHeaders,
-      dataTypes: totalInvoiceValueDataTypes,
-      formatted: false,
-      filters: totalInvoiceValueFilters,
-      keys: totalInvoiceValueKeys
-    });
+      {
+          type: 'average-currency',
+          filter: true
+      },
+      {
+        headers: totalInvoiceValueHeaders,
+        dataTypes: totalInvoiceValueDataTypes,
+        formatted: false,
+        filters: totalInvoiceValueFilters,
+        keys: totalInvoiceValueKeys,
+      },
+      totalInvoiceValueHeading
+    );
 
     //Store / Cart Conversion Rate
     const storeConversionHeading = 'Online Store Conversion Rate';
@@ -410,89 +340,209 @@ export class StatisticsComponent {
       { name: 'First Time Only', predicate: (value: any) => value.customer_type == 'Recurring' }
     ];
     const recurringCustomersKeys = ['dateKey', 'total'];
+    const recurringCustomersDateLabels = {
+      primary: compareDate != null ? date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString() : ['Recurring', 'First Time'],
+      secondary: compareDate?.startDate && compareDate.endDate ? compareDate.startDate!.format('DD MMM').toString() + ' to ' + compareDate.endDate!.format('DD MMM').toString() : 'Total Value'
+    }
 
-    let chartDatasetArray: any[] = [];
-    let reportDatasetArray: any[] = [];
-    statisticsData = await this.statisticsService.buildChart(
-      this.selected,
-      recurringCustomersQuery[0],
-      false
-    );
-    chartDataset = this.statisticsService.getLineChartData(
-      statisticsData.chart.data,
-      recurringCustomersLabel[0],
-      true
-    );
-    chartDatasetArray.push(chartDataset);
-    reportDatasetArray = statisticsData.report.data;
-
-    let recurringTotal = statisticsData.chart.data.reduce(
-      (sum, data) => (sum += data)
-    );
-
-    statisticsData = await this.statisticsService.buildChart(
-      this.selected,
-      recurringCustomersQuery[1],
-      false
-    );
-    chartDataset = this.statisticsService.getLineChartData(
-      statisticsData.chart.data,
-      recurringCustomersLabel[1],
-      true,
-      'rgb(255, 97, 18)',
-      'rgb(255, 97, 18, 0.4)'
-    );
-    chartDatasetArray.push(chartDataset);
-    reportDatasetArray = reportDatasetArray.concat(statisticsData.report.data);
-
-    let firstTimeTotal = statisticsData.chart.data.reduce(
-      (sum, data) => (sum += data)
+    await this.constructLineChart({
+        date: date,
+        compareDate: compareDate,
+        queries: recurringCustomersQuery,
+        chartLabels: recurringCustomersDateLabels,
+        axisLabels: recurringCustomersAxisLabels,
+        currency: false,
+        displayLegend: true,
+      },
+      {
+          type: 'average-currency',
+          filter: true
+      },
+      {
+        headers: recurringCustomersHeaders,
+        dataTypes: recurringCustomersDataTypes,
+        formatted: false,
+        filters: recurringCustomersFilters,
+        keys: recurringCustomersKeys,
+      },
+      recurringCustomersHeading
     );
 
-    filteredData = statisticsData.chart.data.filter((data) => data !== 0);
+  }
 
-    let percentage =
-      filteredData.length > 0
-        ? ((recurringTotal / (firstTimeTotal + recurringTotal)) * 100).toFixed(
-          2
-        )
-        : 0;
+  async constructLineChart(options: LineChartOptions, subheadingOptions: SubheadingOptions, reportOptions: ReportOptions, heading: string) {
+    const {
+      date,
+      compareDate = null,
+      queries,
+      chartLabels,
+      axisLabels,
+      displayLegend = compareDate != null,
+      currency = true,
+      aboveZero = true,
+      displayTitles = false,
+      ignoreDate = false,
+      format = 'standard',
+      fillLine = true,
+      colours = [
+        'rgb(0, 140, 255)',
+        'rgb(0, 0, 255)',
+        'rgb(0, 200, 255)',
+        'rgb(0, 140, 200)',
+        'rgb(0, 140, 100)'
+      ],
+      backgroundColours = [
+        'rgb(0, 140, 255, 0.4)',
+        'rgb(0, 0, 255, 0.4)',
+        'rgb(0, 200, 255, 0.4)',
+        'rgb(0, 140, 200, 0.4)',
+        'rgb(0, 140, 100, 0.4)'
+      ],
+      secondaryColours = [
+        'rgb(255, 97, 18)',
+        'rgb(255, 77, 38)',
+        'rgb(255, 117, 0)',
+        'rgb(255, 97, 38)',
+        'rgb(255, 117, 58)'
+      ],
+      secondaryBackgroundColours = [
+        'rgb(255, 97, 18, 0.4)',
+        'rgb(255, 77, 38, 0.4)',
+        'rgb(255, 117, 0, 0.4)',
+        'rgb(255, 97, 38, 0.4)',
+        'rgb(255, 117, 58, 0.4)'
+      ],
+      lineTension = 0.3
+    } = options;
 
-    chartOptions = this.statisticsService.getLineChartOptions(
-      0.3,
-      recurringCustomersAxisLabels.y,
-      recurringCustomersAxisLabels.x,
-      true,
-      false,
-      true,
-      false,
-      statisticsData.chart.labels
-    );
+    let dataQueries = Array.isArray(queries) ? queries : [queries];
+    let dataLabelsPrimary = Array.isArray(chartLabels.primary) ? chartLabels.primary : [chartLabels.primary];
+    let dataLabelsSecondary = Array.isArray(chartLabels.secondary) ? chartLabels.secondary : [chartLabels.secondary];
+
+    let chartDatasets = [];
+    let chartData: any;
+
+    for(let index = 0; index < dataQueries.length; index++) {
+      chartData = await this.constructLineChartData(
+        {
+          date: date, 
+          query: dataQueries[index], 
+          chartLabel: dataLabelsPrimary[index], 
+          axisLabels: axisLabels,
+          displayLegend: displayLegend,
+          currency: currency, 
+          aboveZero: aboveZero,
+          displayTitles: displayTitles,
+          ignoreDate: ignoreDate,
+          format: format,
+          fillLine: fillLine,
+          colour: colours[index],
+          backgroundColour: backgroundColours[index],
+          lineTension: lineTension
+        });
+      
+      chartData.dataset = await this.checkCompareDate({
+          date: compareDate, 
+          query: dataQueries[index], 
+          chartLabel: dataLabelsSecondary[index], 
+          axisLabels: axisLabels,
+          displayLegend: displayLegend,
+          currency: currency, 
+          aboveZero: aboveZero,
+          displayTitles: displayTitles,
+          ignoreDate: ignoreDate,
+          format: format,
+          fillLine: fillLine,
+          colour: secondaryColours[index],
+          backgroundColour: secondaryBackgroundColours[index],
+          lineTension: lineTension
+        },
+        chartData.dataset,
+      );
+
+      chartDatasets.push(chartData.dataset[0]);
+    }
+
+    let subheading = this.generateSubheading(chartData.summary.chart.data, subheadingOptions.type, subheadingOptions.filter);
 
     this.charts.push({
       data: {
-        datasets: chartDatasetArray.map(({ datasets }) => datasets),
-        labels: statisticsData.chart.labels,
+        datasets: chartDatasets,
+        labels: chartData.summary.chart.labels,
       },
-      options: chartOptions,
+      options: chartData.options,
       type: 'line',
-      heading: recurringCustomersHeading,
-      subheading: `${percentage}%`,
-      queries: recurringCustomersQuery,
-    });
-
-    reportDatasetArray.forEach((row: any) => {
-      row.customer_type = row.total == 1 ? 'First Time' : 'Recurring';
+      heading: heading,
+      subheading: subheading,
+      queries: queries
     });
 
     this.reports.push({
-      data: reportDatasetArray,
-      headers: recurringCustomersHeaders,
-      dataTypes: recurringCustomersDataTypes,
-      formatted: false,
-      filters: recurringCustomersFilters,
-      keys: recurringCustomersKeys,
+      data: chartData.summary.report.data,
+      headers: reportOptions.headers,
+      dataTypes: reportOptions.dataTypes,
+      formatted: reportOptions.formatted,
+      filters: reportOptions.filters,
+      keys: reportOptions.keys,
     });
+  }
+
+  async constructLineChartData(options: LineChartDataOptions) {
+    const {
+      date,
+      query,
+      chartLabel,
+      axisLabels,
+      displayLegend = false,
+      currency = true,
+      aboveZero = true,
+      displayTitles = false,
+      ignoreDate = false,
+      format = 'standard',
+      fillLine = true,
+      colour = 'rgb(0, 140, 255)',
+      backgroundColour = 'rgb(0, 140, 255, 0.4)',
+      lineTension = 0.3
+    } = options;
+
+    let summaryData = await this.statisticsService.buildChart(date ?? {startDate: dayjs().startOf('month'), endDate: dayjs().endOf('month')}, query, ignoreDate, format);
+    let chartDataset: any = this.statisticsService.getLineChartData(summaryData.chart.data, chartLabel, fillLine, colour, backgroundColour);
+    let chartOptions = this.statisticsService.getLineChartOptions(lineTension, axisLabels, displayLegend, currency, aboveZero, displayTitles, summaryData.chart.labels);
+
+    return {
+      summary: summaryData,
+      dataset: chartDataset,
+      options: chartOptions
+    };
+  }
+
+  async checkCompareDate(options: LineChartDataOptions, dataset: any) {
+    if (options.date != null) {
+      let comparedAverageOrderChartData = await this.constructLineChartData(options);
+
+      dataset = [dataset, comparedAverageOrderChartData.dataset].map(({ datasets }) => datasets);
+    } else {
+      dataset = [dataset.datasets];
+    }
+
+    return dataset;
+  }
+
+  generateSubheading(data: any, type: string, filter = false) {
+    if (filter) {
+      data = data.filter((data: any) => data !== 0);
+    }
+
+    let subheading = '0';
+
+    switch (type) {
+      case 'average-currency':
+        let average = data.length > 0 ? data.reduce((sum: number, data: any) => sum + data, 0) / data.length : 0;
+        subheading = `£${average.toFixed(2)}`;
+        break;
+    }
+
+    return subheading;
   }
 
   async setReportChart(chart: chart | null, index?: number) {

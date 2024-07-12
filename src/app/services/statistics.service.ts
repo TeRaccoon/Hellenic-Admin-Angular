@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
 import { ChartConfiguration } from 'chart.js';
-import { report, selectedDate } from '../common/types/statistics/types';
+import { axisLabels, report, selectedDate } from '../common/types/statistics/types';
 
 @Injectable({
   providedIn: 'root',
@@ -36,17 +36,17 @@ export class StatisticsService {
   getLineChartData(
     dataset: any[],
     label: string,
-    fill: boolean,
-    colour: string | null = null,
-    backgroundColor: string | null = null
+    fill = true,
+    colour = 'rgb(0, 140, 255)',
+    backgroundColour = 'rgb(0, 140, 255, 0.4)'
   ) {
     return {
       datasets: {
         data: dataset,
         label: label,
-        borderColor: colour ?? 'rgb(0, 140, 255)',
-        pointBackgroundColor: colour ?? 'rgb(0, 140, 255)',
-        backgroundColor: backgroundColor ?? 'rgb(0, 140, 255, 0.4)',
+        borderColor: colour,
+        pointBackgroundColor: colour,
+        backgroundColor: backgroundColour,
         fill: fill,
       },
     };
@@ -171,8 +171,7 @@ export class StatisticsService {
 
   getLineChartOptions(
     tension: number,
-    yTitle: string,
-    xTitle: string,
+    axisLabels: axisLabels,
     displayLegend: boolean,
     currency: boolean,
     aboveZero: boolean,
@@ -220,7 +219,7 @@ export class StatisticsService {
           position: 'left',
           title: {
             display: displayTitles,
-            text: yTitle,
+            text: axisLabels.y,
             color: 'black',
             font: {
               size: 17,
@@ -242,7 +241,7 @@ export class StatisticsService {
         x: {
           title: {
             display: displayTitles,
-            text: xTitle,
+            text: axisLabels.x,
             color: 'black',
             font: {
               size: 17,

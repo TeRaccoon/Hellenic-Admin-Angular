@@ -3,7 +3,7 @@
         <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange" (datesUpdated)="updateDateRange()" />
         <div>
             <label>Compare to: </label>
-            <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="comparison" name="daterange" (datesUpdated)="updateDateRange()" />
+            <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="comparison" name="daterange" (datesUpdated)="updateComparisonRange()" />
         </div>
     </div>
     <div class="content">
