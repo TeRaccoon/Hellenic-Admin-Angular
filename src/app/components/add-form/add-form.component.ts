@@ -183,6 +183,8 @@ export class AddFormComponent {
       this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
       this.selectedReplacementFilter[key] = { selectFilter: ''};
       this.selectOpen[key] = {opened: false};
+
+      this.filteredReplacementData[key].data = this.filteredReplacementData[key].data.filter((item: any) => item.replacement != null);
     });
   }
 
