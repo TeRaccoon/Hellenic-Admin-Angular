@@ -89,6 +89,10 @@ export class StatisticsComponent {
     const secondaryColour = 'rgb(255, 97, 18)';
     const primaryBackgroundColour = 'rgb(0, 140, 255, 0.4)'
     const secondaryBackgroundColour = 'rgb(255, 97, 18, 0.4)';
+    const dateLabel = {
+      primary: date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString(), 
+      secondary: compareDate?.startDate!.format('DD MMM').toString() + ' to ' + compareDate?.endDate!.format('DD MMM').toString()
+    };
 
     //Average order value
     const averageOrderHeading = 'Average Order Value';
@@ -102,8 +106,8 @@ export class StatisticsComponent {
     ];
     const averageOrderKeys = ['dateKey', 'total', 'discounts', 'orders', 'average'];
     const averageOrderDateLabels = {
-      primary: compareDate != null ? date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString() : 'Total Value',
-      secondary: compareDate?.startDate && compareDate.endDate ? compareDate.startDate!.format('DD MMM').toString() + ' to ' + compareDate.endDate!.format('DD MMM').toString() : 'Total Value'
+      primary: compareDate != null ? dateLabel.primary : 'Total Value',
+      secondary: compareDate?.startDate && compareDate.endDate ? dateLabel.secondary : 'Total Value'
     }
 
     await this.constructLineChart({
@@ -139,8 +143,8 @@ export class StatisticsComponent {
     ]
     const totalOrdersKeys = ['dateKey', 'total_orders', 'average_units_ordered', 'average_order_value'];
     const totalOrdersDateLabels = {
-      primary: compareDate != null ? date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString() : 'Total Orders',
-      secondary: compareDate?.startDate && compareDate.endDate ? compareDate.startDate!.format('DD MMM').toString() + ' to ' + compareDate.endDate!.format('DD MMM').toString() : 'Total Orders'
+      primary: compareDate != null ? dateLabel.primary : 'Total Orders',
+      secondary: compareDate?.startDate && compareDate.endDate ? dateLabel.secondary : 'Total Orders'
     }
 
     await this.constructLineChart({
@@ -232,8 +236,8 @@ export class StatisticsComponent {
     ];
     const totalInvoiceValueKeys = ['dateKey', 'total_orders', 'discounts', 'net', 'tax', 'total'];
     const totalInvoiceValueDateLabels = {
-      primary: compareDate != null ? date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString() : 'Total Value',
-      secondary: compareDate?.startDate && compareDate.endDate ? compareDate.startDate!.format('DD MMM').toString() + ' to ' + compareDate.endDate!.format('DD MMM').toString() : 'Total Value'
+      primary: compareDate != null ? dateLabel.primary : 'Total Value',
+      secondary: compareDate?.startDate && compareDate.endDate ? dateLabel.secondary : 'Total Value'
     }
 
     await this.constructLineChart({
@@ -341,8 +345,8 @@ export class StatisticsComponent {
     ];
     const recurringCustomersKeys = ['dateKey', 'total'];
     const recurringCustomersDateLabels = {
-      primary: compareDate != null ? date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString() : ['Recurring', 'First Time'],
-      secondary: compareDate?.startDate && compareDate.endDate ? compareDate.startDate!.format('DD MMM').toString() + ' to ' + compareDate.endDate!.format('DD MMM').toString() : 'Total Value'
+      primary: compareDate != null ? [`${dateLabel.primary}: Recurring`, `${dateLabel.primary}: First Time`] : ['Recurring', 'First Time'],
+      secondary: compareDate?.startDate && compareDate.endDate ? [`${dateLabel.secondary}: Recurring`, `${dateLabel.secondary}: First Time`] : 'Total Value'
     }
 
     await this.constructLineChart({
@@ -400,14 +404,14 @@ export class StatisticsComponent {
       ],
       secondaryColours = [
         'rgb(255, 97, 18)',
-        'rgb(255, 77, 38)',
+        'rgb(255, 20, 200)',
         'rgb(255, 117, 0)',
         'rgb(255, 97, 38)',
         'rgb(255, 117, 58)'
       ],
       secondaryBackgroundColours = [
         'rgb(255, 97, 18, 0.4)',
-        'rgb(255, 77, 38, 0.4)',
+        'rgb(255, 20, 200, 0.4)',
         'rgb(255, 117, 0, 0.4)',
         'rgb(255, 97, 38, 0.4)',
         'rgb(255, 117, 58, 0.4)'
@@ -460,7 +464,7 @@ export class StatisticsComponent {
         chartData.dataset,
       );
 
-      chartDatasets.push(chartData.dataset[0]);
+      chartDatasets.push(...chartData.dataset);
     }
 
     let subheading = this.generateSubheading(chartData.summary.chart.data, subheadingOptions.type, subheadingOptions.filter);
