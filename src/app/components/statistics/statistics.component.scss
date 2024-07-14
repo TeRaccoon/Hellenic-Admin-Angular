@@ -4,6 +4,7 @@
     display: flex;
     flex-direction: column;
     .toolbar {
+        display: flex;
         margin: 0 10px 10px 10px;
         background: white;
         padding: 10px;
@@ -11,16 +12,22 @@
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         position: sticky;
         top: 5px;
-        width: fit-content;
-        input {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid rgb(215, 215, 215);
-            outline: none;
+        gap: 10px;
+        div {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            input {
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid rgb(215, 215, 215);
+                outline: none;
+            }
         }
     }
     .content {
         display: flex;
+        align-items: center;
         flex-wrap: wrap;
         gap: 15px;
         margin: 10px;

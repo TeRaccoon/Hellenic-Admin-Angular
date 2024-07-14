@@ -417,37 +417,45 @@ export class StatisticsService {
     let dataTypes = report.dataTypes;
 
     if (selectedDate.startDate != null && selectedDate.endDate != null) {
-      let monthStart = selectedDate.startDate.month();
-      let monthEnd = selectedDate.endDate.month();
-      if (report.data[0].dateKey) {
-        report.data.forEach((reportRow: any) => {
-          this.formatObject(reportRow, keys, dataTypes);
-        });
-  
-        let limit =
-          monthStart == monthEnd ? selectedDate.endDate.daysInMonth() : 12;
-  
-        for (let day = 1; day <= limit; day++) {
-          if (!report.data.find((data: any) => data.dateKey == day)) {
-            let newData = keys.reduce((acc, key, index) => {
-              acc[key] = this.formatValue(report.dataTypes[index]);
-              return acc;
-            }, {} as any);
-            newData['empty'] = true;
-            newData['dateKey'] = day;
-            report.data.push(newData);
-          }
+        let startDate = selectedDate.startDate;
+        let endDate = selectedDate.endDate;
+        
+        if (report.data[0].dateKey) {
+            report.data.forEach((reportRow) => {
+                this.formatObject(reportRow, keys, dataTypes);
+            });
+
+            let currentDate = startDate.clone();
+            while (currentDate.isBefore(endDate, 'day') || currentDate.isSame(endDate, 'day')) {
+                let dateString = currentDate.format('DD-MM-YYYY');
+                if (!report.data.find(data => data.dateKey === dateString)) {
+                    let newData: any = keys.reduce((acc: any, key, index) => {
+                        acc[key] = this.formatValue(report.dataTypes[index]);
+                        return acc;
+                    }, {});
+                    newData['empty'] = true;
+                    newData['dateKey'] = dateString;
+                    report.data.push(newData);
+                }
+                currentDate = currentDate.add(1, 'day');
+            }
+        } else {
+            report.data.forEach((reportRow) => {
+                this.formatObject(reportRow, keys, dataTypes);
+            });
         }
-      } else {
-        report.data.forEach((reportRow: any) => {
-          this.formatObject(reportRow, keys, dataTypes);
+        report.data.sort((a, b) => {
+          const datePartsA = a.dateKey.split('-');
+          const datePartsB = b.dateKey.split('-');
+          
+          const dateA = new Date(datePartsA[2], datePartsA[1] - 1, datePartsA[0]);
+          const dateB = new Date(datePartsB[2], datePartsB[1] - 1, datePartsB[0]);
+          
+          return dateA.getTime() - dateB.getTime();
         });
-      }
-  
-      report.data.sort((a: any, b: any) => a.dateKey - b.dateKey);
-      report.formatted = true;
-  
-      return report;
+        report.formatted = true;
+
+        return report;
     }
     return report;
   }
@@ -459,6 +467,8 @@ export class StatisticsService {
       if (key !== 'dateKey' && key !== 'key') {
         reportRow[key] = this.formatValue(dataTypes[index], reportRow[key]);
         empty = false;
+      } else if (key === 'dateKey') {
+        reportRow[key] = dayjs(reportRow[key]).format('DD-MM-YYYY');
       }
     });
 

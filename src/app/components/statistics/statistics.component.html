@@ -1,6 +1,9 @@
 <div class="chart-container">
     <div class="toolbar">
-        <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange" (datesUpdated)="updateDateRange()" />
+        <div>
+            <label>Initial date:</label>
+            <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange" (datesUpdated)="updateDateRange()" />
+        </div>
         <div>
             <label>Compare to: </label>
             <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="comparison" name="daterange" (datesUpdated)="updateComparisonRange()" />
