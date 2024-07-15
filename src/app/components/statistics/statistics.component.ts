@@ -7,8 +7,6 @@ import {
   report,
   filter,
   selectedDate,
-  chartLabels,
-  axisLabels,
   LineChartOptions,
   LineChartDataOptions,
   SubheadingOptions,
@@ -58,10 +56,6 @@ export class StatisticsComponent {
   headerToSort = { name: '', field: '' };
 
   constructor(private statisticsService: StatisticsService) { }
-
-  ngOnInit() {
-    // this.buildCharts(this.selected);
-  }
 
   updateDateRange() {
     if (this.selected.startDate && this.selected.endDate) {
@@ -541,7 +535,7 @@ export class StatisticsComponent {
 
     switch (type) {
       case 'average-currency':
-        let average = data.length > 0 ? data.reduce((sum: number, data: any) => sum + data, 0) / data.length : 0;
+        let average = data.length > 0 ? data.reduce((sum: number, data: number) => sum + Number(data), 0) / data.length : 0;
         subheading = `£${average.toFixed(2)}`;
         break;
     }
