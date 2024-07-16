@@ -31,6 +31,7 @@ export class NavbarComponent {
     { display: 'Customer Payments', actual: 'customer_payments' },
     { display: 'Customers', actual: 'customers' },
     { display: 'Discount Codes', actual: 'discount_codes' },
+    { display: 'Expired Items', actual: 'expired_items' },
     { display: 'General Ledger', actual: 'general_ledger' },
     { display: 'Image Locations', actual: 'image_locations' },
     { display: 'Interest Charges', actual: 'interest_charges' },

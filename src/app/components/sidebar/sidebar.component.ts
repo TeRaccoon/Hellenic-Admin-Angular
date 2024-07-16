@@ -28,6 +28,7 @@ export class SidebarComponent {
     ],
     "Supply": [
       { tableName: "stocked_items", displayName: "Stock" },
+      { tableName: 'expired_items', displayName: 'Expired Items'},
       { tableName: "supplier_invoices", displayName: "Invoices" },
       { tableName: "suppliers", displayName: "Suppliers" },
       { tableName: "warehouse", displayName: "Warehouses" },

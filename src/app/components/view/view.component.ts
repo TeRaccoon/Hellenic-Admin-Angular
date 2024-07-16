@@ -133,6 +133,9 @@ export class ViewComponent {
       case 'discount_codes':
         this.displayName = 'Discount Codes';
         break;
+      case 'expired_items':
+        this.displayName = 'Expired Items';
+        break;
       case 'general_ledger':
         this.displayName = 'General Ledger';
         break;

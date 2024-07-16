@@ -33,9 +33,7 @@
         <p>
             <fa-icon (click)="toggleUserOptions()" [icon]="faUser"></fa-icon>
         </p>
-
         <div [class]="'notification-dropdown-container ' + (dropDownVisible ? '' : 'hidden')">
-
             <ng-container *ngIf="notifications.length > 0 else elseBlock">
                 <div class="section" *ngFor="let notification of notifications">
                     <h2>{{ notification.header }}</h2>
