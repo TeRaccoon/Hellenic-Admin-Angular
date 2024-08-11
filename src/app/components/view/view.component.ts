@@ -569,6 +569,7 @@ export class ViewComponent {
     let tableColumns = [
       { name: "ID", type: "number" },
       { name: "Item Name", type: "string" },
+      { name: "Unit", type: "string" },
       { name: "Picture", type: "image" },
       { name: "Quantity", type: "number" },
       { name: "VAT Charge", type: "enum" },
