@@ -92,7 +92,7 @@ export class StatisticsComponent {
     const averageOrderHeading = 'Average Order Value';
     const averageOrderAxisLabels = {x: 'Date', y: 'Order Value (£)'}
     const averageOrderHeaders = ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'];
-    const averageOrderDataTypes = ['text', 'currency', 'percentage', 'int', 'currency'];
+    const averageOrderDataTypes = ['text', 'currency', 'currency', 'int', 'currency'];
     const averageOrderQuery = 'average-invoice-value';
     const averageOrderFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
