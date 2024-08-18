@@ -47,6 +47,7 @@ export class TablelessViewComponent {
       this.tableHeaders = [];
       this.alternativeData = null;
       this.submitAttempted = false;
+      this.dataCollected = false;
     });
 
     this.dataService.getDataObservable().subscribe((data: any) => {
