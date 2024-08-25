@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
 import {
   faSearch,
   faBell,
@@ -18,6 +18,9 @@ import { lastValueFrom } from 'rxjs';
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
+  @ViewChild('notificationDropdown') notificationDropdown!: ElementRef;
+  @ViewChild('notificationIcon') notificationIcon!: ElementRef;
+
   faBell = faBell;
   faEnvelope = faEnvelope;
   faUser = faUser;
@@ -56,26 +59,34 @@ export class NavbarComponent {
 
   searchInput: string = '';
 
-  dropDownVisible = false;
+  notificationVisible = false;
   userOptionsVisible = false;
   searchDropdownVisible = false;
   searchDropdownFocus = false;
 
   notifications: { header: string; data: any[] }[] = [];
 
-  constructor(private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService) {}
+  constructor(private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService, private renderer: Renderer2) {
+    this.renderer.listen('window', 'click', (e: Event) => {
+      const dropdownClicked = this.notificationDropdown?.nativeElement.contains(e.target);
 
-  ngOnInit() {
-    // this.getNotifications();
+      const iconClicked = this.notificationIcon.nativeElement.contains(e.target) ||
+        (this.notificationIcon.nativeElement.querySelector('svg') &&
+          this.notificationIcon.nativeElement.querySelector('svg').contains(e.target));
+
+      if (!dropdownClicked && !iconClicked) {
+        this.notificationVisible = false;
+      }
+    });
   }
 
   toggleNotificationDropdown() {
     this.userOptionsVisible = false;
-    this.dropDownVisible = !this.dropDownVisible;
+    this.notificationVisible = !this.notificationVisible;
   }
 
   toggleUserOptions() {
-    this.dropDownVisible = false;
+    this.notificationVisible = false;
     this.userOptionsVisible = !this.userOptionsVisible;
   }
 
@@ -89,7 +100,7 @@ export class NavbarComponent {
       invoicesDue.forEach((invoiceData: any) => {
         invoiceDataArray.push(`Invoice: ${invoiceData.title}`);
       });
-      
+
       this.notifications.push({
         header: 'Invoices Due Today',
         data: invoiceDataArray,
@@ -104,7 +115,7 @@ export class NavbarComponent {
 
   changeTable(table: string) {
     this.searchDropdownFocus = true;
-    this.router.navigate(['/view'], { queryParams: {table: table } });
+    this.router.navigate(['/view'], { queryParams: { table: table } });
     this.searchDropdownVisible = false;
   }
 

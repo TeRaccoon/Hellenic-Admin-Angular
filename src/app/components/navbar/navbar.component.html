@@ -1,7 +1,8 @@
 <div class="container">
     <div class="search-container">
         <div class="search-bar">
-            <input [(ngModel)]="searchInput" (input)="searchTables($event)" (focus)="searchDropdownVisible = true" type="text" placeholder="Search..." />
+            <input [(ngModel)]="searchInput" (input)="searchTables($event)" (focus)="searchDropdownVisible = true"
+                type="text" placeholder="Search..." />
             <button>
                 <fa-icon [icon]="faSearch"></fa-icon>
             </button>
@@ -9,7 +10,8 @@
         <ng-container *ngIf="searchDropdownVisible">
             <div [class]="'search-dropdown-container'">
                 <ng-container *ngIf="filteredTableOptions.length > 0 else searchEmpty">
-                    <div *ngFor="let table of filteredTableOptions" class="search-option" (click)="changeTable(table.actual)">
+                    <div *ngFor="let table of filteredTableOptions" class="search-option"
+                        (click)="changeTable(table.actual)">
                         <p>{{ table.display }}</p>
                     </div>
                 </ng-container>
@@ -24,7 +26,7 @@
         </ng-container>
     </div>
     <div class="nav-options-container">
-        <p>
+        <p #notificationIcon>
             <fa-icon (click)="toggleNotificationDropdown()" [icon]="faBell"></fa-icon>
         </p>
         <p>
@@ -33,7 +35,7 @@
         <p>
             <fa-icon (click)="toggleUserOptions()" [icon]="faUser"></fa-icon>
         </p>
-        <div [class]="'notification-dropdown-container ' + (dropDownVisible ? '' : 'hidden')">
+        <div *ngIf="notificationVisible" #notificationDropdown class='notification-dropdown-container'>
             <ng-container *ngIf="notifications.length > 0 else elseBlock">
                 <div class="section" *ngFor="let notification of notifications">
                     <h2>{{ notification.header }}</h2>
