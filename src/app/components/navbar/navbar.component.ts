@@ -21,6 +21,9 @@ export class NavbarComponent {
   @ViewChild('notificationDropdown') notificationDropdown!: ElementRef;
   @ViewChild('notificationIcon') notificationIcon!: ElementRef;
 
+  @ViewChild('userOptions') userOptions!: ElementRef;
+  @ViewChild('userIcon') userIcon!: ElementRef;
+
   faBell = faBell;
   faEnvelope = faEnvelope;
   faUser = faUser;
@@ -68,14 +71,24 @@ export class NavbarComponent {
 
   constructor(private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService, private renderer: Renderer2) {
     this.renderer.listen('window', 'click', (e: Event) => {
-      const dropdownClicked = this.notificationDropdown?.nativeElement.contains(e.target);
+      const notificationClicked = this.notificationDropdown?.nativeElement.contains(e.target);
 
-      const iconClicked = this.notificationIcon.nativeElement.contains(e.target) ||
+      const bellClicked = this.notificationIcon.nativeElement.contains(e.target) ||
         (this.notificationIcon.nativeElement.querySelector('svg') &&
           this.notificationIcon.nativeElement.querySelector('svg').contains(e.target));
 
-      if (!dropdownClicked && !iconClicked) {
+      if (!notificationClicked && !bellClicked) {
         this.notificationVisible = false;
+      }
+
+      const userOptionsClicked = this.userOptions?.nativeElement.contains(e.target);
+
+      const userClicked = this.userIcon.nativeElement.contains(e.target) ||
+        (this.userIcon.nativeElement.querySelector('svg') &&
+          this.userIcon.nativeElement.querySelector('svg').contains(e.target));
+
+      if (!userOptionsClicked && !userClicked) {
+        this.userOptionsVisible = false;
       }
     });
   }

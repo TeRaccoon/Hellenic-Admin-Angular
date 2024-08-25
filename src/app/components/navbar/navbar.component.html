@@ -32,7 +32,7 @@
         <p>
             <fa-icon [icon]="faEnvelope"></fa-icon>
         </p>
-        <p>
+        <p #userIcon>
             <fa-icon (click)="toggleUserOptions()" [icon]="faUser"></fa-icon>
         </p>
         <div *ngIf="notificationVisible" #notificationDropdown class='notification-dropdown-container'>
@@ -48,7 +48,7 @@
                 </div>
             </ng-template>
         </div>
-        <div [class]="'user-dropdown-container ' + (userOptionsVisible ? '' : 'hidden')">
+        <div *ngIf="userOptionsVisible" #userOptions class='user-dropdown-container'>
             <h2>Options</h2>
             <button class="button" (click)="logout()">Logout</button>
             <button class="button" (click)="changePassword()">Change Password</button>
