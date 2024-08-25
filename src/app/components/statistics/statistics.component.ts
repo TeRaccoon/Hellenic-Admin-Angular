@@ -40,6 +40,9 @@ export class StatisticsComponent {
   charts: chart[] = [];
 
   ranges: any = {
+    'Yesterday': [dayjs().subtract(1, 'days'), dayjs().subtract(1, 'days')],
+    'Today': [dayjs(), dayjs()],
+    'Last 3 Days': [dayjs().subtract(3, 'days'), dayjs()],
     'Last 7 Days': [dayjs().subtract(6, 'days'), dayjs()],
     'Last 30 Days': [dayjs().subtract(29, 'days'), dayjs()],
     'This Month': [dayjs().startOf('month'), dayjs().endOf('month')],
@@ -84,19 +87,19 @@ export class StatisticsComponent {
     const primaryBackgroundColour = 'rgb(0, 140, 255, 0.4)'
     const secondaryBackgroundColour = 'rgb(255, 97, 18, 0.4)';
     const dateLabel = {
-      primary: date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString(), 
+      primary: date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString(),
       secondary: compareDate?.startDate!.format('DD MMM').toString() + ' to ' + compareDate?.endDate!.format('DD MMM').toString()
     };
 
     //Average order value
     const averageOrderHeading = 'Average Order Value';
-    const averageOrderAxisLabels = {x: 'Date', y: 'Order Value (£)'}
+    const averageOrderAxisLabels = { x: 'Date', y: 'Order Value (£)' }
     const averageOrderHeaders = ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'];
     const averageOrderDataTypes = ['text', 'currency', 'currency', 'int', 'currency'];
     const averageOrderQuery = 'average-invoice-value';
     const averageOrderFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty,}
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty, }
     ];
     const averageOrderKeys = ['dateKey', 'total', 'discounts', 'orders', 'average'];
     const averageOrderDateLabels = {
@@ -105,15 +108,15 @@ export class StatisticsComponent {
     }
 
     await this.constructLineChart({
-        date: date,
-        compareDate: compareDate,
-        queries: averageOrderQuery,
-        chartLabels: averageOrderDateLabels,
-        axisLabels: averageOrderAxisLabels,
-      },
+      date: date,
+      compareDate: compareDate,
+      queries: averageOrderQuery,
+      chartLabels: averageOrderDateLabels,
+      axisLabels: averageOrderAxisLabels,
+    },
       {
-          type: 'average-currency',
-          filter: true
+        type: 'average-currency',
+        filter: true
       },
       {
         headers: averageOrderHeaders,
@@ -128,7 +131,7 @@ export class StatisticsComponent {
     //Total Orders
     const totalOrdersHeading = 'Total Orders';
     const totalOrdersQuery = 'total-invoices';
-    const totalOrdersAxisLabels = {x: 'Date', y: 'Order Amount'};
+    const totalOrdersAxisLabels = { x: 'Date', y: 'Order Amount' };
     const totalOrdersHeaders = ['Date', 'Orders', 'Average Units Ordered', 'Average Order Value'];
     const totalOrdersDataTypes = ['text', 'int', 'number', 'currency'];
     const totalOrdersFilters = [
@@ -142,15 +145,15 @@ export class StatisticsComponent {
     }
 
     await this.constructLineChart({
-        date: date,
-        compareDate: compareDate,
-        queries: totalOrdersQuery,
-        chartLabels: totalOrdersDateLabels,
-        axisLabels: totalOrdersAxisLabels,
-      },
+      date: date,
+      compareDate: compareDate,
+      queries: totalOrdersQuery,
+      chartLabels: totalOrdersDateLabels,
+      axisLabels: totalOrdersAxisLabels,
+    },
       {
-          type: 'average-currency',
-          filter: true
+        type: 'average-currency',
+        filter: true
       },
       {
         headers: totalOrdersHeaders,
@@ -166,8 +169,8 @@ export class StatisticsComponent {
     const topSellingHeading = 'Top Selling Products';
     const topSellingLabel = 'Total Sales';
     const topSellingQuery = 'top-selling-item';
-    const topSellingAxisLabels = {x: 'Item Name', y: 'Total Sales'};
-    const topSellingHeaders = ['Item Name', 'Product Vendor', 'Product Type', 'Net Quantity', 'Gross Sales','Discounts','Net Sales','VAT','Total Sales'];
+    const topSellingAxisLabels = { x: 'Item Name', y: 'Total Sales' };
+    const topSellingHeaders = ['Item Name', 'Product Vendor', 'Product Type', 'Net Quantity', 'Gross Sales', 'Discounts', 'Net Sales', 'VAT', 'Total Sales'];
     const topSellingDataTypes = ['text', 'text', 'text', 'int', 'int', 'percentage', 'currency', 'currency', 'currency'];
     const topSellingFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
@@ -220,7 +223,7 @@ export class StatisticsComponent {
 
     //Total Invoice Value
     const totalInvoiceValueHeading = 'Total Invoices Value';
-    const totalInvoiceValueAxisLabels = {x: 'Date', y: 'Total Value'};
+    const totalInvoiceValueAxisLabels = { x: 'Date', y: 'Total Value' };
     const totalInvoiceValueHeaders = ['Date', 'Orders', 'Discounts', 'Net Sales', 'Tax', 'Gross Sales'];
     const totalInvoiceValueDataTypes = ['text', 'int', 'currency', 'currency', 'currency', 'currency'];
     const totalInvoiceValueQuery = 'total-invoice-value';
@@ -235,15 +238,15 @@ export class StatisticsComponent {
     }
 
     await this.constructLineChart({
-        date: date,
-        compareDate: compareDate,
-        queries: totalInvoiceValueQuery,
-        chartLabels: totalInvoiceValueDateLabels,
-        axisLabels: totalInvoiceValueAxisLabels,
-      },
+      date: date,
+      compareDate: compareDate,
+      queries: totalInvoiceValueQuery,
+      chartLabels: totalInvoiceValueDateLabels,
+      axisLabels: totalInvoiceValueAxisLabels,
+    },
       {
-          type: 'average-currency',
-          filter: true
+        type: 'average-currency',
+        filter: true
       },
       {
         headers: totalInvoiceValueHeaders,
@@ -266,7 +269,7 @@ export class StatisticsComponent {
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
     ];
     const storeConversionKeys = ['dateKey', 'Reached checkout', 'Added to cart', 'Payments made', 'Total sessions'];
-    
+
     statisticsData = await this.statisticsService.buildChart(
       this.selected,
       storeConversionQuery,
@@ -328,7 +331,7 @@ export class StatisticsComponent {
     const recurringCustomersHeading = 'Recurring Customers';
     const recurringCustomersLabel = ['Recurring', 'First Time'];
     const recurringCustomersQuery = ['recurring-customers', 'non-recurring-customers'];
-    const recurringCustomersAxisLabels = {x: '', y: 'Total Sales'};
+    const recurringCustomersAxisLabels = { x: '', y: 'Total Sales' };
     const recurringCustomersHeaders = ['Date', 'Customers', 'Customer Type'];
     const recurringCustomersDataTypes = ['text', 'int', 'text'];
     const recurringCustomersFilters = [
@@ -344,17 +347,17 @@ export class StatisticsComponent {
     }
 
     await this.constructLineChart({
-        date: date,
-        compareDate: compareDate,
-        queries: recurringCustomersQuery,
-        chartLabels: recurringCustomersDateLabels,
-        axisLabels: recurringCustomersAxisLabels,
-        currency: false,
-        displayLegend: true,
-      },
+      date: date,
+      compareDate: compareDate,
+      queries: recurringCustomersQuery,
+      chartLabels: recurringCustomersDateLabels,
+      axisLabels: recurringCustomersAxisLabels,
+      currency: false,
+      displayLegend: true,
+    },
       {
-          type: 'average-currency',
-          filter: true
+        type: 'average-currency',
+        filter: true
       },
       {
         headers: recurringCustomersHeaders,
@@ -420,15 +423,15 @@ export class StatisticsComponent {
     let chartDatasets = [];
     let chartData: any;
 
-    for(let index = 0; index < dataQueries.length; index++) {
+    for (let index = 0; index < dataQueries.length; index++) {
       chartData = await this.constructLineChartData(
         {
-          date: date, 
-          query: dataQueries[index], 
-          chartLabel: dataLabelsPrimary[index], 
+          date: date,
+          query: dataQueries[index],
+          chartLabel: dataLabelsPrimary[index],
           axisLabels: axisLabels,
           displayLegend: displayLegend,
-          currency: currency, 
+          currency: currency,
           aboveZero: aboveZero,
           displayTitles: displayTitles,
           ignoreDate: ignoreDate,
@@ -438,23 +441,23 @@ export class StatisticsComponent {
           backgroundColour: backgroundColours[index],
           lineTension: lineTension
         });
-      
+
       chartData.dataset = await this.checkCompareDate({
-          date: compareDate, 
-          query: dataQueries[index], 
-          chartLabel: dataLabelsSecondary[index], 
-          axisLabels: axisLabels,
-          displayLegend: displayLegend,
-          currency: currency, 
-          aboveZero: aboveZero,
-          displayTitles: displayTitles,
-          ignoreDate: ignoreDate,
-          format: format,
-          fillLine: fillLine,
-          colour: secondaryColours[index],
-          backgroundColour: secondaryBackgroundColours[index],
-          lineTension: lineTension
-        },
+        date: compareDate,
+        query: dataQueries[index],
+        chartLabel: dataLabelsSecondary[index],
+        axisLabels: axisLabels,
+        displayLegend: displayLegend,
+        currency: currency,
+        aboveZero: aboveZero,
+        displayTitles: displayTitles,
+        ignoreDate: ignoreDate,
+        format: format,
+        fillLine: fillLine,
+        colour: secondaryColours[index],
+        backgroundColour: secondaryBackgroundColours[index],
+        lineTension: lineTension
+      },
         chartData.dataset,
       );
 
@@ -503,7 +506,7 @@ export class StatisticsComponent {
       lineTension = 0.3
     } = options;
 
-    let summaryData = await this.statisticsService.buildChart(date ?? {startDate: dayjs().startOf('month'), endDate: dayjs().endOf('month')}, query, ignoreDate, format);
+    let summaryData = await this.statisticsService.buildChart(date ?? { startDate: dayjs().startOf('month'), endDate: dayjs().endOf('month') }, query, ignoreDate, format);
     let chartDataset: any = this.statisticsService.getLineChartData(summaryData.chart.data, chartLabel, fillLine, colour, backgroundColour);
     let chartOptions = this.statisticsService.getLineChartOptions(lineTension, axisLabels, displayLegend, currency, aboveZero, displayTitles, summaryData.chart.labels);
 
