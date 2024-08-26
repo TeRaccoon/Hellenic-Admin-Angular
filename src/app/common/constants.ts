@@ -1,0 +1,22 @@
+export const TABLE_NAMES = [
+    'customers',
+    'invoices',
+    'payments',
+    'price_list',
+    'items',
+    'stocked_items',
+    'supplier_invoices',
+    'suppliers',
+    'warehouse',
+    'general_ledger',
+    'payments',
+    'customer_payments',
+    'discount_codes',
+    'retail_items',
+    'page_section_text',
+    'image_locations',
+    'page_sections',
+    'offers',
+    'categories',
+    'sub_categories'
+];
