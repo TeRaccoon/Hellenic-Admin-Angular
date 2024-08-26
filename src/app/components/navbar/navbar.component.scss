@@ -79,10 +79,11 @@
         }
     }
     .search-container {
-        margin-left: 10px;
-        display: flex;
+        width: 15vw;
         .search-bar {
-            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            border-radius: 8px 8px 0 0;
             border: 1px solid rgb(215, 215, 215);
             padding: 10px;
             button {
@@ -96,6 +97,7 @@
             input {
                 border: none;
                 font-size: 20px;
+                width: 100%;
                 &:active,
                 &:focus-visible {
                     outline: none;
@@ -108,15 +110,16 @@
         .search-dropdown-container {
             z-index: 3;
             position: absolute;
-            margin-top: 47px;
             border-radius: 0 0 8px 8px;
             border: 1px solid rgb(215, 215, 215);
             border-top: none;
-            width: 295px;
+            width: 15vw;
             background-color: white;
+            box-sizing: border-box;
             .search-option {
-                padding: 2px 0 2px 0;
+                padding: 10px;
                 cursor: pointer;
+                border-bottom: 1px solid #ccc;
                 p {
                     margin: 5px;
                 }
