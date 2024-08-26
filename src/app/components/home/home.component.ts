@@ -16,10 +16,10 @@ export class HomeComponent {
   faCircleExclamation = faCircleExclamation;
   faUserGroup = faUserGroup;
   faUserPlus = faUserPlus;
-  
+
   widgetData: any[] = [];
   widgetHeaders = ["Invoices this month", "Invoices due today", "Total customers", "New customers"];
-  widgetIcons = [faReceipt, faCircleExclamation, faUserGroup, faUserPlus ]
+  widgetIcons = [faReceipt, faCircleExclamation, faUserGroup, faUserPlus]
 
   invoiceDueData: any[] = [];
   lowStockData: any[] = [];
@@ -33,17 +33,17 @@ export class HomeComponent {
   }
 
   async loadWidgets() {
-    
-    let data = await lastValueFrom(this.dataService.processData("total-invoices-month"))
+
+    let data = await this.dataService.processGet('total-invoices-month');
     this.widgetData.push(data);
 
-    data = await lastValueFrom(this.dataService.processData("invoices-due-today"))
+    data = await this.dataService.processGet('invoices-due-today');
     this.widgetData.push(data);
 
-    data = await lastValueFrom(this.dataService.processData("total-customers"))
+    data = await this.dataService.processGet('total-customers');
     this.widgetData.push(data);
 
-    data = await lastValueFrom(this.dataService.processData("new-customers"))
+    data = await this.dataService.processGet('new-customers');
     this.widgetData.push(data);
   }
 
@@ -54,18 +54,15 @@ export class HomeComponent {
   }
 
   async getInvoicesDueToday() {
-    let invoiceDueData = await lastValueFrom(this.dataService.processData("invoices-due-today-basic"));
-    this.invoiceDueData = Array.isArray(invoiceDueData) ? invoiceDueData : [invoiceDueData];
+    let invoiceDueData = await this.dataService.processGet('invoices-due-today-basic', undefined, true);
   }
 
   async getLowStock() {
-    let lowStockData = await lastValueFrom(this.dataService.processData("low-stock"));
-    this.lowStockData = Array.isArray(lowStockData) ? lowStockData : [lowStockData];
+    let lowStockData = await this.dataService.processGet('low-stock', undefined, true);
   }
 
   async getProductsExpiring() {
-    let productsExpiringData = await lastValueFrom(this.dataService.processData("products-expiring-soon"));
-    this.productsExpiringData = Array.isArray(productsExpiringData) ? productsExpiringData : [productsExpiringData];
+    let productsExpiringData = await this.dataService.processGet('products-expiring-soon', undefined, true);
   }
 
   getObjectKeys(column: any) {

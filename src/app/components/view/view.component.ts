@@ -216,8 +216,7 @@ export class ViewComponent {
     this.viewMetaData.loaded = false;
 
     if (this.tableName == 'items') {
-      let totalStockData = await lastValueFrom(this.dataService.processData('total-stock'));
-      totalStockData = Array.isArray(totalStockData) ? totalStockData : [totalStockData];
+      let totalStockData = await this.dataService.processGet('total-stock', undefined, true);
 
       totalStockData.forEach((stock: any) => {
         this.stockData[stock.item_id] = stock.total_quantity;
@@ -225,8 +224,7 @@ export class ViewComponent {
     }
 
     if (this.tableName == 'stocked_items') {
-      let images = await lastValueFrom(this.dataService.processData('stocked-item-images'));
-      images = Array.isArray(images) ? images : [images];
+      let images = await this.dataService.processGet('stocked-item-images', undefined, true);
 
       if (images != null) {
         images.forEach((imageData: any) => {
@@ -235,7 +233,7 @@ export class ViewComponent {
       };
     }
 
-    let tableData = await lastValueFrom(this.dataService.processData('table', table));
+    let tableData = await this.dataService.processGet('table', { filter: table });
 
     if (tableData != null) {
       this.data = Array.isArray(tableData.data) ? tableData.data : [tableData.data];
@@ -324,7 +322,7 @@ export class ViewComponent {
       return;
     }
 
-    let editFormData = await lastValueFrom(this.dataService.processData("edit-form-data", table));
+    let editFormData = await this.dataService.processGet("edit-form-data", { filter: table });
 
     var fakeRow = JSON.parse(JSON.stringify(row));
 
@@ -520,7 +518,7 @@ export class ViewComponent {
 
   print() {
     if (this.selectedRows.length < 1) {
-      this.showErrorMessage("Please select an invoice before trying to print!");
+      this.showErrorMessage('Please select an invoice before trying to print!');
       return;
     }
 
@@ -550,18 +548,17 @@ export class ViewComponent {
 
     if (row != null) {
       let tableColumns = [
-        { name: "ID", type: "number" },
-        { name: "Item Name", type: "string" },
-        { name: "Quantity", type: "number" },
-        { name: "Expiry Date", type: "date" },
-        { name: "Packing Format", type: "string" },
-        { name: "Barcode", type: "string" },
-        { name: "Warehouse", type: "string" }
+        { name: 'ID', type: 'number' },
+        { name: 'Item Name', type: 'string' },
+        { name: 'Quantity', type: 'number' },
+        { name: 'Expiry Date', type: 'date' },
+        { name: 'Packing Format', type: 'string' },
+        { name: 'Barcode', type: 'string' },
+        { name: 'Warehouse', type: 'string' }
       ];
 
-      let tableRows = await lastValueFrom(this.dataService.processData("stocked-items", itemId));
-      tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
-      let tableName = "stocked_items";
+      let tableRows = await this.dataService.processGet('stocked-items', { filter: itemId }, true);
+      let tableName = 'stocked_items';
       let title = `Stocked Items for ${row['item_name']}`;
 
       this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: itemId, columnName: "Item ID" }, query: "stocked-items" });
@@ -573,16 +570,15 @@ export class ViewComponent {
     var row = this.data.filter((row: any) => row.id == invoiceId)[0];
 
     let tableColumns = [
-      { name: "ID", type: "number" },
-      { name: "Item Name", type: "string" },
-      { name: "Unit", type: "string" },
-      { name: "Picture", type: "image" },
-      { name: "Quantity", type: "number" },
-      { name: "VAT Charge", type: "enum" },
-      { name: "Discount", type: "number" }
+      { name: 'ID', type: 'number' },
+      { name: 'Item Name', type: 'string' },
+      { name: 'Unit', type: 'string' },
+      { name: 'Picture', type: 'image' },
+      { name: 'Quantity', type: 'number' },
+      { name: 'VAT Charge', type: 'enum' },
+      { name: 'Discount', type: 'number' }
     ];
-    let tableRows = await lastValueFrom(this.dataService.processData("invoiced-items", invoiceId));
-    tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
+    let tableRows = await this.dataService.processGet('invoiced-items', { filter: invoiceId }, true);
     let tableName = "invoiced_items";
     let title = `Invoiced Items for ${row['title']}`;
 
@@ -593,20 +589,19 @@ export class ViewComponent {
   async supplierInvoiceSearch(invoiceId: string) {
     var row = this.data.filter((row: any) => row.id == invoiceId)[0];
     let tableColumns = [
-      { name: "ID", type: "number" },
-      { name: "Item Name", type: "string" },
-      { name: "Picture", type: "image" },
-      { name: "Price", type: "currency" },
-      { name: "Purchase Date", type: "date" },
-      { name: "Quantity", type: "number" },
-      { name: "Expiry Date", type: "string" },
-      { name: "Packing Format", type: "enum" },
-      { name: "Barcode", type: "string" },
-      { name: "Warehouse", type: "number" }
+      { name: 'ID', type: 'number' },
+      { name: 'Item Name', type: 'string' },
+      { name: 'Picture', type: 'image' },
+      { name: 'Price', type: 'currency' },
+      { name: 'Purchase Date', type: 'date' },
+      { name: 'Quantity', type: 'number' },
+      { name: 'Expiry Date', type: 'string' },
+      { name: 'Packing Format', type: 'enum' },
+      { name: 'Barcode', type: 'string' },
+      { name: 'Warehouse', type: 'number' }
     ];
-    let tableRows = await lastValueFrom(this.dataService.processData("stocked-items-invoice", invoiceId));
-    tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
-    let tableName = "stocked_items";
+    let tableRows = await this.dataService.processGet('stocked-items-invoice', { filter: invoiceId }, true);
+    let tableName = 'stocked_items';
     let title = `Stocked Items from ${row['reference']}`;
 
     this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: invoiceId, columnName: "Supplier Invoice ID" }, query: "stocked-items-invoice" });
@@ -615,21 +610,20 @@ export class ViewComponent {
 
   async addressSearch(customerId: string, accountName: string) {
     let tableColumns = [
-      { name: "ID", type: "number" },
-      { name: "Invoice Address One", type: "string" },
-      { name: "Invoice Address Two", type: "string" },
-      { name: "Invoice Address Three", type: "string" },
-      { name: "Invoice Address Four", type: "string" },
-      { name: "Invoice Postcode", type: "string" },
-      { name: "Delivery Address One", type: "string" },
-      { name: "Delivery Address Two", type: "string" },
-      { name: "Delivery Address Three", type: "string" },
-      { name: "Delivery Address Four", type: "string" },
-      { name: "Delivery Postcode", type: "string" }
+      { name: 'ID', type: 'number' },
+      { name: 'Invoice Address One', type: 'string' },
+      { name: 'Invoice Address Two', type: 'string' },
+      { name: 'Invoice Address Three', type: 'string' },
+      { name: 'Invoice Address Four', type: 'string' },
+      { name: 'Invoice Postcode', type: 'string' },
+      { name: 'Delivery Address One', type: 'string' },
+      { name: 'Delivery Address Two', type: 'string' },
+      { name: 'Delivery Address Three', type: 'string' },
+      { name: 'Delivery Address Four', type: 'string' },
+      { name: 'Delivery Postcode', type: 'string' }
     ];
-    let tableRows = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", customerId));
-    tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
-    let tableName = "customer_address";
+    let tableRows = await this.dataService.processGet('customer-addresses-by-id', { filter: customerId }, true);
+    let tableName = 'customer_address';
     let title = `Customer Addresses for ${accountName}`;
 
     this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: customerId, columnName: "Customer Name" }, query: "customer-addresses-by-id" });

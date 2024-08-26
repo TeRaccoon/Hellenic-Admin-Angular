@@ -20,24 +20,24 @@ export class WidgetComponent {
 
   visible = false;
 
-  formName = "";
+  formName = '';
 
   tableData = {
     headers: [{
-      name: "",
-      type: ""
+      name: '',
+      type: ''
     }],
     rows: [],
-    tableName: "",
-    title: "",
+    tableName: '',
+    title: '',
     idData: {
-      id: "",
-      columnName: "",
+      id: '',
+      columnName: '',
     },
-    query: "",
+    query: '',
     disabled: {
       value: false,
-      message: ""
+      message: ''
     }
   };
 
@@ -64,8 +64,7 @@ export class WidgetComponent {
   }
 
   async reload() {
-    let data = await lastValueFrom<[]>(this.dataService.processData(this.tableData.query, this.tableData.idData.id));
-    this.tableData.rows = Array.isArray(data) ? data : [data];
+    let data: [] = await this.dataService.processGet(this.tableData.query, { filter: this.tableData.idData.id }, true);
     this.formService.performReload();
   }
 
@@ -77,12 +76,12 @@ export class WidgetComponent {
     this.formService.setSelectedTable(this.tableData?.tableName);
     this.formService.setDeleteFormIds([id]);
     this.formService.showDeleteForm();
-    this.formService.setReloadType("widget");
+    this.formService.setReloadType('widget');
   }
 
   async editRow(id: number) {
-    let editFormData = await lastValueFrom(this.dataService.processData("edit-form-data", this.tableData.tableName));
-    let appendOrAdd = await lastValueFrom(this.dataService.collectDataComplex("append-or-add", { table: this.tableData.tableName, id: id, column: 'id' }));
+    let editFormData = await this.dataService.processGet('edit-form-data', { filter: this.tableData.tableName });
+    let appendOrAdd = await lastValueFrom(this.dataService.collectDataComplex('append-or-add', { table: this.tableData.tableName, id: id, column: 'id' }));
 
     if (editFormData != null && appendOrAdd != null) {
       this.formService.processEditFormData(appendOrAdd, editFormData);
@@ -91,7 +90,7 @@ export class WidgetComponent {
   }
 
   async addRow() {
-    let addFormData = await lastValueFrom(this.dataService.processData("table", this.tableData.tableName));
+    let addFormData = await this.dataService.processGet('table', { filter: this.tableData.tableName });
 
     if (addFormData != null) {
       let formData = addFormData.editable;
@@ -104,7 +103,7 @@ export class WidgetComponent {
       this.formService.processAddFormData(formData, null, this.formService.constructFormSettings(this.tableData.tableName));
       this.formService.setSelectedTable(this.tableData.tableName);
       this.formService.showAddForm();
-      this.formService.setReloadType("widget");
+      this.formService.setReloadType('widget');
       this.formService.requestReload();
     }
   }
@@ -113,7 +112,7 @@ export class WidgetComponent {
     this.formService.setSelectedTable(table);
     this.formService.setSelectedId(id);
     this.formService.showEditForm();
-    this.formService.setReloadType("widget");
+    this.formService.setReloadType('widget');
   }
 
   getColumnKeys(row: any): string[] {

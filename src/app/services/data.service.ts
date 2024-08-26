@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, lastValueFrom, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { UrlService } from './url.service';
 
 export const apiUrlBase = "http://localhost/API/";
 export const imageUrlBase = "http://localhost/uploads/";
@@ -12,22 +13,32 @@ export const imageUrlBase = "http://localhost/uploads/";
 export class DataService {
   private dataSubject = new Subject<any[]>();
   tableData: any = null;
-  private widgetData = new Subject<{ [key: string]: { name: string, quantity: number}[]}>();
+  private widgetData = new Subject<{ [key: string]: { name: string, quantity: number }[] }>();
   private tableWidgetData: any = {};
   altTableData: any = {};
   invoiceIds: any[] = [];
-  tabs: {displayName: string, tableName: string}[] = [];
+  tabs: { displayName: string, tableName: string }[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private urlService: UrlService) { }
 
-  processData(query: string, filter?: string): Observable<any> {
-    let url = apiUrlBase + `admin_query_handler.php?query=${query}`;
-    if (filter != null) {
-      url += `&filter=${encodeURIComponent(filter)}`;
+  async processGet(query: string, filter: Record<string, any> = {}, makeArray = false): Promise<any> {
+
+    const url = new URL(this.urlService.getUrl('admin'));
+    url.searchParams.append('query', query);
+    console.log(filter);
+    const queryParams = { ...filter };
+    for (const [key, value] of Object.entries(queryParams)) {
+      url.searchParams.append(key, value ?? '');
     }
-    return this.http.get<any>(url);
+
+    let response = await lastValueFrom(this.http.get(url.toString()));
+
+    if (makeArray)
+      response = Array.isArray(response) ? response : [response];
+
+    return response;
   }
-  
+
   collectDataComplex(query: string, filter?: Record<string, any>): Observable<any> {
     let url = apiUrlBase + `admin_query_handler.php?query=${query}`;
     if (filter != null) {
@@ -39,7 +50,7 @@ export class DataService {
 
   async submitFormData(data: any) {
     const url = apiUrlBase + 'manage_data.php';
-    let submissionResponse = await lastValueFrom<any>(this.http.post(url, data, {withCredentials: true}));
+    let submissionResponse = await lastValueFrom<any>(this.http.post(url, data, { withCredentials: true }));
     return submissionResponse;
   }
 
@@ -51,9 +62,9 @@ export class DataService {
       query: `${tableName}_insert`
     };
 
-    switch(tableName) {
+    switch (tableName) {
       case "invoiced_items":
-        let syncResponse = await lastValueFrom(this.http.post(url, data, {withCredentials: true}))
+        let syncResponse = await lastValueFrom(this.http.post(url, data, { withCredentials: true }))
         break;
     }
   }
@@ -127,7 +138,7 @@ export class DataService {
     return this.altTableData;
   }
 
-  setTabs(tabs: {displayName: string, tableName: string}[]) {
+  setTabs(tabs: { displayName: string, tableName: string }[]) {
     this.tabs = tabs;
   }
   getTabs() {

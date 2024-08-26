@@ -26,7 +26,7 @@ export class TableWidgetComponent {
   constructor(
     private dataService: DataService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
@@ -89,11 +89,11 @@ export class TableWidgetComponent {
   }
 
   async loadVATGroups() {
-    this.vatHistory = await lastValueFrom(this.dataService.processData('vat-groups'))
+    this.vatHistory = await this.dataService.processGet('vat-groups');
   }
 
   async loadVATReturns() {
-    this.vatReturnHistory = await lastValueFrom(this.dataService.processData("vat-history-by-group-id", this.selectedVatGroup));
+    this.vatReturnHistory = await this.dataService.processGet('vat-history-by-group-id', { filter: this.selectedVatGroup });
   }
 
   async collectData() {

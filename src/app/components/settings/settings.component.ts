@@ -42,15 +42,15 @@ export class SettingsComponent {
   }
 
   async collectSettings() {
-    let settingsRaw = await lastValueFrom(this.dataService.processData('table', 'settings'));
+    let settingsRaw = await this.dataService.processGet('table', { filter: 'settings' });
 
     const editableSettings = settingsRaw.editable;
 
     editableSettings.columns.forEach((column: any, index: number) => {
-      this.settings[column] = { name: editableSettings.names[index], data: settingsRaw.data[column], required: editableSettings.required[index], type: editableSettings.types[index], key: column};
+      this.settings[column] = { name: editableSettings.names[index], data: settingsRaw.data[column], required: editableSettings.required[index], type: editableSettings.types[index], key: column };
     });
 
-    let data = await lastValueFrom(this.dataService.processData('table', 'bands'));
+    let data = await this.dataService.processGet('table', { filter: 'bands' });
     this.bands = data['display_data'];
   }
 
@@ -92,19 +92,19 @@ export class SettingsComponent {
     this.endSubmission(formSubmitResponse);
   }
 
-  endSubmission(formSubmitResponse: {success: boolean, message: string}) {
+  endSubmission(formSubmitResponse: { success: boolean, message: string }) {
     let title = "Error!";
     let message = "There was an issue saving the settings! Make sure everything is correct before trying to save.";
-    
+
     if (formSubmitResponse.success) {
       title = "Success!";
       message = "Settings saved successfully!";
-      
+
       this.changes = {};
       this.originalValues = {};
     }
 
-    this.formService.setMessageFormData({title, message});
+    this.formService.setMessageFormData({ title, message });
     this.formService.showMessageForm();
   }
 

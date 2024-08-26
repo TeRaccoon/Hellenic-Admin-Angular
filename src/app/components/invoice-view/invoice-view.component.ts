@@ -29,20 +29,20 @@ export class InvoiceViewComponent {
 
   deliveryOnly = false;
 
-  constructor(private formService: FormService, private router: Router, private dataService: DataService, private authService: AuthService) {}
+  constructor(private formService: FormService, private router: Router, private dataService: DataService, private authService: AuthService) { }
 
   ngOnInit() {
     this.loaded = false;
     this.getInvoiceData();
-    this.driver = this.authService.getAccessLevel() == "Driver";
+    this.driver = this.authService.getAccessLevel() == 'Driver';
   }
 
   async getInvoiceData() {
     let error = false;
-    
+
     var invoiceIds = this.dataService.retrievePrintInvoiceIds();
     if (invoiceIds.length == 0) {
-      this.router.navigate(['/view'], { queryParams: {table: 'invoices'}});
+      this.router.navigate(['/view'], { queryParams: { table: 'invoices' } });
       return;
     }
 
@@ -52,19 +52,19 @@ export class InvoiceViewComponent {
 
     // Retrieve and process data for each invoice
     for (const invoiceId of invoiceIds) {
-      const invoiceDataItem: any = await lastValueFrom(this.dataService.processData("invoice-info", invoiceId.toString()));
-      invoiceData.push({...invoiceDataItem, invoice_id: invoiceId});
-      
-      const productData: any = await lastValueFrom(this.dataService.processData("invoice-products", invoiceId.toString()));
-      this.invoiceItems.push(Array.isArray(productData) ? productData : [productData]);
-      
-      let deliveryDataItem: any = await lastValueFrom(this.dataService.processData("delivery-info", invoiceId.toString()));
+      const invoiceDataItem: any = await this.dataService.processGet('invoice-info', { filter: invoiceId.toString() });
+      invoiceData.push({ ...invoiceDataItem, invoice_id: invoiceId });
+
+      const productData: any = await this.dataService.processGet('invoice-products', { filter: invoiceId.toString() }, true);
+      this.invoiceItems.push(productData);
+
+      let deliveryDataItem: any = await this.dataService.processGet('delivery-info', { filter: invoiceId.toString() });
 
       if (deliveryDataItem.customer_coordinates.length == 0) {
         error = true;
         this.formService.setMessageFormData({
-          title: "Warning!",
-          message: "There was an issue with one of the postcodes! The distance could not be calculated!"
+          title: 'Warning!',
+          message: 'There was an issue with one of the postcodes! The distance could not be calculated!'
         });
       }
 
@@ -76,9 +76,9 @@ export class InvoiceViewComponent {
       ].join(' ');
 
       deliveryData.push(deliveryDataItem);
-      this.customerIds.push(deliveryDataItem.customer_id);    
+      this.customerIds.push(deliveryDataItem.customer_id);
     }
-      
+
     let combinedData = invoiceData.map((invoice, index) => ({ invoice, delivery: deliveryData[index] }));
 
     this.invoiceData = combinedData.map(item => item.invoice);
@@ -95,7 +95,7 @@ export class InvoiceViewComponent {
     let tempData = [...this.deliveryData];
     let sortedDeliveries = [];
     let currentLocation = tempData[0].warehouse_coordinates;
-  
+
     while (tempData.length > 0) {
       let distances = tempData.map((data, index) => {
         return {
@@ -103,16 +103,16 @@ export class InvoiceViewComponent {
           distance: this.calculateDistance(currentLocation, data.customer_coordinates)
         };
       });
-  
+
       distances.sort((a: any, b: any) => a.distance - b.distance);
       let nearestDeliveryIndex = distances[0].index;
       let nearestDelivery = tempData.splice(nearestDeliveryIndex, 1)[0];
-      
+
       sortedDeliveries.push({ ...nearestDelivery, distance: distances[0].distance });
-  
+
       currentLocation = nearestDelivery.customer_coordinates;
     }
-  
+
     this.deliveryData = sortedDeliveries;
   }
 
@@ -122,16 +122,16 @@ export class InvoiceViewComponent {
 
   calculateHaversine(coord1: any, coord2: any): string {
     const R = 6371000; // Earth's radius in meters
-    const lat1Rad = coord1.latitude * (Math.PI/180);
-    const lat2Rad = coord2.latitude * (Math.PI/180);
-    const deltaLat = (coord2.latitude - coord1.latitude) * (Math.PI/180);
-    const deltaLon = (coord2.longitude - coord1.longitude) * (Math.PI/180);
-  
-    const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
-              Math.cos(lat1Rad) * Math.cos(lat2Rad) *
-              Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  
+    const lat1Rad = coord1.latitude * (Math.PI / 180);
+    const lat2Rad = coord2.latitude * (Math.PI / 180);
+    const deltaLat = (coord2.latitude - coord1.latitude) * (Math.PI / 180);
+    const deltaLon = (coord2.longitude - coord1.longitude) * (Math.PI / 180);
+
+    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+      Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
     const distance = R * c / 1000; // Distance in km
     return distance.toFixed(2);
   }
@@ -144,7 +144,7 @@ export class InvoiceViewComponent {
         if (item['vat_charge'] == 'Yes') {
           item['sub_total'] = item['price'] * item['quantity'];
           item['net_total'] = item['sub_total'] * (100 - item['discount']) / 100;
-          item['vat_charge'] = item['net_total']  * 0.2;
+          item['vat_charge'] = item['net_total'] * 0.2;
           item['total'] = (item['net_total'] + item['vat_charge']);
           vatTotal += item['vat_charge'];
         } else {
@@ -158,7 +158,7 @@ export class InvoiceViewComponent {
 
   async print() {
     this.dataService.retrievePrintInvoiceIds().forEach(async (id: string) => {
-      await lastValueFrom(this.dataService.processData('set-to-printed', id));
+      await this.dataService.processGet('set-to-printed', { filter: id });
     });
     window.print();
   }

@@ -58,7 +58,7 @@ export class TablelessViewComponent {
       this.dataCollected = true;
     });
   }
-  
+
   getObjectKeys(obj: object): string[] {
     return Object.keys(obj);
   }
@@ -95,14 +95,14 @@ export class TablelessViewComponent {
     let controlIndex = this.controlIndex;
     return Object.keys(this.vatReturnForm.controls)[controlIndex];
   }
-  
+
   getTimes(n: number): number[] {
     return Array(n);
   }
 
   getRowTotal(row: number) {
     if (row == 0) {
-      return Number(this.alternativeData.values[row]) + Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[0]]?.value) + Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[1]]?.value) + Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[2]]?.value); 
+      return Number(this.alternativeData.values[row]) + Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[0]]?.value) + Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[1]]?.value) + Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[2]]?.value);
     }
 
     if (row == 3) {
@@ -159,7 +159,7 @@ export class TablelessViewComponent {
         });
       }
     } else {
-      this.formService.setMessageFormData({ title: 'Warning', message: 'Please fill out all the required fields before continuing'});
+      this.formService.setMessageFormData({ title: 'Warning', message: 'Please fill out all the required fields before continuing' });
       this.formService.showMessageForm();
     }
   }
@@ -176,7 +176,7 @@ export class TablelessViewComponent {
       return false;
     } else {
       if (await this.vatReturnExists(period)) {
-        await lastValueFrom(this.dataService.processData("delete-vat-returns-by-group-id", period));
+        await this.dataService.processGet("delete-vat-returns-by-group-id", { filter: period });
       }
       for (let boxNumber = 1; boxNumber < 10; boxNumber++) {
         const response = await this.dataService.submitFormData({
@@ -194,13 +194,13 @@ export class TablelessViewComponent {
         });
         if (!response.success) return false;
       }
-      
+
       return true;
     }
   }
 
   async vatReturnExists(period: string) {
-    const response = await lastValueFrom(this.dataService.processData('vat-history-by-group-id', period));
+    const response = await this.dataService.processGet('vat-history-by-group-id', { filter: period });
     return response.length > 0;
   }
 }

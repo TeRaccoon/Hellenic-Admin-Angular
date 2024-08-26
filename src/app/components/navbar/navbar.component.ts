@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormService } from '../../services/form.service';
 import { lastValueFrom } from 'rxjs';
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'app-navbar',
@@ -69,7 +70,7 @@ export class NavbarComponent {
 
   notifications: { header: string; data: any[] }[] = [];
 
-  constructor(private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService, private renderer: Renderer2) {
+  constructor(private searchService: SearchService, private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService, private renderer: Renderer2) {
     this.renderer.listen('window', 'click', (e: Event) => {
       const notificationClicked = this.notificationDropdown?.nativeElement.contains(e.target);
 
@@ -104,11 +105,9 @@ export class NavbarComponent {
   }
 
   async getNotifications() {
-    let invoicesDue = await lastValueFrom(this.dataService.processData('invoices-due', '1'));
+    let invoicesDue = await this.dataService.processGet('invoices-due', { filter: '1' }, true);
 
     if (invoicesDue.length != 0) {
-      invoicesDue = Array.isArray(invoicesDue) ? [invoicesDue] : invoicesDue;
-
       var invoiceDataArray: any[] = [];
       invoicesDue.forEach((invoiceData: any) => {
         invoiceDataArray.push(`Invoice: ${invoiceData.title}`);
@@ -124,6 +123,7 @@ export class NavbarComponent {
   searchTables(event: Event) {
     const filter = String((event.target as HTMLInputElement).value);
     this.filteredTableOptions = this.tableOptions.filter((option) => option.display && option.display.toUpperCase().includes(filter.toUpperCase()));
+    this.searchService.search('bing');
   }
 
   changeTable(table: string) {

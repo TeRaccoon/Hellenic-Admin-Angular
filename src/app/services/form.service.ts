@@ -385,7 +385,7 @@ export class FormService {
   }
 
   async getIdReplacementData(query: string, dataService: DataService): Promise<any> {
-    return await lastValueFrom(dataService.processData(query));
+    return await dataService.processGet(query);
   }
 
   setReloadType(reloadType: string) {
@@ -516,7 +516,7 @@ export class FormService {
     let query = this.getImageCountQuery(tableName);
 
     if (id != null && query != null) {
-      imageCount = await lastValueFrom<number>(this.dataService.processData(query, id));
+      imageCount = await this.dataService.processGet(query, { filter: id });
     }
 
     if (imageCount != null) {
@@ -568,8 +568,7 @@ export class FormService {
       query = "images-from-page-section-id";
     }
 
-    let images = await lastValueFrom(this.dataService.processData(query, id));
-    images = Array.isArray(images) ? images : [images];
+    let images = await this.dataService.processGet(query, { filter: id }, true);
 
     return images;
   }

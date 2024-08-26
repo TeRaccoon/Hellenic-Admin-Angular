@@ -22,22 +22,22 @@ export class EditFormComponent {
   editForm: FormGroup;
 
   mappedFormDataKeys: any;
-  mappedFormData: Map<string, data> = new Map(); 
+  mappedFormData: Map<string, data> = new Map();
   formData: keyedData = {};
 
   formSettings: settings = {
     showAddMore: false,
   };
-  
+
   tableName: string = '';
   id: string = '';
 
   file: File | null = null;
   fileName = '';
-  
+
   imageReplacements: string[] = [];
   selectedImage: string = "";
-  
+
   selectData: { key: string; data: string[] }[] = [];
 
   filteredReplacementData: any = {};
@@ -50,7 +50,7 @@ export class EditFormComponent {
 
   alternativeSelectData: {
     [key: string]: {
-      data: {value: string}[]
+      data: { value: string }[]
     }
   } = {};
 
@@ -65,11 +65,11 @@ export class EditFormComponent {
     (key: string, filter: string, field: string | null) => this.performSearch(key, filter, field),
     750
   );
-  
-  alternativeSelectedData: { [key: string]: {selectData: string} } = {};
-  selectedReplacementData: { [key:string]: {selectData: string, selectDataId: Number | null } | null} = {};
-  selectedReplacementFilter: { [key:string]: {selectFilter: string } } = {};
-  selectOpen: {[key: string]: {opened: boolean}} = {};
+
+  alternativeSelectedData: { [key: string]: { selectData: string } } = {};
+  selectedReplacementData: { [key: string]: { selectData: string, selectDataId: Number | null } | null } = {};
+  selectedReplacementFilter: { [key: string]: { selectFilter: string } } = {};
+  selectOpen: { [key: string]: { opened: boolean } } = {};
 
   constructor(
     private dataService: DataService,
@@ -145,18 +145,18 @@ export class EditFormComponent {
       this.alternativeSelectData = this.formService.getAlternativeSelectData();
       Object.keys(this.alternativeSelectData).forEach((key) => {
         this.alternativeSelectedData[key] = { selectData: this.formData[key]?.value };
-        this.selectOpen[key] = {opened: false};
+        this.selectOpen[key] = { opened: false };
       });
       Object.keys(this.replacementData).forEach((key) => {
         if (!Array.isArray(this.filteredReplacementData[key].data)) {
           this.filteredReplacementData[key].data = [this.filteredReplacementData[key].data];
         }
-        
+
         if (this.filteredReplacementData[key].data.length > 0) {
           var tempReplacement = this.formData[key].value == null ? '' : this.filteredReplacementData[key].data.find((item: { id: number; data: string; }) => item.id === Number(this.formData[key].value))!.replacement;
           this.selectedReplacementData[key] = { selectData: tempReplacement, selectDataId: Number(this.formData[key].value) };
-          this.selectedReplacementFilter[key] = { selectFilter: ''};
-          this.selectOpen[key] = {opened: false};
+          this.selectedReplacementFilter[key] = { selectFilter: '' };
+          this.selectOpen[key] = { opened: false };
 
           this.filteredReplacementData[key].data = this.filteredReplacementData[key].data.filter((item: any) => item.replacement != null);
         }
@@ -165,8 +165,7 @@ export class EditFormComponent {
       if (this.tableName == "invoices") {
         let customerId = this.editForm.get("customer_id")?.value;
         if (customerId != null) {
-          let addresses = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", String(customerId)));
-          addresses = Array.isArray(addresses) ? addresses : [addresses];
+          let addresses = await this.dataService.processGet('customer-addresses-by-id', { filter: customerId.toString() }, true);
           this.updateCustomerAddresses(addresses, "Delivery Address");
           this.updateCustomerAddresses(addresses, "Billing Address");
         }
@@ -175,7 +174,7 @@ export class EditFormComponent {
       if (this.tableName == "customer_payments") {
         let invoiceId = this.editForm.get("invoice_id")?.value;
         if (invoiceId != null) {
-          this.invoiceDetails = await lastValueFrom(this.dataService.processData("invoice", invoiceId.toString()));
+          this.invoiceDetails = await this.dataService.processGet('invoice', { filter: invoiceId.toString() });
         }
       }
 
@@ -185,14 +184,14 @@ export class EditFormComponent {
 
   async buildForm() {
     this.isLocked();
-    
+
     let formDataArray = Object.entries(this.formData);
     formDataArray.sort((a: any, b: any) => a[1].inputType.localeCompare(b[1].inputType));
     formDataArray = this.checkForSensitiveData(formDataArray);
 
     this.mappedFormData = new Map(formDataArray);
     this.mappedFormDataKeys = Array.from(this.mappedFormData.keys());
-    
+
     for (const key in this.formData) {
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];
@@ -229,8 +228,8 @@ export class EditFormComponent {
     inputType: string;
     dataType: string;
     required: boolean;
-    field: string;}][])
-  {
+    field: string;
+  }][]) {
     formDataArray.forEach(subArray => {
       if (subArray[0] === "Password") {
         subArray[1].value = '';
@@ -246,7 +245,7 @@ export class EditFormComponent {
   }
 
   async deleteImage(image: any) {
-    let response = await lastValueFrom(this.dataService.processData("delete-image", image));
+    let response = await this.dataService.processGet('delete-image', { filter: image });
     if (response) {
       this.formService.setMessageFormData({
         title: 'Success!',
@@ -291,11 +290,11 @@ export class EditFormComponent {
     if (this.imageReplacements.length == 0) {
       return;
     }
-    
+
     if (this.mappedFormData.get('Image')?.value != null) {
       this.imageReplacements.push(this.mappedFormData.get('Image')!.value);
     }
-    
+
     this.imageReplacements = [...new Set(this.imageReplacements)];
   }
 
@@ -314,7 +313,7 @@ export class EditFormComponent {
       } else {
         this.standardImageSubmission();
       }
-    }    
+    }
   }
 
   async standardImageSubmission() {
@@ -346,20 +345,20 @@ export class EditFormComponent {
       return false;
     }
 
-    return {id: id, name: name};
+    return { id: id, name: name };
   }
 
   async submitImageOnly() {
     const validationResult = this.imageSubmissionValidation();
     if (validationResult !== false) {
-      let uploadResponse =  await this.formService.handleImageSubmissions(validationResult.id, validationResult.name, this.file as File, this.tableName);
+      let uploadResponse = await this.formService.handleImageSubmissions(validationResult.id, validationResult.name, this.file as File, this.tableName);
       if (uploadResponse.success) {
         this.editForm.get('image_file_name')?.setValue(uploadResponse.imageFileName);
       }
     }
     this.formState.submitted = true;
-  }  
-  
+  }
+
   async submissionWithoutImage(hideForm: boolean) {
     let submissionResponse = await this.dataService.submitFormData(this.editForm.value);
     this.formService.setMessageFormData({
@@ -465,25 +464,24 @@ export class EditFormComponent {
   }
 
   async updateSelectedReplacementDataFromKey(dataId: Number, dataValue: string, key: string, field: string) {
-    this.selectedReplacementData[key] = {selectData: dataValue, selectDataId: dataId};
+    this.selectedReplacementData[key] = { selectData: dataValue, selectDataId: dataId };
     this.editForm.get(field)?.setValue(dataId);
 
-    if (this.tableName == "invoices" && field == "customer_id") {
-      let addresses = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", String(dataId)));
-      this.updateCustomerAddresses(addresses, "Delivery Address");
-      this.updateCustomerAddresses(addresses, "Billing Address");
+    if (this.tableName == 'invoices' && field == 'customer_id') {
+      let addresses = await this.dataService.processGet('customer-addresses-by-id', { filter: dataId.toString() }, true);
+      this.updateCustomerAddresses(addresses, 'Delivery Address');
+      this.updateCustomerAddresses(addresses, 'Billing Address');
     }
-
-    if (this.tableName == "customer_payments" && field == "invoice_id") {
-      this.invoiceDetails = await lastValueFrom(this.dataService.processData("invoice", dataId.toString()));
+    else if (this.tableName == 'customer_payments' && field == 'invoice_id') {
+      this.invoiceDetails = await this.dataService.processGet('invoice', { filter: dataId.toString() });
+      this.selectOpen[key].opened = false;
     }
-    this.selectOpen[key].opened = false;
   }
 
   async updateCustomerAddresses(addressData: any, key: string) {
     let addressReplacement = addressData.map((address: any) => {
       let replacement;
-      if (key == "Delivery Address") {
+      if (key == 'Delivery Address') {
         replacement = [address.delivery_address_one, address.delivery_address_two, address.delivery_address_three, address.delivery_address_four, address.delivery_postcode];
       } else {
         replacement = [address.invoice_address_one, address.invoice_address_two, address.invoice_address_three, address.invoice_address_four, address.invoice_postcode];
@@ -498,11 +496,11 @@ export class EditFormComponent {
 
     this.replacementData[key].data = addressReplacement;
     this.filteredReplacementData[key].data = addressReplacement;
-  }  
-  
+  }
+
   updateAddressValues(key: string, field: string, event: any): void {
     let value = event.target.value;
-    this.addresses[key] = {...this.addresses[key], [field]: value};
+    this.addresses[key] = { ...this.addresses[key], [field]: value };
   }
 
   async addAddressToBook(key: string) {
@@ -519,8 +517,8 @@ export class EditFormComponent {
       delivery_address_three: this.addresses['Delivery Address'].line3,
       delivery_postcode: this.addresses['Delivery Address'].postcode,
       customer_id: customerId,
-      action: "add",
-      table_name: "customer_address"
+      action: 'add',
+      table_name: 'customer_address'
     }
 
     let response = await this.dataService.submitFormData(payload);
@@ -542,7 +540,7 @@ export class EditFormComponent {
         this.replacementData[key].data.push(replacement);
         this.editForm.get(secondaryKey)?.setValue(id);
       } else {
-        let address = await lastValueFrom(this.dataService.processData('customer-addresses', id));
+        let address = await this.dataService.processGet('customer-addresses', { filter: id });
         await this.updateCustomerAddresses([address], key);
         await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'address_id' : 'billing_address_id');
       }
@@ -567,7 +565,7 @@ export class EditFormComponent {
   filterDropSelect(key: string, event: any, field: string | null) {
     const filter = event.target.value || '';
     this.selectedReplacementData[key]!.selectData = filter;
-  
+
     if (this.replacementData[key]?.data.length > 0) {
       this.debounceSearch(key, filter, field);
     }
@@ -614,13 +612,13 @@ export class EditFormComponent {
     }
     this.selectOpen[key] = { opened: true };
   }
-  
+
   onInputBlur(key: string) {
     this.selectOpen[key] = { opened: false };
   }
 
   updateImageSelection(image: string) {
-    this.selectedImage = image;    
+    this.selectedImage = image;
   }
 
   canUploadImages() {
