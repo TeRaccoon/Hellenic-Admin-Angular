@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
@@ -14,8 +14,8 @@ export class SidebarComponent {
   faCaretDown = faCaretDown;
   faCaretRight = faCaretRight;
 
-  tabs: {displayName: string, tableName: string}[] = [];
-  
+  tabs: { displayName: string, tableName: string }[] = [];
+
   tables: { [category: string]: any[] } = {
     "Customers": [
       { tableName: "customers", displayName: "Overview" },
@@ -28,7 +28,7 @@ export class SidebarComponent {
     ],
     "Supply": [
       { tableName: "stocked_items", displayName: "Stock" },
-      { tableName: 'expired_items', displayName: 'Expired Items'},
+      { tableName: 'expired_items', displayName: 'Expired Items' },
       { tableName: "supplier_invoices", displayName: "Invoices" },
       { tableName: "suppliers", displayName: "Suppliers" },
       { tableName: "warehouse", displayName: "Warehouses" },
@@ -40,7 +40,7 @@ export class SidebarComponent {
       { tableName: "payments", displayName: "All Payments" },
       { tableName: "profit_loss", displayName: "Profit / Loss" },
       { tableName: "customer_payments", displayName: "Invoice Payments" },
-      { tableName: "debtor_creditor", displayName: "Aged Debtor / Creditors"},
+      { tableName: "debtor_creditor", displayName: "Aged Debtor / Creditors" },
       { tableName: "vat-returns", displayName: "VAT Returns" }
     ],
     "Website": [
@@ -62,8 +62,18 @@ export class SidebarComponent {
   selectedTable: string | null = null;
 
   isDropdownVisible: { [key: string]: boolean } = {};
-  
-  constructor(private router: Router, private dataService: DataService, private authService: AuthService, private formService: FormService) {}
+
+  constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService, private authService: AuthService, private formService: FormService) {
+    route.queryParams.subscribe(params => {
+      if (params['table'] != null) {
+        this.selectedTable = params['table'];
+      }
+    });
+  }
+
+  ngOnInit() {
+
+  }
 
   canDisplayTable(tableName: string) {
     return this.authService.queryAccessTable(tableName, false);
@@ -71,7 +81,7 @@ export class SidebarComponent {
 
   changeTable(tableName: string) {
     if (!this.authService.queryAccessTable(tableName)) {
-      this.formService.setMessageFormData({title: "Warning!", message: "You don't have permission to access this page! If you think you should, contact the site administrator."});
+      this.formService.setMessageFormData({ title: "Warning!", message: "You don't have permission to access this page! If you think you should, contact the site administrator." });
       this.formService.showMessageForm();
       return;
     }
@@ -102,7 +112,7 @@ export class SidebarComponent {
       case "customer_payments":
         this.dataService.setTabs(this.tables['Finance']);
         break;
-      
+
       case "discount_codes":
       case "retail_items":
       case "page_section_text":
@@ -112,20 +122,20 @@ export class SidebarComponent {
       case "categories":
       case "sub_categories":
         this.dataService.setTabs(this.tables['Website']);
-          break;
+        break;
 
       default:
         this.dataService.setTabs([]);
         break;
     }
     if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics" && tableName != "settings" && tableName != "vat-returns") {
-      this.router.navigate(['/view'], { queryParams: {table: tableName } });
+      this.router.navigate(['/view'], { queryParams: { table: tableName } });
     } else if (tableName == "statistics") {
       this.router.navigate(['/statistics']);
     } else if (tableName == "settings") {
       this.router.navigate(['/settings']);
     } else {
-      this.router.navigate(['/page'], { queryParams: {table: tableName } });
+      this.router.navigate(['/page'], { queryParams: { table: tableName } });
     }
   }
 
