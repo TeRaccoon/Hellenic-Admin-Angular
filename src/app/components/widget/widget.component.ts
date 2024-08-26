@@ -15,7 +15,7 @@ export class WidgetComponent {
   faTrashCan = faTrashCan;
   faPenToSquare = faPenToSquare;
   faFileCircleXmark = faFileCircleXmark;
-  
+
   imageUrlBase = imageUrlBase;
 
   visible = false;
@@ -41,8 +41,8 @@ export class WidgetComponent {
     }
   };
 
-  constructor(private dataService: DataService, private formService: FormService) {}
-  
+  constructor(private dataService: DataService, private formService: FormService) { }
+
   ngOnInit() {
     this.subscriptionHandler();
   }
@@ -85,14 +85,14 @@ export class WidgetComponent {
     let appendOrAdd = await lastValueFrom(this.dataService.collectDataComplex("append-or-add", { table: this.tableData.tableName, id: id, column: 'id' }));
 
     if (editFormData != null && appendOrAdd != null) {
-      this.formService.processEditFormData(id, appendOrAdd, editFormData);
+      this.formService.processEditFormData(appendOrAdd, editFormData);
       this.prepareEditFormService(id, this.tableData.tableName);
     }
   }
 
   async addRow() {
     let addFormData = await lastValueFrom(this.dataService.processData("table", this.tableData.tableName));
-    
+
     if (addFormData != null) {
       let formData = addFormData.editable;
 
@@ -101,7 +101,7 @@ export class WidgetComponent {
       values[idIndex] = this.tableData.idData.id;
       formData.values = values;
 
-      this.formService.processAddFormData(formData, this.formService.constructFormSettings(this.tableData.tableName));
+      this.formService.processAddFormData(formData, null, this.formService.constructFormSettings(this.tableData.tableName));
       this.formService.setSelectedTable(this.tableData.tableName);
       this.formService.showAddForm();
       this.formService.setReloadType("widget");

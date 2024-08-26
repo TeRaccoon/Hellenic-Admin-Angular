@@ -23,7 +23,7 @@ export class ViewComponent {
 
   apiUrlBase = apiUrlBase;
   imageUrlBase = imageUrlBase;
-  
+
   tableName: string = "";
   displayName: string = "";
   displayColumnFilters: string[] = [];
@@ -41,7 +41,7 @@ export class ViewComponent {
 
   selectedRows: number[] = [];
 
-  images: { [key:string]: any}[] = [];
+  images: { [key: string]: any }[] = [];
 
   distanceLoading = false;
 
@@ -53,9 +53,9 @@ export class ViewComponent {
 
   viewMetaData: viewMetadata;
 
-  tabs: {displayName: string, tableName: string}[] = [];
+  tabs: { displayName: string, tableName: string }[] = [];
 
-  sortedColumn: sortedColumn = {columnName: '', ascending: false};
+  sortedColumn: sortedColumn = { columnName: '', ascending: false };
 
   constructor(private authService: AuthService, private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {
     this.accessible = this.authService.returnAccess();
@@ -204,17 +204,17 @@ export class ViewComponent {
 
   changeTab(tableName: string) {
     if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics") {
-      this.router.navigate(['/view'], { queryParams: {table: tableName } });
+      this.router.navigate(['/view'], { queryParams: { table: tableName } });
     } else if (tableName == "statistics") {
       this.router.navigate(['/statistics'])
     } else {
-      this.router.navigate(['/page'], { queryParams: {table: tableName } });
+      this.router.navigate(['/page'], { queryParams: { table: tableName } });
     }
   }
-  
+
   async loadTable(table: string) {
     this.viewMetaData.loaded = false;
-    
+
     if (this.tableName == 'items') {
       let totalStockData = await lastValueFrom(this.dataService.processData('total-stock'));
       totalStockData = Array.isArray(totalStockData) ? totalStockData : [totalStockData];
@@ -227,7 +227,7 @@ export class ViewComponent {
     if (this.tableName == 'stocked_items') {
       let images = await lastValueFrom(this.dataService.processData('stocked-item-images'));
       images = Array.isArray(images) ? images : [images];
-      
+
       if (images != null) {
         images.forEach((imageData: any) => {
           this.images[imageData.item_id] = imageData.file_name
@@ -252,7 +252,7 @@ export class ViewComponent {
       this.changePage(this.viewMetaData.currentPage);
 
       this.viewMetaData.loaded = true;
-    }    
+    }
   }
 
   getColumnHeaders(obj: { [key: string]: any }): string[] {
@@ -261,7 +261,7 @@ export class ViewComponent {
 
   sortColumn(column: any) {
     this.filteredDisplayData = this.displayData;
-    let dataName : string = this.editable.columns.filter((_, index) => this.editable.names[index] == column)[0];    
+    let dataName: string = this.editable.columns.filter((_, index) => this.editable.names[index] == column)[0];
     if (dataName === undefined) {
       dataName = 'id';
     }
@@ -296,20 +296,28 @@ export class ViewComponent {
     this.changePage(1);
   }
 
+  duplicate() {
+    let id = this.selectedRows[0];
+    let row = this.data.filter((row: any) => row.id == id)[0];
+
+    this.formService.processAddFormData(this.editable, row);
+    this.prepareAddFormService(this.tableName);
+  }
+
   async editRow(id: any, table: string) {
     var row = this.data.filter((row: any) => row.id == id)[0];
 
     if (table == '') {
       if (this.tableName == 'invoices') {
         if (row['status'] == 'Complete') {
-          this.formService.setMessageFormData({title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!'});
+          this.formService.setMessageFormData({ title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!' });
           this.formService.showMessageForm();
         } else {
-          this.formService.processEditFormData(id, row, this.editable)
+          this.formService.processEditFormData(row, this.editable)
           this.prepareEditFormService(id, table);
         }
       } else {
-        this.formService.processEditFormData(id, row, this.editable)
+        this.formService.processEditFormData(row, this.editable)
         this.prepareEditFormService(id, table);
       }
 
@@ -317,7 +325,7 @@ export class ViewComponent {
     }
 
     let editFormData = await lastValueFrom(this.dataService.processData("edit-form-data", table));
-      
+
     var fakeRow = JSON.parse(JSON.stringify(row));
 
     let appendOrAdd;
@@ -328,29 +336,27 @@ export class ViewComponent {
         switch (this.tableName) {
           case "items":
             appendOrAdd = await lastValueFrom<any>(this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'item_id' }));
-            
-            fakeRow['item_id'] = id;
-              if (appendOrAdd.id) {
-                fakeRow = appendOrAdd;
-                this.formService.processEditFormData(appendOrAdd.id, fakeRow, editFormData);
-                this.prepareEditFormService(appendOrAdd.id, table);
-              } else {
-                let values: (string | null)[] = Array(editFormData.columns.length).fill(null);
-                const itemIdIndex = editFormData.names.indexOf('Item ID');
-                values[itemIdIndex] = id;
-                editFormData.values = values;
 
-                this.formService.processAddFormData(editFormData, {
-                  showAddMore: false
-                });
-                this.prepareAddFormService(table);
-              }
+            fakeRow['item_id'] = id;
+            if (appendOrAdd.id) {
+              fakeRow = appendOrAdd;
+              this.formService.processEditFormData(fakeRow, editFormData);
+              this.prepareEditFormService(appendOrAdd.id, table);
+            } else {
+              let values: (string | null)[] = Array(editFormData.columns.length).fill(null);
+              const itemIdIndex = editFormData.names.indexOf('Item ID');
+              values[itemIdIndex] = id;
+              editFormData.values = values;
+
+              this.formService.processAddFormData(editFormData);
+              this.prepareAddFormService(table);
+            }
             break;
         }
         break;
 
       default:
-        this.formService.processEditFormData(id, fakeRow, editFormData);
+        this.formService.processEditFormData(fakeRow, editFormData);
         this.prepareEditFormService(id, table);
         break;
     }
@@ -378,7 +384,7 @@ export class ViewComponent {
       fields: this.editable.fields,
       values: values,
     }
-    this.formService.processAddFormData(addFormData, this.formService.constructFormSettings(this.tableName));
+    this.formService.processAddFormData(addFormData, null, this.formService.constructFormSettings(this.tableName));
     this.formService.setSelectedTable(String(this.tableName));
     this.formService.showAddForm();
     this.formService.setReloadType("hard");
@@ -407,7 +413,7 @@ export class ViewComponent {
     switch (this.tableName) {
       case "customer_payments":
         if (row['linked_payment_id'] != null) {
-          this.formService.setMessageFormData({title: "Error", message: "You cannot delete this payment because it is linked. Please delete or alter the linked payment instead!"});
+          this.formService.setMessageFormData({ title: "Error", message: "You cannot delete this payment because it is linked. Please delete or alter the linked payment instead!" });
           this.formService.showMessageForm();
           return false;
         }
@@ -470,8 +476,8 @@ export class ViewComponent {
   getPageRange(): number[] {
     const range = [];
     var start = this.viewMetaData.currentPage;
-    
-    if (this.viewMetaData.currentPage > this.viewMetaData.pageCount -2 && this.viewMetaData.pageCount -2 > 0) {
+
+    if (this.viewMetaData.currentPage > this.viewMetaData.pageCount - 2 && this.viewMetaData.pageCount - 2 > 0) {
       start = this.viewMetaData.pageCount - 2;
     }
     if (start == 1 && this.viewMetaData.pageCount > 1) {
@@ -558,14 +564,14 @@ export class ViewComponent {
       let tableName = "stocked_items";
       let title = `Stocked Items for ${row['item_name']}`;
 
-      this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: itemId, columnName: "Item ID"}, query: "stocked-items"});
+      this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: itemId, columnName: "Item ID" }, query: "stocked-items" });
       this.formService.showWidget();
     }
   }
 
   async invoiceSearch(invoiceId: string) {
     var row = this.data.filter((row: any) => row.id == invoiceId)[0];
-    
+
     let tableColumns = [
       { name: "ID", type: "number" },
       { name: "Item Name", type: "string" },
@@ -580,7 +586,7 @@ export class ViewComponent {
     let tableName = "invoiced_items";
     let title = `Invoiced Items for ${row['title']}`;
 
-    this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: invoiceId, columnName: "Invoice ID"}, query: "invoiced-items", disabled: { value: row['status'] == 'Complete', message: 'This invoice is locked and cannot be modified!'}});
+    this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: invoiceId, columnName: "Invoice ID" }, query: "invoiced-items", disabled: { value: row['status'] == 'Complete', message: 'This invoice is locked and cannot be modified!' } });
     this.formService.showWidget();
   }
 
@@ -603,7 +609,7 @@ export class ViewComponent {
     let tableName = "stocked_items";
     let title = `Stocked Items from ${row['reference']}`;
 
-    this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: invoiceId, columnName: "Supplier Invoice ID"}, query: "stocked-items-invoice"});
+    this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: invoiceId, columnName: "Supplier Invoice ID" }, query: "stocked-items-invoice" });
     this.formService.showWidget();
   }
 
@@ -620,20 +626,20 @@ export class ViewComponent {
       { name: "Delivery Address Three", type: "string" },
       { name: "Delivery Address Four", type: "string" },
       { name: "Delivery Postcode", type: "string" }
-    ];  
+    ];
     let tableRows = await lastValueFrom(this.dataService.processData("customer-addresses-by-id", customerId));
     tableRows = Array.isArray(tableRows) ? tableRows : [tableRows];
     let tableName = "customer_address";
     let title = `Customer Addresses for ${accountName}`;
 
-    this.dataService.storeWidgetData({headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: {id: customerId, columnName: "Customer Name"}, query: "customer-addresses-by-id"});
+    this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: customerId, columnName: "Customer Name" }, query: "customer-addresses-by-id" });
     this.formService.showWidget();
   }
 
   shouldColourCell(data: any) {
-    switch(this.tableName) {
+    switch (this.tableName) {
       case "invoices":
-        switch(data) {
+        switch (data) {
           case "Overdue":
             return "red";
           case "Complete":
@@ -641,7 +647,7 @@ export class ViewComponent {
           case "Pending":
             return "orange";
         }
-        break;        
+        break;
     }
     return null;
   }
@@ -738,10 +744,10 @@ export class ViewComponent {
   }
 
   //Filter
-  
+
   applyFilter() {
     this.columnFilters = this.filterService.getColumnFilter();
-    this.displayColumnFilters = [];    
+    this.displayColumnFilters = [];
     this.columnFilters.forEach((filter: any) => {
       this.filterColumns(filter);
     });
@@ -780,26 +786,26 @@ export class ViewComponent {
         return dataDate >= startDate && dataDate <= endDate;
       }
       return false;
-    }); 
+    });
     this.filteredDisplayData = this.displayData;
   }
 
-  clearFilter(filter: string, reload: boolean) {    
+  clearFilter(filter: string, reload: boolean) {
     if (filter === "all" || filter === "column-date") {
       this.filterService.clearColumnDateFilter();
       this.columnDateFilters = [];
     }
-  
+
     if (filter === "all" || filter === "column") {
       this.filterService.clearColumnFilter();
       this.displayColumnFilters = [];
     }
-  
+
     if (filter === "all" || filter === "table") {
       this.filterData.searchFilter = '';
       this.filterData.searchFilterApplied = false;
     }
-  
+
     if (reload) {
       this.reloadTable();
     }
@@ -809,7 +815,7 @@ export class ViewComponent {
     this.displayColumnFilters = this.displayColumnFilters.filter((filter) => filter != this.displayColumnFilters[columnFilterIndex]);
     this.filterService.removeColumnFilter(this.columnFilters[columnFilterIndex].filter);
     this.columnFilters = this.filterService.getColumnFilter();
-    
+
     this.reloadTable();
   }
 
@@ -905,16 +911,16 @@ export class ViewComponent {
 
   calculateHaversine(coord1: any, coord2: any): string {
     const R = 6371000; // Earth's radius in meters
-    const lat1Rad = coord1.latitude * (Math.PI/180);
-    const lat2Rad = coord2.latitude * (Math.PI/180);
-    const deltaLat = (coord2.latitude - coord1.latitude) * (Math.PI/180);
-    const deltaLon = (coord2.longitude - coord1.longitude) * (Math.PI/180);
-  
-    const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
+    const lat1Rad = coord1.latitude * (Math.PI / 180);
+    const lat2Rad = coord2.latitude * (Math.PI / 180);
+    const deltaLat = (coord2.latitude - coord1.latitude) * (Math.PI / 180);
+    const deltaLon = (coord2.longitude - coord1.longitude) * (Math.PI / 180);
+
+    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
       Math.cos(lat1Rad) * Math.cos(lat2Rad) *
-      Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  
+      Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
     const distance = R * c / 1000; // Distance in km
     return distance.toFixed(2);
   }

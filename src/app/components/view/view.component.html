@@ -5,9 +5,14 @@
             <div class="options-container">
                 <div class="row">
                     <button class="button" (click)="addRow(null)">Add New +</button>
-                    <button *ngIf="this.selectedRows.length > 0 && tableName == 'invoices'" class="button" (click)="print()"><fa-icon [icon]="icons.faPrint"/></button>
-                    <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon [icon]="icons.faTrashCan"/></button>
-                    <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button" (click)="calculateDistance()">
+                    <button *ngIf="this.selectedRows.length > 0 && tableName == 'invoices'" class="button"
+                        (click)="print()"><fa-icon [icon]="icons.faPrint" /></button>
+                    <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon
+                            [icon]="icons.faTrashCan" /></button>
+                    <button *ngIf="selectedRows.length == 1" class="button" (click)="duplicate()"><fa-icon
+                            [icon]="icons.faCopy" /></button>
+                    <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button"
+                        (click)="calculateDistance()">
                         <fa-icon *ngIf="!distanceLoading; else loading" [icon]="icons.faTruckFront"></fa-icon>
                         <ng-template #loading>
                             <fa-icon [icon]="icons.faSpinner" spinPulse [spin]="true"></fa-icon>
@@ -25,17 +30,20 @@
                     </p>
                     <div class="filter-container">
                         <ng-container *ngIf="displayColumnFilters.length > 0">
-                            <div *ngFor="let filter of displayColumnFilters; let i = index" class="filter" (click)="removeColumnFilter(i)">
+                            <div *ngFor="let filter of displayColumnFilters; let i = index" class="filter"
+                                (click)="removeColumnFilter(i)">
                                 <p>{{ filter }}</p>
                                 <fa-icon [icon]="icons.faX" />
                             </div>
                         </ng-container>
-                        <div *ngIf="filterData.searchFilter != '' && filterData.searchFilterApplied" class="filter" (click)="clearFilter('table', true)">
+                        <div *ngIf="filterData.searchFilter != '' && filterData.searchFilterApplied" class="filter"
+                            (click)="clearFilter('table', true)">
                             <p>{{ filterData.searchFilter }}</p>
                             <fa-icon [icon]="icons.faX" />
                         </div>
                         <ng-container *ngIf="columnDateFilters.length > 0">
-                            <div *ngFor="let filter of columnDateFilters; let i = index" class="filter" (click)="removeColumnDateFilter(i)">
+                            <div *ngFor="let filter of columnDateFilters; let i = index" class="filter"
+                                (click)="removeColumnDateFilter(i)">
                                 <p>{{ filter.startDate }}</p>
                                 <fa-icon [icon]="icons.faArrowsLeftRight" />
                                 <p>{{ filter.endDate }}</p>
@@ -43,11 +51,13 @@
                             </div>
                         </ng-container>
                         <div class="advanced-filter-container">
-                            <button class="button" (click)="showAdvancedFilter()"><fa-icon [icon]="icons.faFilter" /></button>
+                            <button class="button" (click)="showAdvancedFilter()"><fa-icon
+                                    [icon]="icons.faFilter" /></button>
                         </div>
                         <div class="search-container">
                             <form>
-                                <input type="text" placeholder="Search..." [(ngModel)]="filterData.searchFilter" name="searchText" />
+                                <input type="text" placeholder="Search..." [(ngModel)]="filterData.searchFilter"
+                                    name="searchText" />
                                 <button type="submit" (click)="setTableFilter()">
                                     <fa-icon [icon]="icons.faSearch"></fa-icon>
                                 </button>
@@ -57,7 +67,8 @@
                 </div>
             </div>
             <div *ngIf="tabs.length > 0" class="tab-parent">
-                <div *ngFor="let tab of tabs" (click)="changeTab(tab.tableName)" [class]="tableName == tab.tableName ? 'active-tab' : 'tab'">
+                <div *ngFor="let tab of tabs" (click)="changeTab(tab.tableName)"
+                    [class]="tableName == tab.tableName ? 'active-tab' : 'tab'">
                     {{tab.displayName}}
                 </div>
             </div>
@@ -89,7 +100,8 @@
                                 </ng-container>
                                 <th *ngIf="canDisplayColumn(column.toString())" (click)="sortColumn(column)">
                                     {{ column }}
-                                    <fa-icon *ngIf="this.sortedColumn.columnName == column.toString()" [icon]="this.sortedColumn.ascending ? icons.faArrowUp : icons.faArrowDown" />
+                                    <fa-icon *ngIf="this.sortedColumn.columnName == column.toString()"
+                                        [icon]="this.sortedColumn.ascending ? icons.faArrowUp : icons.faArrowDown" />
                                 </th>
                             </ng-container>
                             <ng-container *ngIf="tableName == 'items' || tableName == 'retail_items'">
@@ -101,32 +113,40 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="data-row" *ngFor="let item of filteredDisplayData.slice(0, viewMetaData.entryLimit); let key = index;">
+                        <tr class="data-row"
+                            *ngFor="let item of filteredDisplayData.slice(0, viewMetaData.entryLimit); let key = index;">
                             <ng-container *ngIf="itemContainsFilter(item)">
                                 <td>
-                                    <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox" [checked]="selectedRows.indexOf(item['id']) != -1">
+                                    <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox"
+                                        [checked]="selectedRows.indexOf(item['id']) != -1">
                                 </td>
-                                <ng-container *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;">
+                                <ng-container
+                                    *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;">
                                     <ng-container *ngIf="columnIndex == 2">
                                         <ng-container [ngSwitch]="tableName">
                                             <ng-container *ngSwitchCase="'items'">
-                                                <td (click)="stockSearch(item.id)" [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
+                                                <td (click)="stockSearch(item.id)"
+                                                    [ngClass]="shouldColourCell(item[column])"
+                                                    [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
                                                     <fa-icon [icon]="icons.faBox"></fa-icon>
                                                 </td>
                                                 <td>{{ stockData[item['id']] ? stockData[item['id']] : 0 }}</td>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'stocked_items'">
                                                 <td>
-                                                    <img [src]="images[item['item_id']] == null ? imageUrlBase + 'placeholder.jpg' :  imageUrlBase + images[item['item_id']]" />
+                                                    <img
+                                                        [src]="images[item['item_id']] == null ? imageUrlBase + 'placeholder.jpg' :  imageUrlBase + images[item['item_id']]" />
                                                 </td>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'supplier_invoices'">
-                                                <td *ngIf="canDisplayColumn('invoiced-items')" (click)="supplierInvoiceSearch(item.id)">
+                                                <td *ngIf="canDisplayColumn('invoiced-items')"
+                                                    (click)="supplierInvoiceSearch(item.id)">
                                                     <fa-icon [icon]="icons.faBasketShopping" />
                                                 </td>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'invoices'">
-                                                <td *ngIf="canDisplayColumn('invoiced-items')" (click)="invoiceSearch(item.id)">
+                                                <td *ngIf="canDisplayColumn('invoiced-items')"
+                                                    (click)="invoiceSearch(item.id)">
                                                     <fa-icon [icon]="icons.faBasketShopping" />
                                                 </td>
                                             </ng-container>
@@ -137,11 +157,15 @@
                                             </ng-container>
                                         </ng-container>
                                     </ng-container>
-                                    <td *ngIf="canDisplayColumn(column)" [ngClass]="shouldColourCell(item[column])" [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
+                                    <td *ngIf="canDisplayColumn(column)" [ngClass]="shouldColourCell(item[column])"
+                                        [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
                                         <ng-container [ngSwitch]="dataTypes[columnIndex]">
-                                            <img *ngSwitchCase="'file'" [src]="item[column] == null ? imageUrlBase + 'placeholder.jpg' : imageUrlBase + item[column]" />
+                                            <img *ngSwitchCase="'file'"
+                                                [src]="item[column] == null ? imageUrlBase + 'placeholder.jpg' : imageUrlBase + item[column]" />
                                             <ng-container *ngSwitchCase="'enum(\'No\',\'Yes\')'">
-                                                <input (change)="changeCheckBox($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column)" type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
+                                                <input
+                                                    (change)="changeCheckBox($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column)"
+                                                    type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'float'">
                                                 {{ item[column] == null ? '---' : item[column] | currency:'GBP' }}
@@ -154,8 +178,11 @@
                                             </ng-container>
                                             <ng-container *ngSwitchDefault>
                                                 {{ item[column] == null ? '---' : item[column] }}
-                                                <ng-container *ngIf="displayWithIcon(column, item)" class="icon-container">
-                                                    <fa-icon class="row-icon" (click)="iconClick($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column, item)" [icon]="icon"></fa-icon>
+                                                <ng-container *ngIf="displayWithIcon(column, item)"
+                                                    class="icon-container">
+                                                    <fa-icon class="row-icon"
+                                                        (click)="iconClick($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column, item)"
+                                                        [icon]="icon"></fa-icon>
                                                 </ng-container>
                                             </ng-container>
                                         </ng-container>
@@ -191,7 +218,8 @@
                             </div>
                             <div class="content">
                                 <h1>Whoops! No data was found for {{ displayName }}!</h1>
-                                <p>Could this be an error? If so, try refreshing the page otherwise add new data below!</p>
+                                <p>Could this be an error? If so, try refreshing the page otherwise add new data below!
+                                </p>
                                 <button class="button" (click)="addRow(null)">Add New +</button>
                             </div>
                         </div>
@@ -202,8 +230,10 @@
                 <p>Showing page {{ viewMetaData.currentPage }} out of {{ viewMetaData.pageCount }}</p>
                 <div class="page-section">
                     <button (click)="previousPage()">Previous</button>
-                    <button [class]="viewMetaData.currentPage == 1 ? 'active-page' : ''" (click)="changePage(1)"> {{ 1 }}</button>
-                    <button *ngFor="let pageNumber of getPageRange()" (click)="changePage(pageNumber)" [class]="viewMetaData.currentPage == pageNumber ? 'active-page' : ''">{{ pageNumber }}</button>
+                    <button [class]="viewMetaData.currentPage == 1 ? 'active-page' : ''" (click)="changePage(1)"> {{ 1
+                        }}</button>
+                    <button *ngFor="let pageNumber of getPageRange()" (click)="changePage(pageNumber)"
+                        [class]="viewMetaData.currentPage == pageNumber ? 'active-page' : ''">{{ pageNumber }}</button>
                     <button (click)="nextPage()">Next</button>
                 </div>
             </div>

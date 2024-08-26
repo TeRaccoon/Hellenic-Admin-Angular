@@ -27,7 +27,7 @@ export class FormService {
 
   private alternativeSelectData: {
     [key: string]: {
-      data: {value: string}[]
+      data: { value: string }[]
     }
   } = {};
 
@@ -45,7 +45,7 @@ export class FormService {
 
   private waitingToReload = new BehaviorSubject<boolean>(false);
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService) { }
 
   getReloadRequest(): Observable<boolean> {
     return this.waitingToReload.asObservable();
@@ -285,12 +285,12 @@ export class FormService {
         formData['Supplier Invoice ID'].inputType = 'replacement';
         replacementData['Supplier Invoice ID'] = { data: data };
         break;
-        
+
       case 'invoices':
         var data = await this.getIdReplacementData('customers_id_name_code', dataService);
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
-        
+
         data = await this.getIdReplacementData('warehouse_id_name', dataService);
         formData['Warehouse ID'].inputType = 'replacement';
         replacementData['Warehouse ID'] = { data: data };
@@ -314,13 +314,13 @@ export class FormService {
 
       case 'customer_payments':
         var data = await this.getIdReplacementData('invoice_id_title', dataService);
-        formData['Invoice ID'].inputType = 'replacement';        
+        formData['Invoice ID'].inputType = 'replacement';
         replacementData['Invoice ID'] = { data: data };
         break;
 
       case 'customer_address':
         var data = await this.getIdReplacementData('customers_id_name', dataService);
-        formData['Customer Name'].inputType = 'replacement';        
+        formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
         break;
 
@@ -352,7 +352,7 @@ export class FormService {
         };
         replacementData['Item ID'] = { data: data };
         break;
-        
+
     }
     return { formData, replacementData };
   }
@@ -404,7 +404,7 @@ export class FormService {
     return this.reloadId;
   }
 
-  processEditFormData(id: number, row: any, editableData: editableData) {
+  processEditFormData(row: any, editableData: editableData) {
     this.editFormData = {};
     var inputDataTypes = this.dataTypeToInputType(editableData.types);
     editableData.columns.forEach((columnName, index) => {
@@ -418,16 +418,18 @@ export class FormService {
     });
   }
 
-  processAddFormData(editableData: editableData, settings: settings) {
+  processAddFormData(editableData: editableData, row?: any, settings: settings = {
+    showAddMore: false
+  }) {
     this.addFormData = {};
     var inputDataTypes: string[] = this.dataTypeToInputType(editableData.types);
-    editableData.columns.forEach((_, index) => {
+    editableData.columns.forEach((columnName, index) => {
       this.addFormData[editableData.names[index]] = {
         inputType: inputDataTypes[index],
         dataType: editableData.types[index],
         required: editableData.required[index],
         field: editableData.fields[index],
-        value: editableData.values ? editableData.values[index] : null,
+        value: editableData.values ? editableData.values[index] : row ? row[columnName] : null,
       };
     });
     this.formSettings = settings;
@@ -436,11 +438,11 @@ export class FormService {
   dataTypeToInputType(dataTypes: any[]) {
     var inputTypes: any[] = [];
     dataTypes.forEach((dataType: string) => {
-      switch(dataType) {
+      switch (dataType) {
         case "date":
           inputTypes.push("date");
           break;
-        
+
         case "file":
           inputTypes.push("file");
           break;
@@ -493,7 +495,7 @@ export class FormService {
       success = false;
     }
 
-    this.setMessageFormData({title: title, message: message})
+    this.setMessageFormData({ title: title, message: message })
     this.showMessageForm();
     return { success: success, imageFileName: imageFileName };
   }
@@ -516,7 +518,7 @@ export class FormService {
     if (id != null && query != null) {
       imageCount = await lastValueFrom<number>(this.dataService.processData(query, id));
     }
-    
+
     if (imageCount != null) {
       fileName = name + '_' + imageCount + '.png';
     }
@@ -553,7 +555,7 @@ export class FormService {
       'image_file_name': imageFileName
     };
 
-    return await this.dataService.submitFormData(imageFormData); 
+    return await this.dataService.submitFormData(imageFormData);
   }
 
   async getImages(id: string, table: string) {
@@ -584,8 +586,8 @@ export class FormService {
     let settings: settings = { showAddMore: false };
     switch (tableName) {
       case 'price_list':
-          settings.showAddMore = true;
-          break;
+        settings.showAddMore = true;
+        break;
     }
     return settings;
   }

@@ -1,4 +1,4 @@
-import { faUserLock, faAddressBook, faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront } from '@fortawesome/free-solid-svg-icons';
+import { faUserLock, faAddressBook, faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faCopy } from '@fortawesome/free-solid-svg-icons';
 
 export const tableIcons = {
   faUserLock,
@@ -20,5 +20,6 @@ export const tableIcons = {
   faArrowDown,
   faBookMedical,
   faBookOpen,
-  faTruckFront
+  faTruckFront,
+  faCopy
 };
