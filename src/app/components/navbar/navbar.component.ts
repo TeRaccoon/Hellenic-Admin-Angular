@@ -1,17 +1,13 @@
 import { Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
-import {
-  faSearch,
-  faBell,
-  faEnvelope,
-  faUser,
-  faFileCircleXmark
-} from '@fortawesome/free-solid-svg-icons';
+import { navbarIcons } from '../../common/icons/navbar-icons';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormService } from '../../services/form.service';
-import { lastValueFrom } from 'rxjs';
 import { SearchService } from '../../services/search.service';
+import _ from 'lodash';
+import { SearchResult } from '../../common/types/table';
+import { TableService } from '../../services/table.service';
 
 @Component({
   selector: 'app-navbar',
@@ -25,11 +21,9 @@ export class NavbarComponent {
   @ViewChild('userOptions') userOptions!: ElementRef;
   @ViewChild('userIcon') userIcon!: ElementRef;
 
-  faBell = faBell;
-  faEnvelope = faEnvelope;
-  faUser = faUser;
-  faSearch = faSearch;
-  faFileCircleXmark = faFileCircleXmark
+  icons = navbarIcons;
+
+  debounceSearch: (filter: string) => void = _.debounce((filter: string) => this.performSearch(filter), 750);
 
   tablelessOptions: string[] = [];
   tableOptions = [
@@ -60,6 +54,9 @@ export class NavbarComponent {
     { display: 'Warehouse', actual: 'warehouse' }
   ];
   filteredTableOptions = this.tableOptions;
+  searchResults: SearchResult[] = [];
+
+  searching = false;
 
   searchInput: string = '';
 
@@ -70,7 +67,7 @@ export class NavbarComponent {
 
   notifications: { header: string; data: any[] }[] = [];
 
-  constructor(private searchService: SearchService, private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService, private renderer: Renderer2) {
+  constructor(private tableService: TableService, private searchService: SearchService, private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService, private renderer: Renderer2) {
     this.renderer.listen('window', 'click', (e: Event) => {
       const notificationClicked = this.notificationDropdown?.nativeElement.contains(e.target);
 
@@ -92,6 +89,10 @@ export class NavbarComponent {
         this.userOptionsVisible = false;
       }
     });
+  }
+
+  ngOnInit() {
+    this.debounceSearch = _.debounce(this.performSearch.bind(this), 750);
   }
 
   toggleNotificationDropdown() {
@@ -121,15 +122,25 @@ export class NavbarComponent {
   }
 
   searchTables(event: Event) {
+    this.searching = true;
     const filter = String((event.target as HTMLInputElement).value);
     this.filteredTableOptions = this.tableOptions.filter((option) => option.display && option.display.toUpperCase().includes(filter.toUpperCase()));
-    this.searchService.search('bing');
+    this.debounceSearch(filter);
+  }
+
+  async performSearch(filter: string) {
+    this.searchResults = await this.searchService.search(filter);
+    this.searching = false;
   }
 
   changeTable(table: string) {
     this.searchDropdownFocus = true;
     this.router.navigate(['/view'], { queryParams: { table: table } });
     this.searchDropdownVisible = false;
+  }
+
+  goToRow(table: string) {
+    this.tableService.goToRow(table, this.searchInput);
   }
 
   async logout() {

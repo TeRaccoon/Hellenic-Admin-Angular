@@ -116,12 +116,20 @@
             width: 15vw;
             background-color: white;
             box-sizing: border-box;
+            max-height: 75vh;
+            overflow-y: scroll;
             .search-option {
                 padding: 10px;
                 cursor: pointer;
                 border-bottom: 1px solid #ccc;
                 p {
                     margin: 5px;
+                }
+                .results-container {
+                    display: flex;
+                    .bold {
+                        font-weight: bold;
+                    }
                 }
                 &:hover {
                     background-color: #eaeef3;
