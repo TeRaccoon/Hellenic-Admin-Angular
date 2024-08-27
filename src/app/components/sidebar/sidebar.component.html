@@ -9,7 +9,9 @@
             </button>
             <div class="dropdown-container" [ngClass]="{'hidden': !isDropdownVisible[category]}">
                 <ng-container *ngFor="let table of tables[category]">
-                    <a *ngIf="canDisplayTable(table.tableName)" [class]="table.tableName == selectedTable ? 'selected-tab' : ''" (click)="changeTable(table.tableName)">{{ table.displayName }}</a>
+                    <a *ngIf="canDisplayTable(table.tableName)"
+                        [class]="table.tableName == selectedTable ? 'selected-tab' : ''"
+                        (click)="changeTable(table.tableName)">{{ table.displayName }}</a>
                 </ng-container>
             </div>
         </div>
