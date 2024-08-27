@@ -22,7 +22,7 @@ export interface viewMetadata {
     currentPage: number
 }
 
-export interface filterData {
+export interface FilterData {
     searchFilter: string,
     searchFilterApplied: boolean,
 }
