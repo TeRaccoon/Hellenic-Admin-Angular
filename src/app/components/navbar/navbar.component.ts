@@ -7,6 +7,7 @@ import { FormService } from '../../services/form.service';
 import { SearchService } from '../../services/search.service';
 import _ from 'lodash';
 import { SearchResult } from '../../common/types/table';
+import { FilterService } from '../../services/filter.service';
 import { TableService } from '../../services/table.service';
 
 @Component({
@@ -67,7 +68,7 @@ export class NavbarComponent {
 
   notifications: { header: string; data: any[] }[] = [];
 
-  constructor(private tableService: TableService, private searchService: SearchService, private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService, private renderer: Renderer2) {
+  constructor(private tableService: TableService, private filterService: FilterService, private searchService: SearchService, private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService, private renderer: Renderer2) {
     this.renderer.listen('window', 'click', (e: Event) => {
       const notificationClicked = this.notificationDropdown?.nativeElement.contains(e.target);
 
@@ -129,18 +130,30 @@ export class NavbarComponent {
   }
 
   async performSearch(filter: string) {
-    this.searchResults = await this.searchService.search(filter);
+    if (filter != '') {
+      this.searchResults = await this.searchService.search(filter);
+    } else {
+      this.searchResults = [];
+    }
     this.searching = false;
   }
 
   changeTable(table: string) {
-    this.searchDropdownFocus = true;
-    this.router.navigate(['/view'], { queryParams: { table: table } });
+    this.searchDropdownFocus = false;
     this.searchDropdownVisible = false;
+    this.tableService.changeTable(table);
   }
 
-  goToRow(table: string) {
-    this.tableService.goToRow(table, this.searchInput);
+  goToRow(table: string, matchedValue: string) {
+    this.filterService.setFilterData({
+      searchFilter: matchedValue,
+      searchFilterApplied: true
+    });
+
+    this.filterService.setFilterProtection(true);
+    this.tableService.changeTable(this.tableService.getTableName(table) ?? '');
+
+    this.searchDropdownVisible = false;
   }
 
   async logout() {
