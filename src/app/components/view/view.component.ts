@@ -7,7 +7,7 @@ import { apiUrlBase, imageUrlBase } from '../../services/data.service';
 import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { columnFilter, columnDateFilter, sortedColumn, viewMetadata, filterData } from '../../common/types/view/types';
+import { columnFilter, columnDateFilter, sortedColumn, viewMetadata, FilterData } from '../../common/types/view/types';
 import { editableData } from '../../common/types/forms/types';
 import { tableIcons } from '../../common/icons/table-icons'
 
@@ -49,8 +49,6 @@ export class ViewComponent {
 
   filter: string = '';
 
-  filterData: filterData;
-
   viewMetaData: viewMetadata;
 
   tabs: { displayName: string, tableName: string }[] = [];
@@ -75,11 +73,6 @@ export class ViewComponent {
       fields: [],
       values: []
     };
-
-    this.filterData = {
-      searchFilter: '',
-      searchFilterApplied: false,
-    }
   }
 
   ngOnInit() {
@@ -96,6 +89,7 @@ export class ViewComponent {
         this.loadTable(String(this.tableName));
         this.loadPage();
         this.tabs = this.dataService.getTabs();
+        console.log(this.tabs);
       }
     });
 
@@ -452,8 +446,7 @@ export class ViewComponent {
   loadPage() {
     var start = (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
     var end = start + this.viewMetaData.entryLimit;
-
-    if (this.filterData.searchFilter === '') {
+    if (this.filterService.getFilterData().searchFilter === '') {
       this.filteredDisplayData = this.displayData.slice(start, end);
     } else {
       this.filteredDisplayData = this.applyTemporaryFilter();
@@ -739,6 +732,10 @@ export class ViewComponent {
 
   //Filter
 
+  getFilterData(): FilterData {
+    return this.filterService.getFilterData();
+  }
+
   applyFilter() {
     this.columnFilters = this.filterService.getColumnFilter();
     this.displayColumnFilters = [];
@@ -796,8 +793,10 @@ export class ViewComponent {
     }
 
     if (filter === "all" || filter === "table") {
-      this.filterData.searchFilter = '';
-      this.filterData.searchFilterApplied = false;
+      this.filterService.setFilterData({
+        searchFilter: '',
+        searchFilterApplied: false
+      });
     }
 
     if (reload) {
@@ -820,15 +819,18 @@ export class ViewComponent {
   }
 
   setTableFilter() {
-    this.filterData.searchFilterApplied = true;
+    this.filterService.setFilterData({
+      searchFilter: this.filterService.getFilterData().searchFilter,
+      searchFilterApplied: true
+    });
     this.loadPage();
   }
 
   applyTemporaryFilter() {
     var temporaryData: any[] = [];
-    if (this.filterData.searchFilter != '') {
+    if (this.filterService.getFilterData().searchFilter != '') {
       this.displayData.forEach(data => {
-        if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.filterData.searchFilter).toUpperCase()))) {
+        if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.filterService.getFilterData().searchFilter).toUpperCase()))) {
           temporaryData.push(data);
         }
       });

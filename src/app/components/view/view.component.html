@@ -36,9 +36,9 @@
                                 <fa-icon [icon]="icons.faX" />
                             </div>
                         </ng-container>
-                        <div *ngIf="filterData.searchFilter != '' && filterData.searchFilterApplied" class="filter"
-                            (click)="clearFilter('table', true)">
-                            <p>{{ filterData.searchFilter }}</p>
+                        <div *ngIf="getFilterData().searchFilter != '' && getFilterData().searchFilterApplied"
+                            class="filter" (click)="clearFilter('table', true)">
+                            <p>{{ getFilterData().searchFilter }}</p>
                             <fa-icon [icon]="icons.faX" />
                         </div>
                         <ng-container *ngIf="columnDateFilters.length > 0">
@@ -56,7 +56,7 @@
                         </div>
                         <div class="search-container">
                             <form>
-                                <input type="text" placeholder="Search..." [(ngModel)]="filterData.searchFilter"
+                                <input type="text" placeholder="Search..." [(ngModel)]="getFilterData().searchFilter"
                                     name="searchText" />
                                 <button type="submit" (click)="setTableFilter()">
                                     <fa-icon [icon]="icons.faSearch"></fa-icon>
