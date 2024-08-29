@@ -89,7 +89,6 @@ export class ViewComponent {
         this.loadTable(String(this.tableName));
         this.loadPage();
         this.tabs = this.dataService.getTabs();
-        console.log(this.tabs);
       }
     });
 
@@ -417,7 +416,6 @@ export class ViewComponent {
   changeEntries(event: Event) {
     const option = event.target as HTMLInputElement;
     this.viewMetaData.entryLimit = Number(option.value);
-    this.viewMetaData.pageCount = this.calculatePageCount();
     this.viewMetaData.currentPage = 1;
     this.loadPage();
   }
@@ -447,6 +445,7 @@ export class ViewComponent {
     var start = (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
     var end = start + this.viewMetaData.entryLimit;
     if (this.filterService.getFilterData().searchFilter === '') {
+      this.viewMetaData.pageCount = this.calculatePageCount(true);
       this.filteredDisplayData = this.displayData.slice(start, end);
     } else {
       this.filteredDisplayData = this.applyTemporaryFilter();
@@ -726,8 +725,12 @@ export class ViewComponent {
     }
   }
 
-  calculatePageCount() {
-    return Math.ceil(this.filteredDisplayData.length / this.viewMetaData.entryLimit);
+  calculatePageCount(useDisplayData = false) {
+    if (useDisplayData) {
+      return Math.ceil(this.displayData.length / this.viewMetaData.entryLimit);
+    } else {
+      return Math.ceil(this.filteredDisplayData.length / this.viewMetaData.entryLimit);
+    }
   }
 
   //Filter
@@ -797,6 +800,7 @@ export class ViewComponent {
         searchFilter: '',
         searchFilterApplied: false
       });
+      this.changePage(1);
     }
 
     if (reload) {
