@@ -624,18 +624,18 @@ export class ViewComponent {
 
   shouldColourCell(data: any) {
     switch (this.tableName) {
-      case "invoices":
+      case 'invoices':
         switch (data) {
-          case "Overdue":
-            return "red";
-          case "Complete":
-            return "green";
-          case "Pending":
-            return "orange";
+          case 'Overdue':
+            return 'red';
+          case 'Complete':
+            return 'green';
+          case 'Pending':
+            return 'orange';
         }
         break;
     }
-    return null;
+    return '';
   }
 
   back() {
