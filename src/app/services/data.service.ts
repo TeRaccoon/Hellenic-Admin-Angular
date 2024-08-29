@@ -25,7 +25,6 @@ export class DataService {
 
     const url = new URL(this.urlService.getUrl('admin'));
     url.searchParams.append('query', query);
-    console.log(filter);
     const queryParams = { ...filter };
     for (const [key, value] of Object.entries(queryParams)) {
       url.searchParams.append(key, value ?? '');
