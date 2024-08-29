@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FilterData } from '../common/types/view/types';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,32 @@ export class FilterService {
     columns: [],
     dataTypes: [],
   };
+
+  private filterData: FilterData;
+  private protectFilterData = false;
+
+  constructor() {
+    this.filterData = {
+      searchFilter: '',
+      searchFilterApplied: false,
+    }
+  }
+
+  setFilterData(filterData: FilterData) {
+    if (!this.protectFilterData) {
+      this.filterData = filterData;
+    } else {
+      this.protectFilterData = false;
+    }
+  }
+
+  getFilterData(): FilterData {
+    return this.filterData;
+  }
+
+  setFilterProtection(protect: boolean) {
+    this.protectFilterData = protect;
+  }
 
   setColumnFilter(columnFilter: { column: string, filter: string, caseSensitive: boolean }) {
     if (this.columnFilter && this.columnFilter.length > 0) {
@@ -69,7 +96,7 @@ export class FilterService {
   }
 
   setTableColumns(columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[]) {
-    this.tableColumns = {columnNames, columns, dataTypes};
+    this.tableColumns = { columnNames, columns, dataTypes };
   }
 
   getTableColumns() {
