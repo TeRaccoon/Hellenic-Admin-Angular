@@ -567,14 +567,52 @@ export class ViewComponent {
       { name: 'Unit', type: 'string' },
       { name: 'Picture', type: 'image' },
       { name: 'Quantity', type: 'number' },
-      { name: 'VAT Charge', type: 'enum' },
-      { name: 'Discount', type: 'number' }
+      { name: 'Item Discount', type: 'percent' },
+      { name: 'Customer Discount', type: 'percent' },
+      { name: 'Price', type: 'currency' },
+      { name: 'Net Value', type: 'currency' },
+      { name: 'Discount Value', type: 'currency' },
+      { name: 'VAT Value', type: 'currency' },
     ];
     let tableRows = await this.dataService.processGet('invoiced-items', { filter: invoiceId }, true);
     let tableName = "invoiced_items";
     let title = `Invoiced Items for ${row['title']}`;
 
-    this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: invoiceId, columnName: "Invoice ID" }, query: "invoiced-items", disabled: { value: row['status'] == 'Complete', message: 'This invoice is locked and cannot be modified!' } });
+    let totalNet = 0;
+    let totalVAT = 0;
+    let totalWithVAT = 0;
+
+    tableRows.forEach((row: any) => {
+      const net = row.net || 0;
+      const vat = row.vat || 0;
+
+      totalNet += net;
+      totalVAT += vat;
+    });
+
+    totalWithVAT = totalNet + totalVAT;
+
+    this.dataService.storeWidgetData({
+      headers: tableColumns,
+      rows: tableRows,
+      tableName: tableName,
+      title: title,
+      idData: {
+        id: invoiceId,
+        columnName: "Invoice ID"
+      },
+      query: "invoiced-items",
+      disabled: {
+        value: row['status'] == 'Complete',
+        message: 'This invoice is locked and cannot be modified!'
+      },
+      extra: {
+        totalNet: totalNet,
+        totalVAT: totalVAT,
+        totalWithVAT: totalWithVAT
+      }
+    });
+
     this.formService.showWidget();
   }
 
@@ -874,7 +912,7 @@ export class ViewComponent {
 
     this.distanceLoading = true;
 
-    let coordinates = await lastValueFrom(this.dataService.collectDataComplex("calculate-distance", { customer_id: row['customer_id'], warehouse_id: row['warehouse_id'] }));
+    let coordinates = await lastValueFrom(this.dataService.collectDataComplex("calculate-distance", { invoice_id: invoice_id, warehouse_id: row['warehouse_id'] }));
 
     this.handleCoordinatesResponse(coordinates);
     this.distanceLoading = false;

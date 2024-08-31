@@ -25,16 +25,21 @@
                                     <ng-container *ngSwitchCase="'currency'">
                                         {{ row[key] | currency: 'GBP' }}
                                     </ng-container>
+                                    <ng-container *ngSwitchCase="'percent'">
+                                        {{ row[key] | number : '1.2-2' }}%
+                                    </ng-container>
                                     <ng-container *ngSwitchDefault>
                                         {{ row[key] }}
                                     </ng-container>
                                 </ng-container>
                             </td>
                             <td (click)="!tableData.disabled?.value && editRow(row['id'])">
-                                <fa-icon [class]="tableData.disabled?.value ? 'disabled-icon' : ''" [icon]="faPenToSquare" />
+                                <fa-icon [class]="tableData.disabled?.value ? 'disabled-icon' : ''"
+                                    [icon]="faPenToSquare" />
                             </td>
                             <td (click)="!tableData.disabled?.value && deleteRow(row['id'])">
-                                <fa-icon [class]="tableData.disabled?.value ? 'disabled-icon' : ''" [icon]="faTrashCan" />
+                                <fa-icon [class]="tableData.disabled?.value ? 'disabled-icon' : ''"
+                                    [icon]="faTrashCan" />
                             </td>
                         </tr>
                         <tr *ngIf="tableData.query == 'stocked-items'">
@@ -43,6 +48,21 @@
                         </tr>
                     </tbody>
                 </table>
+                <div *ngIf="tableData.query == 'invoiced-items'" class="summary-container">
+                    <h1>Transaction Summary</h1>
+                    <div>
+                        <p class="header">Net Amount:</p>
+                        <p>{{ tableData.extra.totalNet | currency: 'GBP' }}</p>
+                    </div>
+                    <div>
+                        <p class="header">VAT Amount:</p>
+                        <p>{{ tableData.extra.totalVAT | currency: 'GBP' }}</p>
+                    </div>
+                    <div>
+                        <p class="header">Total:</p>
+                        <p>{{ tableData.extra.totalWithVAT | currency: 'GBP' }}</p>
+                    </div>
+                </div>
                 <div class="widget-footer">
                     <button class="button" (click)="!tableData.disabled?.value && addRow()">Add more</button>
                 </div>

@@ -100,6 +100,24 @@
         tr:nth-child(odd) {
             background-color: white;
         }
+        .summary-container {
+            h1 {
+                font-size: 26px;
+                border-bottom: 2px solid #aaa;
+                color: rgb(15, 125, 255);
+            }
+            div {
+                display: flex;
+                width: 15%;
+                justify-content: space-between;
+                p {
+                    margin: 8px;
+                }
+                .header {
+                    font-weight: bold;
+                }
+            }
+        }
     }
     button {
         border-radius: 5px;

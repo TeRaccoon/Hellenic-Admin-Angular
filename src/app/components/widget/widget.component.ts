@@ -38,7 +38,12 @@ export class WidgetComponent {
     disabled: {
       value: false,
       message: ''
-    }
+    },
+    extra: {
+      totalNet: 0,
+      totalVAT: 0,
+      totalWithVAT: 0,
+    },
   };
 
   constructor(private dataService: DataService, private formService: FormService) { }
