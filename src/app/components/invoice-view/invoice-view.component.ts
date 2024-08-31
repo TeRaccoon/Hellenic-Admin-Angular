@@ -3,9 +3,10 @@ import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { imageUrlBase } from '../../services/data.service';
 import { faSpinner, faPrint } from '@fortawesome/free-solid-svg-icons';
-import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { FormService } from '../../services/form.service';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-invoice-view',
@@ -161,5 +162,36 @@ export class InvoiceViewComponent {
       await this.dataService.processGet('set-to-printed', { filter: id });
     });
     window.print();
+  }
+
+
+  generatePDF() {
+    this.invoiceData.forEach((invoice) => {
+      const data = document.getElementById(invoice.invoice_id);
+      if (data) {
+        html2canvas(data, { useCORS: true, allowTaint: true }).then(canvas => {
+          const imgWidth = 208;
+          const pageHeight = 295;
+          const imgHeight = canvas.height * imgWidth / canvas.width;
+          let heightLeft = imgHeight;
+
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          let position = 0;
+
+          const imgData = canvas.toDataURL('image/png');
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+
+          while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+          }
+
+          pdf.save(`invoice-${invoice.invoice_id}.pdf`);
+        });
+      }
+    })
   }
 }
