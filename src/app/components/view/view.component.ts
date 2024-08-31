@@ -580,7 +580,6 @@ export class ViewComponent {
 
     let totalNet = 0;
     let totalVAT = 0;
-    let totalWithVAT = 0;
 
     tableRows.forEach((row: any) => {
       const net = row.net || 0;
@@ -590,7 +589,7 @@ export class ViewComponent {
       totalVAT += vat;
     });
 
-    totalWithVAT = totalNet + totalVAT;
+    let totalWithVAT = totalNet + totalVAT;
 
     this.dataService.storeWidgetData({
       headers: tableColumns,

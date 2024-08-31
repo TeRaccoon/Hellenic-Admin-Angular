@@ -69,8 +69,28 @@ export class WidgetComponent {
   }
 
   async reload() {
-    let data: [] = await this.dataService.processGet(this.tableData.query, { filter: this.tableData.idData.id }, true);
+    this.tableData.rows = await this.dataService.processGet(this.tableData.query, { filter: this.tableData.idData.id }, true);
     this.formService.performReload();
+
+    if (this.tableData.query == 'invoiced-items') {
+      let totalNet = 0;
+      let totalVAT = 0;
+
+      this.tableData.rows.forEach((row: any) => {
+        const net = row.net || 0;
+        const vat = row.vat || 0;
+
+        totalNet += net;
+        totalVAT += vat;
+      });
+      let totalWithVAT = totalNet + totalVAT;
+
+      this.tableData.extra = {
+        totalNet: totalNet,
+        totalVAT: totalVAT,
+        totalWithVAT: totalWithVAT
+      };
+    }
   }
 
   hide() {
