@@ -536,21 +536,33 @@ export class AddFormComponent {
 
   async addAddressToBook(key: string) {
     let customerId = this.addresses[key]?.save == false ? null : this.addForm.get("customer_id")?.value;
-    let secondaryKey = key == 'Billing Address' ? 'billing_address_id' : 'address_id';
 
-    let payload = {
-      invoice_address_one: this.addresses['Billing Address'].line1,
-      invoice_address_two: this.addresses['Billing Address'].line2,
-      invoice_address_three: this.addresses['Billing Address'].line3,
-      invoice_postcode: this.addresses['Billing Address'].postcode,
-      delivery_address_one: this.addresses['Delivery Address'].line1,
-      delivery_address_two: this.addresses['Delivery Address'].line2,
-      delivery_address_three: this.addresses['Delivery Address'].line3,
-      delivery_postcode: this.addresses['Delivery Address'].postcode,
-      customer_id: customerId,
-      action: "add",
-      table_name: "customer_address"
-    };
+    let payload;
+    let secondaryKey;
+
+    if (key == 'Billing Address') {
+      secondaryKey = 'billing_address_id';
+      payload = {
+        invoice_address_one: this.addresses['Billing Address'].line1,
+        invoice_address_two: this.addresses['Billing Address'].line2,
+        invoice_address_three: this.addresses['Billing Address'].line3,
+        invoice_postcode: this.addresses['Billing Address'].postcode,
+        customer_id: customerId,
+        action: "add",
+        table_name: "customer_address"
+      };
+    } else {
+      secondaryKey = 'address_id';
+      payload = {
+        delivery_address_one: this.addresses['Delivery Address'].line1,
+        delivery_address_two: this.addresses['Delivery Address'].line2,
+        delivery_address_three: this.addresses['Delivery Address'].line3,
+        delivery_postcode: this.addresses['Delivery Address'].postcode,
+        customer_id: customerId,
+        action: "add",
+        table_name: "customer_address"
+      }
+    }
 
     let response = await this.dataService.submitFormData(payload);
     if (response.success) {
@@ -576,31 +588,22 @@ export class AddFormComponent {
         await this.updateSelectedReplacementDataFromKey(id, this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement, key, key == 'Delivery Address' ? 'address_id' : 'billing_address_id', false);
       }
 
-      this.resetAddresses();
+      this.resetAddresses(key);
     } else {
       this.formService.setMessageFormData({
-        title: "Error!",
-        message: "There was an issue adding the address to the address book!",
+        title: 'Error!',
+        message: 'There was an issue adding the address to the address book!',
       });
     }
   }
 
-  resetAddresses() {
-    this.addresses = {
-      'Delivery Address': {
-        line1: "",
-        line2: "",
-        line3: "",
-        postcode: "",
-        save: false
-      },
-      'Billing Address': {
-        line1: "",
-        line2: "",
-        line3: "",
-        postcode: "",
-        save: false
-      }
+  resetAddresses(key: string) {
+    this.addresses[key] = {
+      line1: "",
+      line2: "",
+      line3: "",
+      postcode: "",
+      save: false
     }
   }
 

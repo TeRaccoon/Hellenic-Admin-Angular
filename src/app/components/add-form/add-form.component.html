@@ -68,34 +68,32 @@
                                         <ng-container
                                             *ngIf="(key == 'Delivery Address' || key == 'Billing Address') && addressNotListedKeys.includes(key) else standardSelect">
                                             <div class="input-container">
-                                                <label>Line 1 <fa-icon class="asterisk"
-                                                        [icon]="icons.faAsterisk" /></label>
-                                                <input class="text" type="text"
+                                                <label>Line 1</label>
+                                                <input [disabled]="disabled" class="text" type="text"
                                                     (input)="updateAddressValues(key, 'line1', $event)">
                                             </div>
                                             <div class="input-container">
                                                 <label>Line 2</label>
-                                                <input class="text" type="text"
+                                                <input [disabled]="disabled" class="text" type="text"
                                                     (input)="updateAddressValues(key, 'line2', $event)">
                                             </div>
                                             <div class="input-container">
                                                 <label>Line 3</label>
-                                                <input class="text" type="text"
+                                                <input [disabled]="disabled" class="text" type="text"
                                                     (input)="updateAddressValues(key, 'line3', $event)">
                                             </div>
                                             <div class="input-container">
-                                                <label>Postcode <fa-icon class="asterisk"
-                                                        [icon]="icons.faAsterisk" /></label>
-                                                <input class="text" type="text"
+                                                <label>Postcode</label>
+                                                <input [disabled]="disabled" class="text" type="text"
                                                     (input)="updateAddressValues(key, 'postcode', $event)">
                                             </div>
                                             <div class="footer-options">
                                                 <div>
                                                     <label>Save address?</label>
-                                                    <input type="checkbox"
+                                                    <input [disabled]="disabled" type="checkbox"
                                                         (input)="updateAddressValues(key, 'save', $event)">
                                                 </div>
-                                                <button class="button" type="button"
+                                                <button [disabled]="disabled" class="button" type="button"
                                                     (click)="addAddressToBook(key)">Add</button>
                                             </div>
                                         </ng-container>
