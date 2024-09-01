@@ -54,6 +54,7 @@ export class TableService {
 
             case "stocked_items":
             case "supplier_invoices":
+            case "credit_notes":
             case "suppliers":
             case "warehouse":
                 this.dataService.setTabs(TABLE_CATEGORIES['Supply']);

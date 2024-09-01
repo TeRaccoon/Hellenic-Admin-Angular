@@ -40,7 +40,8 @@ export const TABLE_NAME_PAIRS = [
     { 'page_sections': 'Page Sections' },
     { 'offers': 'Offers' },
     { 'categories': 'Categories' },
-    { 'sub_categories': 'Sub Categories' }
+    { 'sub_categories': 'Sub Categories' },
+    { 'credit_notes': 'Credit Notes' },
 ];
 
 export const TABLE_CATEGORIES =
@@ -49,7 +50,7 @@ export const TABLE_CATEGORIES =
         { tableName: "customers", displayName: "Overview" },
         { tableName: "payments", displayName: "Payments" },
         { tableName: "invoices", displayName: "Invoices" },
-        { tableName: "price_list", displayName: "Price List" }
+        { tableName: "price_list", displayName: "Price List" },
     ],
     "Products": [
         { tableName: "items", displayName: "Products" },
@@ -58,6 +59,7 @@ export const TABLE_CATEGORIES =
         { tableName: "stocked_items", displayName: "Stock" },
         { tableName: 'expired_items', displayName: 'Expired Items' },
         { tableName: "supplier_invoices", displayName: "Invoices" },
+        { tableName: "credit_notes", displayName: "Credit Notes" },
         { tableName: "suppliers", displayName: "Suppliers" },
         { tableName: "warehouse", displayName: "Warehouses" },
     ],

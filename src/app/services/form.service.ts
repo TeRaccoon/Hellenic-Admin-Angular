@@ -318,6 +318,16 @@ export class FormService {
         replacementData['Invoice ID'] = { data: data };
         break;
 
+      case 'credit_notes':
+        var data = await this.getIdReplacementData('supplier_id_name_code', dataService);
+        formData['Supplier'].inputType = 'replacement';
+        replacementData['Supplier'] = { data: data };
+
+        data = await this.getIdReplacementData('invoice_id_title', dataService);
+        formData['Invoice'].inputType = 'replacement';
+        replacementData['Invoice'] = { data: data };
+        break;
+
       case 'customer_address':
         var data = await this.getIdReplacementData('customers_id_name', dataService);
         formData['Customer Name'].inputType = 'replacement';

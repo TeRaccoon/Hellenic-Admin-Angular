@@ -11,6 +11,8 @@
                             [icon]="icons.faTrashCan" /></button>
                     <button *ngIf="selectedRows.length == 1" class="button" (click)="duplicate()"><fa-icon
                             [icon]="icons.faCopy" /></button>
+                    <button *ngIf="selectedRows.length == 1 && tableName == 'supplier_invoices'" class="button"
+                        (click)="createCreditNote()"><fa-icon [icon]="icons.faFileInvoice" /></button>
                     <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button"
                         (click)="calculateDistance()">
                         <fa-icon *ngIf="!distanceLoading; else loading" [icon]="icons.faTruckFront"></fa-icon>

@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 import { columnFilter, columnDateFilter, sortedColumn, viewMetadata, FilterData } from '../../common/types/view/types';
 import { editableData } from '../../common/types/forms/types';
 import { tableIcons } from '../../common/icons/table-icons'
+import { TableService } from '../../services/table.service';
 
 @Component({
   selector: 'app-view',
@@ -55,7 +56,7 @@ export class ViewComponent {
 
   sortedColumn: sortedColumn = { columnName: '', ascending: false };
 
-  constructor(private authService: AuthService, private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {
+  constructor(private tableService: TableService, private authService: AuthService, private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {
     this.accessible = this.authService.returnAccess();
 
     this.viewMetaData = {
@@ -84,7 +85,7 @@ export class ViewComponent {
       this.tableName = params['table'] || null;
       if (this.tableName != null) {
         this.resetTable();
-        this.convertTableName();
+        this.displayName = this.tableService.getTableDisplayName(this.tableName) ?? '';
         this.formService.setSelectedTable(String(this.tableName));
         this.loadTable(String(this.tableName));
         this.loadPage();
@@ -104,95 +105,6 @@ export class ViewComponent {
         this.formService.performReload();
       }
     });
-  }
-
-  convertTableName() {
-    switch (this.tableName) {
-      case 'allergen_information':
-        this.displayName = 'Allergen Information';
-        break;
-      case "categories":
-        this.displayName = 'Categories';
-        break;
-      case 'customer_address':
-        this.displayName = 'Customer Address';
-        break;
-      case 'customer_payments':
-        this.displayName = 'Customer Payments';
-        break;
-      case 'customers':
-        this.displayName = 'Customers';
-        break;
-      case 'discount_codes':
-        this.displayName = 'Discount Codes';
-        break;
-      case 'expired_items':
-        this.displayName = 'Expired Items';
-        break;
-      case 'general_ledger':
-        this.displayName = 'General Ledger';
-        break;
-      case 'image_locations':
-        this.displayName = 'Image Locations';
-        break;
-      case 'interest_charges':
-        this.displayName = 'Interest Charges';
-        break;
-      case 'invoiced_items':
-        this.displayName = 'Invoiced Items';
-        break;
-      case 'invoices':
-        this.displayName = 'Invoices';
-        break;
-      case 'items':
-        this.displayName = 'Items';
-        break;
-      case 'nutrition_info':
-        this.displayName = 'Nutrition Information';
-        break;
-      case 'offers':
-        this.displayName = 'Offers';
-        break;
-      case 'page_section_text':
-        this.displayName = 'Page Section Text';
-        break;
-      case 'page_sections':
-        this.displayName = 'Page Sections';
-        break;
-      case 'payments':
-        this.displayName = 'Payments';
-        break;
-      case 'price_list':
-        this.displayName = 'Price List';
-        break;
-      case 'retail_item_images':
-        this.displayName = 'Retail Item Images';
-        break;
-      case 'retail_items':
-        this.displayName = 'Retail Items';
-        break;
-      case 'retail_users':
-        this.displayName = 'Retail Users';
-        break;
-      case 'stocked_items':
-        this.displayName = 'Stocked Items';
-        break;
-      case "sub_categories":
-        this.displayName = "Sub-categories"
-        break;
-      case 'supplier_invoices':
-        this.displayName = 'Supplier Invoices';
-        break;
-      case 'suppliers':
-        this.displayName = 'Suppliers';
-        break;
-      case 'users':
-        this.displayName = 'Users';
-        break;
-      case 'warehouse':
-        this.displayName = 'Warehouse';
-        break;
-    }
   }
 
   changeTab(tableName: string) {
@@ -613,6 +525,10 @@ export class ViewComponent {
     });
 
     this.formService.showWidget();
+  }
+
+  async createCreditNote(fromInvoice = true) {
+
   }
 
   async supplierInvoiceSearch(invoiceId: string) {
