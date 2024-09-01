@@ -11,7 +11,7 @@ export interface data {
 }
 
 export interface keyedData {
-    [key: string] : data
+    [key: string]: data
 };
 
 export interface editableData {
@@ -38,7 +38,7 @@ export interface address {
 };
 
 export interface keyedAddress {
-    [key: string] : address
+    [key: string]: address
 };
 
 export interface formState {
