@@ -11,8 +11,8 @@
                             [icon]="icons.faTrashCan" /></button>
                     <button *ngIf="selectedRows.length == 1" class="button" (click)="duplicate()"><fa-icon
                             [icon]="icons.faCopy" /></button>
-                    <button *ngIf="selectedRows.length == 1 && tableName == 'supplier_invoices'" class="button"
-                        (click)="createCreditNote()"><fa-icon [icon]="icons.faFileInvoice" /></button>
+                    <button *ngIf="tableName == 'suppliers'" class="button" (click)="createCreditNote()"><fa-icon
+                            [icon]="icons.faFileInvoice" /></button>
                     <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button"
                         (click)="calculateDistance()">
                         <fa-icon *ngIf="!distanceLoading; else loading" [icon]="icons.faTruckFront"></fa-icon>
@@ -89,8 +89,12 @@
                                         <ng-container *ngSwitchCase="'stocked_items'">
                                             <th>Image</th>
                                         </ng-container>
+                                        <ng-container *ngSwitchCase="'suppliers'">
+                                            <th>Credit Notes</th>
+                                        </ng-container>
                                         <ng-container *ngSwitchCase="'supplier_invoices'">
                                             <th>Items</th>
+                                            <th>Credit Notes</th>
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'invoices'">
                                             <th *ngIf="canDisplayColumn('invoiced-items')">Items</th>
@@ -144,6 +148,14 @@
                                                 <td *ngIf="canDisplayColumn('invoiced-items')"
                                                     (click)="supplierInvoiceSearch(item.id)">
                                                     <fa-icon [icon]="icons.faBasketShopping" />
+                                                </td>
+                                                <td (click)="creditNoteSearch(item.id)">
+                                                    <fa-icon [icon]="icons.faNoteSticky" />
+                                                </td>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'suppliers'">
+                                                <td (click)="creditNoteSearch(item.id)">
+                                                    <fa-icon [icon]="icons.faNoteSticky" />
                                                 </td>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'invoices'">

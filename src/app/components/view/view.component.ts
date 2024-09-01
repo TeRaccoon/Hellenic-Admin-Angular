@@ -527,8 +527,36 @@ export class ViewComponent {
     this.formService.showWidget();
   }
 
-  async createCreditNote(fromInvoice = true) {
+  async createCreditNote() {
+    let editFormData = await this.dataService.processGet("edit-form-data", { filter: 'credit_notes' });
+    this.formService.processAddFormData(editFormData);
+    this.prepareAddFormService('credit_notes');
+  }
 
+  async creditNoteSearch(id: number) {
+    let tableColumns = [
+      { name: 'ID', type: 'number' },
+      { name: 'Supplier ID', type: 'number' },
+      { name: 'Invoice ID', type: 'number' },
+      { name: 'Amount', type: 'currency' },
+      { name: 'Description', type: 'text' },
+      { name: 'Paid', type: 'string' },
+      { name: 'Currency', type: 'string' },
+      { name: 'Due Date', type: 'date' },
+      { name: 'Date Issued', type: 'date' }
+    ];
+    let query = this.tableName == 'suppliers' ? 'credit-note-search-supplier' : 'credit-note-search-invoice';
+
+    let row = this.data.filter((row: any) => row.id == id)[0];
+    let reference = this.tableName == 'suppliers' ? row['account_name'] : row['reference']
+    let idColumnName = this.tableName == 'suppliers' ? 'Supplier' : 'Invoice';
+
+    let tableRows = await this.dataService.processGet(query, { filter: id }, true);
+    let tableName = 'credit_notes';
+    let title = `Credit Notes from ${reference}`;
+
+    this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: id, columnName: idColumnName }, query: query });
+    this.formService.showWidget();
   }
 
   async supplierInvoiceSearch(invoiceId: string) {
@@ -549,7 +577,7 @@ export class ViewComponent {
     let tableName = 'stocked_items';
     let title = `Stocked Items from ${row['reference']}`;
 
-    this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: invoiceId, columnName: "Supplier Invoice ID" }, query: "stocked-items-invoice" });
+    this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: invoiceId, columnName: 'Supplier Invoice ID' }, query: "stocked-items-invoice" });
     this.formService.showWidget();
   }
 

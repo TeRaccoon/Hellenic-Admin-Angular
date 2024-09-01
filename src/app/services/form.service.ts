@@ -323,7 +323,7 @@ export class FormService {
         formData['Supplier'].inputType = 'replacement';
         replacementData['Supplier'] = { data: data };
 
-        data = await this.getIdReplacementData('invoice_id_title', dataService);
+        var data = await this.getIdReplacementData('supplier_invoice_id_reference', dataService);
         formData['Invoice'].inputType = 'replacement';
         replacementData['Invoice'] = { data: data };
         break;
