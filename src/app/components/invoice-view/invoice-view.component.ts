@@ -104,7 +104,7 @@ export class InvoiceViewComponent {
           distance: this.calculateDistance(currentLocation, data.customer_coordinates)
         };
       });
-
+      console.log(distances);
       distances.sort((a: any, b: any) => a.distance - b.distance);
       let nearestDeliveryIndex = distances[0].index;
       let nearestDelivery = tempData.splice(nearestDeliveryIndex, 1)[0];
@@ -134,7 +134,7 @@ export class InvoiceViewComponent {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     const distance = R * c / 1000; // Distance in km
-    return distance.toFixed(2);
+    return isNaN(distance) ? '' : distance.toFixed(2);
   }
 
   calculateVat() {
