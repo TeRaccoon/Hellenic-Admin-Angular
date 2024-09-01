@@ -114,6 +114,20 @@ export class AddFormComponent {
         this.loadForm();
       }
     });
+    if (this.tableName == 'invoices' || this.tableName == 'supplier_invoices') {
+      this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
+        if (reloadRequested) {
+          await this.reload();
+        }
+      });
+    }
+  }
+
+  async reload() {
+    let query = this.tableName == 'supplier_invoices' ? 'stocked-items-invoice' : 'invoiced-items';
+
+    this.itemsList = await lastValueFrom(this.dataService.collectDataComplex(query, { 'id': this.invoiceId?.toString(), 'complex': true }));
+    this.itemsList = Array.isArray(this.itemsList) ? this.itemsList : [this.itemsList];
   }
 
   resetFormState(): void {
