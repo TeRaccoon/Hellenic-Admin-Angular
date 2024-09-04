@@ -45,6 +45,7 @@ export class TableService {
             case "invoices":
             case "payments":
             case "price_list":
+            case 'credit_notes_customers':
                 this.dataService.setTabs(TABLE_CATEGORIES['Customers']);
                 break;
 

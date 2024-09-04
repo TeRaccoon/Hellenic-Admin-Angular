@@ -11,6 +11,7 @@ import { columnFilter, columnDateFilter, sortedColumn, viewMetadata, FilterData 
 import { editableData } from '../../common/types/forms/types';
 import { tableIcons } from '../../common/icons/table-icons'
 import { TableService } from '../../services/table.service';
+import { BalanceSheetData } from '../../common/types/data-service/types';
 
 @Component({
   selector: 'app-view',
@@ -197,6 +198,22 @@ export class ViewComponent {
       });
     }
     this.changePage(1);
+  }
+
+  viewBalanceSheet() {
+    let id = this.selectedRows[0];
+    let row = this.data.filter((row: any) => row.id == id)[0];
+
+    let balanceSheetTitle = `Balance Sheet for ${row['account_name']} - ${row['account_number']}`;
+
+    let balanceSheetData = {
+      Title: balanceSheetTitle,
+      CustomerId: id
+    }
+
+    this.dataService.storeBalanceSheetData(balanceSheetData);
+
+    this.router.navigate(['/print/balance-sheet']);
   }
 
   duplicate() {

@@ -1,0 +1,61 @@
+<div class="filter-container print-exclude">
+    <div>
+        <label>Initial date: </label>
+        <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true"
+            [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange"
+            (datesUpdated)="updateDateRange()" />
+    </div>
+    <div>
+        <label>Payment Type: </label>
+        <select (change)="changePaymentType($event)">
+            <option [selected]="true" [disabled]="true">Select and option</option>
+            <option>Cash</option>
+            <option>Card</option>
+            <option>Both</option>
+        </select>
+    </div>
+</div>
+<div class="container">
+    <div class="content">
+        <div class="header-section print-exclude">
+            <h1>{{ inputData.Title }}</h1>
+        </div>
+        <div class="transaction-list">
+            <h2>Transactions</h2>
+            <div class="transaction" *ngFor="let transaction of filteredTransactions">
+                <!-- Order Display -->
+                <div *ngIf="isOrder(transaction)" class="order">
+                    <div class="transaction-date">Invoice: {{ transaction.date | date: 'dd/MM/yyyy' }}</div>
+                    <div class="transaction-title">{{ transaction.title }}</div>
+                    <div class="transaction-total">Total: {{ transaction.total | currency: 'GBP'}}</div>
+                    <div class="transaction-payment-status">Paid: {{ transaction.payment_status }}</div>
+                    <div class="transaction-outstanding">Outstanding Balance: {{
+                        transaction.outstanding_balance | currency: 'GBP' }}</div>
+                </div>
+
+                <!-- Payment Display -->
+                <div *ngIf="isPayment(transaction)" class="payment">
+                    <div class="transaction-date">Payment: {{ transaction.date | date: 'dd/MM/yyyy' }}</div>
+                    <div class="transaction-amount">Amount: {{ transaction.amount | currency: 'GBP' }}</div>
+                    <div class="transaction-reference">Reference: {{ transaction.reference }}</div>
+                    <div class="transaction-type">Type: {{ transaction.type }}</div>
+                    <div class="transaction-type">Outstanding Balance: {{ transaction.outstanding_balance | currency :
+                        'GBP' }}</div>
+                </div>
+
+                <!-- Credit Note Display -->
+                <!-- <div *ngIf="isCreditNote(transaction)" class="credit-note">
+                <div class="transaction-date">{{ transaction.date | date: 'dd/MM/yyyy' }}</div>
+                <div class="transaction-amount">Credit Note Amount: £{{ transaction.amount.toFixed(2) }}</div>
+              </div> -->
+            </div>
+        </div>
+        <div class="invoice-summary">
+            <h2>Invoice Summary</h2>
+            <div class="summary-item">Total Orders: {{ invoiceSummary?.orders }}</div>
+            <div class="summary-item">Outstanding Orders: {{ invoiceSummary?.outstanding_orders }}</div>
+            <div class="summary-item">Outstanding Balance: {{ invoiceSummary?.outstanding_balance | currency: 'GBP' }}
+            </div>
+        </div>
+    </div>
+</div>

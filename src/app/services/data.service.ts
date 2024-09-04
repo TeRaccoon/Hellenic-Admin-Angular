@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, lastValueFrom, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UrlService } from './url.service';
+import { BalanceSheetData } from '../common/types/data-service/types';
 
 export const apiUrlBase = "http://localhost/API/";
 export const imageUrlBase = "http://localhost/uploads/";
@@ -15,6 +16,10 @@ export class DataService {
   tableData: any = null;
   private widgetData = new Subject<{ [key: string]: { name: string, quantity: number }[] }>();
   private tableWidgetData: any = {};
+  private balanceSheetData: BalanceSheetData = {
+    Title: '',
+    CustomerId: -1,
+  };
   altTableData: any = {};
   invoiceIds: any[] = [];
   tabs: { displayName: string, tableName: string }[] = [];
@@ -109,6 +114,14 @@ export class DataService {
 
   retrieveWidgetData() {
     return this.widgetData;
+  }
+
+  storeBalanceSheetData(data: any) {
+    this.balanceSheetData = data;
+  }
+
+  retrieveBalanceSheetData() {
+    return this.balanceSheetData;
   }
 
   storeTableWidgetData(data: any) {

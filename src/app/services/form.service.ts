@@ -17,6 +17,7 @@ export class FormService {
   private isChangePasswordFormVisible = new BehaviorSubject<boolean>(false);
   private isInvoicedItemsFormVisible = new BehaviorSubject<boolean>(false);
   private isWidgetVisible = new BehaviorSubject<boolean>(false);
+  private isBalanceSheetVisible = new BehaviorSubject<boolean>(false);
 
   private editFormData: keyedData = {};
   private addFormData: keyedData = {};
@@ -151,6 +152,18 @@ export class FormService {
 
   getWidgetVisibility(): Observable<boolean> {
     return this.isWidgetVisible.asObservable();
+  }
+
+  getBalanceSheetVisibility(): Observable<boolean> {
+    return this.isBalanceSheetVisible.asObservable();
+  }
+
+  hideBalanceSheet() {
+    this.isBalanceSheetVisible.next(false);
+  }
+
+  showBalanceSheet() {
+    this.isBalanceSheetVisible.next(true);
   }
 
   hideWidget() {
@@ -313,7 +326,7 @@ export class FormService {
         break;
 
       case 'customer_payments':
-        var data = await this.getIdReplacementData('invoice_id_title', dataService);
+        var data = await this.getIdReplacementData('invoice_id_title_unpaid', dataService);
         formData['Invoice ID'].inputType = 'replacement';
         replacementData['Invoice ID'] = { data: data };
         break;
@@ -323,7 +336,17 @@ export class FormService {
         formData['Supplier'].inputType = 'replacement';
         replacementData['Supplier'] = { data: data };
 
-        var data = await this.getIdReplacementData('supplier_invoice_id_reference', dataService);
+        data = await this.getIdReplacementData('supplier_invoice_id_reference', dataService);
+        formData['Invoice'].inputType = 'replacement';
+        replacementData['Invoice'] = { data: data };
+        break;
+
+      case 'credit_notes_customers':
+        var data = await this.getIdReplacementData('customers_id_name_code', dataService);
+        formData['Customer'].inputType = 'replacement';
+        replacementData['Customer'] = { data: data };
+
+        data = await this.getIdReplacementData('invoice_id_title', dataService);
         formData['Invoice'].inputType = 'replacement';
         replacementData['Invoice'] = { data: data };
         break;

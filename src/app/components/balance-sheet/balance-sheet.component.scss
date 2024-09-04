@@ -1,0 +1,182 @@
+@import "../variables";
+
+$primary-color: #2c3e50;
+$secondary-color: #ecf0f1;
+$accent-color: #3498db;
+$text-color: #2c3e50;
+
+body {
+    background-color: white;
+}
+
+.filter-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    border: 2px solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+
+    label {
+        font-weight: bold;
+    }
+
+    select,
+    input {
+        width: auto;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid rgb(215, 215, 215);
+        outline: none;
+    }
+}
+
+.container {
+    width: 21cm;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    page-break-inside: avoid;
+
+    .content {
+        border: none;
+        border-radius: 5px;
+
+        .error-container {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+
+            p {
+                font-size: 20px;
+                margin: 20px;
+            }
+        }
+
+        .header-section {
+            height: 50px;
+            border-radius: 5px 5px 0 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            color: white;
+            background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+
+            a {
+                cursor: pointer;
+            }
+
+            h1 {
+                text-align: center;
+                width: 100%;
+                font-size: 25px;
+                margin: auto;
+            }
+        }
+    }
+
+    .invoice-summary {
+        color: black;
+        padding: 20px;
+        border-radius: 5px;
+        margin-top: 30px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        .summary-item {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+    }
+
+    .transaction-list {
+        padding: 20px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        h2 {
+            color: $primary-color;
+            border-bottom: 2px solid $primary-color;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .transaction {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid $accent-color;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &-date {
+                font-weight: bold;
+                margin-bottom: 10px;
+                font-size: 1.1em;
+            }
+        }
+
+        .order,
+        .payment,
+        .credit-note {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #dcdcdc;
+            break-inside: avoid;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .transaction-title,
+            .transaction-amount {
+                font-size: 1.2em;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .transaction-status,
+            .transaction-payment-status {
+                font-style: italic;
+                margin-bottom: 5px;
+            }
+
+            .transaction-gross,
+            .transaction-vat,
+            .transaction-total,
+            .transaction-outstanding,
+            .transaction-amount,
+            .transaction-vat,
+            .transaction-net,
+            .transaction-reference {
+                margin-bottom: 5px;
+            }
+        }
+    }
+}
+
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        padding: 20px !important;
+    }
+
+    .print-exclude {
+        display: none;
+    }
+
+    .grecaptcha-badge {
+        display: none !important;
+        visibility: hidden !important;
+    }
+}

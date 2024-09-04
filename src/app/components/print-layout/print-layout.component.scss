@@ -1,32 +1,45 @@
 @import '../variables';
+
 .container {
-    width: 21cm;
+    width: 22cm;
+    padding: 10px;
     margin-left: auto;
     margin-right: auto;
+    background-color: white;
+
+    table {
+        border-spacing: 0px;
+    }
+
     .header,
     .header-space,
     .footer,
     .footer-space {
         height: 10px;
     }
+
     .header {
         position: fixed;
         top: 0;
     }
+
     .footer {
         position: fixed;
         bottom: 0;
     }
+
     @media screen {
-         :host {
+        :host {
             display: none;
         }
     }
 }
 
-.back-button-container {
+.button-container {
     position: absolute;
+    display: flex;
     margin: 10px 15px 15px 16%;
+
     button {
         display: flex;
         justify-content: space-between;
@@ -37,6 +50,7 @@
         font-size: 17px;
         margin: 10px;
     }
+
     .back-icon {
         cursor: pointer;
     }
@@ -45,5 +59,10 @@
 @media print {
     .print-exclude {
         display: none;
+    }
+
+    .grecaptcha-badge {
+        display: none;
+        visibility: hidden !important;
     }
 }

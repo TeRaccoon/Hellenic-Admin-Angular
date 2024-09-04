@@ -35,6 +35,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { WidgetComponent } from './components/widget/widget.component';
 import { TableWidgetComponent } from './components/table-widget/table-widget.component';
 import { VatViewComponent } from './components/vat-view/vat-view.component';
+import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { VatViewComponent } from './components/vat-view/vat-view.component';
     SettingsComponent,
     WidgetComponent,
     TableWidgetComponent,
-    VatViewComponent
+    VatViewComponent,
+    BalanceSheetComponent,
   ],
   imports: [
     BrowserModule,
@@ -75,7 +77,7 @@ import { VatViewComponent } from './components/vat-view/vat-view.component';
     RecaptchaV3Module,
   ],
   providers: [
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     {
       provide: RECAPTCHA_V3_SITE_KEY,
       useValue: recaptcha.siteKey,

@@ -1,4 +1,5 @@
 @import '../variables';
+
 .checkbox-container {
     display: flex;
     align-items: center;
@@ -25,59 +26,73 @@
     margin-right: auto;
     background-color: white;
     page-break-inside: avoid;
+
     .header-section {
         width: 100%;
+
         .row {
             display: flex;
             justify-content: space-between;
+
             .image-container {
                 margin: 50px;
             }
         }
+
         h2 {
             padding: 30px 0px 30px 20px;
         }
     }
+
     .label-row {
         gap: 5px;
         margin-bottom: 5px;
     }
+
     .label {
         font-weight: bold;
     }
+
     .invoice-container {
         page-break-after: always;
         display: flex;
         flex-direction: column;
         margin: 10px;
         padding: 10px;
+
         p {
             margin: 0;
         }
+
         .row {
             display: flex;
             page-break-inside: avoid;
         }
+
         .section {
             display: flex;
             flex-direction: column;
             width: 100%;
             margin: 5px;
             padding: 10px;
+
             h1 {
                 font-size: 18px;
                 margin-top: 1px;
             }
         }
+
         .card {
             border-radius: 5px;
             border: 2px solid rgb(227, 227, 227);
         }
     }
+
     .items {
         .item-headers {
             border-bottom: 2px solid black;
         }
+
         .row {
             justify-content: space-between;
         }
@@ -93,37 +108,45 @@
     padding: 20px;
     box-sizing: border-box;
     margin: 10px;
+
     h1 {
         text-align: center;
         margin-bottom: 30px;
         font-size: 2em;
         color: #444;
     }
+
     h2 {
         margin-top: 20px;
         font-size: 1.5em;
         color: #555;
     }
+
     table {
         width: 100%;
         border-collapse: collapse;
         margin-bottom: 20px;
+
         th,
         td {
             padding: 10px;
             border: 1px solid #ddd;
             text-align: left;
         }
+
         thead {
             background-color: #f9f9f9;
+
             th {
                 font-weight: bold;
             }
         }
+
         tbody {
             tr:nth-child(even) {
                 background-color: #f2f2f2;
             }
+
             .data-row {
                 td {
                     vertical-align: top;
@@ -131,12 +154,15 @@
             }
         }
     }
+
     .delivery-items-table {
         margin-top: 10px;
+
         th,
         td {
             text-align: center;
         }
+
         .item-image {
             max-width: 50px;
             max-height: 50px;
@@ -144,25 +170,30 @@
             margin: 0 auto;
         }
     }
+
     h3 {
         text-align: center;
         color: #888;
     }
+
     .row {
         display: flex;
         page-break-inside: avoid;
     }
+
     .section {
         display: flex;
         flex-direction: column;
         width: 100%;
         margin: 5px;
         padding: 10px;
+
         h1 {
             font-size: 18px;
             margin-top: 1px;
         }
     }
+
     .card {
         border-radius: 5px;
         border: 2px solid rgb(227, 227, 227);
@@ -175,9 +206,11 @@
 
 .loading-container {
     display: flex;
+
     h1 {
         margin-right: 10px;
     }
+
     .loading-icon {
         align-self: center;
         font-size: 25px;

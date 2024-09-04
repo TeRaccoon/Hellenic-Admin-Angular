@@ -13,6 +13,10 @@
                             [icon]="icons.faCopy" /></button>
                     <button *ngIf="tableName == 'suppliers'" class="button" (click)="createCreditNote()"><fa-icon
                             [icon]="icons.faFileInvoice" /></button>
+                    <button *ngIf="tableName == 'customers' && selectedRows.length == 1" class="button"
+                        (click)="viewBalanceSheet()">
+                        Balance Sheet
+                    </button>
                     <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button"
                         (click)="calculateDistance()">
                         <fa-icon *ngIf="!distanceLoading; else loading" [icon]="icons.faTruckFront"></fa-icon>

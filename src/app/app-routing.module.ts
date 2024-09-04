@@ -11,6 +11,7 @@ import { PrintLayoutComponent } from './components/print-layout/print-layout.com
 import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { VatViewComponent } from './components/vat-view/vat-view.component';
+import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -20,11 +21,13 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'statistics', component: StatisticsComponent, canActivate: [AuthGuard] },
   { path: "settings", component: SettingsComponent, canActivate: [AuthGuard] },
-  { path: 'print',
+  {
+    path: 'print',
     component: PrintLayoutComponent,
     children: [
       { path: 'invoice', component: InvoiceViewComponent, canActivate: [AuthGuard] },
-      { path: 'vat', component: VatViewComponent, canActivate: [AuthGuard] }
+      { path: 'vat', component: VatViewComponent, canActivate: [AuthGuard] },
+      { path: 'balance-sheet', component: BalanceSheetComponent, canActivate: [AuthGuard] }
     ]
   }
 ];
