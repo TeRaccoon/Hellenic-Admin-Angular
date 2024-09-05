@@ -1,51 +1,56 @@
 export interface settings {
-    showAddMore: boolean
-};
+  showAddMore: boolean;
+}
 
 export interface data {
-    inputType: string,
-    dataType: string,
-    field: string,
-    required: boolean,
-    value: any
+  inputType: string;
+  dataType: string;
+  field: string;
+  required: boolean;
+  value: any;
 }
 
 export interface keyedData {
-    [key: string]: data
-};
+  [key: string]: data;
+}
 
 export interface editableData {
-    columns: any[],
-    types: any[],
-    names: any[],
-    required: any[],
-    fields: any[],
-    values: any[]
-};
+  columns: any[];
+  types: any[];
+  names: any[];
+  required: any[];
+  fields: any[];
+  values: any[];
+}
 
 export interface message {
-    title: string,
-    message: string,
-    footer?: string
-};
+  title: string;
+  message: string;
+  footer?: string;
+}
 
 export interface address {
-    line1: string,
-    line2: string,
-    line3: string,
-    postcode: string,
-    save: boolean
-};
+  line1: string;
+  line2: string;
+  line3: string;
+  postcode: string;
+  save: boolean;
+}
 
 export interface keyedAddress {
-    [key: string]: address
-};
+  [key: string]: address;
+}
 
 export interface formState {
-    loaded: boolean,
-    submissionAttempted: boolean,
-    submitted: boolean,
-    error: string | null,
-    locked: boolean,
-    visible: 'visible' | 'hidden'
-};
+  loaded: boolean;
+  submissionAttempted: boolean;
+  submitted: boolean;
+  error: string | null;
+  locked: boolean;
+  visible: 'visible' | 'hidden';
+}
+
+export enum SaleType {
+  Invoice = 'Invoice',
+  Cash = 'Cash Sale',
+}

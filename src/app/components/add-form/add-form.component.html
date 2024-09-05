@@ -12,6 +12,15 @@
                     <h1 *ngIf="fullscreen()">{{ 'Adding Invoices' }}</h1>
                     <div *ngIf="formState.error && formState.submitted" class="error-section">{{ formState.error }}
                     </div>
+                    <ng-container *ngIf="tableName == 'invoices'">
+                        <div class="input-container">
+                            <label>Sale type</label>
+                            <select (change)="changeSaleType($event)" class="select-input">
+                                <option [selected]="saleType == SaleType.Invoice">{{ SaleType.Invoice }}</option>
+                                <option [selected]="saleType == SaleType.Cash">{{ SaleType.Cash }}</option>
+                            </select>
+                        </div>
+                    </ng-container>
                     <ng-container *ngFor="let key of mappedFormDataKeys">
                         <div *ngIf="canDisplayInputField(key)" class="input-container"
                             [ngClass]="mappedFormData.get(key)?.inputType">
