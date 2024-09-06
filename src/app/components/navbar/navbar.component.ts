@@ -1,4 +1,10 @@
-import { Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 import { navbarIcons } from '../../common/icons/navbar-icons';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
@@ -24,7 +30,10 @@ export class NavbarComponent {
 
   icons = navbarIcons;
 
-  debounceSearch: (filter: string) => void = _.debounce((filter: string) => this.performSearch(filter), 750);
+  debounceSearch: (filter: string) => void = _.debounce(
+    (filter: string) => this.performSearch(filter),
+    750
+  );
 
   tablelessOptions: string[] = [];
   tableOptions = [
@@ -52,7 +61,7 @@ export class NavbarComponent {
     { display: 'Supplier Invoices', actual: 'supplier_invoices' },
     { display: 'Suppliers', actual: 'suppliers' },
     { display: 'Users', actual: 'users' },
-    { display: 'Warehouse', actual: 'warehouse' }
+    { display: 'Warehouse', actual: 'warehouse' },
   ];
   filteredTableOptions = this.tableOptions;
   searchResults: SearchResult[] = [];
@@ -68,21 +77,37 @@ export class NavbarComponent {
 
   notifications: { header: string; data: any[] }[] = [];
 
-  constructor(private tableService: TableService, private filterService: FilterService, private searchService: SearchService, private dataService: DataService, private router: Router, private authService: AuthService, private formService: FormService, private renderer: Renderer2) {
+  constructor(
+    private tableService: TableService,
+    private filterService: FilterService,
+    private searchService: SearchService,
+    private dataService: DataService,
+    private router: Router,
+    private authService: AuthService,
+    private formService: FormService,
+    private renderer: Renderer2
+  ) {
     this.renderer.listen('window', 'click', (e: Event) => {
-      const notificationClicked = this.notificationDropdown?.nativeElement.contains(e.target);
+      const notificationClicked =
+        this.notificationDropdown?.nativeElement.contains(e.target);
 
-      const bellClicked = this.notificationIcon.nativeElement.contains(e.target) ||
+      const bellClicked =
+        this.notificationIcon.nativeElement.contains(e.target) ||
         (this.notificationIcon.nativeElement.querySelector('svg') &&
-          this.notificationIcon.nativeElement.querySelector('svg').contains(e.target));
+          this.notificationIcon.nativeElement
+            .querySelector('svg')
+            .contains(e.target));
 
       if (!notificationClicked && !bellClicked) {
         this.notificationVisible = false;
       }
 
-      const userOptionsClicked = this.userOptions?.nativeElement.contains(e.target);
+      const userOptionsClicked = this.userOptions?.nativeElement.contains(
+        e.target
+      );
 
-      const userClicked = this.userIcon.nativeElement.contains(e.target) ||
+      const userClicked =
+        this.userIcon.nativeElement.contains(e.target) ||
         (this.userIcon.nativeElement.querySelector('svg') &&
           this.userIcon.nativeElement.querySelector('svg').contains(e.target));
 
@@ -107,7 +132,11 @@ export class NavbarComponent {
   }
 
   async getNotifications() {
-    let invoicesDue = await this.dataService.processGet('invoices-due', { filter: '1' }, true);
+    let invoicesDue = await this.dataService.processGet(
+      'invoices-due',
+      { filter: '1' },
+      true
+    );
 
     if (invoicesDue.length != 0) {
       var invoiceDataArray: any[] = [];
@@ -125,7 +154,11 @@ export class NavbarComponent {
   searchTables(event: Event) {
     this.searching = true;
     const filter = String((event.target as HTMLInputElement).value);
-    this.filteredTableOptions = this.tableOptions.filter((option) => option.display && option.display.toUpperCase().includes(filter.toUpperCase()));
+    this.filteredTableOptions = this.tableOptions.filter(
+      (option) =>
+        option.display &&
+        option.display.toUpperCase().includes(filter.toUpperCase())
+    );
     this.debounceSearch(filter);
   }
 
@@ -147,7 +180,7 @@ export class NavbarComponent {
   goToRow(table: string, matchedValue: string) {
     this.filterService.setFilterData({
       searchFilter: matchedValue,
-      searchFilterApplied: true
+      searchFilterApplied: true,
     });
 
     this.filterService.setFilterProtection(true);
@@ -165,7 +198,10 @@ export class NavbarComponent {
       return;
     }
 
-    this.formService.setMessageFormData({ title: "Whoops!", message: "Something went wrong! Please try again" });
+    this.formService.setMessageFormData({
+      title: 'Whoops!',
+      message: 'Something went wrong! Please try again',
+    });
     this.formService.showMessageForm();
   }
 

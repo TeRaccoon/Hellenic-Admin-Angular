@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterEvent,
+} from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
@@ -7,11 +12,16 @@ import { apiUrlBase, imageUrlBase } from '../../services/data.service';
 import { Location } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { columnFilter, columnDateFilter, sortedColumn, viewMetadata, FilterData } from '../../common/types/view/types';
+import {
+  columnFilter,
+  columnDateFilter,
+  sortedColumn,
+  viewMetadata,
+  FilterData,
+} from '../../common/types/view/types';
 import { editableData } from '../../common/types/forms/types';
-import { tableIcons } from '../../common/icons/table-icons'
+import { tableIcons } from '../../common/icons/table-icons';
 import { TableService } from '../../services/table.service';
-import { BalanceSheetData } from '../../common/types/data-service/types';
 
 @Component({
   selector: 'app-view',
@@ -26,8 +36,8 @@ export class ViewComponent {
   apiUrlBase = apiUrlBase;
   imageUrlBase = imageUrlBase;
 
-  tableName: string = "";
-  displayName: string = "";
+  tableName: string = '';
+  displayName: string = '';
   displayColumnFilters: string[] = [];
 
   columnFilters: columnFilter[] = [];
@@ -53,18 +63,27 @@ export class ViewComponent {
 
   viewMetaData: viewMetadata;
 
-  tabs: { displayName: string, tableName: string }[] = [];
+  tabs: { displayName: string; tableName: string }[] = [];
 
   sortedColumn: sortedColumn = { columnName: '', ascending: false };
 
-  constructor(private tableService: TableService, private authService: AuthService, private router: Router, private filterService: FilterService, private formService: FormService, private route: ActivatedRoute, private dataService: DataService, private _location: Location) {
+  constructor(
+    private tableService: TableService,
+    private authService: AuthService,
+    private router: Router,
+    private filterService: FilterService,
+    private formService: FormService,
+    private route: ActivatedRoute,
+    private dataService: DataService,
+    private _location: Location
+  ) {
     this.accessible = this.authService.returnAccess();
 
     this.viewMetaData = {
       loaded: false,
       entryLimit: 10,
       pageCount: 0,
-      currentPage: 1
+      currentPage: 1,
     };
 
     this.editable = {
@@ -73,7 +92,7 @@ export class ViewComponent {
       names: [],
       required: [],
       fields: [],
-      values: []
+      values: [],
     };
   }
 
@@ -86,7 +105,8 @@ export class ViewComponent {
       this.tableName = params['table'] || null;
       if (this.tableName != null) {
         this.resetTable();
-        this.displayName = this.tableService.getTableDisplayName(this.tableName) ?? '';
+        this.displayName =
+          this.tableService.getTableDisplayName(this.tableName) ?? '';
         this.formService.setSelectedTable(String(this.tableName));
         this.loadTable(String(this.tableName));
         this.loadPage();
@@ -94,25 +114,31 @@ export class ViewComponent {
       }
     });
 
-    this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
-      if (reloadRequested) {
-        let reloadType = this.formService.getReloadType();
-        if (reloadType == 'hard') {
-          this.selectedRows = [];
-          await this.loadTable(String(this.tableName));
-        } else if (reloadType == 'filter') {
-          this.applyFilter();
+    this.formService
+      .getReloadRequest()
+      .subscribe(async (reloadRequested: boolean) => {
+        if (reloadRequested) {
+          let reloadType = this.formService.getReloadType();
+          if (reloadType == 'hard') {
+            this.selectedRows = [];
+            await this.loadTable(String(this.tableName));
+          } else if (reloadType == 'filter') {
+            this.applyFilter();
+          }
+          this.formService.performReload();
         }
-        this.formService.performReload();
-      }
-    });
+      });
   }
 
   changeTab(tableName: string) {
-    if (tableName != "debtor_creditor" && tableName != "profit_loss" && tableName != "statistics") {
+    if (
+      tableName != 'debtor_creditor' &&
+      tableName != 'profit_loss' &&
+      tableName != 'statistics'
+    ) {
       this.router.navigate(['/view'], { queryParams: { table: tableName } });
-    } else if (tableName == "statistics") {
-      this.router.navigate(['/statistics'])
+    } else if (tableName == 'statistics') {
+      this.router.navigate(['/statistics']);
     } else {
       this.router.navigate(['/page'], { queryParams: { table: tableName } });
     }
@@ -122,7 +148,11 @@ export class ViewComponent {
     this.viewMetaData.loaded = false;
 
     if (this.tableName == 'items') {
-      let totalStockData = await this.dataService.processGet('total-stock', undefined, true);
+      let totalStockData = await this.dataService.processGet(
+        'total-stock',
+        undefined,
+        true
+      );
 
       totalStockData.forEach((stock: any) => {
         this.stockData[stock.item_id] = stock.total_quantity;
@@ -130,20 +160,30 @@ export class ViewComponent {
     }
 
     if (this.tableName == 'stocked_items') {
-      let images = await this.dataService.processGet('stocked-item-images', undefined, true);
+      let images = await this.dataService.processGet(
+        'stocked-item-images',
+        undefined,
+        true
+      );
 
       if (images != null) {
         images.forEach((imageData: any) => {
-          this.images[imageData.item_id] = imageData.file_name
+          this.images[imageData.item_id] = imageData.file_name;
         });
-      };
+      }
     }
 
-    let tableData = await this.dataService.processGet('table', { filter: table });
+    let tableData = await this.dataService.processGet('table', {
+      filter: table,
+    });
 
     if (tableData != null) {
-      this.data = Array.isArray(tableData.data) ? tableData.data : [tableData.data];
-      this.displayData = Array.isArray(tableData.display_data) ? tableData.display_data : [tableData.display_data];
+      this.data = Array.isArray(tableData.data)
+        ? tableData.data
+        : [tableData.data];
+      this.displayData = Array.isArray(tableData.display_data)
+        ? tableData.display_data
+        : [tableData.display_data];
       this.dataTypes = tableData.types;
       this.filteredDisplayData = this.displayData;
       this.displayNames = tableData.display_names;
@@ -165,7 +205,9 @@ export class ViewComponent {
 
   sortColumn(column: any) {
     this.filteredDisplayData = this.displayData;
-    let dataName: string = this.editable.columns.filter((_, index) => this.editable.names[index] == column)[0];
+    let dataName: string = this.editable.columns.filter(
+      (_, index) => this.editable.names[index] == column
+    )[0];
     if (dataName === undefined) {
       dataName = 'id';
     }
@@ -185,8 +227,7 @@ export class ViewComponent {
         }
         return 0;
       });
-    }
-    else {
+    } else {
       this.filteredDisplayData.sort((a: any, b: any) => {
         if (a[dataName] < b[dataName]) {
           return 1;
@@ -208,8 +249,8 @@ export class ViewComponent {
 
     let balanceSheetData = {
       Title: balanceSheetTitle,
-      CustomerId: id
-    }
+      CustomerId: id,
+    };
 
     this.dataService.storeBalanceSheetData(balanceSheetData);
 
@@ -230,32 +271,44 @@ export class ViewComponent {
     if (table == '') {
       if (this.tableName == 'invoices') {
         if (row['status'] == 'Complete') {
-          this.formService.setMessageFormData({ title: 'Warning!', message: 'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!' });
+          this.formService.setMessageFormData({
+            title: 'Warning!',
+            message:
+              'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!',
+          });
           this.formService.showMessageForm();
         } else {
-          this.formService.processEditFormData(row, this.editable)
+          this.formService.processEditFormData(row, this.editable);
           this.prepareEditFormService(id, table);
         }
       } else {
-        this.formService.processEditFormData(row, this.editable)
+        this.formService.processEditFormData(row, this.editable);
         this.prepareEditFormService(id, table);
       }
 
       return;
     }
 
-    let editFormData = await this.dataService.processGet("edit-form-data", { filter: table });
+    let editFormData = await this.dataService.processGet('edit-form-data', {
+      filter: table,
+    });
 
     var fakeRow = JSON.parse(JSON.stringify(row));
 
     let appendOrAdd;
 
     switch (table) {
-      case "allergen_information":
-      case "nutrition_info":
+      case 'allergen_information':
+      case 'nutrition_info':
         switch (this.tableName) {
-          case "items":
-            appendOrAdd = await lastValueFrom<any>(this.dataService.collectDataComplex("append-or-add", { table: table, id: id, column: 'item_id' }));
+          case 'items':
+            appendOrAdd = await lastValueFrom<any>(
+              this.dataService.collectDataComplex('append-or-add', {
+                table: table,
+                id: id,
+                column: 'item_id',
+              })
+            );
 
             fakeRow['item_id'] = id;
             if (appendOrAdd.id) {
@@ -263,7 +316,9 @@ export class ViewComponent {
               this.formService.processEditFormData(fakeRow, editFormData);
               this.prepareEditFormService(appendOrAdd.id, table);
             } else {
-              let values: (string | null)[] = Array(editFormData.columns.length).fill(null);
+              let values: (string | null)[] = Array(
+                editFormData.columns.length
+              ).fill(null);
               const itemIdIndex = editFormData.names.indexOf('Item ID');
               values[itemIdIndex] = id;
               editFormData.values = values;
@@ -283,16 +338,20 @@ export class ViewComponent {
   }
 
   prepareEditFormService(id: any, table: string) {
-    this.formService.setSelectedTable(table == '' ? String(this.tableName) : table);
+    this.formService.setSelectedTable(
+      table == '' ? String(this.tableName) : table
+    );
     this.formService.setSelectedId(id);
     this.formService.showEditForm();
-    this.formService.setReloadType("hard");
+    this.formService.setReloadType('hard');
   }
 
   prepareAddFormService(table: string) {
-    this.formService.setSelectedTable(table == '' ? String(this.tableName) : table);
+    this.formService.setSelectedTable(
+      table == '' ? String(this.tableName) : table
+    );
     this.formService.showAddForm();
-    this.formService.setReloadType("hard");
+    this.formService.setReloadType('hard');
   }
 
   async addRow(values: any) {
@@ -303,11 +362,15 @@ export class ViewComponent {
       required: this.editable.required,
       fields: this.editable.fields,
       values: values,
-    }
-    this.formService.processAddFormData(addFormData, null, this.formService.constructFormSettings(this.tableName));
+    };
+    this.formService.processAddFormData(
+      addFormData,
+      null,
+      this.formService.constructFormSettings(this.tableName)
+    );
     this.formService.setSelectedTable(String(this.tableName));
     this.formService.showAddForm();
-    this.formService.setReloadType("hard");
+    this.formService.setReloadType('hard');
   }
 
   deleteRow(id: number) {
@@ -315,25 +378,29 @@ export class ViewComponent {
       this.formService.setSelectedTable(String(this.tableName));
       this.formService.setDeleteFormIds([id]);
       this.formService.showDeleteForm();
-      this.formService.setReloadType("hard");
+      this.formService.setReloadType('hard');
     }
   }
 
   deleteRows() {
-    if (this.selectedRows.every(id => this.canDelete(id))) {
+    if (this.selectedRows.every((id) => this.canDelete(id))) {
       this.formService.setSelectedTable(String(this.tableName));
       this.formService.setDeleteFormIds(this.selectedRows);
       this.formService.showDeleteForm();
-      this.formService.setReloadType("hard");
+      this.formService.setReloadType('hard');
     }
   }
 
   canDelete(id: number) {
     var row = this.data.filter((row: any) => row.id == id)[0];
     switch (this.tableName) {
-      case "customer_payments":
+      case 'customer_payments':
         if (row['linked_payment_id'] != null) {
-          this.formService.setMessageFormData({ title: "Error", message: "You cannot delete this payment because it is linked. Please delete or alter the linked payment instead!" });
+          this.formService.setMessageFormData({
+            title: 'Error',
+            message:
+              'You cannot delete this payment because it is linked. Please delete or alter the linked payment instead!',
+          });
           this.formService.showMessageForm();
           return false;
         }
@@ -350,7 +417,11 @@ export class ViewComponent {
   }
 
   itemContainsFilter(item: any) {
-    return this.filter != null && item != null && Object.values(item).some(value => String(value).includes(this.filter))
+    return (
+      this.filter != null &&
+      item != null &&
+      Object.values(item).some((value) => String(value).includes(this.filter))
+    );
   }
 
   nextPage() {
@@ -371,12 +442,14 @@ export class ViewComponent {
   }
 
   loadPage() {
-    var start = (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
+    var start =
+      (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
     var end = start + this.viewMetaData.entryLimit;
     if (this.filterService.getFilterData().searchFilter === '') {
       this.viewMetaData.pageCount = this.calculatePageCount(true);
       this.filteredDisplayData = this.displayData.slice(start, end);
     } else {
+      console.log('Here');
       this.filteredDisplayData = this.applyTemporaryFilter();
       this.viewMetaData.pageCount = this.calculatePageCount();
       this.filteredDisplayData = this.filteredDisplayData.slice(start, end);
@@ -396,16 +469,24 @@ export class ViewComponent {
     const range = [];
     var start = this.viewMetaData.currentPage;
 
-    if (this.viewMetaData.currentPage > this.viewMetaData.pageCount - 2 && this.viewMetaData.pageCount - 2 > 0) {
+    if (
+      this.viewMetaData.currentPage > this.viewMetaData.pageCount - 2 &&
+      this.viewMetaData.pageCount - 2 > 0
+    ) {
       start = this.viewMetaData.pageCount - 2;
     }
     if (start == 1 && this.viewMetaData.pageCount > 1) {
       start += 2;
-    }
-    else if (start == 2 && this.viewMetaData.pageCount > 1) {
+    } else if (start == 2 && this.viewMetaData.pageCount > 1) {
       start += 1;
     }
-    for (let i = start - 1; i < start + 2 && i < this.viewMetaData.pageCount && this.viewMetaData.pageCount > 1; i++) {
+    for (
+      let i = start - 1;
+      i < start + 2 &&
+      i < this.viewMetaData.pageCount &&
+      this.viewMetaData.pageCount > 1;
+      i++
+    ) {
       range.push(i);
     }
 
@@ -420,7 +501,7 @@ export class ViewComponent {
     const option = event.target as HTMLInputElement;
     let checked = option.checked;
     let data = { ...this.data[key] };
-    data[columnName] = checked ? "Yes" : "No";
+    data[columnName] = checked ? 'Yes' : 'No';
     data['action'] = 'append';
     data['table_name'] = String(this.tableName);
     await this.dataService.submitFormData(data);
@@ -433,7 +514,9 @@ export class ViewComponent {
     if (checked) {
       this.selectedRows.push(rowId);
     } else {
-      this.selectedRows = this.selectedRows.filter(function (item) { return item !== rowId; })
+      this.selectedRows = this.selectedRows.filter(function (item) {
+        return item !== rowId;
+      });
     }
   }
 
@@ -443,18 +526,26 @@ export class ViewComponent {
       return;
     }
 
-    const hasMissingWarehouseOrCustomer = this.selectedRows.some(selectedRow => {
-      var currentRow = this.data.filter((row: any) => row.id == selectedRow)[0];
-      if (currentRow['warehouse_id'] == null) {
-        this.showErrorMessage(`Invoice ${selectedRow} is missing a warehouse! Please assign a warehouse before attempting to print.`);
-        return true;
+    const hasMissingWarehouseOrCustomer = this.selectedRows.some(
+      (selectedRow) => {
+        var currentRow = this.data.filter(
+          (row: any) => row.id == selectedRow
+        )[0];
+        if (currentRow['warehouse_id'] == null) {
+          this.showErrorMessage(
+            `Invoice ${selectedRow} is missing a warehouse! Please assign a warehouse before attempting to print.`
+          );
+          return true;
+        }
+        if (currentRow['customer_id'] == null) {
+          this.showErrorMessage(
+            `Invoice ${selectedRow} is missing a customer! Please assign a customer before attempting to print.`
+          );
+          return true;
+        }
+        return false;
       }
-      if (currentRow['customer_id'] == null) {
-        this.showErrorMessage(`Invoice ${selectedRow} is missing a customer! Please assign a customer before attempting to print.`);
-        return true;
-      }
-      return false;
-    });
+    );
 
     if (hasMissingWarehouseOrCustomer) {
       return;
@@ -475,14 +566,25 @@ export class ViewComponent {
         { name: 'Expiry Date', type: 'date' },
         { name: 'Packing Format', type: 'string' },
         { name: 'Barcode', type: 'string' },
-        { name: 'Warehouse', type: 'string' }
+        { name: 'Warehouse', type: 'string' },
       ];
 
-      let tableRows = await this.dataService.processGet('stocked-items', { filter: itemId }, true);
+      let tableRows = await this.dataService.processGet(
+        'stocked-items',
+        { filter: itemId },
+        true
+      );
       let tableName = 'stocked_items';
       let title = `Stocked Items for ${row['item_name']}`;
 
-      this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: itemId, columnName: "Item ID" }, query: "stocked-items" });
+      this.dataService.storeWidgetData({
+        headers: tableColumns,
+        rows: tableRows,
+        tableName: tableName,
+        title: title,
+        idData: { id: itemId, columnName: 'Item ID' },
+        query: 'stocked-items',
+      });
       this.formService.showWidget();
     }
   }
@@ -503,8 +605,12 @@ export class ViewComponent {
       { name: 'Discount Value', type: 'currency' },
       { name: 'VAT Value', type: 'currency' },
     ];
-    let tableRows = await this.dataService.processGet('invoiced-items', { filter: invoiceId }, true);
-    let tableName = "invoiced_items";
+    let tableRows = await this.dataService.processGet(
+      'invoiced-items',
+      { filter: invoiceId },
+      true
+    );
+    let tableName = 'invoiced_items';
     let title = `Invoiced Items for ${row['title']}`;
 
     let totalNet = 0;
@@ -527,25 +633,27 @@ export class ViewComponent {
       title: title,
       idData: {
         id: invoiceId,
-        columnName: "Invoice ID"
+        columnName: 'Invoice ID',
       },
-      query: "invoiced-items",
+      query: 'invoiced-items',
       disabled: {
         value: row['status'] == 'Complete',
-        message: 'This invoice is locked and cannot be modified!'
+        message: 'This invoice is locked and cannot be modified!',
       },
       extra: {
         totalNet: totalNet,
         totalVAT: totalVAT,
-        totalWithVAT: totalWithVAT
-      }
+        totalWithVAT: totalWithVAT,
+      },
     });
 
     this.formService.showWidget();
   }
 
   async createCreditNote() {
-    let editFormData = await this.dataService.processGet("edit-form-data", { filter: 'credit_notes' });
+    let editFormData = await this.dataService.processGet('edit-form-data', {
+      filter: 'credit_notes',
+    });
     this.formService.processAddFormData(editFormData);
     this.prepareAddFormService('credit_notes');
   }
@@ -560,19 +668,34 @@ export class ViewComponent {
       { name: 'Paid', type: 'string' },
       { name: 'Currency', type: 'string' },
       { name: 'Due Date', type: 'date' },
-      { name: 'Date Issued', type: 'date' }
+      { name: 'Date Issued', type: 'date' },
     ];
-    let query = this.tableName == 'suppliers' ? 'credit-note-search-supplier' : 'credit-note-search-invoice';
+    let query =
+      this.tableName == 'suppliers'
+        ? 'credit-note-search-supplier'
+        : 'credit-note-search-invoice';
 
     let row = this.data.filter((row: any) => row.id == id)[0];
-    let reference = this.tableName == 'suppliers' ? row['account_name'] : row['reference']
+    let reference =
+      this.tableName == 'suppliers' ? row['account_name'] : row['reference'];
     let idColumnName = this.tableName == 'suppliers' ? 'Supplier' : 'Invoice';
 
-    let tableRows = await this.dataService.processGet(query, { filter: id }, true);
+    let tableRows = await this.dataService.processGet(
+      query,
+      { filter: id },
+      true
+    );
     let tableName = 'credit_notes';
     let title = `Credit Notes from ${reference}`;
 
-    this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: id, columnName: idColumnName }, query: query });
+    this.dataService.storeWidgetData({
+      headers: tableColumns,
+      rows: tableRows,
+      tableName: tableName,
+      title: title,
+      idData: { id: id, columnName: idColumnName },
+      query: query,
+    });
     this.formService.showWidget();
   }
 
@@ -588,13 +711,24 @@ export class ViewComponent {
       { name: 'Expiry Date', type: 'string' },
       { name: 'Packing Format', type: 'enum' },
       { name: 'Barcode', type: 'string' },
-      { name: 'Warehouse', type: 'number' }
+      { name: 'Warehouse', type: 'number' },
     ];
-    let tableRows = await this.dataService.processGet('stocked-items-invoice', { filter: invoiceId }, true);
+    let tableRows = await this.dataService.processGet(
+      'stocked-items-invoice',
+      { filter: invoiceId },
+      true
+    );
     let tableName = 'stocked_items';
     let title = `Stocked Items from ${row['reference']}`;
 
-    this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: invoiceId, columnName: 'Supplier Invoice ID' }, query: "stocked-items-invoice" });
+    this.dataService.storeWidgetData({
+      headers: tableColumns,
+      rows: tableRows,
+      tableName: tableName,
+      title: title,
+      idData: { id: invoiceId, columnName: 'Supplier Invoice ID' },
+      query: 'stocked-items-invoice',
+    });
     this.formService.showWidget();
   }
 
@@ -610,13 +744,24 @@ export class ViewComponent {
       { name: 'Delivery Address Two', type: 'string' },
       { name: 'Delivery Address Three', type: 'string' },
       { name: 'Delivery Address Four', type: 'string' },
-      { name: 'Delivery Postcode', type: 'string' }
+      { name: 'Delivery Postcode', type: 'string' },
     ];
-    let tableRows = await this.dataService.processGet('customer-addresses-by-id', { filter: customerId }, true);
+    let tableRows = await this.dataService.processGet(
+      'customer-addresses-by-id',
+      { filter: customerId },
+      true
+    );
     let tableName = 'customer_address';
     let title = `Customer Addresses for ${accountName}`;
 
-    this.dataService.storeWidgetData({ headers: tableColumns, rows: tableRows, tableName: tableName, title: title, idData: { id: customerId, columnName: "Customer Name" }, query: "customer-addresses-by-id" });
+    this.dataService.storeWidgetData({
+      headers: tableColumns,
+      rows: tableRows,
+      tableName: tableName,
+      title: title,
+      idData: { id: customerId, columnName: 'Customer Name' },
+      query: 'customer-addresses-by-id',
+    });
     this.formService.showWidget();
   }
 
@@ -637,7 +782,7 @@ export class ViewComponent {
   }
 
   back() {
-    this._location.back()
+    this._location.back();
   }
 
   canDisplayColumn(column: string) {
@@ -654,32 +799,32 @@ export class ViewComponent {
     }
 
     switch (this.tableName) {
-      case "customers":
-      case "users":
-        if (column == "password" || column == "Password") {
+      case 'customers':
+      case 'users':
+        if (column == 'password' || column == 'Password') {
           return false;
         }
         break;
 
-      case "invoices":
+      case 'invoices':
         if (this.authService.getAccessLevel() == 'Driver') {
           switch (column) {
-            case "gross_value":
-            case "VAT":
-            case "total":
-            case "outstanding_balance":
-            case "payment_status":
-            case "Gross Value":
-            case "Total":
-            case "Outstanding Balance":
-            case "Paid":
-            case "edit-row":
-            case "delete-row":
-            case "invoiced-items":
-            case "ID":
-            case "id":
-            case "Printed":
-            case "printed":
+            case 'gross_value':
+            case 'VAT':
+            case 'total':
+            case 'outstanding_balance':
+            case 'payment_status':
+            case 'Gross Value':
+            case 'Total':
+            case 'Outstanding Balance':
+            case 'Paid':
+            case 'edit-row':
+            case 'delete-row':
+            case 'invoiced-items':
+            case 'ID':
+            case 'id':
+            case 'Printed':
+            case 'printed':
               return false;
           }
         }
@@ -690,9 +835,12 @@ export class ViewComponent {
 
   displayWithIcon(column: string, row: any) {
     switch (this.tableName) {
-      case "invoices":
-        if (column == "id") {
-          this.icon = row['status'] == "Complete" ? tableIcons.faLock : tableIcons.faLockOpen;
+      case 'invoices':
+        if (column == 'id') {
+          this.icon =
+            row['status'] == 'Complete'
+              ? tableIcons.faLock
+              : tableIcons.faLockOpen;
           return true;
         }
         break;
@@ -702,10 +850,11 @@ export class ViewComponent {
 
   async iconClick(event: Event, key: number, column: string, row: any) {
     switch (this.tableName) {
-      case "invoices":
+      case 'invoices':
         if (column == 'id') {
           let data = { ...this.data[key] };
-          data['status'] = data['status'] == 'Complete' ? 'Pending' : 'Complete';
+          data['status'] =
+            data['status'] == 'Complete' ? 'Pending' : 'Complete';
           row['status'] = data['status'];
           data['action'] = 'append';
           data['table_name'] = String(this.tableName);
@@ -715,7 +864,10 @@ export class ViewComponent {
           if (submissionResponse.success) {
             this.reloadTable();
           } else {
-            this.formService.setMessageFormData({ title: "Error!", message: "There was an error trying to unlock the booking!" });
+            this.formService.setMessageFormData({
+              title: 'Error!',
+              message: 'There was an error trying to unlock the booking!',
+            });
             this.formService.showMessageForm();
           }
         }
@@ -727,7 +879,9 @@ export class ViewComponent {
     if (useDisplayData) {
       return Math.ceil(this.displayData.length / this.viewMetaData.entryLimit);
     } else {
-      return Math.ceil(this.filteredDisplayData.length / this.viewMetaData.entryLimit);
+      return Math.ceil(
+        this.filteredDisplayData.length / this.viewMetaData.entryLimit
+      );
     }
   }
 
@@ -754,11 +908,23 @@ export class ViewComponent {
     var isCaseSensitive = columnFilter.caseSensitive;
     var column = columnFilter.column;
 
-    var filter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
-    this.displayColumnFilters.push(this.displayNames[Object.keys(this.data[0]).indexOf(column)] + ": " + columnFilter.filter);
+    var filter = isCaseSensitive
+      ? columnFilter.filter
+      : String(columnFilter.filter).toLowerCase();
+    this.displayColumnFilters.push(
+      this.displayNames[Object.keys(this.data[0]).indexOf(column)] +
+        ': ' +
+        columnFilter.filter
+    );
 
     this.displayData = this.filteredDisplayData.filter((data) => {
-      if (filter != null && data[column] != null && String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(filter)) {
+      if (
+        filter != null &&
+        data[column] != null &&
+        String(
+          isCaseSensitive ? data[column] : String(data[column]).toLowerCase()
+        ).includes(filter)
+      ) {
         return data;
       }
     });
@@ -766,7 +932,11 @@ export class ViewComponent {
     this.viewMetaData.pageCount = this.calculatePageCount();
   }
 
-  filterDateColumns(columnDateFilter: { column: any; startDate: Date; endDate: Date; }) {
+  filterDateColumns(columnDateFilter: {
+    column: any;
+    startDate: Date;
+    endDate: Date;
+  }) {
     var column = columnDateFilter.column;
 
     this.displayData = this.displayData.filter((data) => {
@@ -783,20 +953,23 @@ export class ViewComponent {
   }
 
   clearFilter(filter: string, reload: boolean) {
-    if (filter === "all" || filter === "column-date") {
+    if (filter === 'all' || filter === 'column-date') {
       this.filterService.clearColumnDateFilter();
       this.columnDateFilters = [];
     }
 
-    if (filter === "all" || filter === "column") {
+    if (filter === 'all' || filter === 'column') {
       this.filterService.clearColumnFilter();
       this.displayColumnFilters = [];
     }
 
-    if (filter === "all" || filter === "table") {
+    if (filter === 'all' || filter === 'table') {
+      if (filter == 'table') {
+        this.filterService.setFilterProtection(false);
+      }
       this.filterService.setFilterData({
         searchFilter: '',
-        searchFilterApplied: false
+        searchFilterApplied: false,
       });
       this.changePage(1);
     }
@@ -807,15 +980,21 @@ export class ViewComponent {
   }
 
   removeColumnFilter(columnFilterIndex: number) {
-    this.displayColumnFilters = this.displayColumnFilters.filter((filter) => filter != this.displayColumnFilters[columnFilterIndex]);
-    this.filterService.removeColumnFilter(this.columnFilters[columnFilterIndex].filter);
+    this.displayColumnFilters = this.displayColumnFilters.filter(
+      (filter) => filter != this.displayColumnFilters[columnFilterIndex]
+    );
+    this.filterService.removeColumnFilter(
+      this.columnFilters[columnFilterIndex].filter
+    );
     this.columnFilters = this.filterService.getColumnFilter();
 
     this.reloadTable();
   }
 
   removeColumnDateFilter(columnFilterIndex: number) {
-    this.filterService.removeColumnDateFilter(this.columnDateFilters[columnFilterIndex]);
+    this.filterService.removeColumnDateFilter(
+      this.columnDateFilters[columnFilterIndex]
+    );
     this.columnDateFilters = this.filterService.getColumnDateFilter();
     this.reloadTable();
   }
@@ -823,7 +1002,7 @@ export class ViewComponent {
   setTableFilter() {
     this.filterService.setFilterData({
       searchFilter: this.filterService.getFilterData().searchFilter,
-      searchFilterApplied: true
+      searchFilterApplied: true,
     });
     this.loadPage();
   }
@@ -831,8 +1010,18 @@ export class ViewComponent {
   applyTemporaryFilter() {
     var temporaryData: any[] = [];
     if (this.filterService.getFilterData().searchFilter != '') {
-      this.displayData.forEach(data => {
-        if (Object.values(data).some(property => String(property).toUpperCase().includes(String(this.filterService.getFilterData().searchFilter).toUpperCase()))) {
+      this.displayData.forEach((data) => {
+        if (
+          Object.values(data).some((property) =>
+            String(property)
+              .toUpperCase()
+              .includes(
+                String(
+                  this.filterService.getFilterData().searchFilter
+                ).toUpperCase()
+              )
+          )
+        ) {
           temporaryData.push(data);
         }
       });
@@ -842,7 +1031,11 @@ export class ViewComponent {
 
   showAdvancedFilter() {
     var columns = Object.keys(this.data[0]);
-    this.filterService.setTableColumns(this.displayNames, columns, this.dataTypes);
+    this.filterService.setTableColumns(
+      this.displayNames,
+      columns,
+      this.dataTypes
+    );
     this.formService.showFilterForm();
   }
 
@@ -853,7 +1046,9 @@ export class ViewComponent {
 
   async calculateDistance() {
     if (this.selectedRows.length !== 1) {
-      this.showWarningMessage("Please select a single row to calculate the distance!");
+      this.showWarningMessage(
+        'Please select a single row to calculate the distance!'
+      );
       return;
     }
 
@@ -861,49 +1056,72 @@ export class ViewComponent {
     var row = this.data.filter((row: any) => row.id == invoice_id)[0];
 
     if (!row['warehouse_id']) {
-      this.showWarningMessage("This invoice doesn't have a designated warehouse. To calculate the distance please assign a warehouse!");
+      this.showWarningMessage(
+        "This invoice doesn't have a designated warehouse. To calculate the distance please assign a warehouse!"
+      );
       return;
     }
 
     if (!row['customer_id']) {
-      this.showWarningMessage("This invoice doesn't have a designated customer. To calculate the distance please assign a customer!");
+      this.showWarningMessage(
+        "This invoice doesn't have a designated customer. To calculate the distance please assign a customer!"
+      );
       return;
     }
 
     this.distanceLoading = true;
 
-    let coordinates = await lastValueFrom(this.dataService.collectDataComplex("calculate-distance", { invoice_id: invoice_id, warehouse_id: row['warehouse_id'] }));
+    let coordinates = await lastValueFrom(
+      this.dataService.collectDataComplex('calculate-distance', {
+        invoice_id: invoice_id,
+        warehouse_id: row['warehouse_id'],
+      })
+    );
 
     this.handleCoordinatesResponse(coordinates);
     this.distanceLoading = false;
   }
 
   handleCoordinatesResponse(coordinates: any) {
-    if (!coordinates || !coordinates['customer_coordinates'] || !coordinates['warehouse_coordinates']) {
-      this.showErrorMessage("There was an error getting the coordinates! One of the postcodes may not be in the database.");
+    if (
+      !coordinates ||
+      !coordinates['customer_coordinates'] ||
+      !coordinates['warehouse_coordinates']
+    ) {
+      this.showErrorMessage(
+        'There was an error getting the coordinates! One of the postcodes may not be in the database.'
+      );
       return;
     }
 
-    if (!coordinates['customer_postcode'] || !coordinates['warehouse_postcode']) {
-      this.showErrorMessage("There was an error getting the postcodes! Either the warehouse or the customer doesn't have a postcode.");
+    if (
+      !coordinates['customer_postcode'] ||
+      !coordinates['warehouse_postcode']
+    ) {
+      this.showErrorMessage(
+        "There was an error getting the postcodes! Either the warehouse or the customer doesn't have a postcode."
+      );
       return;
     }
 
-    const distance = this.calculateHaversine(coordinates['customer_coordinates'], coordinates['warehouse_coordinates']);
+    const distance = this.calculateHaversine(
+      coordinates['customer_coordinates'],
+      coordinates['warehouse_coordinates']
+    );
     this.formService.setMessageFormData({
-      title: "Distance",
-      message: `The distance between the warehouse at ${coordinates['warehouse_postcode']} and the customer postcode at ${coordinates['customer_postcode']} in a straight line is ${distance}km`
+      title: 'Distance',
+      message: `The distance between the warehouse at ${coordinates['warehouse_postcode']} and the customer postcode at ${coordinates['customer_postcode']} in a straight line is ${distance}km`,
     });
     this.formService.showMessageForm();
   }
 
   showWarningMessage(message: string) {
-    this.formService.setMessageFormData({ title: "Warning!", message });
+    this.formService.setMessageFormData({ title: 'Warning!', message });
     this.formService.showMessageForm();
   }
 
   showErrorMessage(message: string) {
-    this.formService.setMessageFormData({ title: "Error!", message });
+    this.formService.setMessageFormData({ title: 'Error!', message });
     this.formService.showMessageForm();
   }
 
@@ -914,12 +1132,15 @@ export class ViewComponent {
     const deltaLat = (coord2.latitude - coord1.latitude) * (Math.PI / 180);
     const deltaLon = (coord2.longitude - coord1.longitude) * (Math.PI / 180);
 
-    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-      Math.cos(lat1Rad) * Math.cos(lat2Rad) *
-      Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+    const a =
+      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(lat1Rad) *
+        Math.cos(lat2Rad) *
+        Math.sin(deltaLon / 2) *
+        Math.sin(deltaLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    const distance = R * c / 1000; // Distance in km
+    const distance = (R * c) / 1000; // Distance in km
     return distance.toFixed(2);
   }
 }
