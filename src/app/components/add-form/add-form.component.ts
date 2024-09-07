@@ -627,6 +627,16 @@ export class AddFormComponent {
           filter: dataId.toString(),
         }
       );
+    } else if (
+      this.tableName == 'supplier_payments' &&
+      field == 'supplier_id'
+    ) {
+      this.invoiceDetails = await this.dataService.processGet(
+        'supplier-invoice-outstanding',
+        {
+          filter: dataId.toString(),
+        }
+      );
     } else if (this.tableName == 'stocked_items' && field == 'item_id') {
       let lastPurchasePrice = await this.dataService.processGet(
         'last-purchase-price',

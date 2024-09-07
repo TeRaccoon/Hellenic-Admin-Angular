@@ -383,6 +383,7 @@ export class FormService {
         break;
 
       case 'credit_notes':
+      case 'supplier_payments':
         var data = await this.getIdReplacementData(
           'supplier_id_name_code',
           dataService
