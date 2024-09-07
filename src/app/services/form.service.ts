@@ -2,7 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { DataService } from './data.service';
 import { formatDate } from '@angular/common';
-import { settings, keyedData, message, editableData } from '../common/types/forms/types';
+import {
+  settings,
+  keyedData,
+  message,
+  editableData,
+} from '../common/types/forms/types';
 
 @Injectable({
   providedIn: 'root',
@@ -23,20 +28,20 @@ export class FormService {
   private addFormData: keyedData = {};
 
   private formSettings: settings = {
-    showAddMore: false
+    showAddMore: false,
   };
 
   private alternativeSelectData: {
     [key: string]: {
-      data: { value: string }[]
-    }
+      data: { value: string }[];
+    };
   } = {};
 
   private deleteFormIds: number[] = [];
   private messageFormData: message = {
-    title: "",
-    message: "",
-    footer: ""
+    title: '',
+    message: '',
+    footer: '',
   };
 
   private selectedTable: string = '';
@@ -46,7 +51,7 @@ export class FormService {
 
   private waitingToReload = new BehaviorSubject<boolean>(false);
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService) {}
 
   getReloadRequest(): Observable<boolean> {
     return this.waitingToReload.asObservable();
@@ -236,47 +241,59 @@ export class FormService {
     replacementData: {
       [key: string]: {
         data: { id: Number; replacement: string }[];
-      }
+      };
     },
-    dataService: DataService,
+    dataService: DataService
   ) {
     switch (tableName) {
       case 'price_list':
-        var data = await this.getIdReplacementData('items_id_name_sku', dataService);
+        var data = await this.getIdReplacementData(
+          'items_id_name_sku',
+          dataService
+        );
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
-        var data = await this.getIdReplacementData('customers_id_name_code', dataService);
+        var data = await this.getIdReplacementData(
+          'customers_id_name_code',
+          dataService
+        );
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
         break;
 
       case 'retail_items':
-        var data = await this.getIdReplacementData('items_id_name_sku', dataService);
+        var data = await this.getIdReplacementData(
+          'items_id_name_sku',
+          dataService
+        );
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
-        data = await this.getIdReplacementData("offer_id_name", dataService);
-        formData["Offer ID"].inputType = "replacement";
-        replacementData["Offer ID"] = { data: data };
+        data = await this.getIdReplacementData('offer_id_name', dataService);
+        formData['Offer ID'].inputType = 'replacement';
+        replacementData['Offer ID'] = { data: data };
         break;
 
-      case "items":
-        var data = await this.getIdReplacementData("categories", dataService);
-        formData["Category"].inputType = "alternative-select";
-        this.alternativeSelectData["Category"] = { data: data };
+      case 'items':
+        var data = await this.getIdReplacementData('categories', dataService);
+        formData['Category'].inputType = 'alternative-select';
+        this.alternativeSelectData['Category'] = { data: data };
 
-        data = await this.getIdReplacementData("sub-categories", dataService);
-        formData["Sub-category"].inputType = "alternative-select";
-        this.alternativeSelectData["Sub-category"] = { data: data };
+        data = await this.getIdReplacementData('sub-categories', dataService);
+        formData['Sub-category'].inputType = 'alternative-select';
+        this.alternativeSelectData['Sub-category'] = { data: data };
 
-        data = await this.getIdReplacementData("offer_id_name", dataService);
-        formData["Offer ID"].inputType = "replacement";
-        replacementData["Offer ID"] = { data: data };
+        data = await this.getIdReplacementData('offer_id_name', dataService);
+        formData['Offer ID'].inputType = 'replacement';
+        replacementData['Offer ID'] = { data: data };
         break;
 
       case 'invoiced_items':
-        var data = await this.getIdReplacementData('items_id_name_sku', dataService);
+        var data = await this.getIdReplacementData(
+          'items_id_name_sku',
+          dataService
+        );
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
@@ -286,37 +303,61 @@ export class FormService {
         break;
 
       case 'stocked_items':
-        var data = await this.getIdReplacementData('items_id_name_sku', dataService);
+        var data = await this.getIdReplacementData(
+          'items_id_name_sku',
+          dataService
+        );
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
-        var data = await this.getIdReplacementData('warehouse_id_name', dataService);
+        var data = await this.getIdReplacementData(
+          'warehouse_id_name',
+          dataService
+        );
         formData['Warehouse'].inputType = 'replacement';
         replacementData['Warehouse'] = { data: data };
 
-        var data = await this.getIdReplacementData('supplier_invoice_id_reference', dataService);
+        var data = await this.getIdReplacementData(
+          'supplier_invoice_id_reference',
+          dataService
+        );
         formData['Supplier Invoice ID'].inputType = 'replacement';
         replacementData['Supplier Invoice ID'] = { data: data };
         break;
 
       case 'invoices':
-        var data = await this.getIdReplacementData('customers_id_name_code', dataService);
+        var data = await this.getIdReplacementData(
+          'customers_id_name_code',
+          dataService
+        );
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
 
-        data = await this.getIdReplacementData('warehouse_id_name', dataService);
+        data = await this.getIdReplacementData(
+          'warehouse_id_name',
+          dataService
+        );
         formData['Warehouse ID'].inputType = 'replacement';
         replacementData['Warehouse ID'] = { data: data };
 
-        data = await this.getIdReplacementData('customer_address_id_full', dataService);
-        formData['Delivery Address'].inputType = "replacement";
+        data = await this.getIdReplacementData(
+          'customer_address_id_full',
+          dataService
+        );
+        formData['Delivery Address'].inputType = 'replacement';
         replacementData['Delivery Address'] = { data: data };
 
-        data = await this.getIdReplacementData('customer_billing_address_id_full', dataService);
-        formData['Billing Address'].inputType = "replacement";
+        data = await this.getIdReplacementData(
+          'customer_billing_address_id_full',
+          dataService
+        );
+        formData['Billing Address'].inputType = 'replacement';
         replacementData['Billing Address'] = { data: data };
 
-        data = await this.getIdReplacementData('items_id_name_sku', dataService);
+        data = await this.getIdReplacementData(
+          'items_id_name_sku',
+          dataService
+        );
         formData['Item ID'] = {
           inputType: 'replacement',
           value: null,
@@ -326,23 +367,42 @@ export class FormService {
         break;
 
       case 'customer_payments':
-        var data = await this.getIdReplacementData('invoice_id_title_unpaid', dataService);
+        var data = await this.getIdReplacementData(
+          'invoice_id_title_unpaid',
+          dataService
+        );
         formData['Invoice ID'].inputType = 'replacement';
         replacementData['Invoice ID'] = { data: data };
+
+        data = await this.getIdReplacementData(
+          'customers_id_name_code',
+          dataService
+        );
+        formData['Customer'].inputType = 'replacement';
+        replacementData['Customer'] = { data: data };
         break;
 
       case 'credit_notes':
-        var data = await this.getIdReplacementData('supplier_id_name_code', dataService);
+        var data = await this.getIdReplacementData(
+          'supplier_id_name_code',
+          dataService
+        );
         formData['Supplier'].inputType = 'replacement';
         replacementData['Supplier'] = { data: data };
 
-        data = await this.getIdReplacementData('supplier_invoice_id_reference', dataService);
+        data = await this.getIdReplacementData(
+          'supplier_invoice_id_reference',
+          dataService
+        );
         formData['Invoice'].inputType = 'replacement';
         replacementData['Invoice'] = { data: data };
         break;
 
       case 'credit_notes_customers':
-        var data = await this.getIdReplacementData('customers_id_name_code', dataService);
+        var data = await this.getIdReplacementData(
+          'customers_id_name_code',
+          dataService
+        );
         formData['Customer'].inputType = 'replacement';
         replacementData['Customer'] = { data: data };
 
@@ -352,14 +412,20 @@ export class FormService {
         break;
 
       case 'customer_address':
-        var data = await this.getIdReplacementData('customers_id_name', dataService);
+        var data = await this.getIdReplacementData(
+          'customers_id_name',
+          dataService
+        );
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
         break;
 
       case 'page_section_text':
       case 'image_locations':
-        var data = await this.getIdReplacementData('page_section_id_name', dataService);
+        var data = await this.getIdReplacementData(
+          'page_section_id_name',
+          dataService
+        );
         formData['Page Section ID'].inputType = 'replacement';
         replacementData['Page Section ID'] = { data: data };
         break;
@@ -367,17 +433,26 @@ export class FormService {
       case 'retail_item_images':
       case 'allergen_information':
       case 'nutrition_info':
-        var data = await this.getIdReplacementData('items_id_name', dataService);
+        var data = await this.getIdReplacementData(
+          'items_id_name',
+          dataService
+        );
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
         break;
 
       case 'supplier_invoices':
-        var data = await this.getIdReplacementData('supplier_id_name_code', dataService);
+        var data = await this.getIdReplacementData(
+          'supplier_id_name_code',
+          dataService
+        );
         formData['Supplier ID'].inputType = 'replacement';
         replacementData['Supplier ID'] = { data: data };
 
-        data = await this.getIdReplacementData('items_id_name_sku', dataService);
+        data = await this.getIdReplacementData(
+          'items_id_name_sku',
+          dataService
+        );
         formData['Item ID'] = {
           inputType: 'replacement',
           value: null,
@@ -385,25 +460,24 @@ export class FormService {
         };
         replacementData['Item ID'] = { data: data };
         break;
-
     }
     return { formData, replacementData };
   }
 
   getFieldValues(dataType: string, fieldValue: string) {
     switch (dataType) {
-      case "date":
+      case 'date':
         return formatDate(new Date(), 'yyyy-MM-dd', 'en').toString();
 
-      case "number":
-        return "0";
+      case 'number':
+        return '0';
     }
 
     return fieldValue;
   }
 
   getSelectDataOptions(dataType: string, inputType: string) {
-    if (inputType == "select" && dataType.startsWith("enum")) {
+    if (inputType == 'select' && dataType.startsWith('enum')) {
       return this.deriveEnumOptions(dataType);
     }
     return null;
@@ -417,7 +491,10 @@ export class FormService {
     return null;
   }
 
-  async getIdReplacementData(query: string, dataService: DataService): Promise<any> {
+  async getIdReplacementData(
+    query: string,
+    dataService: DataService
+  ): Promise<any> {
     return await dataService.processGet(query);
   }
 
@@ -451,9 +528,13 @@ export class FormService {
     });
   }
 
-  processAddFormData(editableData: editableData, row?: any, settings: settings = {
-    showAddMore: false
-  }) {
+  processAddFormData(
+    editableData: editableData,
+    row?: any,
+    settings: settings = {
+      showAddMore: false,
+    }
+  ) {
     this.addFormData = {};
     var inputDataTypes: string[] = this.dataTypeToInputType(editableData.types);
     editableData.columns.forEach((columnName, index) => {
@@ -462,7 +543,11 @@ export class FormService {
         dataType: editableData.types[index],
         required: editableData.required[index],
         field: editableData.fields[index],
-        value: editableData.values ? editableData.values[index] : row ? row[columnName] : null,
+        value: editableData.values
+          ? editableData.values[index]
+          : row
+          ? row[columnName]
+          : null,
       };
     });
     this.formSettings = settings;
@@ -472,37 +557,42 @@ export class FormService {
     var inputTypes: any[] = [];
     dataTypes.forEach((dataType: string) => {
       switch (dataType) {
-        case "date":
-          inputTypes.push("date");
+        case 'date':
+          inputTypes.push('date');
           break;
 
-        case "file":
-          inputTypes.push("file");
+        case 'file':
+          inputTypes.push('file');
           break;
 
-        case "double":
-        case "float":
-        case "decimal(19,2)":
-        case "int":
-          inputTypes.push("number");
+        case 'double':
+        case 'float':
+        case 'decimal(19,2)':
+        case 'int':
+          inputTypes.push('number');
           break;
 
-        case "text":
-          inputTypes.push("textarea")
+        case 'text':
+          inputTypes.push('textarea');
           break;
 
         default:
-          if (!dataType.includes("enum")) {
-            inputTypes.push("text");
+          if (!dataType.includes('enum')) {
+            inputTypes.push('text');
           } else {
-            inputTypes.push("select");
+            inputTypes.push('select');
           }
       }
     });
     return inputTypes;
   }
 
-  async handleImageSubmissions(id: string, name: string, image: File, tableName: string) {
+  async handleImageSubmissions(
+    id: string,
+    name: string,
+    image: File,
+    tableName: string
+  ) {
     let imageFileName = await this.processImageName(id, name, tableName);
 
     const uploadResponse = await this.uploadImage(image, imageFileName);
@@ -515,20 +605,25 @@ export class FormService {
 
     if (uploadResponse.success) {
       if (addToDatabase) {
-        const recordUploadResponse = await this.addImageLocationToDatabase(id, imageFileName);
+        const recordUploadResponse = await this.addImageLocationToDatabase(
+          id,
+          imageFileName
+        );
         if (!recordUploadResponse.success) {
           title = 'Error!';
-          message = 'There was an issue uploading your image. Possible causes are the image is not a correct file type (.png, .jpg, .jpeg) or the file name contains special characters. Please try again!';
+          message =
+            'There was an issue uploading your image. Possible causes are the image is not a correct file type (.png, .jpg, .jpeg) or the file name contains special characters. Please try again!';
           success = false;
         }
       }
     } else {
       title = 'Error!';
-      message = 'There was an issue uploading your image. Possible causes are the image is not a correct file type (.png, .jpg, .jpeg) or the file name contains special characters. Please try again!';
+      message =
+        'There was an issue uploading your image. Possible causes are the image is not a correct file type (.png, .jpg, .jpeg) or the file name contains special characters. Please try again!';
       success = false;
     }
 
-    this.setMessageFormData({ title: title, message: message })
+    this.setMessageFormData({ title: title, message: message });
     this.showMessageForm();
     return { success: success, imageFileName: imageFileName };
   }
@@ -562,7 +657,7 @@ export class FormService {
   shouldAddToDatabase(tableName: string) {
     switch (tableName) {
       case 'items':
-        return true
+        return true;
     }
 
     return false;
@@ -582,10 +677,10 @@ export class FormService {
 
   async addImageLocationToDatabase(itemId: string, imageFileName: string) {
     let imageFormData = {
-      'action': 'add',
-      'table_name': 'retail_item_images',
-      'item_id': itemId,
-      'image_file_name': imageFileName
+      action: 'add',
+      table_name: 'retail_item_images',
+      item_id: itemId,
+      image_file_name: imageFileName,
     };
 
     return await this.dataService.submitFormData(imageFormData);
@@ -596,9 +691,9 @@ export class FormService {
       return [];
     }
 
-    let query = "images-from-item-id";
-    if (table == "image_locations") {
-      query = "images-from-page-section-id";
+    let query = 'images-from-item-id';
+    if (table == 'image_locations') {
+      query = 'images-from-page-section-id';
     }
 
     let images = await this.dataService.processGet(query, { filter: id }, true);

@@ -106,27 +106,6 @@
                                                     (click)="addAddressToBook(key)">Add</button>
                                             </div>
                                         </ng-container>
-                                        <ng-container *ngIf="key == 'Invoice ID' && tableName == 'customer_payments'">
-                                            <div class="invoice-details-container">
-                                                <table>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Due date</th>
-                                                            <th>Total</th>
-                                                            <th>Outstanding balance</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>{{ invoiceDetails['delivery_date'] }}</td>
-                                                            <td>{{ invoiceDetails['total'] | currency: 'GBP' }}</td>
-                                                            <td>{{ invoiceDetails['outstanding_balance'] | currency:
-                                                                'GBP' }}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </ng-container>
                                         <ng-template #standardSelect>
                                             <div class="drop-select-container">
                                                 <input autocomplete="off"
@@ -165,6 +144,32 @@
                             <fa-icon [icon]="icons.faCloudUpload" [ngClass]="file == null ? '' : 'success'" /> Drop
                             Image Here to Upload
                             <button class="button" (click)="submitImageOnly()">Upload</button>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="tableName == 'customer_payments'">
+                        <div class="invoice-details-container">
+                            <h3>Documents to reconcile</h3>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Due date</th>
+                                            <th>Total</th>
+                                            <th>Outstanding balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let invoice of invoiceDetails">
+                                            <td>{{ invoice['title'] }}</td>
+                                            <td>{{ invoice['delivery_date'] }}</td>
+                                            <td>{{ invoice['total'] | currency: 'GBP' }}</td>
+                                            <td>{{ invoice['outstanding_balance'] | currency:
+                                                'GBP' }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </ng-container>
                     <div class="form-footer">

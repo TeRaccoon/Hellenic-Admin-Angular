@@ -617,10 +617,16 @@ export class AddFormComponent {
         'Billing Address',
         'billing_address_id'
       );
-    } else if (this.tableName == 'customer_payments' && field == 'invoice_id') {
-      this.invoiceDetails = await this.dataService.processGet('invoice', {
-        filter: dataId.toString(),
-      });
+    } else if (
+      this.tableName == 'customer_payments' &&
+      field == 'customer_id'
+    ) {
+      this.invoiceDetails = await this.dataService.processGet(
+        'invoice-outstanding',
+        {
+          filter: dataId.toString(),
+        }
+      );
     } else if (this.tableName == 'stocked_items' && field == 'item_id') {
       let lastPurchasePrice = await this.dataService.processGet(
         'last-purchase-price',
@@ -986,6 +992,9 @@ export class AddFormComponent {
 
       case 'items':
         return !(key == 'Total Sold');
+
+      case 'customer_payments':
+        return !(key == 'Linked Payment ID');
     }
     return true;
   }
