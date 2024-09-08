@@ -22,6 +22,10 @@ import {
 import { editableData } from '../../common/types/forms/types';
 import { tableIcons } from '../../common/icons/table-icons';
 import { TableService } from '../../services/table.service';
+import {
+  BalanceSheetData,
+  BalanceSheetTable,
+} from '../../common/types/data-service/types';
 
 @Component({
   selector: 'app-view',
@@ -245,11 +249,17 @@ export class ViewComponent {
     let id = this.selectedRows[0];
     let row = this.data.filter((row: any) => row.id == id)[0];
 
-    let balanceSheetTitle = `Balance Sheet for ${row['account_name']} - ${row['account_number']}`;
+    let account_number =
+      this.tableName == 'customers'
+        ? row['account_number']
+        : row['account_code'];
 
-    let balanceSheetData = {
+    let balanceSheetTitle = `Balance Sheet for ${row['account_name']} - ${account_number}`;
+
+    let balanceSheetData: BalanceSheetData = {
       Title: balanceSheetTitle,
       CustomerId: id,
+      Table: this.tableName as BalanceSheetTable,
     };
 
     this.dataService.storeBalanceSheetData(balanceSheetData);

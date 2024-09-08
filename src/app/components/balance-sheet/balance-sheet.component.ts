@@ -2,7 +2,12 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { imageUrlBase } from '../../services/data.service';
-import { BalanceSheetData } from '../../common/types/data-service/types';
+import {
+  BalanceSheetData,
+  BalanceSheetQueries,
+  CustomerQueries,
+  SupplierQueries,
+} from '../../common/types/data-service/types';
 import {
   InvoiceSummary,
   Order,
@@ -46,6 +51,8 @@ export class BalanceSheetComponent {
     endDate: null,
   };
 
+  queries!: BalanceSheetQueries;
+
   ranges: any = {
     Yesterday: [dayjs().subtract(1, 'days'), dayjs().subtract(1, 'days')],
     Today: [dayjs(), dayjs()],
@@ -62,6 +69,9 @@ export class BalanceSheetComponent {
 
   constructor(private dataService: DataService) {
     this.inputData = this.dataService.retrieveBalanceSheetData();
+
+    this.queries =
+      this.inputData.Table == 'customers' ? CustomerQueries : SupplierQueries;
   }
 
   ngOnInit() {
@@ -116,7 +126,7 @@ export class BalanceSheetComponent {
   processSummary() {
     let totalOrders = this.invoices!.length;
     let totalOutstandingInvoices = this.invoices!.filter(
-      (invoice) => invoice.payment_status == PaymentStatus.Yes
+      (invoice) => invoice.payment_status != PaymentStatus.Yes
     ).length;
     let totalOutstandingBalance = this.invoices!.reduce(
       (accumulator, invoice) => {
@@ -134,7 +144,7 @@ export class BalanceSheetComponent {
 
   async gatherInvoices() {
     this.invoices = await this.dataService.processGet(
-      'order-history',
+      this.queries.Invoices,
       { filter: this.inputData.CustomerId },
       true
     );
@@ -142,7 +152,7 @@ export class BalanceSheetComponent {
 
   async gatherPayments() {
     this.payments = await this.dataService.processGet(
-      'payments-by-customer-id',
+      this.queries.Payments,
       { filter: this.inputData.CustomerId },
       true
     );

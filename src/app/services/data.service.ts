@@ -3,31 +3,39 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, lastValueFrom, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UrlService } from './url.service';
-import { BalanceSheetData } from '../common/types/data-service/types';
+import {
+  BalanceSheetData,
+  BalanceSheetTable,
+} from '../common/types/data-service/types';
 
-export const apiUrlBase = "http://localhost/API/";
-export const imageUrlBase = "http://localhost/uploads/";
+export const apiUrlBase = 'http://localhost/API/';
+export const imageUrlBase = 'http://localhost/uploads/';
 @Injectable({
   providedIn: 'root',
 })
-
 export class DataService {
   private dataSubject = new Subject<any[]>();
   tableData: any = null;
-  private widgetData = new Subject<{ [key: string]: { name: string, quantity: number }[] }>();
+  private widgetData = new Subject<{
+    [key: string]: { name: string; quantity: number }[];
+  }>();
   private tableWidgetData: any = {};
   private balanceSheetData: BalanceSheetData = {
     Title: '',
     CustomerId: -1,
+    Table: BalanceSheetTable.Customers,
   };
   altTableData: any = {};
   invoiceIds: any[] = [];
-  tabs: { displayName: string, tableName: string }[] = [];
+  tabs: { displayName: string; tableName: string }[] = [];
 
-  constructor(private http: HttpClient, private urlService: UrlService) { }
+  constructor(private http: HttpClient, private urlService: UrlService) {}
 
-  async processGet(query: string, filter: Record<string, any> = {}, makeArray = false): Promise<any> {
-
+  async processGet(
+    query: string,
+    filter: Record<string, any> = {},
+    makeArray = false
+  ): Promise<any> {
     const url = new URL(this.urlService.getUrl('admin'));
     url.searchParams.append('query', query);
     const queryParams = { ...filter };
@@ -37,16 +45,23 @@ export class DataService {
 
     let response = await lastValueFrom(this.http.get(url.toString()));
 
-    if (makeArray)
-      response = Array.isArray(response) ? response : [response];
+    if (makeArray) response = Array.isArray(response) ? response : [response];
 
     return response;
   }
 
-  collectDataComplex(query: string, filter?: Record<string, any>): Observable<any> {
+  collectDataComplex(
+    query: string,
+    filter?: Record<string, any>
+  ): Observable<any> {
     let url = apiUrlBase + `admin_query_handler.php?query=${query}`;
     if (filter != null) {
-      const queryParams = Object.entries(filter).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
+      const queryParams = Object.entries(filter)
+        .map(
+          ([key, value]) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+        )
+        .join('&');
       url += `&${queryParams}`;
     }
     return this.http.get<any>(url);
@@ -54,21 +69,30 @@ export class DataService {
 
   async submitFormData(data: any) {
     const url = apiUrlBase + 'manage_data.php';
-    let submissionResponse = await lastValueFrom<any>(this.http.post(url, data, { withCredentials: true }));
+    let submissionResponse = await lastValueFrom<any>(
+      this.http.post(url, data, { withCredentials: true })
+    );
     return submissionResponse;
   }
 
-  async syncInsert(tableName: string, id: string, quantity: number, url: string) {
+  async syncInsert(
+    tableName: string,
+    id: string,
+    quantity: number,
+    url: string
+  ) {
     let data = {
       id: id,
       quantity: quantity,
       table: tableName,
-      query: `${tableName}_insert`
+      query: `${tableName}_insert`,
     };
 
     switch (tableName) {
-      case "invoiced_items":
-        let syncResponse = await lastValueFrom(this.http.post(url, data, { withCredentials: true }))
+      case 'invoiced_items':
+        let syncResponse = await lastValueFrom(
+          this.http.post(url, data, { withCredentials: true })
+        );
         break;
     }
   }
@@ -150,7 +174,7 @@ export class DataService {
     return this.altTableData;
   }
 
-  setTabs(tabs: { displayName: string, tableName: string }[]) {
+  setTabs(tabs: { displayName: string; tableName: string }[]) {
     this.tabs = tabs;
   }
   getTabs() {

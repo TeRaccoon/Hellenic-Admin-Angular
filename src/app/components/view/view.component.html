@@ -13,8 +13,8 @@
                             [icon]="icons.faCopy" /></button>
                     <button *ngIf="tableName == 'suppliers'" class="button" (click)="createCreditNote()"><fa-icon
                             [icon]="icons.faFileInvoice" /></button>
-                    <button *ngIf="tableName == 'customers' && selectedRows.length == 1" class="button"
-                        (click)="viewBalanceSheet()">
+                    <button *ngIf="(tableName == 'customers' || tableName == 'suppliers') && selectedRows.length == 1"
+                        class="button" (click)="viewBalanceSheet()">
                         Balance Sheet
                     </button>
                     <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button"
