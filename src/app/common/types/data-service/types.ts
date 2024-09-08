@@ -10,19 +10,19 @@ export enum BalanceSheetTable {
 }
 
 export interface BalanceSheetQueries {
-  Invoices: string;
+  Orders: string;
   Payments: string;
   CreditNotes: string;
 }
 
 export const CustomerQueries: BalanceSheetQueries = {
-  Invoices: 'order-history',
+  Orders: 'order-history',
   Payments: 'payments-by-customer-id',
-  CreditNotes: '',
+  CreditNotes: 'credit-notes-customer',
 };
 
 export const SupplierQueries: BalanceSheetQueries = {
-  Invoices: 'order-history-supplier',
+  Orders: 'order-history-supplier',
   Payments: 'payments-by-supplier-id',
-  CreditNotes: '',
+  CreditNotes: 'credit-notes-supplier',
 };

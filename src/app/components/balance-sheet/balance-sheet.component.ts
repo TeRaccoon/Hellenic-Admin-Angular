@@ -9,10 +9,12 @@ import {
   SupplierQueries,
 } from '../../common/types/data-service/types';
 import {
+  CreditNote,
   InvoiceSummary,
   Order,
   Payment,
   PaymentStatus,
+  TransactionType,
 } from '../../common/types/balance-sheet/types';
 import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import { selectedDate } from '../../common/types/statistics/types';
@@ -21,7 +23,7 @@ import isBetween from 'dayjs/plugin/isBetween';
 
 dayjs.extend(isBetween);
 
-type Transaction = Order | Payment;
+type Transaction = Order | Payment | CreditNote;
 
 @Component({
   selector: 'app-balance-sheet',
@@ -35,8 +37,6 @@ export class BalanceSheetComponent {
 
   inputData!: BalanceSheetData;
 
-  invoices: Order[] | null = null;
-  payments: Payment[] | null = null;
   invoiceSummary: InvoiceSummary | null = null;
 
   transactions: Transaction[] = [];
@@ -79,61 +79,50 @@ export class BalanceSheetComponent {
   }
 
   async gatherData() {
-    await this.gatherInvoices();
-    await this.gatherPayments();
+    let orders: Order[] = await this.processData(
+      this.queries.Orders,
+      TransactionType.Order
+    );
+    await this.processData(this.queries.Payments, TransactionType.Payment);
+    await this.processData(
+      this.queries.CreditNotes,
+      TransactionType.CreditNote
+    );
 
-    if (this.invoices != null && this.payments != null) {
-      this.invoices.forEach((invoice: Order) => {
-        this.transactions.push(invoice);
-      });
+    this.sortTransactions();
+    this.processOutstandingBalance();
+    this.processSummary(orders);
+  }
 
-      this.payments.forEach((payment: Payment) => {
-        this.transactions.push(payment);
-      });
-
-      this.transactions = this.transactions.map((transaction) => ({
-        ...transaction,
-        date: new Date(transaction.date),
-      }));
-
-      this.transactions = this.transactions.sort(
-        (a, b) => a.date.getTime() - b.date.getTime()
-      );
-      this.filteredTransactions = this.transactions;
-
-      this.processOutstandingBalance();
-
-      this.processSummary();
-    }
+  sortTransactions() {
+    this.transactions = this.transactions.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+    this.filteredTransactions = this.transactions;
   }
 
   processOutstandingBalance() {
     let outstandingBalance = 0;
 
     for (let transaction of this.transactions) {
-      if (this.isOrder(transaction)) {
+      if (transaction.type == 'order') {
         outstandingBalance += transaction.total || 0;
-      } else if (this.isPayment(transaction)) {
+      } else {
         outstandingBalance -= transaction.amount || 0;
       }
-      // else if (transaction.type === 'CreditNote') {
-      //   outstandingBalance -= transaction.amount || 0;
-      // }
-      transaction.outstanding_balance = outstandingBalance;
     }
   }
 
-  processSummary() {
-    let totalOrders = this.invoices!.length;
-    let totalOutstandingInvoices = this.invoices!.filter(
-      (invoice) => invoice.payment_status != PaymentStatus.Yes
+  processSummary(orders: Order[]) {
+    let totalOrders = orders.length;
+
+    let totalOutstandingInvoices = orders!.filter(
+      (order) => order.payment_status != PaymentStatus.Yes
     ).length;
-    let totalOutstandingBalance = this.invoices!.reduce(
-      (accumulator, invoice) => {
-        return accumulator + invoice.outstanding_balance;
-      },
-      0
-    );
+
+    let totalOutstandingBalance = orders!.reduce((accumulator, order) => {
+      return accumulator + order.outstanding_balance;
+    }, 0);
 
     this.invoiceSummary = {
       orders: totalOrders,
@@ -142,38 +131,22 @@ export class BalanceSheetComponent {
     };
   }
 
-  async gatherInvoices() {
-    this.invoices = await this.dataService.processGet(
-      this.queries.Invoices,
+  async processData(query: string, type: TransactionType) {
+    let data = await this.dataService.processGet(
+      query,
       { filter: this.inputData.CustomerId },
       true
     );
+
+    if (data != null) {
+      data.forEach((dataItem: any) => {
+        let transaction: Transaction = { ...dataItem, type: type };
+        this.transactions.push(transaction);
+      });
+    }
+
+    return data;
   }
-
-  async gatherPayments() {
-    this.payments = await this.dataService.processGet(
-      this.queries.Payments,
-      { filter: this.inputData.CustomerId },
-      true
-    );
-  }
-
-  async gatherCreditNotes() {}
-
-  isOrder(transaction: Transaction): transaction is Order {
-    return (transaction as Order).title !== undefined;
-  }
-
-  isPayment(transaction: Transaction): transaction is Payment {
-    return (
-      (transaction as Payment).amount !== undefined &&
-      (transaction as Payment).reference !== undefined
-    );
-  }
-
-  // isCreditNote(transaction: Transaction): transaction is CreditNote {
-  //   return (transaction as CreditNote).amount !== undefined && (transaction as CreditNote).reference === undefined;
-  // }
 
   async print() {
     window.print();
@@ -197,11 +170,11 @@ export class BalanceSheetComponent {
 
     this.filteredTransactions = this.transactions.filter(
       (transaction) =>
-        this.isOrder(transaction) ||
-        (this.isPayment(transaction) &&
+        transaction.type == 'order' ||
+        (transaction.type == 'payment' &&
           (transaction.type == value ||
             value == 'Both' ||
-            (value != 'Cash' && transaction.type != 'Cash')))
+            (value != 'Cash' && transaction.paymentType != 'Cash')))
     );
   }
 }
