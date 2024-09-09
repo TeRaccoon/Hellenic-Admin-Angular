@@ -5,7 +5,7 @@ import { lastValueFrom } from 'rxjs';
 @Component({
   selector: 'app-ledger-widget',
   templateUrl: './ledger-widget.component.html',
-  styleUrls: ['./ledger-widget.component.scss']
+  styleUrls: ['./ledger-widget.component.scss'],
 })
 export class LedgerWidgetComponent {
   startDate: string = '';
@@ -19,11 +19,16 @@ export class LedgerWidgetComponent {
 
   async calculateTrialBalance() {
     if (this.startDate != '' && this.endDate != '') {
-      let accountBalanceData = await lastValueFrom(this.dataService.collectDataComplex('account-balances', {'start-date': this.startDate, 'end-date': this.endDate}));
+      let accountBalanceData = await this.dataService.processGet(
+        'account-balances',
+        {
+          'start-date': this.startDate,
+          'end-date': this.endDate,
+        }
+      );
       this.balanceData = accountBalanceData;
       this.searched = true;
-    }
-    else {
+    } else {
       this.hasError = true;
     }
   }

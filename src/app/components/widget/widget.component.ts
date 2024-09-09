@@ -1,14 +1,19 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
-import { faX, faTrashCan, faPenToSquare, faFileCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import {
+  faX,
+  faTrashCan,
+  faPenToSquare,
+  faFileCircleXmark,
+} from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
 import { imageUrlBase } from '../../services/data.service';
 
 @Component({
   selector: 'app-widget',
   templateUrl: './widget.component.html',
-  styleUrls: ['./widget.component.scss']
+  styleUrls: ['./widget.component.scss'],
 })
 export class WidgetComponent {
   faX = faX;
@@ -23,10 +28,12 @@ export class WidgetComponent {
   formName = '';
 
   tableData = {
-    headers: [{
-      name: '',
-      type: ''
-    }],
+    headers: [
+      {
+        name: '',
+        type: '',
+      },
+    ],
     rows: [],
     tableName: '',
     title: '',
@@ -37,7 +44,7 @@ export class WidgetComponent {
     query: '',
     disabled: {
       value: false,
-      message: ''
+      message: '',
     },
     extra: {
       totalNet: 0,
@@ -46,7 +53,10 @@ export class WidgetComponent {
     },
   };
 
-  constructor(private dataService: DataService, private formService: FormService) { }
+  constructor(
+    private dataService: DataService,
+    private formService: FormService
+  ) {}
 
   ngOnInit() {
     this.subscriptionHandler();
@@ -61,15 +71,21 @@ export class WidgetComponent {
       this.tableData = tableData;
     });
 
-    this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
-      if (reloadRequested) {
-        await this.reload();
-      }
-    });
+    this.formService
+      .getReloadRequest()
+      .subscribe(async (reloadRequested: boolean) => {
+        if (reloadRequested) {
+          await this.reload();
+        }
+      });
   }
 
   async reload() {
-    this.tableData.rows = await this.dataService.processGet(this.tableData.query, { filter: this.tableData.idData.id }, true);
+    this.tableData.rows = await this.dataService.processGet(
+      this.tableData.query,
+      { filter: this.tableData.idData.id },
+      true
+    );
     this.formService.performReload();
 
     if (this.tableData.query == 'invoiced-items') {
@@ -88,7 +104,7 @@ export class WidgetComponent {
       this.tableData.extra = {
         totalNet: totalNet,
         totalVAT: totalVAT,
-        totalWithVAT: totalWithVAT
+        totalWithVAT: totalWithVAT,
       };
     }
   }
@@ -105,8 +121,15 @@ export class WidgetComponent {
   }
 
   async editRow(id: number) {
-    let editFormData = await this.dataService.processGet('edit-form-data', { filter: this.tableData.tableName });
-    let appendOrAdd = await lastValueFrom(this.dataService.collectDataComplex('append-or-add', { table: this.tableData.tableName, id: id, column: 'id' }));
+    let editFormData = await this.dataService.processGet('edit-form-data', {
+      filter: this.tableData.tableName,
+    });
+
+    let appendOrAdd = await this.dataService.processGet('append-or-add', {
+      table: this.tableData.tableName,
+      id: id,
+      column: 'id',
+    });
 
     if (editFormData != null && appendOrAdd != null) {
       this.formService.processEditFormData(appendOrAdd, editFormData);
@@ -115,17 +138,27 @@ export class WidgetComponent {
   }
 
   async addRow() {
-    let addFormData = await this.dataService.processGet('table', { filter: this.tableData.tableName });
+    let addFormData = await this.dataService.processGet('table', {
+      filter: this.tableData.tableName,
+    });
 
     if (addFormData != null) {
       let formData = addFormData.editable;
 
-      let values: (string | null)[] = Array(addFormData.editable.columns.length).fill(null);
-      const idIndex = addFormData.editable.names.indexOf(this.tableData.idData.columnName);
+      let values: (string | null)[] = Array(
+        addFormData.editable.columns.length
+      ).fill(null);
+      const idIndex = addFormData.editable.names.indexOf(
+        this.tableData.idData.columnName
+      );
       values[idIndex] = this.tableData.idData.id;
       formData.values = values;
 
-      this.formService.processAddFormData(formData, null, this.formService.constructFormSettings(this.tableData.tableName));
+      this.formService.processAddFormData(
+        formData,
+        null,
+        this.formService.constructFormSettings(this.tableData.tableName)
+      );
       this.formService.setSelectedTable(this.tableData.tableName);
       this.formService.showAddForm();
       this.formService.setReloadType('widget');

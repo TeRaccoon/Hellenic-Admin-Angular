@@ -50,21 +50,16 @@ export class DataService {
     return response;
   }
 
-  collectDataComplex(
-    query: string,
-    filter?: Record<string, any>
-  ): Observable<any> {
-    let url = apiUrlBase + `admin_query_handler.php?query=${query}`;
-    if (filter != null) {
-      const queryParams = Object.entries(filter)
-        .map(
-          ([key, value]) =>
-            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-        )
-        .join('&');
-      url += `&${queryParams}`;
-    }
-    return this.http.get<any>(url);
+  async processPost(
+    body: Record<string, any>,
+    makeArray = false
+  ): Promise<any> {
+    const url = this.urlService.getUrl('admin');
+    let response = await lastValueFrom(this.http.post(url, { body }));
+
+    if (makeArray) response = Array.isArray(response) ? response : [response];
+
+    return response;
   }
 
   async submitFormData(data: any) {

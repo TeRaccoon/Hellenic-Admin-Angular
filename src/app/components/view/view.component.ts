@@ -321,13 +321,11 @@ export class ViewComponent {
       case 'nutrition_info':
         switch (this.tableName) {
           case 'items':
-            appendOrAdd = await lastValueFrom<any>(
-              this.dataService.collectDataComplex('append-or-add', {
-                table: table,
-                id: id,
-                column: 'item_id',
-              })
-            );
+            appendOrAdd = await this.dataService.processGet('append-or-add', {
+              table: table,
+              id: id,
+              column: 'item_id',
+            });
 
             fakeRow['item_id'] = id;
             if (appendOrAdd.id) {
@@ -1089,12 +1087,10 @@ export class ViewComponent {
 
     this.distanceLoading = true;
 
-    let coordinates = await lastValueFrom(
-      this.dataService.collectDataComplex('calculate-distance', {
-        invoice_id: invoice_id,
-        warehouse_id: row['warehouse_id'],
-      })
-    );
+    let coordinates = await this.dataService.processGet('calculate-distance', {
+      invoice_id: invoice_id,
+      warehouse_id: row['warehouse_id'],
+    });
 
     this.handleCoordinatesResponse(coordinates);
     this.distanceLoading = false;

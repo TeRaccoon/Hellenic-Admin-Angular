@@ -5,30 +5,47 @@ import { lastValueFrom } from 'rxjs';
 @Component({
   selector: 'app-profit-loss-widget',
   templateUrl: './profit-loss-widget.component.html',
-  styleUrls: ['./profit-loss-widget.component.scss']
+  styleUrls: ['./profit-loss-widget.component.scss'],
 })
 export class ProfitLossWidgetComponent {
-  startDate: string = '';
-  endDate: string = '';
+  startDate: Date | null = null;
+  endDate: Date | null = null;
 
   constructor(private dataService: DataService) {}
 
   async calculateProfitLoss() {
-    if (this.startDate != '' && this.endDate != '') {
-      let profitLossData = await lastValueFrom(this.dataService.collectDataComplex('profit-loss', {'start-date': this.startDate, 'end-date': this.endDate}));
-      profitLossData = Array.isArray(profitLossData) ? profitLossData : [profitLossData];
+    if (this.startDate != null && this.endDate != null) {
+      let profitLossData = await this.dataService.processGet(
+        'profit-loss',
+        {
+          'start-date': this.startDate,
+          'end-date': this.endDate,
+        },
+        true
+      );
 
       profitLossData.forEach((item: any) => {
         for (const key in item) {
           if (item[key] == null) {
             item[key] = 0;
           }
-          item[key] = item[key].toLocaleString('en-US', { style: 'currency', currency: 'GBP' });
+          item[key] = item[key].toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'GBP',
+          });
         }
       });
-      
-      this.dataService.storeData({'Data': profitLossData,
-      'Headers': ['Sales Revenue', 'Cost of Sales', 'Gross Profit', 'Expenses', 'Net Profit']});
+
+      this.dataService.storeData({
+        Data: profitLossData,
+        Headers: [
+          'Sales Revenue',
+          'Cost of Sales',
+          'Gross Profit',
+          'Expenses',
+          'Net Profit',
+        ],
+      });
     }
   }
 }

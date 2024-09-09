@@ -17,16 +17,16 @@ export class TableWidgetComponent {
   alternativeData: any;
   query = '';
 
-  vatReturnHistory: any[] = []
+  vatReturnHistory: any[] = [];
   vatHistory: string[] = [];
-  selectedVatGroup: string = "";
+  selectedVatGroup: string = '';
 
   displayDateRange = false;
 
   constructor(
     private dataService: DataService,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
@@ -82,10 +82,10 @@ export class TableWidgetComponent {
         'Total value of purchases and other inputs including EC acquisitions',
         'Total value of intra-community dispatches from Northern Ireland to EU Member States',
         'Total value of intra-community acquisitions made in Northern Ireland from EU Member States',
-      ]
+      ],
     };
 
-    this.loadVATGroups()
+    this.loadVATGroups();
   }
 
   async loadVATGroups() {
@@ -93,25 +93,38 @@ export class TableWidgetComponent {
   }
 
   async loadVATReturns() {
-    this.vatReturnHistory = await this.dataService.processGet('vat-history-by-group-id', { filter: this.selectedVatGroup });
+    this.vatReturnHistory = await this.dataService.processGet(
+      'vat-history-by-group-id',
+      { filter: this.selectedVatGroup }
+    );
   }
 
   async collectData() {
     if (this.startDate != '' && this.endDate != '') {
-      let data = await lastValueFrom(
-        this.dataService.collectDataComplex(this.query, {
+      let data = await this.dataService.processGet(
+        this.query,
+        {
           'start-date': this.startDate,
           'end-date': this.endDate,
-        })
+        },
+        true
       );
 
       if (this.tableName == 'vat-returns') {
         data = this.vatReturns(data);
       }
 
-      data = Array.isArray(data) ? data : [data];
-
-      this.alternativeData['values'] = [data[0].output_vat, 0, data[0].output_vat, data[0].input_vat, data[0].output_vat - data[0].input_vat, data[0].output_total - data[0].output_vat, data[0].input_total - data[0].input_vat, 0, 0];
+      this.alternativeData['values'] = [
+        data[0].output_vat,
+        0,
+        data[0].output_vat,
+        data[0].input_vat,
+        data[0].output_vat - data[0].input_vat,
+        data[0].output_total - data[0].output_vat,
+        data[0].input_total - data[0].input_vat,
+        0,
+        0,
+      ];
       this.alternativeData['period'] = this.getPeriod();
       this.alternativeData['date'] = this.startDate;
 
@@ -119,7 +132,7 @@ export class TableWidgetComponent {
         Data: data,
         Headers: this.headers,
         columnTypes: this.columnTypes,
-        alternativeData: this.alternativeData
+        alternativeData: this.alternativeData,
       });
     }
   }

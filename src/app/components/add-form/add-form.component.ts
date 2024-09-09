@@ -146,15 +146,14 @@ export class AddFormComponent {
         ? 'stocked-items-invoice'
         : 'invoiced-items';
 
-    this.itemsList = await lastValueFrom(
-      this.dataService.collectDataComplex(query, {
+    this.itemsList = await this.dataService.processGet(
+      query,
+      {
         id: this.invoiceId?.toString(),
         complex: true,
-      })
+      },
+      true
     );
-    this.itemsList = Array.isArray(this.itemsList)
-      ? this.itemsList
-      : [this.itemsList];
   }
 
   resetFormState(): void {
@@ -899,12 +898,10 @@ export class AddFormComponent {
         ? 'stocked-items-invoice'
         : 'invoiced-items';
 
-    this.itemsList = await lastValueFrom(
-      this.dataService.collectDataComplex(query, {
-        id: this.invoiceId?.toString(),
-        complex: true,
-      })
-    );
+    this.itemsList = await this.dataService.processGet(query, {
+      id: this.invoiceId?.toString(),
+      complex: true,
+    });
     this.itemsList = Array.isArray(this.itemsList)
       ? this.itemsList
       : [this.itemsList];
