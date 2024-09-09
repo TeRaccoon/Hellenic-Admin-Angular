@@ -468,7 +468,6 @@ export class ViewComponent {
       this.viewMetaData.pageCount = this.calculatePageCount(true);
       this.filteredDisplayData = this.displayData.slice(start, end);
     } else {
-      console.log('Here');
       this.filteredDisplayData = this.applyTemporaryFilter();
       this.viewMetaData.pageCount = this.calculatePageCount();
       this.filteredDisplayData = this.filteredDisplayData.slice(start, end);

@@ -11,7 +11,7 @@ import html2canvas from 'html2canvas';
 @Component({
   selector: 'app-invoice-view',
   templateUrl: './invoice-view.component.html',
-  styleUrls: ['./invoice-view.component.scss']
+  styleUrls: ['./invoice-view.component.scss'],
 })
 export class InvoiceViewComponent {
   invoiceData: any[] = [];
@@ -30,7 +30,12 @@ export class InvoiceViewComponent {
 
   deliveryOnly = false;
 
-  constructor(private formService: FormService, private router: Router, private dataService: DataService, private authService: AuthService) { }
+  constructor(
+    private formService: FormService,
+    private router: Router,
+    private dataService: DataService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.loaded = false;
@@ -53,19 +58,30 @@ export class InvoiceViewComponent {
 
     // Retrieve and process data for each invoice
     for (const invoiceId of invoiceIds) {
-      const invoiceDataItem: any = await this.dataService.processGet('invoice-info', { filter: invoiceId.toString() });
+      const invoiceDataItem: any = await this.dataService.processGet(
+        'invoice-info',
+        { filter: invoiceId.toString() }
+      );
       invoiceData.push({ ...invoiceDataItem, invoice_id: invoiceId });
 
-      const productData: any = await this.dataService.processGet('invoice-products', { filter: invoiceId.toString() }, true);
+      const productData: any = await this.dataService.processGet(
+        'invoice-products',
+        { filter: invoiceId.toString() },
+        true
+      );
       this.invoiceItems.push(productData);
 
-      let deliveryDataItem: any = await this.dataService.processGet('delivery-info', { filter: invoiceId.toString() });
+      let deliveryDataItem: any = await this.dataService.processGet(
+        'delivery-info',
+        { filter: invoiceId.toString() }
+      );
 
       if (deliveryDataItem.customer_coordinates.length == 0) {
         error = true;
         this.formService.setMessageFormData({
           title: 'Warning!',
-          message: 'There was an issue with one of the postcodes! The distance could not be calculated!'
+          message:
+            'There was an issue with one of the postcodes! The distance could not be calculated!',
         });
       }
 
@@ -80,12 +96,15 @@ export class InvoiceViewComponent {
       this.customerIds.push(deliveryDataItem.customer_id);
     }
 
-    let combinedData = invoiceData.map((invoice, index) => ({ invoice, delivery: deliveryData[index] }));
+    let combinedData = invoiceData.map((invoice, index) => ({
+      invoice,
+      delivery: deliveryData[index],
+    }));
 
-    this.invoiceData = combinedData.map(item => item.invoice);
-    this.deliveryData = combinedData.map(item => item.delivery);
+    this.invoiceData = combinedData.map((item) => item.invoice);
+    this.deliveryData = combinedData.map((item) => item.delivery);
 
-    this.sortDistance()
+    this.sortDistance();
 
     this.calculateVat();
     error && this.formService.showMessageForm();
@@ -101,15 +120,20 @@ export class InvoiceViewComponent {
       let distances = tempData.map((data, index) => {
         return {
           index: index,
-          distance: this.calculateDistance(currentLocation, data.customer_coordinates)
+          distance: this.calculateDistance(
+            currentLocation,
+            data.customer_coordinates
+          ),
         };
       });
-      console.log(distances);
       distances.sort((a: any, b: any) => a.distance - b.distance);
       let nearestDeliveryIndex = distances[0].index;
       let nearestDelivery = tempData.splice(nearestDeliveryIndex, 1)[0];
 
-      sortedDeliveries.push({ ...nearestDelivery, distance: distances[0].distance });
+      sortedDeliveries.push({
+        ...nearestDelivery,
+        distance: distances[0].distance,
+      });
 
       currentLocation = nearestDelivery.customer_coordinates;
     }
@@ -128,12 +152,15 @@ export class InvoiceViewComponent {
     const deltaLat = (coord2.latitude - coord1.latitude) * (Math.PI / 180);
     const deltaLon = (coord2.longitude - coord1.longitude) * (Math.PI / 180);
 
-    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-      Math.cos(lat1Rad) * Math.cos(lat2Rad) *
-      Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+    const a =
+      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(lat1Rad) *
+        Math.cos(lat2Rad) *
+        Math.sin(deltaLon / 2) *
+        Math.sin(deltaLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    const distance = R * c / 1000; // Distance in km
+    const distance = (R * c) / 1000; // Distance in km
     return isNaN(distance) ? '' : distance.toFixed(2);
   }
 
@@ -144,16 +171,18 @@ export class InvoiceViewComponent {
       this.invoiceItems[index].forEach((item: any) => {
         if (item['vat_charge'] == 'Yes') {
           item['sub_total'] = item['price'] * item['quantity'];
-          item['net_total'] = item['sub_total'] * (100 - item['discount']) / 100;
+          item['net_total'] =
+            (item['sub_total'] * (100 - item['discount'])) / 100;
           item['vat_charge'] = item['net_total'] * 0.2;
-          item['total'] = (item['net_total'] + item['vat_charge']);
+          item['total'] = item['net_total'] + item['vat_charge'];
           vatTotal += item['vat_charge'];
         } else {
           item['vat_charge'] = 0;
         }
       });
       invoices['vat'] = vatTotal;
-      invoices['discount'] = invoices['gross_value'] + invoices['vat'] - invoices['total'];
+      invoices['discount'] =
+        invoices['gross_value'] + invoices['vat'] - invoices['total'];
     });
   }
 
@@ -164,34 +193,35 @@ export class InvoiceViewComponent {
     window.print();
   }
 
-
   generatePDF() {
     this.invoiceData.forEach((invoice) => {
       const data = document.getElementById(invoice.invoice_id);
       if (data) {
-        html2canvas(data, { useCORS: true, allowTaint: true }).then(canvas => {
-          const imgWidth = 208;
-          const pageHeight = 295;
-          const imgHeight = canvas.height * imgWidth / canvas.width;
-          let heightLeft = imgHeight;
+        html2canvas(data, { useCORS: true, allowTaint: true }).then(
+          (canvas) => {
+            const imgWidth = 208;
+            const pageHeight = 295;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
 
-          const pdf = new jsPDF('p', 'mm', 'a4');
-          let position = 0;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            let position = 0;
 
-          const imgData = canvas.toDataURL('image/png');
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-
-          while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
+            const imgData = canvas.toDataURL('image/png');
             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
-          }
 
-          pdf.save(`invoice-${invoice.invoice_id}.pdf`);
-        });
+            while (heightLeft >= 0) {
+              position = heightLeft - imgHeight;
+              pdf.addPage();
+              pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+              heightLeft -= pageHeight;
+            }
+
+            pdf.save(`invoice-${invoice.invoice_id}.pdf`);
+          }
+        );
       }
-    })
+    });
   }
 }
