@@ -188,7 +188,7 @@ export class ViewComponent {
       this.displayData = Array.isArray(tableData.display_data)
         ? tableData.display_data
         : [tableData.display_data];
-      this.dataTypes = tableData.types;
+      this.mapDataTypes(tableData.types);
       this.filteredDisplayData = this.displayData;
       this.displayNames = tableData.display_names;
       this.editable = tableData.editable;
@@ -201,6 +201,15 @@ export class ViewComponent {
 
       this.viewMetaData.loaded = true;
     }
+  }
+
+  mapDataTypes(types: any[]) {
+    this.dataTypes = types.map((type: any) => {
+      if (type === "enum('Yes','No')") {
+        return "enum('No','Yes')";
+      }
+      return type;
+    });
   }
 
   getColumnHeaders(obj: { [key: string]: any }): string[] {
