@@ -1,6 +1,16 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { lastValueFrom } from 'rxjs';
+
+type ProfitLossInput = {
+  income: number;
+  costs: number;
+  expenses: number;
+};
+
+type ProfitLossData = ProfitLossInput & {
+  grossProfit: number;
+  netProfit: number;
+};
 
 @Component({
   selector: 'app-profit-loss-widget',
@@ -15,29 +25,10 @@ export class ProfitLossWidgetComponent {
 
   async calculateProfitLoss() {
     if (this.startDate != null && this.endDate != null) {
-      let profitLossData = await this.dataService.processGet(
-        'profit-loss',
-        {
-          'start-date': this.startDate,
-          'end-date': this.endDate,
-        },
-        true
-      );
-
-      profitLossData.forEach((item: any) => {
-        for (const key in item) {
-          if (item[key] == null) {
-            item[key] = 0;
-          }
-          item[key] = item[key].toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'GBP',
-          });
-        }
-      });
-
+      let profitLossInput: ProfitLossInput = await this.getData();
+      let profitLossData: ProfitLossData = this.mapData(profitLossInput);
       this.dataService.storeData({
-        Data: profitLossData,
+        Data: [profitLossData],
         Headers: [
           'Sales Revenue',
           'Cost of Sales',
@@ -45,7 +36,37 @@ export class ProfitLossWidgetComponent {
           'Expenses',
           'Net Profit',
         ],
+        columnTypes: [
+          'currency',
+          'currency',
+          'currency',
+          'currency',
+          'currency',
+        ],
       });
     }
+  }
+
+  async getData(): Promise<ProfitLossInput> {
+    return await this.dataService.processGet('profit-loss', {
+      'start-date': this.startDate,
+      'end-date': this.endDate,
+    });
+  }
+
+  mapData(profitLossData: ProfitLossInput): ProfitLossData {
+    for (let key of Object.keys(profitLossData)) {
+      profitLossData[key as keyof ProfitLossInput] =
+        Number(profitLossData[key as keyof ProfitLossInput]) ?? 0;
+    }
+
+    return {
+      income: profitLossData.income,
+      costs: profitLossData.costs,
+      grossProfit: profitLossData.income - profitLossData.costs,
+      expenses: profitLossData.expenses,
+      netProfit:
+        profitLossData.income - profitLossData.costs - profitLossData.expenses,
+    };
   }
 }
