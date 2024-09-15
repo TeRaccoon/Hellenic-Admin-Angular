@@ -125,6 +125,23 @@
                                             </div>
                                         </ng-template>
                                     </ng-container>
+                                    <ng-container *ngSwitchCase="'replacement-text'">
+                                        <div class="drop-select-container">
+                                            <input autocomplete="off"
+                                                [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
+                                                (input)="filterTextDropSelect(key, $event, mappedFormData.get(key)!.field)"
+                                                type="text" (focus)="onInputFocus(key)" (blur)="onInputBlur(key)"
+                                                [value]="selectedTextReplacementData[key]">
+                                            <div class="drop-select"
+                                                [ngClass]="selectOpen[key]?.opened ? 'input-visible' : 'input-hidden'">
+                                                <ng-container *ngFor="let option of filteredReplacementData[key].data">
+                                                    <p *ngIf="option != ''"
+                                                        (click)="updateSelectedTextReplacementDataFromKey(option, key, mappedFormData.get(key)!.field)">
+                                                        {{ option }}</p>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </ng-container>
                                     <ng-container *ngSwitchCase="'textarea'">
                                         <textarea
                                             [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"

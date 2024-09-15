@@ -287,6 +287,10 @@ export class FormService {
         data = await this.getIdReplacementData('offer_id_name', dataService);
         formData['Offer ID'].inputType = 'replacement';
         replacementData['Offer ID'] = { data: data };
+
+        data = await this.getIdReplacementData('brands', dataService);
+        formData['Brand'].inputType = 'replacement-text';
+        replacementData['Brand'] = { data: data };
         break;
 
       case 'invoiced_items':
@@ -496,7 +500,7 @@ export class FormService {
     query: string,
     dataService: DataService
   ): Promise<any> {
-    return await dataService.processGet(query);
+    return await dataService.processGet(query, {}, true);
   }
 
   setReloadType(reloadType: string) {
