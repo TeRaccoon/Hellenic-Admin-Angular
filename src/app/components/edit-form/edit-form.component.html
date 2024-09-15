@@ -173,8 +173,10 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'textarea'">
-                                <textarea [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
-                                    [formControlName]="mappedFormData.get(key)!.field"></textarea>
+                                <quill-editor
+                                    [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
+                                    [styles]="{height: '300px', backgroundColor: 'white', borderRadius: '5px'}"
+                                    [formControlName]="mappedFormData.get(key)!.field"></quill-editor>
                             </ng-container>
                             <input *ngSwitchDefault
                                 [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"

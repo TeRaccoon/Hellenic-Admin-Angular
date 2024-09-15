@@ -8,8 +8,9 @@ import { NgChartsModule } from 'ng2-charts';
 import * as _ from 'lodash';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
-import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha'
+import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 import { recaptcha } from '../environments/environment';
+import { QuillModule } from 'ngx-quill';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -74,6 +75,7 @@ import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.
     FormsModule,
     NgChartsModule,
     NgxDaterangepickerMd.forRoot(),
+    QuillModule.forRoot(),
     RecaptchaV3Module,
   ],
   providers: [
@@ -83,6 +85,6 @@ import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.
       useValue: recaptcha.siteKey,
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

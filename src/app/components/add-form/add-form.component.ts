@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { lastValueFrom } from 'rxjs';
 import _ from 'lodash';
 import { formIcons } from '../../common/icons/form-icons';
 import {
