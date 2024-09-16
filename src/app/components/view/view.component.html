@@ -114,7 +114,7 @@
                                         [icon]="this.sortedColumn.ascending ? icons.faArrowUp : icons.faArrowDown" />
                                 </th>
                             </ng-container>
-                            <ng-container *ngIf="tableName == 'items' || tableName == 'retail_items'">
+                            <ng-container *ngIf="tableName == 'items'">
                                 <th>Allergen Information</th>
                                 <th>Nutrition Information</th>
                             </ng-container>
@@ -211,7 +211,7 @@
                                         </ng-container>
                                     </td>
                                 </ng-container>
-                                <ng-container *ngIf="tableName == 'items' || tableName == 'retail_items'">
+                                <ng-container *ngIf="tableName == 'items'">
                                     <td (click)="editRow(item.id, 'allergen_information')">
                                         <fa-icon [icon]="icons.faBookMedical"></fa-icon>
                                     </td>

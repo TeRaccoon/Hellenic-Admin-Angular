@@ -55,7 +55,6 @@ export class NavbarComponent {
     { display: 'Page Sections', actual: 'page_sections' },
     { display: 'Payments', actual: 'payments' },
     { display: 'Retail Item Images', actual: 'retail_item_images' },
-    { display: 'Retail Items', actual: 'retail_items' },
     { display: 'Retail Users', actual: 'retail_users' },
     { display: 'Stocked Items', actual: 'stocked_items' },
     { display: 'Supplier Invoices', actual: 'supplier_invoices' },
