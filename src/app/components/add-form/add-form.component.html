@@ -156,14 +156,6 @@
                             </ng-template>
                         </div>
                     </ng-container>
-                    <ng-container *ngIf="tableName == 'retail_items'">
-                        <div class="image-upload-container">
-                            <input accept="image/*" type="file" (change)="primeImage($event)">
-                            <fa-icon [icon]="icons.faCloudUpload" [ngClass]="file == null ? '' : 'success'" /> Drop
-                            Image Here to Upload
-                            <button class="button" (click)="submitImageOnly()">Upload</button>
-                        </div>
-                    </ng-container>
                     <ng-container *ngIf="tableName == 'customer_payments' || tableName == 'supplier_payments'">
                         <div class="invoice-details-container">
                             <h3>Documents to reconcile</h3>

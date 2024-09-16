@@ -262,19 +262,6 @@ export class FormService {
         replacementData['Customer Name'] = { data: data };
         break;
 
-      case 'retail_items':
-        var data = await this.getIdReplacementData(
-          'items_id_name_sku',
-          dataService
-        );
-        formData['Item ID'].inputType = 'replacement';
-        replacementData['Item ID'] = { data: data };
-
-        data = await this.getIdReplacementData('offer_id_name', dataService);
-        formData['Offer ID'].inputType = 'replacement';
-        replacementData['Offer ID'] = { data: data };
-        break;
-
       case 'items':
         var data = await this.getIdReplacementData('categories', dataService);
         formData['Category'].inputType = 'alternative-select';

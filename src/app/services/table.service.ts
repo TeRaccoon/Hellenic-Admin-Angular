@@ -84,7 +84,6 @@ export class TableService {
         break;
 
       case 'discount_codes':
-      case 'retail_items':
       case 'page_section_text':
       case 'image_locations':
       case 'page_sections':
