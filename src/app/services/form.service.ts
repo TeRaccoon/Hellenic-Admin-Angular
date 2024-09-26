@@ -316,6 +316,15 @@ export class FormService {
         replacementData['Supplier Invoice ID'] = { data: data };
         break;
 
+      case 'sub_categories':
+        var data = await this.getIdReplacementData(
+          'category_id_name',
+          dataService
+        );
+        formData['Parent Category'].inputType = 'replacement';
+        replacementData['Parent Category'] = { data: data };
+        break;
+
       case 'invoices':
         var data = await this.getIdReplacementData(
           'customers_id_name_code',
