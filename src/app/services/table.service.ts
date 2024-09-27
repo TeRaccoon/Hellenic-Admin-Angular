@@ -73,6 +73,7 @@ export class TableService {
       case 'credit_notes':
       case 'suppliers':
       case 'warehouse':
+      case 'expired_items':
         this.dataService.setTabs(TABLE_CATEGORIES['Supply']);
         break;
 

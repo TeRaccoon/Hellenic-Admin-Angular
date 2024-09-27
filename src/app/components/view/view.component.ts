@@ -803,24 +803,17 @@ export class ViewComponent {
 
   canDisplayColumn(column: string) {
     if (this.authService.getAccessLevel() == 'Low') {
-      if (column == 'edit-row' || column == 'delete-row') {
-        return false;
-      }
+      return !(column == 'edit-row' || column == 'delete-row');
     }
 
     if (this.authService.getAccessLevel() == 'High') {
-      if (column == 'delete-row') {
-        return false;
-      }
+      return column != 'delete-row';
     }
 
     switch (this.tableName) {
       case 'customers':
       case 'users':
-        if (column == 'password' || column == 'Password') {
-          return false;
-        }
-        break;
+        return !(column == 'password' || column == 'Password');
 
       case 'invoices':
         if (this.authService.getAccessLevel() == 'Driver') {

@@ -20,6 +20,7 @@ export const TABLE_NAMES = [
   'sub_categories',
   'credit_notes',
   'credit_notes_customers',
+  'expired_items',
 ];
 
 export const TABLE_NAME_PAIRS = [
@@ -44,6 +45,7 @@ export const TABLE_NAME_PAIRS = [
   { sub_categories: 'Sub Categories' },
   { credit_notes: 'Credit Notes Suppliers' },
   { credit_notes_customers: 'Credit Notes Customers' },
+  { expired_items: 'Expired Items' },
 ];
 
 export const TABLE_CATEGORIES = {
