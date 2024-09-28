@@ -635,7 +635,8 @@ export class AddFormComponent {
         'invoice-outstanding',
         {
           filter: dataId.toString(),
-        }
+        },
+        true
       );
     } else if (
       this.tableName == 'supplier_payments' &&
@@ -645,7 +646,8 @@ export class AddFormComponent {
         'supplier-invoice-outstanding',
         {
           filter: dataId.toString(),
-        }
+        },
+        true
       );
     } else if (this.tableName == 'stocked_items' && field == 'item_id') {
       let lastPurchasePrice = await this.dataService.processGet(

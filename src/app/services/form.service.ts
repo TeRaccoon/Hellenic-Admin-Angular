@@ -243,7 +243,8 @@ export class FormService {
         data: { id: Number; replacement: string }[];
       };
     },
-    dataService: DataService
+    dataService: DataService,
+    formType?: string
   ) {
     switch (tableName) {
       case 'price_list':
@@ -367,10 +368,11 @@ export class FormService {
         break;
 
       case 'customer_payments':
-        var data = await this.getIdReplacementData(
-          'invoice_id_title_unpaid',
-          dataService
-        );
+        let query =
+          formType == 'edit' ? 'invoice_id_title' : 'invoice_id_title_unpaid';
+
+        var data = await this.getIdReplacementData(query, dataService);
+
         formData['Invoice ID'].inputType = 'replacement';
         replacementData['Invoice ID'] = { data: data };
 

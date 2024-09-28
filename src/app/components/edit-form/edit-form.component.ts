@@ -151,10 +151,12 @@ export class EditFormComponent {
         this.tableName,
         this.formData,
         this.replacementData,
-        this.dataService
+        this.dataService,
+        'edit'
       );
       this.formData = data.formData;
       this.filteredReplacementData = data.replacementData;
+      console.log(data.replacementData);
       this.replacementData = data.replacementData;
       this.alternativeSelectData = this.formService.getAlternativeSelectData();
       Object.keys(this.alternativeSelectData).forEach((key) => {
