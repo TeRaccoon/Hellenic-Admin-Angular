@@ -267,12 +267,13 @@
                 .input-hidden {
                     opacity: 0;
                     max-height: 0;
-                    transition: max-height 0.5s ease 0.1s, opacity 0.5s ease;
+                    transition: max-height 0.5s ease 0.1s, opacity 0.5s ease, border 0s;
                 }
 
                 .input-visible {
                     opacity: 1;
                     max-height: 500px;
+                    border: 1px solid rgb(215, 215, 215);
                     transition: max-height 0.5s ease 0.1s, opacity 0.5s ease;
                 }
 

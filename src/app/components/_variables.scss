@@ -1,10 +1,12 @@
 $hellenicblue: rgb(0, 140, 255);
+
 .button {
     outline: none;
     background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
     border: none;
     color: white;
     cursor: pointer;
+
     &:hover {
         background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
     }
@@ -14,6 +16,7 @@ $hellenicblue: rgb(0, 140, 255);
     cursor: default;
     color: #eaeef3;
     background-image: linear-gradient(to right, rgb(186, 186, 186), rgb(87, 87, 87));
+
     &:hover {
         background-image: linear-gradient(to right, rgb(186, 186, 186), rgb(87, 87, 87));
     }
@@ -29,6 +32,7 @@ $hellenicblue: rgb(0, 140, 255);
     background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
     width: 90%;
     text-align: left;
+
     &:hover {
         background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
     }
@@ -63,15 +67,16 @@ $hellenicblue: rgb(0, 140, 255);
 .drop-select {
     background-color: white;
     border-radius: 0 0 8px 8px;
-    border: 1px solid rgb(215, 215, 215);
     overflow-y: scroll;
     max-height: 400px;
     width: 100%;
     z-index: 2;
+
     p {
         padding: 5px;
         margin: 0px;
         cursor: pointer;
+
         &:hover {
             background-color: #eaeef3;
         }
