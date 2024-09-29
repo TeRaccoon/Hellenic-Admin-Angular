@@ -192,6 +192,10 @@
                         box-sizing: border-box;
                     }
 
+                    img {
+                        cursor: pointer;
+                    }
+
                     .delete-button {
                         outline: none;
                         background-image: linear-gradient(to right, rgb(255, 34, 34), rgb(206, 13, 13));
