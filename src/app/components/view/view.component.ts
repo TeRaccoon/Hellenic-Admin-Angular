@@ -10,7 +10,7 @@ import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { apiUrlBase, imageUrlBase } from '../../services/data.service';
 import { Location } from '@angular/common';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import {
   columnFilter,
@@ -33,6 +33,8 @@ import {
   styleUrls: ['./view.component.scss'],
 })
 export class ViewComponent {
+  private readonly subscriptions = new Subscription();
+
   accessible = false;
 
   icons = tableIcons;
@@ -105,33 +107,41 @@ export class ViewComponent {
   }
 
   async subscriptionHandler() {
-    this.route.queryParams.subscribe((params) => {
-      this.tableName = params['table'] || null;
-      if (this.tableName != null) {
-        this.resetTable();
-        this.displayName =
-          this.tableService.getTableDisplayName(this.tableName) ?? '';
-        this.formService.setSelectedTable(String(this.tableName));
-        this.loadTable(String(this.tableName));
-        this.loadPage();
-        this.tabs = this.dataService.getTabs();
-      }
-    });
-
-    this.formService
-      .getReloadRequest()
-      .subscribe(async (reloadRequested: boolean) => {
-        if (reloadRequested) {
-          let reloadType = this.formService.getReloadType();
-          if (reloadType == 'hard') {
-            this.selectedRows = [];
-            await this.loadTable(String(this.tableName));
-          } else if (reloadType == 'filter') {
-            this.applyFilter();
-          }
-          this.formService.performReload();
+    this.subscriptions.add(
+      this.route.queryParams.subscribe((params) => {
+        this.tableName = params['table'] || null;
+        if (this.tableName != null) {
+          this.resetTable();
+          this.displayName =
+            this.tableService.getTableDisplayName(this.tableName) ?? '';
+          this.formService.setSelectedTable(String(this.tableName));
+          this.loadTable(String(this.tableName));
+          this.loadPage();
+          this.tabs = this.dataService.getTabs();
         }
-      });
+      })
+    );
+
+    this.subscriptions.add(
+      this.formService
+        .getReloadRequest()
+        .subscribe(async (reloadRequested: boolean) => {
+          if (reloadRequested) {
+            let reloadType = this.formService.getReloadType();
+            if (reloadType == 'hard') {
+              this.selectedRows = [];
+              await this.loadTable(String(this.tableName));
+            } else if (reloadType == 'filter') {
+              this.applyFilter();
+            }
+            this.formService.performReload();
+          }
+        })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   changeTab(tableName: string) {

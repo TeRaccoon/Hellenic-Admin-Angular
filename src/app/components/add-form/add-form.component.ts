@@ -12,6 +12,7 @@ import {
   formState,
   SaleType,
 } from '../../common/types/forms/types';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-add-form',
@@ -19,6 +20,8 @@ import {
   styleUrls: ['./add-form.component.scss'],
 })
 export class AddFormComponent {
+  private readonly subscriptions = new Subscription();
+
   SaleType = SaleType;
 
   icons = formIcons;
@@ -126,22 +129,31 @@ export class AddFormComponent {
   ngOnInit() {
     this.debounceSearch = _.debounce(this.performSearch.bind(this), 1000);
 
-    this.formService.getAddFormVisibility().subscribe(async (visible) => {
-      this.clearForm();
-      this.formVisible = visible ? 'visible' : 'hidden';
-      if (this.formVisible) {
-        this.loadForm();
-      }
-    });
+    this.subscriptions.add(
+      this.formService.getAddFormVisibility().subscribe(async (visible) => {
+        this.clearForm();
+        this.formVisible = visible ? 'visible' : 'hidden';
+        if (this.formVisible) {
+          this.loadForm();
+        }
+      })
+    );
+
     if (this.tableName == 'invoices' || this.tableName == 'supplier_invoices') {
-      this.formService
-        .getReloadRequest()
-        .subscribe(async (reloadRequested: boolean) => {
-          if (reloadRequested) {
-            await this.reload();
-          }
-        });
+      this.subscriptions.add(
+        this.formService
+          .getReloadRequest()
+          .subscribe(async (reloadRequested: boolean) => {
+            if (reloadRequested) {
+              await this.reload();
+            }
+          })
+      );
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   async reload() {

@@ -372,7 +372,6 @@ export class FormService {
           formType == 'edit' ? 'invoice_id_title' : 'invoice_id_title_unpaid';
 
         var data = await this.getIdReplacementData(query, dataService);
-
         formData['Invoice ID'].inputType = 'replacement';
         replacementData['Invoice ID'] = { data: data };
 

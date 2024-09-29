@@ -11,6 +11,7 @@ import {
   keyedAddress,
   formState,
 } from '../../common/types/forms/types';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-edit-form',
@@ -18,6 +19,8 @@ import {
   styleUrls: ['./edit-form.component.scss'],
 })
 export class EditFormComponent {
+  private readonly subscriptions = new Subscription();
+
   icons = formIcons;
 
   searchWaiting = false;
@@ -114,13 +117,19 @@ export class EditFormComponent {
   }
 
   ngOnInit() {
-    this.formService.getEditFormVisibility().subscribe((visible) => {
-      this.clearForm();
-      this.formState.visible = visible ? 'visible' : 'hidden';
-      if (visible) {
-        this.loadForm();
-      }
-    });
+    this.subscriptions.add(
+      this.formService.getEditFormVisibility().subscribe((visible) => {
+        this.clearForm();
+        this.formState.visible = visible ? 'visible' : 'hidden';
+        if (visible) {
+          this.loadForm();
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   resetFormState(): void {
@@ -156,7 +165,6 @@ export class EditFormComponent {
       );
       this.formData = data.formData;
       this.filteredReplacementData = data.replacementData;
-      console.log(data.replacementData);
       this.replacementData = data.replacementData;
       this.alternativeSelectData = this.formService.getAlternativeSelectData();
       Object.keys(this.alternativeSelectData).forEach((key) => {
