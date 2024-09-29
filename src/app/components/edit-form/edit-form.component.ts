@@ -140,6 +140,7 @@ export class EditFormComponent {
       error: null,
       locked: false,
       visible: 'hidden',
+      imageUploaded: false,
     };
   }
 
@@ -408,7 +409,7 @@ export class EditFormComponent {
   }
 
   imageSubmissionValidation() {
-    if (!this.canUploadImages()) {
+    if (!this.canUploadImages() || this.formState.imageUploaded) {
       return false;
     }
 
@@ -445,6 +446,7 @@ export class EditFormComponent {
       }
     }
     this.formState.submitted = true;
+    this.formState.imageUploaded = true;
   }
 
   async submissionWithoutImage(hideForm: boolean) {

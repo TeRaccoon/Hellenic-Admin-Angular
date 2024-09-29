@@ -48,6 +48,7 @@ export interface formState {
   error: string | null;
   locked: boolean;
   visible: 'visible' | 'hidden';
+  imageUploaded?: boolean;
 }
 
 export enum SaleType {
