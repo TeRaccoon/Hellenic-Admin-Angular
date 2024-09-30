@@ -2,19 +2,26 @@ import { Component } from '@angular/core';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
 import { faSearch, faPlus, faX } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-filter-form',
   templateUrl: './filter-form.component.html',
-  styleUrls: ['./filter-form.component.scss']
+  styleUrls: ['./filter-form.component.scss'],
 })
 export class FilterFormComponent {
+  private readonly subscriptions = new Subscription();
+
   faSearch = faSearch;
   faPlus = faPlus;
   faX = faX;
 
   formVisible = 'hidden';
-  tableColumns: { columnNames: { [key: string]: any }[], columns: string[], dataTypes: string[] } = {
+  tableColumns: {
+    columnNames: { [key: string]: any }[];
+    columns: string[];
+    dataTypes: string[];
+  } = {
     columnNames: [],
     columns: [],
     dataTypes: [],
@@ -29,14 +36,23 @@ export class FilterFormComponent {
 
   errorMsg: string | null = null;
 
-  constructor(private formService: FormService, private filterService: FilterService) {}
+  constructor(
+    private formService: FormService,
+    private filterService: FilterService
+  ) {}
 
   ngOnInit() {
-    this.formService.getFilterFormVisibility().subscribe(async (visible) => {
-      this.formVisible = visible ? 'visible' : 'hidden';
-      this.tableColumns = this.filterService.getTableColumns();
-      this.errorMsg = null;
-    });
+    this.subscriptions.add(
+      this.formService.getFilterFormVisibility().subscribe(async (visible) => {
+        this.formVisible = visible ? 'visible' : 'hidden';
+        this.tableColumns = this.filterService.getTableColumns();
+        this.errorMsg = null;
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   hide() {
@@ -44,18 +60,36 @@ export class FilterFormComponent {
   }
 
   search(hide: boolean) {
-    if (this.columnInput != '' && ((this.columnType == 'date' && this.startDate != null && this.endDate != null) || (this.columnType != 'date' && this.searchInput != ''))) {
-      if (this.columnType == 'date' && this.startDate != null && this.endDate != null) {
-        this.filterService.setColumnDateFilter({column: this.columnInput, startDate: this.startDate, endDate: this.endDate});
+    if (
+      this.columnInput != '' &&
+      ((this.columnType == 'date' &&
+        this.startDate != null &&
+        this.endDate != null) ||
+        (this.columnType != 'date' && this.searchInput != ''))
+    ) {
+      if (
+        this.columnType == 'date' &&
+        this.startDate != null &&
+        this.endDate != null
+      ) {
+        this.filterService.setColumnDateFilter({
+          column: this.columnInput,
+          startDate: this.startDate,
+          endDate: this.endDate,
+        });
       } else {
-        this.filterService.setColumnFilter({column: this.columnInput, filter: this.searchInput, caseSensitive: this.caseSensitive });
+        this.filterService.setColumnFilter({
+          column: this.columnInput,
+          filter: this.searchInput,
+          caseSensitive: this.caseSensitive,
+        });
       }
-      this.formService.setReloadType("filter");
+      this.formService.setReloadType('filter');
       this.formService.requestReload();
       hide && this.hide();
-      this.resetForm();      
+      this.resetForm();
     } else {
-      this.errorMsg = "Please fill in all required fields";
+      this.errorMsg = 'Please fill in all required fields';
     }
   }
 

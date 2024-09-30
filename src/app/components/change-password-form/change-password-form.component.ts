@@ -1,21 +1,25 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { lastValueFrom } from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-change-password-form',
   templateUrl: './change-password-form.component.html',
-  styleUrls: ['./change-password-form.component.scss']
+  styleUrls: ['./change-password-form.component.scss'],
 })
 export class ChangePasswordFormComponent {
+  private readonly subscriptions = new Subscription();
+
   formVisible = 'hidden';
   changePasswordForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private dataService: DataService, private formService: FormService, private authService: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private dataService: DataService,
+    private formService: FormService
+  ) {
     this.changePasswordForm = this.fb.group({
       username: ['', Validators.required],
       current_password: ['', Validators.required],
@@ -24,13 +28,21 @@ export class ChangePasswordFormComponent {
   }
 
   ngOnInit() {
-    this.formService.getChangePasswordFormVisibility().subscribe((visible) => {
-      this.formVisible = visible ? 'visible' : 'hidden';
-      if (visible) {
-        this.resetForm();
-        this.loadForm();
-      }
-    });
+    this.subscriptions.add(
+      this.formService
+        .getChangePasswordFormVisibility()
+        .subscribe((visible) => {
+          this.formVisible = visible ? 'visible' : 'hidden';
+          if (visible) {
+            this.resetForm();
+            this.loadForm();
+          }
+        })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   resetForm() {
@@ -43,11 +55,16 @@ export class ChangePasswordFormComponent {
   }
 
   loadForm() {
-    this.changePasswordForm.addControl('action', this.fb.control('change-password'));
+    this.changePasswordForm.addControl(
+      'action',
+      this.fb.control('change-password')
+    );
   }
 
   async formSubmit() {
-    let submissionResponse = await this.dataService.submitFormData(this.changePasswordForm.value);
+    let submissionResponse = await this.dataService.submitFormData(
+      this.changePasswordForm.value
+    );
     this.formService.setMessageFormData({
       title: submissionResponse.success ? 'Success!' : 'Error!',
       message: submissionResponse.message,

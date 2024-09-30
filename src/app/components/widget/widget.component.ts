@@ -7,7 +7,7 @@ import {
   faPenToSquare,
   faFileCircleXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Subscription } from 'rxjs';
 import { imageUrlBase } from '../../services/data.service';
 
 @Component({
@@ -16,6 +16,8 @@ import { imageUrlBase } from '../../services/data.service';
   styleUrls: ['./widget.component.scss'],
 })
 export class WidgetComponent {
+  private readonly subscriptions = new Subscription();
+
   faX = faX;
   faTrashCan = faTrashCan;
   faPenToSquare = faPenToSquare;
@@ -63,21 +65,31 @@ export class WidgetComponent {
   }
 
   subscriptionHandler() {
-    this.formService.getWidgetVisibility().subscribe((visible: boolean) => {
-      this.visible = visible;
-    });
+    this.subscriptions.add(
+      this.formService.getWidgetVisibility().subscribe((visible: boolean) => {
+        this.visible = visible;
+      })
+    );
 
-    this.dataService.retrieveWidgetData().subscribe((tableData: any) => {
-      this.tableData = tableData;
-    });
+    this.subscriptions.add(
+      this.dataService.retrieveWidgetData().subscribe((tableData: any) => {
+        this.tableData = tableData;
+      })
+    );
 
-    this.formService
-      .getReloadRequest()
-      .subscribe(async (reloadRequested: boolean) => {
-        if (reloadRequested) {
-          await this.reload();
-        }
-      });
+    this.subscriptions.add(
+      this.formService
+        .getReloadRequest()
+        .subscribe(async (reloadRequested: boolean) => {
+          if (reloadRequested) {
+            await this.reload();
+          }
+        })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   async reload() {

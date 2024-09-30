@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { lastValueFrom } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-table-widget',
@@ -9,6 +9,8 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './table-widget.component.scss',
 })
 export class TableWidgetComponent {
+  private readonly subscriptions = new Subscription();
+
   startDate: string = '';
   endDate: string = '';
   tableName: string = '';
@@ -29,10 +31,16 @@ export class TableWidgetComponent {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      this.tableName = params['table'];
-      this.selectTable();
-    });
+    this.subscriptions.add(
+      this.route.queryParams.subscribe((params) => {
+        this.tableName = params['table'];
+        this.selectTable();
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   selectTable() {

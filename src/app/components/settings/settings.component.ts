@@ -1,16 +1,22 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { lastValueFrom } from 'rxjs';
-import { faSpinner, faAsterisk, faCloudUpload } from '@fortawesome/free-solid-svg-icons';
+import { lastValueFrom, Subscription } from 'rxjs';
+import {
+  faSpinner,
+  faAsterisk,
+  faCloudUpload,
+} from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormService } from '../../services/form.service';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+  styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent {
+  private readonly subscriptions = new Subscription();
+
   settings: any = [];
   bands: any = [];
   faSpinner = faSpinner;
@@ -24,7 +30,11 @@ export class SettingsComponent {
   changes: any = {};
   originalValues: any = {};
 
-  constructor(private dataService: DataService, private fb: FormBuilder, private formService: FormService) {
+  constructor(
+    private dataService: DataService,
+    private fb: FormBuilder,
+    private formService: FormService
+  ) {
     this.settingsForm = this.fb.group({});
   }
 
@@ -41,13 +51,25 @@ export class SettingsComponent {
     this.trackFormChanges();
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
   async collectSettings() {
-    let settingsRaw = await this.dataService.processGet('table', { filter: 'settings' });
+    let settingsRaw = await this.dataService.processGet('table', {
+      filter: 'settings',
+    });
 
     const editableSettings = settingsRaw.editable;
 
     editableSettings.columns.forEach((column: any, index: number) => {
-      this.settings[column] = { name: editableSettings.names[index], data: settingsRaw.data[column], required: editableSettings.required[index], type: editableSettings.types[index], key: column };
+      this.settings[column] = {
+        name: editableSettings.names[index],
+        data: settingsRaw.data[column],
+        required: editableSettings.required[index],
+        type: editableSettings.types[index],
+        key: column,
+      };
     });
 
     let data = await this.dataService.processGet('table', { filter: 'bands' });
@@ -82,7 +104,7 @@ export class SettingsComponent {
 
   async formSubmit() {
     const formData = { ...this.settingsForm.value };
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
       if (typeof formData[key] === 'boolean') {
         formData[key] = formData[key] === true ? 'Yes' : 'No';
       }
@@ -92,13 +114,14 @@ export class SettingsComponent {
     this.endSubmission(formSubmitResponse);
   }
 
-  endSubmission(formSubmitResponse: { success: boolean, message: string }) {
-    let title = "Error!";
-    let message = "There was an issue saving the settings! Make sure everything is correct before trying to save.";
+  endSubmission(formSubmitResponse: { success: boolean; message: string }) {
+    let title = 'Error!';
+    let message =
+      'There was an issue saving the settings! Make sure everything is correct before trying to save.';
 
     if (formSubmitResponse.success) {
-      title = "Success!";
-      message = "Settings saved successfully!";
+      title = 'Success!';
+      message = 'Settings saved successfully!';
 
       this.changes = {};
       this.originalValues = {};
@@ -109,9 +132,11 @@ export class SettingsComponent {
   }
 
   trackFormChanges() {
-    this.settingsForm.valueChanges.subscribe(data => {
-      this.changes = data;
-    });
+    this.subscriptions.add(
+      this.settingsForm.valueChanges.subscribe((data) => {
+        this.changes = data;
+      })
+    );
   }
 
   async saveBand(index: number, minWeight: any, maxWeight: any, price: any) {
@@ -122,7 +147,7 @@ export class SettingsComponent {
       max_weight: maxWeight,
       price: price,
       action: 'append',
-      table_name: 'bands'
+      table_name: 'bands',
     };
 
     let response = await this.dataService.submitFormData(formData);
@@ -138,7 +163,9 @@ export class SettingsComponent {
     const formData = new FormData();
     formData.append('document', file, documentType + '.html');
 
-    let response = await lastValueFrom(this.dataService.uploadDocument(formData));
+    let response = await lastValueFrom(
+      this.dataService.uploadDocument(formData)
+    );
     this.formService.setMessageFormData({
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,

@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { FormService } from '../../services/form.service';
-import { FilterService } from '../../services/filter.service';
-import { faReceipt, faCircleExclamation, faUserGroup, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import { Router } from '@angular/router';
-import { lastValueFrom } from 'rxjs';
+import {
+  faReceipt,
+  faCircleExclamation,
+  faUserGroup,
+  faUserPlus,
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
   faReceipt = faReceipt;
@@ -18,14 +19,19 @@ export class HomeComponent {
   faUserPlus = faUserPlus;
 
   widgetData: any[] = [];
-  widgetHeaders = ["Invoices this month", "Invoices due today", "Total customers", "New customers"];
-  widgetIcons = [faReceipt, faCircleExclamation, faUserGroup, faUserPlus]
+  widgetHeaders = [
+    'Invoices this month',
+    'Invoices due today',
+    'Total customers',
+    'New customers',
+  ];
+  widgetIcons = [faReceipt, faCircleExclamation, faUserGroup, faUserPlus];
 
   invoiceDueData: any[] = [];
   lowStockData: any[] = [];
   productsExpiringData: any[] = [];
 
-  constructor(private formService: FormService, private dataService: DataService, private filterService: FilterService, private router: Router) { }
+  constructor(private dataService: DataService) {}
 
   ngOnInit() {
     this.loadWidgets();
@@ -33,7 +39,6 @@ export class HomeComponent {
   }
 
   async loadWidgets() {
-
     let data = await this.dataService.processGet('total-invoices-month');
     this.widgetData.push(data);
 
@@ -54,15 +59,27 @@ export class HomeComponent {
   }
 
   async getInvoicesDueToday() {
-    let invoiceDueData = await this.dataService.processGet('invoices-due-today-basic', undefined, true);
+    this.invoiceDueData = await this.dataService.processGet(
+      'invoices-due-today-basic',
+      undefined,
+      true
+    );
   }
 
   async getLowStock() {
-    let lowStockData = await this.dataService.processGet('low-stock', undefined, true);
+    this.lowStockData = await this.dataService.processGet(
+      'low-stock',
+      undefined,
+      true
+    );
   }
 
   async getProductsExpiring() {
-    let productsExpiringData = await this.dataService.processGet('products-expiring-soon', undefined, true);
+    this.productsExpiringData = await this.dataService.processGet(
+      'products-expiring-soon',
+      undefined,
+      true
+    );
   }
 
   getObjectKeys(column: any) {
