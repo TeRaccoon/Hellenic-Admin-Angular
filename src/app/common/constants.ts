@@ -1,3 +1,6 @@
+import { ColumnTypes } from './types/table-widget/const';
+import { TableData } from './types/table-widget/types';
+
 export const TABLE_NAMES = [
   'customers',
   'invoices',

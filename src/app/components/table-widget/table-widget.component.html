@@ -1,6 +1,6 @@
 <div class="container">
     <div class="options-container">
-        <div *ngIf="displayDateRange" class="date-container">
+        <div *ngIf="tableData.displayDateRange" class="date-container">
             <label>Start date:</label>
             <input type="date" [(ngModel)]="startDate">
             <label>End date:</label>
@@ -30,7 +30,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let row of this.alternativeData.altText; let index = index">
+                    <tr *ngFor="let row of this.tableData.alternativeData.altText; let index = index">
                         <td>{{ row }}</td>
                         <td>{{ index + 1 }}</td>
                         <td>{{ vatReturnHistory[index].accounts_value | currency: 'GBP' }}</td>

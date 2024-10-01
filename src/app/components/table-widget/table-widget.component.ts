@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { TableData } from '../../common/types/table-widget/types';
+import { VAT_RETURN } from '../../common/types/table-widget/const';
 
 @Component({
   selector: 'app-table-widget',
@@ -14,16 +16,17 @@ export class TableWidgetComponent {
   startDate: string = '';
   endDate: string = '';
   tableName: string = '';
-  headers: any[] = [];
-  columnTypes: string[] = [];
-  alternativeData: any;
-  query = '';
+  tableData: TableData = {
+    headers: [],
+    query: '',
+    displayDateRange: true,
+    columnTypes: [],
+    alternativeData: null,
+  };
 
   vatReturnHistory: any[] = [];
   vatHistory: string[] = [];
   selectedVatGroup: string = '';
-
-  displayDateRange = false;
 
   constructor(
     private dataService: DataService,
@@ -52,46 +55,7 @@ export class TableWidgetComponent {
   }
 
   async loadVATData() {
-    this.headers = [
-      'Total Sales',
-      'Output VAT',
-      'Total Expenses',
-      'Input VAT',
-      'VAT Liability',
-    ];
-    this.query = 'vat-data';
-    this.displayDateRange = true;
-    this.columnTypes = [
-      'currency',
-      'currency',
-      'currency',
-      'currency',
-      'currency',
-    ];
-    this.alternativeData = {
-      text: [
-        'VAT due in this period on sales and other outputs',
-        'VAT due in this period on intra-community acquisitions of goods made in Northern Ireland from EU Member States',
-        'Total VAT due (the sum of boxes 1 and 2)',
-        'VAT reclaimed in this period on purchases and other inputs (including acquisitions in the EC)',
-        'Net VAT to be paid to HMRC or reclaimed by you (Difference between boxes 3 and 4)',
-        'Total value of sales and all other outputs excluding any VAT (Include your box 8 figure)',
-        'Total value of purchases and all other inputs excluding VAT (Include your box 9 figure)',
-        'Total value of intra-community dispatches of goods and related costs (excluding VAT) from Northern Ireland to EU Member States',
-        'Total value of intra-community acquisitions of goods and related costs (excluding VAT) made in Northern Ireland from EU Member States',
-      ],
-      altText: [
-        'VAT due and other outputs',
-        'VAT due on intra-community acquisitions of goods made in Northern Ireland from EU Member States',
-        'Total VAT due',
-        'VAT reclaimed on purchases and other inputs including EC acquisitions',
-        'Net VAT due',
-        'Total value of sales and other outputs including EC supplies',
-        'Total value of purchases and other inputs including EC acquisitions',
-        'Total value of intra-community dispatches from Northern Ireland to EU Member States',
-        'Total value of intra-community acquisitions made in Northern Ireland from EU Member States',
-      ],
-    };
+    this.tableData = VAT_RETURN;
 
     this.loadVATGroups();
   }
@@ -110,7 +74,7 @@ export class TableWidgetComponent {
   async collectData() {
     if (this.startDate != '' && this.endDate != '') {
       let data = await this.dataService.processGet(
-        this.query,
+        this.tableData.query,
         {
           'start-date': this.startDate,
           'end-date': this.endDate,
@@ -122,7 +86,7 @@ export class TableWidgetComponent {
         data = this.vatReturns(data);
       }
 
-      this.alternativeData['values'] = [
+      this.tableData!.alternativeData['values'] = [
         data[0].output_vat,
         0,
         data[0].output_vat,
@@ -133,14 +97,14 @@ export class TableWidgetComponent {
         0,
         0,
       ];
-      this.alternativeData['period'] = this.getPeriod();
-      this.alternativeData['date'] = this.startDate;
+      this.tableData!.alternativeData['period'] = this.getPeriod();
+      this.tableData!.alternativeData['date'] = this.startDate;
 
       this.dataService.storeData({
         Data: data,
-        Headers: this.headers,
-        columnTypes: this.columnTypes,
-        alternativeData: this.alternativeData,
+        Headers: this.tableData.headers,
+        columnTypes: this.tableData.columnTypes,
+        alternativeData: this.tableData.alternativeData,
       });
     }
   }

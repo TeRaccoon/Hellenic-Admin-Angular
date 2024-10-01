@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormService } from '../../services/form.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-tableless-view',
@@ -10,6 +11,8 @@ import { FormService } from '../../services/form.service';
   styleUrls: ['./tableless-view.component.scss'],
 })
 export class TablelessViewComponent {
+  private readonly subscriptions = new Subscription();
+
   tableName = '';
   tableData: any[] | null = null;
   tableHeaders: any[] = [];
@@ -46,22 +49,30 @@ export class TablelessViewComponent {
   }
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      this.tableName = params['table'];
-      this.tableData = null;
-      this.tableHeaders = [];
-      this.alternativeData = null;
-      this.submitAttempted = false;
-      this.dataCollected = false;
-    });
+    this.subscriptions.add(
+      this.route.queryParams.subscribe((params) => {
+        this.tableName = params['table'];
+        this.tableData = null;
+        this.tableHeaders = [];
+        this.alternativeData = null;
+        this.submitAttempted = false;
+        this.dataCollected = false;
+      })
+    );
 
-    this.dataService.getDataObservable().subscribe((data: any) => {
-      this.tableData = data.Data;
-      this.tableHeaders = data.Headers;
-      this.columnTypes = data.columnTypes;
-      this.alternativeData = data.alternativeData;
-      this.dataCollected = true;
-    });
+    this.subscriptions.add(
+      this.dataService.getDataObservable().subscribe((data: any) => {
+        this.tableData = data.Data;
+        this.tableHeaders = data.Headers;
+        this.columnTypes = data.columnTypes;
+        this.alternativeData = data.alternativeData;
+        this.dataCollected = true;
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   getObjectKeys(obj: object): string[] {
