@@ -100,23 +100,37 @@ body {
             color: $primary-color;
             border-bottom: 2px solid $primary-color;
             padding-bottom: 5px;
-            margin-bottom: 15px;
             font-size: 1.5em;
         }
 
         .transaction {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
             padding: 15px;
-            margin-bottom: 20px;
             border-bottom: 1px solid $accent-color;
+            height: auto;
+            align-items: center;
 
             &:last-child {
                 border-bottom: none;
             }
 
-            &-date {
-                font-weight: bold;
-                margin-bottom: 10px;
-                font-size: 1.1em;
+            .transaction-date,
+            .transaction-title,
+            .transaction-total,
+            .transaction-outstanding,
+            .transaction-amount,
+            .transaction-reference,
+            .transaction-type {
+                margin: 0;
+                padding: 0 10px;
+            }
+
+            .unpaid {
+                background-color: red;
+                padding: 12px;
+                border-radius: 5px;
             }
         }
 
@@ -124,11 +138,10 @@ body {
         .payment,
         .credit-note {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
             border-bottom: 1px solid #dcdcdc;
             break-inside: avoid;
+            grid-column: span 5;
 
             &:last-child {
                 border-bottom: none;
@@ -159,6 +172,11 @@ body {
             }
         }
     }
+}
+
+.bold {
+    font-weight: bold;
+    margin: 0;
 }
 
 @media print {

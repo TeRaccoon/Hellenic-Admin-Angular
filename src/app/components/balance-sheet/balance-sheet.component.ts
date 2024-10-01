@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { FormService } from '../../services/form.service';
 import { imageUrlBase } from '../../services/data.service';
 import {
   BalanceSheetData,
@@ -31,6 +30,8 @@ type Transaction = Order | Payment | CreditNote;
   styleUrl: './balance-sheet.component.scss',
 })
 export class BalanceSheetComponent {
+  paymentStatus = PaymentStatus;
+
   faPrint = faPrint;
 
   imageUrlBase = imageUrlBase;
@@ -90,8 +91,8 @@ export class BalanceSheetComponent {
     );
 
     this.sortTransactions();
-    this.processOutstandingBalance();
-    this.processSummary(orders);
+    let outstandingBalance = this.processOutstandingBalance();
+    this.processSummary(orders, outstandingBalance);
   }
 
   sortTransactions() {
@@ -110,24 +111,25 @@ export class BalanceSheetComponent {
       } else {
         outstandingBalance -= transaction.amount || 0;
       }
+
+      if (transaction.type == 'order' || transaction.type == 'payment') {
+        transaction.outstanding_balance = outstandingBalance;
+      }
     }
+
+    return outstandingBalance;
   }
 
-  processSummary(orders: Order[]) {
+  processSummary(orders: Order[], outstandingBalance: number) {
     let totalOrders = orders.length;
 
     let totalOutstandingInvoices = orders!.filter(
       (order) => order.payment_status != PaymentStatus.Yes
     ).length;
-
-    let totalOutstandingBalance = orders!.reduce((accumulator, order) => {
-      return accumulator + order.outstanding_balance;
-    }, 0);
-
     this.invoiceSummary = {
       orders: totalOrders,
       outstanding_orders: totalOutstandingInvoices,
-      outstanding_balance: totalOutstandingBalance,
+      outstanding_balance: outstandingBalance,
     };
   }
 
@@ -174,7 +176,7 @@ export class BalanceSheetComponent {
         (transaction.type == 'payment' &&
           (transaction.type == value ||
             value == 'Both' ||
-            (value != 'Cash' && transaction.paymentType != 'Cash')))
+            (value != 'Cash' && transaction.payment_type != 'Cash')))
     );
   }
 }

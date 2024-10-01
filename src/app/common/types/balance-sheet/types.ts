@@ -29,7 +29,7 @@ export interface Payment {
   type: 'payment';
   date: Date;
   amount: number;
-  paymentType: PaymentType;
+  payment_type: PaymentType;
   reference: string;
   outstanding_balance: number;
 }
