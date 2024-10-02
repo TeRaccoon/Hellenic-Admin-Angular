@@ -27,9 +27,14 @@ export class FilterFormComponent {
     dataTypes: [],
   };
 
+  options: string[] = [];
+  selectedOption = '';
+  open = -1;
+
   searchInput: string = '';
   columnInput: string = '';
   columnType: string = '';
+  columnIndex = 0;
   caseSensitive: boolean = false;
   startDate: Date | null = null;
   endDate: Date | null = null;
@@ -96,6 +101,30 @@ export class FilterFormComponent {
   getColumnType() {
     var index = this.tableColumns.columns.indexOf(this.columnInput);
     this.columnType = this.tableColumns.dataTypes[index];
+    this.columnIndex = index;
+    if (this.tableColumns.dataTypes[index].includes('enum')) {
+      this.columnType = 'enum';
+      this.deriveEnumOptions();
+    }
+  }
+
+  deriveEnumOptions() {
+    var index = this.tableColumns.columns.indexOf(this.columnInput);
+    this.options = this.formService.deriveEnumOptions(
+      this.tableColumns.dataTypes[index]
+    );
+  }
+
+  openDropdown() {
+    this.open = this.columnIndex;
+  }
+
+  closeDropdown() {
+    this.open = -1;
+  }
+
+  selectOption(option: string) {
+    this.searchInput = option;
   }
 
   resetForm() {
