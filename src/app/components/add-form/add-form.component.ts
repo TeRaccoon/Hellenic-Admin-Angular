@@ -999,7 +999,6 @@ export class AddFormComponent {
   changeSaleType(event: Event) {
     let value: SaleType = (event.target as HTMLSelectElement).value as SaleType;
     this.saleType = value;
-
     if (this.saleType == SaleType.Cash) {
       let data = this.replacementData['Delivery Address'];
       let replacement = data.data.filter(
@@ -1012,6 +1011,10 @@ export class AddFormComponent {
       };
     } else {
       this.addForm.get('address_id')?.setValue(null);
+      this.selectedReplacementData['Delivery Address'] = {
+        selectData: '',
+        selectDataId: 0,
+      };
     }
   }
 
