@@ -81,10 +81,16 @@ export class AddFormComponent {
     key: string,
     filter: string,
     field: string | null,
-    text: boolean | null
+    text: boolean | null,
+    alt: boolean | undefined
   ) => void = _.debounce(
-    (key: string, filter: string, field: string | null, text = false) =>
-      this.performSearch(key, filter, field, text),
+    (
+      key: string,
+      filter: string,
+      field: string | null,
+      text = false,
+      alt = false
+    ) => this.performSearch(key, filter, field, text, alt),
     750
   );
 
@@ -887,7 +893,7 @@ export class AddFormComponent {
       let derivedField = includeField
         ? this.mappedFormData.get(key)!.field
         : field;
-      this.debounceSearch(key, filter, derivedField, false);
+      this.debounceSearch(key, filter, derivedField, false, true);
     }
   }
 
@@ -898,7 +904,7 @@ export class AddFormComponent {
       this.selectedReplacementData[key] = filter;
 
       if (this.replacementData[key]?.data.length > 0) {
-        this.debounceSearch(key, filter, null, true);
+        this.debounceSearch(key, filter, null, true, undefined);
       }
     }
   }
@@ -907,7 +913,8 @@ export class AddFormComponent {
     key: string,
     filter: string,
     field: string | null,
-    text: boolean | null = false
+    text: boolean | null = false,
+    alt = false
   ) {
     this.filteredReplacementData = _.cloneDeep(this.replacementData);
 
@@ -937,7 +944,7 @@ export class AddFormComponent {
           this.filteredReplacementData[key].data[0].replacement,
           key,
           field,
-          false
+          alt
         );
       }
 
