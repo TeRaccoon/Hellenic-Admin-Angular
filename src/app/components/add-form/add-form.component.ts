@@ -633,17 +633,7 @@ export class AddFormComponent {
     }
 
     if (this.tableName == 'invoices' && field == 'customer_id') {
-      let addresses = await this.dataService.processGet(
-        'customer-addresses-by-id',
-        { filter: dataId.toString() },
-        true
-      );
-      this.updateCustomerAddresses(addresses, 'Delivery Address', 'address_id');
-      this.updateCustomerAddresses(
-        addresses,
-        'Billing Address',
-        'billing_address_id'
-      );
+      this.updateAddresses(dataId.toString());
     } else if (
       this.tableName == 'customer_payments' &&
       field == 'customer_id'
@@ -697,6 +687,26 @@ export class AddFormComponent {
     }
 
     this.selectOpen[key].opened = false;
+  }
+
+  async updateAddresses(id: string) {
+    let addresses = await this.dataService.processGet(
+      'customer-addresses-by-id',
+      { filter: id },
+      true
+    );
+
+    if (addresses.length == 0) {
+      this.addressNotListed('Delivery Address');
+      this.addressNotListed('Billing Address');
+    } else {
+      this.updateCustomerAddresses(addresses, 'Delivery Address', 'address_id');
+      this.updateCustomerAddresses(
+        addresses,
+        'Billing Address',
+        'billing_address_id'
+      );
+    }
   }
 
   updateSelectedTextReplacementDataFromKey(
