@@ -420,14 +420,13 @@ export class AddFormComponent {
   }
 
   async formSubmit(hideForm: boolean) {
-    console.log(this.addForm);
     this.formState.submissionAttempted = true;
     if (this.addForm.valid) {
       if (
         this.tableName != 'categories' &&
         this.tableName != 'image_locations'
       ) {
-        const validationResult = this.imageSubmissionValidation();
+        const validationResult = await this.imageSubmissionValidation();
 
         if (validationResult !== false) {
           this.submissionWithImage(
@@ -459,7 +458,7 @@ export class AddFormComponent {
     }
   }
 
-  imageSubmissionValidation() {
+  async imageSubmissionValidation() {
     if (!this.canUploadImages()) {
       return false;
     }
@@ -470,8 +469,9 @@ export class AddFormComponent {
       return false;
     }
 
-    let id = this.getImageDependentId();
+    let id = await this.getImageDependentId();
     let name = this.getImageDependentName();
+
     if (id == null || name == null) {
       this.formState.error =
         'Please fill out the relevant fields to upload an image for before trying to upload!';
@@ -481,12 +481,12 @@ export class AddFormComponent {
     return { id: id, name: name };
   }
 
-  getImageDependentId() {
+  async getImageDependentId() {
     switch (this.tableName) {
       case 'items':
-        return this.addForm.value['retail_item_id'] != null
-          ? this.addForm.value['retail_item_id']
-          : this.addForm.get('id')?.value;
+        return await this.dataService.processGet('next-id', {
+          filter: 'items',
+        });
 
       case 'image_locations':
         return this.addForm.value['page_section_id'];
@@ -517,7 +517,7 @@ export class AddFormComponent {
   }
 
   async submitImageOnly() {
-    const validationResult = this.imageSubmissionValidation();
+    const validationResult = await this.imageSubmissionValidation();
     if (validationResult !== false) {
       await this.formService.handleImageSubmissions(
         validationResult.id,
@@ -536,34 +536,38 @@ export class AddFormComponent {
       title: submissionResponse.success ? 'Success!' : 'Error!',
       message: submissionResponse.message,
     });
-    this.endSubmission(submissionResponse.success, hideForm);
+    this.endSubmission(submissionResponse.success, submissionResponse.success);
   }
 
   async submissionWithImage(id: string, name: string, hideForm: boolean) {
-    const uploadResponse = await this.formService.handleImageSubmissions(
+    let imageFileName = await this.formService.processImageName(
       id,
       name,
-      this.file as File,
       this.tableName
     );
 
-    if (uploadResponse.success) {
-      this.addForm
-        .get('image_file_name')
-        ?.setValue(uploadResponse.imageFileName);
-      const formSubmitResponse = await this.dataService.submitFormData(
-        this.addForm.value
+    this.addForm.get('image_file_name')?.setValue(imageFileName);
+    const formSubmitResponse = await this.dataService.submitFormData(
+      this.addForm.value
+    );
+
+    if (formSubmitResponse.success) {
+      await this.formService.handleImageSubmissions(
+        id,
+        name,
+        this.file as File,
+        this.tableName,
+        true
       );
-
-      this.formService.setMessageFormData({
-        title: formSubmitResponse.success ? 'Success!' : 'Error!',
-        message: formSubmitResponse.message,
-      });
-
-      this.endSubmission(formSubmitResponse.success, hideForm);
-    } else {
-      hideForm && this.hide();
     }
+
+    this.formService.setMessageFormData({
+      title: formSubmitResponse.success ? 'Success!' : 'Error!',
+      message: formSubmitResponse.message,
+    });
+    this.formService.showMessageForm();
+
+    this.endSubmission(formSubmitResponse.success, formSubmitResponse.success);
   }
 
   endSubmission(reset: boolean, hideForm: boolean) {

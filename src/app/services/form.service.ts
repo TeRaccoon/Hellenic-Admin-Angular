@@ -601,7 +601,8 @@ export class FormService {
     id: string,
     name: string,
     image: File,
-    tableName: string
+    tableName: string,
+    showMessageOnlyOnError = false
   ) {
     let imageFileName = await this.processImageName(id, name, tableName);
 
@@ -633,8 +634,11 @@ export class FormService {
       success = false;
     }
 
-    this.setMessageFormData({ title: title, message: message });
-    this.showMessageForm();
+    if ((showMessageOnlyOnError && !success) || !showMessageOnlyOnError) {
+      this.setMessageFormData({ title: title, message: message });
+      this.showMessageForm();
+    }
+
     return { success: success, imageFileName: imageFileName };
   }
 
