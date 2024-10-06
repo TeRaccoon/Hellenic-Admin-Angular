@@ -280,7 +280,8 @@
                                         <td>{{ item.name ?? item.item_name }}</td>
                                         <td>{{ item.quantity }}</td>
                                         <ng-container *ngIf="tableName == 'invoices'">
-                                            <td>{{ item.price | currency:'GBP' }}</td>
+                                            <td>{{ (item.price ?? 0) | currency:'GBP' }}
+                                                {{ item.price == null ? '*' : '' }}</td>
                                             <td>{{ item.discount }}%</td>
                                             <td>{{ item.vat }}</td>
                                             <td>{{ item.total * ((100 - item.discount) / 100 ) | currency:'GBP' }}</td>
@@ -300,9 +301,15 @@
                             </table>
                         </div>
                         <div class="form-footer">
-                            <button *ngIf="shouldDisplayItemWidget()" (click)="addItem($event)" class="button">Add
-                                invoiced items</button>
-                            <button (click)="close()" class="button">Save</button>
+                            <div>
+                                <fa-icon [icon]="icons.faAsterisk" />
+                                <p>Indicates no price for this customer type</p>
+                            </div>
+                            <div>
+                                <button *ngIf="shouldDisplayItemWidget()" (click)="addItem($event)" class="button">Add
+                                    invoiced items</button>
+                                <button (click)="close()" class="button">Save</button>
+                            </div>
                         </div>
                     </form>
                 </ng-container>
