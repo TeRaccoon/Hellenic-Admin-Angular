@@ -874,13 +874,20 @@ export class AddFormComponent {
     this.selectOpen[key].opened = false;
   }
 
-  filterDropSelect(key: string, event: any, includeField: boolean) {
+  filterDropSelect(
+    key: string,
+    event: any,
+    includeField: boolean,
+    field: string | null = null
+  ) {
     const filter = event.target.value || '';
     this.selectedReplacementData[key]!.selectData = filter;
 
     if (this.replacementData[key]?.data.length > 0) {
-      let field = includeField ? this.mappedFormData.get(key)!.field : null;
-      this.debounceSearch(key, filter, field, false);
+      let derivedField = includeField
+        ? this.mappedFormData.get(key)!.field
+        : field;
+      this.debounceSearch(key, filter, derivedField, false);
     }
   }
 
@@ -920,7 +927,6 @@ export class AddFormComponent {
         );
       });
     }
-
     if (this.filteredReplacementData[key].data.length == 1) {
       if (text) {
         this.selectedTextReplacementData[key] =

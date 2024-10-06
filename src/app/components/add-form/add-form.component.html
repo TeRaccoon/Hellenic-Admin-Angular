@@ -209,7 +209,7 @@
                         <div class="input-container replacement">
                             <label>Item Name <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                             <div class="drop-select-container">
-                                <input (input)="filterDropSelect('Item ID', $event, false)" type="text"
+                                <input (input)="filterDropSelect('Item ID', $event, false, 'item_id')" type="text"
                                     (focus)="onInputFocus('Item ID')" (blur)="onInputBlur('Item ID')"
                                     [value]="selectedReplacementData['Item ID']?.selectData" formControlName="item_id">
                                 <div class="drop-select"
