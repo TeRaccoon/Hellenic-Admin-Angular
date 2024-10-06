@@ -420,6 +420,7 @@ export class AddFormComponent {
   }
 
   async formSubmit(hideForm: boolean) {
+    console.log(this.addForm);
     this.formState.submissionAttempted = true;
     if (this.addForm.valid) {
       if (
@@ -1071,6 +1072,9 @@ export class AddFormComponent {
 
       case 'customer_payments':
         return !(key == 'Linked Payment ID');
+
+      case 'customers':
+        return !(key == 'Outstanding Balance');
     }
     return true;
   }

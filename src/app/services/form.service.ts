@@ -263,6 +263,10 @@ export class FormService {
         replacementData['Customer Name'] = { data: data };
         break;
 
+      case 'customers':
+        formData['Password'].inputTpe = 'password';
+        break;
+
       case 'items':
         var data = await this.getIdReplacementData('categories', dataService);
         formData['Category'].inputType = 'alternative-select';
@@ -565,6 +569,10 @@ export class FormService {
 
         case 'file':
           inputTypes.push('file');
+          break;
+
+        case 'password':
+          inputTypes.push('password');
           break;
 
         case 'double':
