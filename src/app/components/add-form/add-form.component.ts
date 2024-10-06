@@ -1065,6 +1065,7 @@ export class AddFormComponent {
     switch (this.tableName) {
       case 'invoices':
         return !(
+          key == 'Title' ||
           key == 'VAT' ||
           key == 'Total' ||
           key == 'Gross Value' ||
