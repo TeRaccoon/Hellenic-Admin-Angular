@@ -1,6 +1,3 @@
-import { ColumnTypes } from './types/table-widget/const';
-import { TableData } from './types/table-widget/types';
-
 export const TABLE_NAMES = [
   'customers',
   'invoices',
@@ -24,6 +21,7 @@ export const TABLE_NAMES = [
   'credit_notes',
   'credit_notes_customers',
   'expired_items',
+  'invoiced_items',
 ];
 
 export const TABLE_NAME_PAIRS = [
@@ -49,6 +47,7 @@ export const TABLE_NAME_PAIRS = [
   { credit_notes: 'Credit Notes Suppliers' },
   { credit_notes_customers: 'Credit Notes Customers' },
   { expired_items: 'Expired Items' },
+  { invoiced_items: 'Invoiced Items' },
 ];
 
 export const TABLE_CATEGORIES = {
@@ -59,7 +58,11 @@ export const TABLE_CATEGORIES = {
     { tableName: 'price_list', displayName: 'Price List' },
     { tableName: 'credit_notes_customers', displayName: 'Credit Notes' },
   ],
-  Products: [{ tableName: 'items', displayName: 'Products' }],
+  Products: [
+    { tableName: 'items', displayName: 'Products' },
+    { tableName: 'stocked_items', displayName: 'Stocked Items' },
+    { tableName: 'invoiced_items', displayName: 'Invoiced Items' },
+  ],
   Supply: [
     { tableName: 'stocked_items', displayName: 'Stock' },
     { tableName: 'expired_items', displayName: 'Expired Items' },

@@ -65,6 +65,8 @@ export class TableService {
         break;
 
       case 'items':
+      case 'stocked_items':
+      case 'invoiced_items':
         this.dataService.setTabs(TABLE_CATEGORIES['Products']);
         break;
 
