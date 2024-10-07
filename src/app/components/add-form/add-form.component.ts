@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import _ from 'lodash';
+import _, { trimEnd } from 'lodash';
 import { formIcons } from '../../common/icons/form-icons';
 import {
   keyedData,
@@ -30,6 +30,7 @@ export class AddFormComponent {
   disabled = false;
 
   noCustomer = false;
+  saleTypeEnabled = true;
 
   addForm: FormGroup;
   addItemForm: FormGroup;
@@ -606,6 +607,11 @@ export class AddFormComponent {
     Object.keys(this.addForm.controls).forEach((controlKey: string) => {
       this.addForm.get(controlKey)?.disable();
     });
+
+    if (this.tableName == 'invoices') {
+      this.saleTypeEnabled = false;
+    }
+
     this.disabled = true;
   }
 

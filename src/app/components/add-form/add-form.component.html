@@ -15,7 +15,8 @@
                     <ng-container *ngIf="tableName == 'invoices'">
                         <div class="input-container">
                             <label>Sale type</label>
-                            <select (change)="changeSaleType($event)" class="select-input">
+                            <select (change)="changeSaleType($event)" class="select-input"
+                                [disabled]="!saleTypeEnabled">
                                 <option [selected]="saleType == SaleType.Invoice">{{ SaleType.Invoice }}</option>
                                 <option [selected]="saleType == SaleType.Cash">{{ SaleType.Cash }}</option>
                             </select>
