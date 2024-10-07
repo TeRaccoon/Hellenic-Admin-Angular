@@ -226,7 +226,7 @@ export class AddFormComponent {
     this.addressNotListedKeys = [];
     this.invoiceDetails = [];
     this.selectData = [];
-    this.saleTypeEnabled = false;
+    this.saleTypeEnabled = true;
   }
 
   async replaceAmbiguousData() {
@@ -599,7 +599,7 @@ export class AddFormComponent {
         this.addForm.get('table_name')?.setValue(this.tableName);
         this.formState.error = null;
         this.selectedReplacementData = {};
-        this.saleTypeEnabled;
+        this.saleTypeEnabled = true;
       }
     }
     this.formState.submitted = true;
