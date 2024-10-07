@@ -1103,7 +1103,11 @@ export class AddFormComponent {
         return !(key == 'Linked Payment ID');
 
       case 'customers':
-        return !(key == 'Outstanding Balance');
+        return !(
+          key == 'Outstanding Balance' ||
+          key == 'Last Payment Date' ||
+          key == 'Password'
+        );
     }
     return true;
   }
