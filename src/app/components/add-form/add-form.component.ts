@@ -1107,7 +1107,13 @@ export class AddFormComponent {
         );
 
       case 'supplier_invoices':
-        return !(key == 'Net Value' || key == 'VAT' || key == 'Total');
+        return !(
+          key == 'Net Value' ||
+          key == 'VAT' ||
+          key == 'Total' ||
+          key == 'Paid' ||
+          key == 'Outstanding Balance'
+        );
 
       case 'items':
         return !(key == 'Total Sold');
