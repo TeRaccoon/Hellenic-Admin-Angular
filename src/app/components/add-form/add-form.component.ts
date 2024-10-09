@@ -83,7 +83,7 @@ export class AddFormComponent {
     filter: string,
     field: string | null,
     text: boolean | null,
-    alt: boolean | undefined
+    alt: boolean
   ) => void = _.debounce(
     (
       key: string,
@@ -896,7 +896,8 @@ export class AddFormComponent {
     key: string,
     event: any,
     includeField: boolean,
-    field: string | null = null
+    field: string | null = null,
+    alt: boolean = false
   ) {
     const filter = event.target.value || '';
     this.selectedReplacementData[key]!.selectData = filter;
@@ -905,7 +906,7 @@ export class AddFormComponent {
       let derivedField = includeField
         ? this.mappedFormData.get(key)!.field
         : field;
-      this.debounceSearch(key, filter, derivedField, false, true);
+      this.debounceSearch(key, filter, derivedField, false, alt);
     }
   }
 
@@ -916,7 +917,7 @@ export class AddFormComponent {
       this.selectedReplacementData[key] = filter;
 
       if (this.replacementData[key]?.data.length > 0) {
-        this.debounceSearch(key, filter, null, true, undefined);
+        this.debounceSearch(key, filter, null, true, false);
       }
     }
   }
