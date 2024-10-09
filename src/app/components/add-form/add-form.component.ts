@@ -351,17 +351,18 @@ export class AddFormComponent {
       delete this.formData['Item ID'];
       if (this.tableName == 'supplier_invoices') {
         this.addItemForm = this.fb.group({
-          item_id: ['', [Validators.required]],
-          purchase_price: ['', [Validators.required]],
           purchase_date: [
             new Date().toISOString().split('T')[0],
             [Validators.required],
           ],
-          quantity: ['', [Validators.required]],
           expiry_date: [
             new Date().toISOString().split('T')[0],
             [Validators.required],
           ],
+          item_id: ['', [Validators.required]],
+          purchase_price: ['', [Validators.required]],
+          quantity: ['', [Validators.required]],
+
           packing_format: ['Individual', [Validators.required]],
           barcode: ['', [Validators.required]],
         });
@@ -684,24 +685,47 @@ export class AddFormComponent {
         this.addForm.get('purchase_price')?.setValue(lastPurchasePrice[0]);
       }
     }
+
     if (
       (this.tableName == 'stocked_items' ||
         this.tableName == 'supplier_invoices') &&
       (field == 'item_id' || field == 'expiry_date')
     ) {
-      if (
-        this.addForm.get('item_id')?.value != null &&
-        this.addForm.get('expiry_date')?.value != null
-      ) {
-        let item = await this.dataService.processGet('items', {
-          filter: this.addForm.get('item_id')?.value,
-        });
-        let stockCode = item['stock_code'];
-        this.addForm
-          .get('barcode')
-          ?.setValue(
-            stockCode + '-' + this.addForm.get('expiry_date')?.value.toString()
-          );
+      if (!alt) {
+        if (
+          this.addForm.get('item_id')?.value != null &&
+          this.addForm.get('expiry_date')?.value != null
+        ) {
+          let item = await this.dataService.processGet('items', {
+            filter: this.addForm.get('item_id')?.value,
+          });
+          let stockCode = item['stock_code'];
+
+          this.addForm
+            .get('barcode')
+            ?.setValue(
+              stockCode +
+                '-' +
+                this.addForm.get('expiry_date')?.value.toString()
+            );
+        }
+      } else {
+        if (
+          this.addItemForm.get('item_id')?.value != null &&
+          this.addItemForm.get('expiry_date')?.value != null
+        ) {
+          let item = await this.dataService.processGet('items', {
+            filter: this.addItemForm.get('item_id')?.value,
+          });
+          let stockCode = item['stock_code'];
+          this.addItemForm
+            .get('barcode')
+            ?.setValue(
+              stockCode +
+                '-' +
+                this.addItemForm.get('expiry_date')?.value.toString()
+            );
+        }
       }
     }
 
