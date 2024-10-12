@@ -235,14 +235,14 @@ export class FormService {
     return this.alternativeSelectData;
   }
 
-  async replaceAmbiguousData(
+  async replaceAmbiguousData( //Replaces fields that need IDs with the text equivalent
     tableName: string,
     formData: any,
     replacementData: {
       [key: string]: {
         data: { id: Number; replacement: string }[];
       };
-    },
+    }, // complex variable. key:string indicates the key to get data from the variable. replacementData['beer']
     dataService: DataService,
     formType?: string
   ) {
@@ -465,6 +465,18 @@ export class FormService {
           fields: 'item_id',
         };
         replacementData['Item ID'] = { data: data };
+        
+        data = await this.getIdReplacementData(
+          'warehouse_id_name',
+          dataService
+        )
+        formData['Warehouse ID'] = {
+        inputType: 'replacement',
+        value: null,
+        fields: 'warehouse_id',
+        };
+        replacementData['Warehouse ID'] = { data: data };
+
         break;
     }
     return { formData, replacementData };

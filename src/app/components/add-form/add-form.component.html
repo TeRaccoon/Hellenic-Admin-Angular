@@ -239,6 +239,21 @@
                                 <label>Barcode <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                                 <input class="text" type="text" formControlName="barcode">
                             </div>
+                            <div class="input-container replacement">
+                                <label>Warehouse <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
+                                <div class="drop-select-container">
+                                    <input (input)="filterDropSelect('Warehouse ID', $event, false, 'warehouse_id', true)" type="text"
+                                        (focus)="onInputFocus('Warehouse ID')" (blur)="onInputBlur('Warehouse ID')"
+                                        [value]="selectedReplacementData['Warehouse ID']?.selectData">
+                                    <div class="drop-select"
+                                        [ngClass]="selectOpen['Warehouse ID']?.opened ? 'input-visible' : 'input-hidden'"
+                                        required>
+                                        <p *ngFor="let option of filteredReplacementData['Warehouse ID'].data"
+                                            (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, 'Warehouse ID', 'warehouse_id', true)">
+                                            {{ option.replacement }}</p>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="input-container select">
                                 <label>Packing Format <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                                 <select class="select-input" formControlName="packing_format">
@@ -302,7 +317,7 @@
                             </table>
                         </div>
                         <div class="form-footer">
-                            <div>
+                            <div *ngIf="shouldDisplayPriceWarning()">
                                 <fa-icon [icon]="icons.faAsterisk" />
                                 <p>Indicates no price for this customer type</p>
                             </div>
