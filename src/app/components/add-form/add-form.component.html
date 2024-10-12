@@ -317,7 +317,7 @@
                             </table>
                         </div>
                         <div class="form-footer">
-                            <div>
+                            <div *ngIf="shouldDisplayPriceWarning()">
                                 <fa-icon [icon]="icons.faAsterisk" />
                                 <p>Indicates no price for this customer type</p>
                             </div>

@@ -627,6 +627,11 @@ export class AddFormComponent {
     this.disabled = true;
   }
 
+  shouldDisplayPriceWarning() {
+    let includedTables = ['invoices'];
+    return includedTables.includes(this.tableName);
+  }
+
   primeImage(event: any) {
     this.file = event.target.files[0];
   }
