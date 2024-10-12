@@ -7,3 +7,11 @@ export interface TableData {
   columnTypes: ColumnTypes[];
   alternativeData: any;
 }
+
+export interface VatData {
+  output_total: number;
+  output_vat: number;
+  input_total: number;
+  input_vat: number;
+  liability: number;
+}

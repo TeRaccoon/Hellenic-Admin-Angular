@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { TableData } from '../../common/types/table-widget/types';
+import { TableData, VatData } from '../../common/types/table-widget/types';
 import { VAT_RETURN } from '../../common/types/table-widget/const';
 
 @Component({
@@ -73,7 +73,7 @@ export class TableWidgetComponent {
 
   async collectData() {
     if (this.startDate != '' && this.endDate != '') {
-      let data = await this.dataService.processGet(
+      let data: VatData[] = await this.dataService.processGet(
         this.tableData.query,
         {
           'start-date': this.startDate,
@@ -84,6 +84,7 @@ export class TableWidgetComponent {
 
       if (this.tableName == 'vat-returns') {
         data = this.vatReturns(data);
+        console.log(data);
       }
 
       this.tableData!.alternativeData['values'] = [
@@ -118,8 +119,10 @@ export class TableWidgetComponent {
     return `${month}-${year}`;
   }
 
-  vatReturns(vatData: any) {
-    vatData.liability = vatData.output_vat - vatData.input_vat;
+  vatReturns(vatData: VatData[]) {
+    vatData[0].liability =
+      Number(Number(vatData[0].output_vat).toFixed(2)) -
+      Number(Number(vatData[0].input_vat).toFixed(2));
     return vatData;
   }
 }
