@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { apiUrlBase } from './data.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UrlService } from './url.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -12,19 +12,22 @@ export class AuthService {
   private accessLevel = 'Low';
   private accessGranted = false;
 
+  private url;
+
   constructor(
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private urlService: UrlService
   ) {
+    this.url = this.urlService.getUrl('data');
+
     this.checkLogin();
   }
 
   checkLogin() {
-    const url = apiUrlBase + 'manage_data.php';
-
     return this.http
-      .post(url, { action: 'check-login' }, { withCredentials: true })
+      .post(this.url, { action: 'check-login' }, { withCredentials: true })
       .pipe(
         map((response: any) => {
           if (response.data != null) {
@@ -48,13 +51,11 @@ export class AuthService {
   }
 
   async logout() {
-    const url = apiUrlBase + 'manage_data.php';
-
     this.isAuthenticated.next(false);
 
     const logoutResponse = await lastValueFrom(
       this.http.post<{ success: boolean; message: string }>(
-        url,
+        this.url,
         { action: 'logout' },
         { withCredentials: true }
       )
@@ -108,8 +109,6 @@ export class AuthService {
         return false;
     }
   }
-
-
 
   returnAccess() {
     return this.accessGranted;

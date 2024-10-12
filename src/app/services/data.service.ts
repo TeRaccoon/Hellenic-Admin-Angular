@@ -1,15 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, lastValueFrom, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, Subject, lastValueFrom } from 'rxjs';
 import { UrlService } from './url.service';
-import {
-  BalanceSheetData,
-  BalanceSheetTable,
-} from '../common/types/data-service/types';
+import { BalanceSheetData } from '../common/types/data-service/types';
+import { DEFAULT_BALANCE_SHEET } from '../common/types/data-service/const';
 
-export const apiUrlBase = 'http://localhost/API/';
-export const imageUrlBase = 'http://localhost/uploads/';
 @Injectable({
   providedIn: 'root',
 })
@@ -20,28 +15,23 @@ export class DataService {
     [key: string]: { name: string; quantity: number }[];
   }>();
   private tableWidgetData: any = {};
-  private balanceSheetData: BalanceSheetData = {
-    Title: '',
-    CustomerId: -1,
-    Table: BalanceSheetTable.Customers,
-  };
+  private balanceSheetData: BalanceSheetData;
   altTableData: any = {};
   invoiceIds: any[] = [];
   tabs: { displayName: string; tableName: string }[] = [];
 
-  constructor(private http: HttpClient, private urlService: UrlService) {}
+  constructor(private http: HttpClient, private urlService: UrlService) {
+    this.balanceSheetData = DEFAULT_BALANCE_SHEET;
+  }
 
   async processGet(
     query: string,
     filter: Record<string, any> = {},
     makeArray = false
   ): Promise<any> {
-    const url = new URL(this.urlService.getUrl('admin'));
+    let url = new URL(this.urlService.getUrl('admin'));
     url.searchParams.append('query', query);
-    const queryParams = { ...filter };
-    for (const [key, value] of Object.entries(queryParams)) {
-      url.searchParams.append(key, value ?? '');
-    }
+    url = this.parseParams(url, filter);
 
     let response = await lastValueFrom(this.http.get(url.toString()));
 
@@ -63,59 +53,31 @@ export class DataService {
   }
 
   async submitFormData(data: any) {
-    const url = apiUrlBase + 'manage_data.php';
+    const url = this.urlService.getUrl('data');
+
     let submissionResponse = await lastValueFrom<any>(
       this.http.post(url, data, { withCredentials: true })
     );
     return submissionResponse;
   }
 
-  async syncInsert(
-    tableName: string,
-    id: string,
-    quantity: number,
-    url: string
-  ) {
-    let data = {
-      id: id,
-      quantity: quantity,
-      table: tableName,
-      query: `${tableName}_insert`,
-    };
+  async uploadImage(formData: FormData): Promise<any> {
+    const url = this.urlService.getUrl('admin');
+    return await lastValueFrom(this.http.post(url, formData));
+  }
 
-    switch (tableName) {
-      case 'invoiced_items':
-        let syncResponse = await lastValueFrom(
-          this.http.post(url, data, { withCredentials: true })
-        );
-        break;
+  async uploadDocument(formData: FormData): Promise<any> {
+    const url = this.urlService.getUrl('document-upload');
+    return await lastValueFrom(this.http.post(url, formData));
+  }
+
+  parseParams(url: URL, filter: Record<string, any>): URL {
+    const queryParams = { ...filter };
+    for (const [key, value] of Object.entries(queryParams)) {
+      url.searchParams.append(key, value ?? '');
     }
-  }
 
-  uploadImage(formData: FormData): Observable<any> {
-    const url = apiUrlBase + 'image_upload.php';
-    return this.http.post(url, formData).pipe(
-      map((response: any) => {
-        return response;
-      }),
-      catchError((error: any) => {
-        console.error('HTTP error occurred:', error);
-        return throwError(error);
-      })
-    );
-  }
-
-  uploadDocument(formData: FormData): Observable<any> {
-    const url = apiUrlBase + 'document_upload.php';
-    return this.http.post(url, formData).pipe(
-      map((response: any) => {
-        return response;
-      }),
-      catchError((error: any) => {
-        console.error('HTTP error occurred:', error);
-        return throwError(error);
-      })
-    );
+    return url;
   }
 
   storeData(data: any) {
