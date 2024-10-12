@@ -1,16 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterEvent,
-} from '@angular/router';
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FilterService } from '../../services/filter.service';
-import { apiUrlBase, imageUrlBase } from '../../services/data.service';
 import { Location } from '@angular/common';
-import { lastValueFrom, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import {
   columnFilter,
@@ -26,6 +20,7 @@ import {
   BalanceSheetData,
   BalanceSheetTable,
 } from '../../common/types/data-service/types';
+import { UrlService } from '../../services/url.service';
 
 @Component({
   selector: 'app-view',
@@ -39,8 +34,8 @@ export class ViewComponent {
 
   icons = tableIcons;
 
-  apiUrlBase = apiUrlBase;
-  imageUrlBase = imageUrlBase;
+  apiUrlBase;
+  imageUrlBase;
 
   tableName: string = '';
   displayName: string = '';
@@ -81,8 +76,12 @@ export class ViewComponent {
     private formService: FormService,
     private route: ActivatedRoute,
     private dataService: DataService,
-    private _location: Location
+    private _location: Location,
+    private urlService: UrlService
   ) {
+    this.apiUrlBase = this.urlService.getUrl();
+    this.imageUrlBase = this.urlService.getUrl('uploads');
+
     this.accessible = this.authService.returnAccess();
 
     this.viewMetaData = {

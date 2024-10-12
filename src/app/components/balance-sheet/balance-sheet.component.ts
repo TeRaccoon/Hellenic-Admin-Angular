@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { imageUrlBase } from '../../services/data.service';
 import {
   BalanceSheetData,
   BalanceSheetQueries,
-  CustomerQueries,
-  SupplierQueries,
 } from '../../common/types/data-service/types';
 import {
   CreditNote,
@@ -19,6 +16,11 @@ import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import { selectedDate } from '../../common/types/statistics/types';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
+import { UrlService } from '../../services/url.service';
+import {
+  CUSTOMER_QUERIES,
+  SUPPLIER_QUERIES,
+} from '../../common/types/data-service/const';
 
 dayjs.extend(isBetween);
 
@@ -34,7 +36,7 @@ export class BalanceSheetComponent {
 
   faPrint = faPrint;
 
-  imageUrlBase = imageUrlBase;
+  imageUrlBase;
 
   inputData!: BalanceSheetData;
 
@@ -68,11 +70,16 @@ export class BalanceSheetComponent {
     'This Year': [dayjs().startOf('year'), dayjs().endOf('year')],
   };
 
-  constructor(private dataService: DataService) {
+  constructor(
+    private dataService: DataService,
+    private urlService: UrlService
+  ) {
+    this.imageUrlBase = this.urlService.getUrl('uploads');
+
     this.inputData = this.dataService.retrieveBalanceSheetData();
 
     this.queries =
-      this.inputData.Table == 'customers' ? CustomerQueries : SupplierQueries;
+      this.inputData.Table == 'customers' ? CUSTOMER_QUERIES : SUPPLIER_QUERIES;
   }
 
   ngOnInit() {

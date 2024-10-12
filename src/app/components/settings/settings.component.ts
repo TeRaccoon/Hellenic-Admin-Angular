@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { lastValueFrom, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import {
   faSpinner,
   faAsterisk,
@@ -163,9 +163,7 @@ export class SettingsComponent {
     const formData = new FormData();
     formData.append('document', file, documentType + '.html');
 
-    let response = await lastValueFrom(
-      this.dataService.uploadDocument(formData)
-    );
+    let response = await this.dataService.uploadDocument(formData);
     this.formService.setMessageFormData({
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,

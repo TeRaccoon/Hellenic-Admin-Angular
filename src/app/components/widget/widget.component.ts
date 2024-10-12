@@ -7,8 +7,8 @@ import {
   faPenToSquare,
   faFileCircleXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { lastValueFrom, Subscription } from 'rxjs';
-import { imageUrlBase } from '../../services/data.service';
+import { Subscription } from 'rxjs';
+import { UrlService } from '../../services/url.service';
 
 @Component({
   selector: 'app-widget',
@@ -23,7 +23,7 @@ export class WidgetComponent {
   faPenToSquare = faPenToSquare;
   faFileCircleXmark = faFileCircleXmark;
 
-  imageUrlBase = imageUrlBase;
+  imageUrlBase;
 
   visible = false;
 
@@ -57,8 +57,11 @@ export class WidgetComponent {
 
   constructor(
     private dataService: DataService,
-    private formService: FormService
-  ) {}
+    private formService: FormService,
+    private urlService: UrlService
+  ) {
+    this.imageUrlBase = this.urlService.getUrl('uploads');
+  }
 
   ngOnInit() {
     this.subscriptionHandler();

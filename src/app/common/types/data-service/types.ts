@@ -14,3 +14,8 @@ export interface BalanceSheetQueries {
   Payments: string;
   CreditNotes: string;
 }
+
+export interface Response {
+  success: boolean;
+  message: string;
+}

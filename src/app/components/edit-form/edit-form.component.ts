@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DataService, imageUrlBase } from '../../services/data.service';
+import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import _ from 'lodash';
@@ -12,6 +12,7 @@ import {
   formState,
 } from '../../common/types/forms/types';
 import { Subscription } from 'rxjs';
+import { UrlService } from '../../services/url.service';
 
 @Component({
   selector: 'app-edit-form',
@@ -25,7 +26,7 @@ export class EditFormComponent {
 
   searchWaiting = false;
 
-  imageUrlBase = imageUrlBase;
+  imageUrlBase;
 
   editForm: FormGroup;
 
@@ -91,8 +92,11 @@ export class EditFormComponent {
   constructor(
     private dataService: DataService,
     private formService: FormService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private urlService: UrlService
   ) {
+    this.imageUrlBase = this.urlService.getUrl('uploads');
+
     this.editForm = this.fb.group({});
     this.addresses = {
       'Delivery Address': {

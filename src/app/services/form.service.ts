@@ -614,7 +614,7 @@ export class FormService {
 
     let addToDatabase = this.shouldAddToDatabase(tableName);
 
-    if (uploadResponse.success) {
+    if (uploadResponse) {
       if (addToDatabase) {
         const recordUploadResponse = await this.addImageLocationToDatabase(
           id,
@@ -646,7 +646,7 @@ export class FormService {
     const formData = new FormData();
     formData.append('image', image, imageFileName);
 
-    return await lastValueFrom(this.dataService.uploadImage(formData));
+    return await this.dataService.uploadImage(formData);
   }
 
   async processImageName(id: string | null, name: string, tableName: string) {

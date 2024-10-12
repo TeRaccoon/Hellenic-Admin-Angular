@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, lastValueFrom } from 'rxjs';
 import { UrlService } from './url.service';
-import { BalanceSheetData } from '../common/types/data-service/types';
+import { BalanceSheetData, Response } from '../common/types/data-service/types';
 import { DEFAULT_BALANCE_SHEET } from '../common/types/data-service/const';
 
 @Injectable({
@@ -61,9 +61,9 @@ export class DataService {
     return submissionResponse;
   }
 
-  async uploadImage(formData: FormData): Promise<any> {
+  async uploadImage(formData: FormData): Promise<Response> {
     const url = this.urlService.getUrl('admin');
-    return await lastValueFrom(this.http.post(url, formData));
+    return await lastValueFrom(this.http.post<Response>(url, formData));
   }
 
   async uploadDocument(formData: FormData): Promise<any> {

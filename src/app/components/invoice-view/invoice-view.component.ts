@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
-import { imageUrlBase } from '../../services/data.service';
 import { faSpinner, faPrint } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../services/auth.service';
 import { FormService } from '../../services/form.service';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { UrlService } from '../../services/url.service';
 
 @Component({
   selector: 'app-invoice-view',
@@ -23,7 +23,7 @@ export class InvoiceViewComponent {
   faPrint = faPrint;
 
   date = new Date();
-  imageUrlBase = imageUrlBase;
+  imageUrlBase;
 
   loaded = false;
   driver = false;
@@ -34,8 +34,11 @@ export class InvoiceViewComponent {
     private formService: FormService,
     private router: Router,
     private dataService: DataService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private urlService: UrlService
+  ) {
+    this.imageUrlBase = this.urlService.getUrl('uploads');
+  }
 
   ngOnInit() {
     this.loaded = false;
