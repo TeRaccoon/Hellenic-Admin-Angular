@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-debtor-creditor-widget',
