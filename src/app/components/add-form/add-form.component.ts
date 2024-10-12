@@ -1171,7 +1171,17 @@ export class AddFormComponent {
   }
 
   deleteRow(id: number) {
-    this.formService.setSelectedTable('invoiced_items');
+    let table;
+    switch (this.tableName) {
+      case 'supplier_invoices':
+        table = 'stocked_items';
+        break;
+
+      default:
+        table = 'invoiced_items';
+        break;
+    }
+    this.formService.setSelectedTable(table);
     this.formService.setDeleteFormIds([id]);
     this.formService.showDeleteForm();
   }
