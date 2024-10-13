@@ -693,6 +693,12 @@ export class AddFormComponent {
         },
         true
       );
+      this.replacementData['Invoice ID'].data = this.invoiceDetails.map(
+        (i: any) => ({
+          id: i.id,
+          replacement: i.title,
+        })
+      );
     } else if (
       this.tableName == 'supplier_payments' &&
       field == 'supplier_id'
