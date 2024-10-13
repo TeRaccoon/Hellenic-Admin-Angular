@@ -626,7 +626,7 @@ export class ViewComponent {
       { name: 'Item Discount', type: 'percent' },
       { name: 'Customer Discount', type: 'percent' },
       { name: 'Price', type: 'currency' },
-      { name: 'Net Value', type: 'currency' },
+      { name: 'Gross Value', type: 'currency' },
       { name: 'Discount Value', type: 'currency' },
       { name: 'VAT Value', type: 'currency' },
     ];
@@ -638,18 +638,19 @@ export class ViewComponent {
     let tableName = 'invoiced_items';
     let title = `Invoiced Items for ${row['title']}`;
 
+    let totalGross = 0;
     let totalNet = 0;
     let totalVAT = 0;
 
     tableRows.forEach((row: any) => {
-      const net = row.net || 0;
+      const gross = row.gross || 0;
       const vat = row.vat || 0;
+      const net = row.net || 0;
 
-      totalNet += net;
+      totalGross += gross;
       totalVAT += vat;
+      totalNet += net;
     });
-
-    let totalWithVAT = totalNet + totalVAT;
 
     this.dataService.storeWidgetData({
       headers: tableColumns,
@@ -666,9 +667,9 @@ export class ViewComponent {
         message: 'This invoice is locked and cannot be modified!',
       },
       extra: {
-        totalNet: totalNet,
+        totalGross: totalGross,
         totalVAT: totalVAT,
-        totalWithVAT: totalWithVAT,
+        totalNet: totalNet,
       },
     });
 

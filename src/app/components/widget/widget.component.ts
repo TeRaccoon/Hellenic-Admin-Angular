@@ -49,9 +49,9 @@ export class WidgetComponent {
       message: '',
     },
     extra: {
-      totalNet: 0,
+      totalGross: 0,
       totalVAT: 0,
-      totalWithVAT: 0,
+      totalNet: 0,
     },
   };
 
@@ -104,22 +104,24 @@ export class WidgetComponent {
     this.formService.performReload();
 
     if (this.tableData.query == 'invoiced-items') {
+      let totalGross = 0;
       let totalNet = 0;
       let totalVAT = 0;
 
       this.tableData.rows.forEach((row: any) => {
-        const net = row.net || 0;
+        const gross = row.gross || 0;
         const vat = row.vat || 0;
+        const net = row.net || 0;
 
-        totalNet += net;
+        totalGross += gross;
         totalVAT += vat;
+        totalNet += net;
       });
-      let totalWithVAT = totalNet + totalVAT;
 
       this.tableData.extra = {
-        totalNet: totalNet,
+        totalGross: totalGross,
         totalVAT: totalVAT,
-        totalWithVAT: totalWithVAT,
+        totalNet: totalNet,
       };
     }
   }

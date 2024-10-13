@@ -51,16 +51,16 @@
                 <div *ngIf="tableData.query == 'invoiced-items'" class="summary-container">
                     <h1>Transaction Summary</h1>
                     <div>
-                        <p class="header">Net Amount:</p>
-                        <p>{{ tableData.extra.totalNet | currency: 'GBP' }}</p>
+                        <p class="header">Gross Amount:</p>
+                        <p>{{ tableData.extra.totalGross | currency: 'GBP' }}</p>
                     </div>
                     <div>
                         <p class="header">VAT Amount:</p>
                         <p>{{ tableData.extra.totalVAT | currency: 'GBP' }}</p>
                     </div>
                     <div>
-                        <p class="header">Total:</p>
-                        <p>{{ tableData.extra.totalWithVAT | currency: 'GBP' }}</p>
+                        <p class="header">Net Amount:</p>
+                        <p>{{ tableData.extra.totalNet | currency: 'GBP' }}</p>
                     </div>
                 </div>
                 <div class="widget-footer">
