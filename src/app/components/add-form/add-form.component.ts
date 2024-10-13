@@ -704,6 +704,12 @@ export class AddFormComponent {
         },
         true
       );
+      this.replacementData['Invoice'].data = this.invoiceDetails.map(
+        (i: any) => ({
+          id: i.id,
+          replacement: i.reference,
+        })
+      );
     } else if (this.tableName == 'stocked_items' && field == 'item_id') {
       let lastPurchasePrice = await this.dataService.processGet(
         'last-purchase-price',

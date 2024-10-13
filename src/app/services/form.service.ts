@@ -235,7 +235,8 @@ export class FormService {
     return this.alternativeSelectData;
   }
 
-  async replaceAmbiguousData( //Replaces fields that need IDs with the text equivalent
+  async replaceAmbiguousData(
+    //Replaces fields that need IDs with the text equivalent
     tableName: string,
     formData: any,
     replacementData: {
@@ -465,15 +466,15 @@ export class FormService {
           fields: 'item_id',
         };
         replacementData['Item ID'] = { data: data };
-        
+
         data = await this.getIdReplacementData(
           'warehouse_id_name',
           dataService
-        )
+        );
         formData['Warehouse ID'] = {
-        inputType: 'replacement',
-        value: null,
-        fields: 'warehouse_id',
+          inputType: 'replacement',
+          value: null,
+          fields: 'warehouse_id',
         };
         replacementData['Warehouse ID'] = { data: data };
 
