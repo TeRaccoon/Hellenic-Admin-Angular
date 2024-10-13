@@ -44,7 +44,7 @@
                         </tr>
                         <tr *ngIf="tableData.query == 'stocked-items'">
                             <td>Total:</td>
-                            <td [attr.colspan]="8">{{ getStockedItemTotal() }}</td>
+                            <td [attr.colspan]="8">{{ totalStock }}</td>
                         </tr>
                     </tbody>
                 </table>

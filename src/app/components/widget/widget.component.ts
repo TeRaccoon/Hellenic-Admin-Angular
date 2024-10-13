@@ -55,6 +55,8 @@ export class WidgetComponent {
     },
   };
 
+  totalStock: number = 0;
+
   constructor(
     private dataService: DataService,
     private formService: FormService,
@@ -77,6 +79,10 @@ export class WidgetComponent {
     this.subscriptions.add(
       this.dataService.retrieveWidgetData().subscribe((tableData: any) => {
         this.tableData = tableData;
+
+        if (this.tableData.tableName == 'stocked_items') {
+          this.getStockedItemTotal();
+        }
       })
     );
 
@@ -194,9 +200,11 @@ export class WidgetComponent {
     return Object.keys(row);
   }
 
-  getStockedItemTotal() {
-    return this.tableData.rows.reduce((acc: number, curr: any) => {
-      return acc + curr.quantity;
-    }, 0);
+  async getStockedItemTotal() {
+    this.totalStock = (
+      await this.dataService.processGet('total-stock-from-item-id', {
+        filter: this.tableData.idData.id,
+      })
+    ).total_quantity;
   }
 }
