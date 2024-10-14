@@ -522,6 +522,13 @@ export class ViewComponent {
     return range;
   }
 
+  canShowMultipleDelete() {
+    const excludedTables = ['invoiced_items']; //Creates a variable called excludedTables that stores a list containing 'invoiced_items'
+    return (
+      !excludedTables.includes(this.tableName) && this.selectedRows.length > 1
+    );
+  }
+
   async changeCheckBox(event: Event, key: number, columnName: string) {
     const option = event.target as HTMLInputElement;
     let checked = option.checked;
