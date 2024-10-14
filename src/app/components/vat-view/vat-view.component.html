@@ -19,11 +19,11 @@
             <tr *ngFor="let label of vatData.labels; let index = index">
                 <td class="label">{{ label }}</td>
                 <td>{{ index + 1 }}</td>
-                <td>{{ vatData.originalValues[index] | currency: 'GBP' }}</td>
-                <td>{{ vatData.previousAdjustments[index] | currency: 'GBP' }}</td>
-                <td>{{ vatData.newAdjustments[index] | currency: 'GBP' }}</td>
-                <td>{{ vatData.fuelScaleCharge[index] | currency: 'GBP' }}</td>
-                <td>{{ vatData.total[index] | currency: 'GBP' }}</td>
+                <td>{{ format(vatData.originalValues[index]) | currency: 'GBP' }}</td>
+                <td>{{ format(vatData.previousAdjustments[index]) | currency: 'GBP' }}</td>
+                <td>{{ format(vatData.newAdjustments[index]) | currency: 'GBP' }}</td>
+                <td>{{ format(vatData.fuelScaleCharge[index]) | currency: 'GBP' }}</td>
+                <td>{{ format(vatData.total[index]) | currency: 'GBP' }}</td>
             </tr>
         </tbody>
     </table>
