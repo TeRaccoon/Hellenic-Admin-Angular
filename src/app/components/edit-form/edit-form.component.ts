@@ -838,6 +838,7 @@ export class EditFormComponent {
     switch (this.tableName) {
       case 'items':
       case 'image_locations':
+      case 'categories':
         return true;
     }
     return false;
