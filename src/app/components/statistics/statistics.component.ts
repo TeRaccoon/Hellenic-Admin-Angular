@@ -40,8 +40,8 @@ export class StatisticsComponent {
   charts: chart[] = [];
 
   ranges: any = {
-    'Yesterday': [dayjs().subtract(1, 'days'), dayjs().subtract(1, 'days')],
-    'Today': [dayjs(), dayjs()],
+    Yesterday: [dayjs().subtract(1, 'days'), dayjs().subtract(1, 'days')],
+    Today: [dayjs(), dayjs()],
     'Last 3 Days': [dayjs().subtract(3, 'days'), dayjs()],
     'Last 7 Days': [dayjs().subtract(6, 'days'), dayjs()],
     'Last 30 Days': [dayjs().subtract(29, 'days'), dayjs()],
@@ -58,7 +58,7 @@ export class StatisticsComponent {
   filteredReportData: any = null;
   headerToSort = { name: '', field: '' };
 
-  constructor(private statisticsService: StatisticsService) { }
+  constructor(private statisticsService: StatisticsService) {}
 
   updateDateRange() {
     if (this.selected.startDate && this.selected.endDate) {
@@ -68,7 +68,11 @@ export class StatisticsComponent {
   }
 
   updateComparisonRange() {
-    if (this.comparison && this.comparison.startDate && this.comparison.endDate) {
+    if (
+      this.comparison &&
+      this.comparison.startDate &&
+      this.comparison.endDate
+    ) {
       this.reset();
       this.buildCharts(this.selected, this.comparison);
     }
@@ -80,43 +84,74 @@ export class StatisticsComponent {
     this.reportChart = null;
   }
 
-  async buildCharts(date: selectedDate, compareDate: selectedDate | null = null) {
+  async buildCharts(
+    date: selectedDate,
+    compareDate: selectedDate | null = null
+  ) {
     const lineTension = 0.3;
     const primaryColour = 'rgb(0, 140, 255)';
     const secondaryColour = 'rgb(255, 97, 18)';
-    const primaryBackgroundColour = 'rgb(0, 140, 255, 0.4)'
+    const primaryBackgroundColour = 'rgb(0, 140, 255, 0.4)';
     const secondaryBackgroundColour = 'rgb(255, 97, 18, 0.4)';
     const dateLabel = {
-      primary: date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString(),
-      secondary: compareDate?.startDate!.format('DD MMM').toString() + ' to ' + compareDate?.endDate!.format('DD MMM').toString()
+      primary:
+        date.startDate!.format('DD MMM').toString() +
+        ' to ' +
+        date.endDate!.format('DD MMM').toString(),
+      secondary:
+        compareDate?.startDate!.format('DD MMM').toString() +
+        ' to ' +
+        compareDate?.endDate!.format('DD MMM').toString(),
     };
 
     //Average order value
     const averageOrderHeading = 'Average Order Value';
-    const averageOrderAxisLabels = { x: 'Date', y: 'Order Value (£)' }
-    const averageOrderHeaders = ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'];
-    const averageOrderDataTypes = ['text', 'currency', 'currency', 'int', 'currency'];
+    const averageOrderAxisLabels = { x: 'Date', y: 'Order Value (£)' };
+    const averageOrderHeaders = [
+      'Date',
+      'Gross Sales',
+      'Discounts',
+      'Orders',
+      'Average Order Value',
+    ];
+    const averageOrderDataTypes = [
+      'text',
+      'currency',
+      'currency',
+      'int',
+      'currency',
+    ];
     const averageOrderQuery = 'average-invoice-value';
     const averageOrderFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty, }
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
-    const averageOrderKeys = ['dateKey', 'total', 'discounts', 'orders', 'average'];
+    const averageOrderKeys = [
+      'dateKey',
+      'total',
+      'discounts',
+      'orders',
+      'average',
+    ];
     const averageOrderDateLabels = {
       primary: compareDate != null ? dateLabel.primary : 'Total Value',
-      secondary: compareDate?.startDate && compareDate.endDate ? dateLabel.secondary : 'Total Value'
-    }
+      secondary:
+        compareDate?.startDate && compareDate.endDate
+          ? dateLabel.secondary
+          : 'Total Value',
+    };
 
-    await this.constructLineChart({
-      date: date,
-      compareDate: compareDate,
-      queries: averageOrderQuery,
-      chartLabels: averageOrderDateLabels,
-      axisLabels: averageOrderAxisLabels,
-    },
+    await this.constructLineChart(
+      {
+        date: date,
+        compareDate: compareDate,
+        queries: averageOrderQuery,
+        chartLabels: averageOrderDateLabels,
+        axisLabels: averageOrderAxisLabels,
+      },
       {
         type: 'average-currency',
-        filter: true
+        filter: true,
       },
       {
         headers: averageOrderHeaders,
@@ -132,28 +167,42 @@ export class StatisticsComponent {
     const totalOrdersHeading = 'Total Orders';
     const totalOrdersQuery = 'total-invoices';
     const totalOrdersAxisLabels = { x: 'Date', y: 'Order Amount' };
-    const totalOrdersHeaders = ['Date', 'Orders', 'Average Units Ordered', 'Average Order Value'];
+    const totalOrdersHeaders = [
+      'Date',
+      'Orders',
+      'Average Units Ordered',
+      'Average Order Value',
+    ];
     const totalOrdersDataTypes = ['text', 'int', 'number', 'currency'];
     const totalOrdersFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
-    ]
-    const totalOrdersKeys = ['dateKey', 'total_orders', 'average_units_ordered', 'average_order_value'];
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+    ];
+    const totalOrdersKeys = [
+      'dateKey',
+      'total_orders',
+      'average_units_ordered',
+      'average_order_value',
+    ];
     const totalOrdersDateLabels = {
       primary: compareDate != null ? dateLabel.primary : 'Total Orders',
-      secondary: compareDate?.startDate && compareDate.endDate ? dateLabel.secondary : 'Total Orders'
-    }
+      secondary:
+        compareDate?.startDate && compareDate.endDate
+          ? dateLabel.secondary
+          : 'Total Orders',
+    };
 
-    await this.constructLineChart({
-      date: date,
-      compareDate: compareDate,
-      queries: totalOrdersQuery,
-      chartLabels: totalOrdersDateLabels,
-      axisLabels: totalOrdersAxisLabels,
-    },
+    await this.constructLineChart(
+      {
+        date: date,
+        compareDate: compareDate,
+        queries: totalOrdersQuery,
+        chartLabels: totalOrdersDateLabels,
+        axisLabels: totalOrdersAxisLabels,
+      },
       {
         type: 'average-currency',
-        filter: true
+        filter: true,
       },
       {
         headers: totalOrdersHeaders,
@@ -170,13 +219,43 @@ export class StatisticsComponent {
     const topSellingLabel = 'Total Sales';
     const topSellingQuery = 'top-selling-item';
     const topSellingAxisLabels = { x: 'Item Name', y: 'Total Sales' };
-    const topSellingHeaders = ['Item Name', 'Product Vendor', 'Product Type', 'Net Quantity', 'Gross Sales', 'Discounts', 'Net Sales', 'VAT', 'Total Sales'];
-    const topSellingDataTypes = ['text', 'text', 'text', 'int', 'int', 'percentage', 'currency', 'currency', 'currency'];
+    const topSellingHeaders = [
+      'Item Name',
+      'Product Vendor',
+      'Product Type',
+      'Net Quantity',
+      'Gross Sales',
+      'Discounts',
+      'Net Sales',
+      'VAT',
+      'Total Sales',
+    ];
+    const topSellingDataTypes = [
+      'text',
+      'text',
+      'text',
+      'int',
+      'int',
+      'percentage',
+      'currency',
+      'currency',
+      'currency',
+    ];
     const topSellingFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
-    const topSellingKeys = ['dateKey', 'brand', 'category', 'net_quantity', 'gross_sales_before_discount', 'total_discount', 'net_sales', 'vat', 'total_sales'];
+    const topSellingKeys = [
+      'dateKey',
+      'brand',
+      'category',
+      'net_quantity',
+      'gross_sales_before_discount',
+      'total_discount',
+      'net_sales',
+      'vat',
+      'total_sales',
+    ];
 
     let statisticsData = await this.statisticsService.buildChart(
       this.selected,
@@ -224,29 +303,54 @@ export class StatisticsComponent {
     //Total Invoice Value
     const totalInvoiceValueHeading = 'Total Invoices Value';
     const totalInvoiceValueAxisLabels = { x: 'Date', y: 'Total Value' };
-    const totalInvoiceValueHeaders = ['Date', 'Orders', 'Discounts', 'Net Sales', 'Tax', 'Gross Sales'];
-    const totalInvoiceValueDataTypes = ['text', 'int', 'currency', 'currency', 'currency', 'currency'];
+    const totalInvoiceValueHeaders = [
+      'Date',
+      'Orders',
+      'Discounts',
+      'Net Sales',
+      'Tax',
+      'Gross Sales',
+    ];
+    const totalInvoiceValueDataTypes = [
+      'text',
+      'int',
+      'currency',
+      'currency',
+      'currency',
+      'currency',
+    ];
     const totalInvoiceValueQuery = 'total-invoice-value';
     const totalInvoiceValueFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
-    const totalInvoiceValueKeys = ['dateKey', 'total_orders', 'discounts', 'net', 'tax', 'total'];
+    const totalInvoiceValueKeys = [
+      'dateKey',
+      'total_orders',
+      'discounts',
+      'net',
+      'tax',
+      'total',
+    ];
     const totalInvoiceValueDateLabels = {
       primary: compareDate != null ? dateLabel.primary : 'Total Value',
-      secondary: compareDate?.startDate && compareDate.endDate ? dateLabel.secondary : 'Total Value'
-    }
+      secondary:
+        compareDate?.startDate && compareDate.endDate
+          ? dateLabel.secondary
+          : 'Total Value',
+    };
 
-    await this.constructLineChart({
-      date: date,
-      compareDate: compareDate,
-      queries: totalInvoiceValueQuery,
-      chartLabels: totalInvoiceValueDateLabels,
-      axisLabels: totalInvoiceValueAxisLabels,
-    },
+    await this.constructLineChart(
+      {
+        date: date,
+        compareDate: compareDate,
+        queries: totalInvoiceValueQuery,
+        chartLabels: totalInvoiceValueDateLabels,
+        axisLabels: totalInvoiceValueAxisLabels,
+      },
       {
         type: 'average-currency',
-        filter: true
+        filter: true,
       },
       {
         headers: totalInvoiceValueHeaders,
@@ -262,13 +366,25 @@ export class StatisticsComponent {
     const storeConversionHeading = 'Online Store Conversion Rate';
     const storeConversionLabel = 'Total';
     const storeConversionQuery = 'store-conversion-rate';
-    const storeConversionHeaders = ['Date', 'Reached checkout', 'Added to cart', 'Payments made', 'Total sessions'];
+    const storeConversionHeaders = [
+      'Date',
+      'Reached checkout',
+      'Added to cart',
+      'Payments made',
+      'Total sessions',
+    ];
     const storeConversionDataTypes = ['text', 'int', 'int', 'int', 'int'];
     const storeConversionFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty }
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
-    const storeConversionKeys = ['dateKey', 'Reached checkout', 'Added to cart', 'Payments made', 'Total sessions'];
+    const storeConversionKeys = [
+      'dateKey',
+      'Reached checkout',
+      'Added to cart',
+      'Payments made',
+      'Total sessions',
+    ];
 
     statisticsData = await this.statisticsService.buildChart(
       this.selected,
@@ -305,9 +421,10 @@ export class StatisticsComponent {
       0
     );
 
-    let sessionPercentage = ((totalPaymentsMade / totalSessions) * 100)
-      .toFixed(2)
-      .toString();
+    let sessionPercentage =
+      totalPaymentsMade == 0 && totalSessions == 0
+        ? 0
+        : ((totalPaymentsMade / totalSessions) * 100).toFixed(2).toString();
 
     this.charts.push({
       data: pieChartConfigData,
@@ -330,34 +447,56 @@ export class StatisticsComponent {
     //Recurring Customer
     const recurringCustomersHeading = 'Recurring Customers';
     const recurringCustomersLabel = ['Recurring', 'First Time'];
-    const recurringCustomersQuery = ['recurring-customers', 'non-recurring-customers'];
+    const recurringCustomersQuery = [
+      'recurring-customers',
+      'non-recurring-customers',
+    ];
     const recurringCustomersAxisLabels = { x: '', y: 'Total Sales' };
     const recurringCustomersHeaders = ['Date', 'Customers', 'Customer Type'];
     const recurringCustomersDataTypes = ['text', 'int', 'text'];
     const recurringCustomersFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
-      { name: 'Recurring Only', predicate: (value: any) => value.customer_type == 'First Time' },
-      { name: 'First Time Only', predicate: (value: any) => value.customer_type == 'Recurring' }
+      {
+        name: 'Recurring Only',
+        predicate: (value: any) => value.customer_type == 'First Time',
+      },
+      {
+        name: 'First Time Only',
+        predicate: (value: any) => value.customer_type == 'Recurring',
+      },
     ];
     const recurringCustomersKeys = ['dateKey', 'total'];
     const recurringCustomersDateLabels = {
-      primary: compareDate != null ? [`${dateLabel.primary}: Recurring`, `${dateLabel.primary}: First Time`] : ['Recurring', 'First Time'],
-      secondary: compareDate?.startDate && compareDate.endDate ? [`${dateLabel.secondary}: Recurring`, `${dateLabel.secondary}: First Time`] : 'Total Value'
-    }
+      primary:
+        compareDate != null
+          ? [
+              `${dateLabel.primary}: Recurring`,
+              `${dateLabel.primary}: First Time`,
+            ]
+          : ['Recurring', 'First Time'],
+      secondary:
+        compareDate?.startDate && compareDate.endDate
+          ? [
+              `${dateLabel.secondary}: Recurring`,
+              `${dateLabel.secondary}: First Time`,
+            ]
+          : 'Total Value',
+    };
 
-    await this.constructLineChart({
-      date: date,
-      compareDate: compareDate,
-      queries: recurringCustomersQuery,
-      chartLabels: recurringCustomersDateLabels,
-      axisLabels: recurringCustomersAxisLabels,
-      currency: false,
-      displayLegend: true,
-    },
+    await this.constructLineChart(
+      {
+        date: date,
+        compareDate: compareDate,
+        queries: recurringCustomersQuery,
+        chartLabels: recurringCustomersDateLabels,
+        axisLabels: recurringCustomersAxisLabels,
+        currency: false,
+        displayLegend: true,
+      },
       {
         type: 'average-currency',
-        filter: true
+        filter: true,
       },
       {
         headers: recurringCustomersHeaders,
@@ -368,10 +507,14 @@ export class StatisticsComponent {
       },
       recurringCustomersHeading
     );
-
   }
 
-  async constructLineChart(options: LineChartOptions, subheadingOptions: SubheadingOptions, reportOptions: ReportOptions, heading: string) {
+  async constructLineChart(
+    options: LineChartOptions,
+    subheadingOptions: SubheadingOptions,
+    reportOptions: ReportOptions,
+    heading: string
+  ) {
     const {
       date,
       compareDate = null,
@@ -390,62 +533,48 @@ export class StatisticsComponent {
         'rgb(0, 0, 255)',
         'rgb(0, 200, 255)',
         'rgb(0, 140, 200)',
-        'rgb(0, 140, 100)'
+        'rgb(0, 140, 100)',
       ],
       backgroundColours = [
         'rgb(0, 140, 255, 0.4)',
         'rgb(0, 0, 255, 0.4)',
         'rgb(0, 200, 255, 0.4)',
         'rgb(0, 140, 200, 0.4)',
-        'rgb(0, 140, 100, 0.4)'
+        'rgb(0, 140, 100, 0.4)',
       ],
       secondaryColours = [
         'rgb(255, 97, 18)',
         'rgb(255, 20, 200)',
         'rgb(255, 117, 0)',
         'rgb(255, 97, 38)',
-        'rgb(255, 117, 58)'
+        'rgb(255, 117, 58)',
       ],
       secondaryBackgroundColours = [
         'rgb(255, 97, 18, 0.4)',
         'rgb(255, 20, 200, 0.4)',
         'rgb(255, 117, 0, 0.4)',
         'rgb(255, 97, 38, 0.4)',
-        'rgb(255, 117, 58, 0.4)'
+        'rgb(255, 117, 58, 0.4)',
       ],
-      lineTension = 0.3
+      lineTension = 0.3,
     } = options;
 
     let dataQueries = Array.isArray(queries) ? queries : [queries];
-    let dataLabelsPrimary = Array.isArray(chartLabels.primary) ? chartLabels.primary : [chartLabels.primary];
-    let dataLabelsSecondary = Array.isArray(chartLabels.secondary) ? chartLabels.secondary : [chartLabels.secondary];
+    let dataLabelsPrimary = Array.isArray(chartLabels.primary)
+      ? chartLabels.primary
+      : [chartLabels.primary];
+    let dataLabelsSecondary = Array.isArray(chartLabels.secondary)
+      ? chartLabels.secondary
+      : [chartLabels.secondary];
 
     let chartDatasets = [];
     let chartData: any;
 
     for (let index = 0; index < dataQueries.length; index++) {
-      chartData = await this.constructLineChartData(
-        {
-          date: date,
-          query: dataQueries[index],
-          chartLabel: dataLabelsPrimary[index],
-          axisLabels: axisLabels,
-          displayLegend: displayLegend,
-          currency: currency,
-          aboveZero: aboveZero,
-          displayTitles: displayTitles,
-          ignoreDate: ignoreDate,
-          format: format,
-          fillLine: fillLine,
-          colour: colours[index],
-          backgroundColour: backgroundColours[index],
-          lineTension: lineTension
-        });
-
-      chartData.dataset = await this.checkCompareDate({
-        date: compareDate,
+      chartData = await this.constructLineChartData({
+        date: date,
         query: dataQueries[index],
-        chartLabel: dataLabelsSecondary[index],
+        chartLabel: dataLabelsPrimary[index],
         axisLabels: axisLabels,
         displayLegend: displayLegend,
         currency: currency,
@@ -454,17 +583,39 @@ export class StatisticsComponent {
         ignoreDate: ignoreDate,
         format: format,
         fillLine: fillLine,
-        colour: secondaryColours[index],
-        backgroundColour: secondaryBackgroundColours[index],
-        lineTension: lineTension
-      },
-        chartData.dataset,
+        colour: colours[index],
+        backgroundColour: backgroundColours[index],
+        lineTension: lineTension,
+      });
+
+      chartData.dataset = await this.checkCompareDate(
+        {
+          date: compareDate,
+          query: dataQueries[index],
+          chartLabel: dataLabelsSecondary[index],
+          axisLabels: axisLabels,
+          displayLegend: displayLegend,
+          currency: currency,
+          aboveZero: aboveZero,
+          displayTitles: displayTitles,
+          ignoreDate: ignoreDate,
+          format: format,
+          fillLine: fillLine,
+          colour: secondaryColours[index],
+          backgroundColour: secondaryBackgroundColours[index],
+          lineTension: lineTension,
+        },
+        chartData.dataset
       );
 
       chartDatasets.push(...chartData.dataset);
     }
 
-    let subheading = this.generateSubheading(chartData.summary.chart.data, subheadingOptions.type, subheadingOptions.filter);
+    let subheading = this.generateSubheading(
+      chartData.summary.chart.data,
+      subheadingOptions.type,
+      subheadingOptions.filter
+    );
 
     this.charts.push({
       data: {
@@ -475,7 +626,7 @@ export class StatisticsComponent {
       type: 'line',
       heading: heading,
       subheading: subheading,
-      queries: queries
+      queries: queries,
     });
 
     this.reports.push({
@@ -503,25 +654,51 @@ export class StatisticsComponent {
       fillLine = true,
       colour = 'rgb(0, 140, 255)',
       backgroundColour = 'rgb(0, 140, 255, 0.4)',
-      lineTension = 0.3
+      lineTension = 0.3,
     } = options;
 
-    let summaryData = await this.statisticsService.buildChart(date ?? { startDate: dayjs().startOf('month'), endDate: dayjs().endOf('month') }, query, ignoreDate, format);
-    let chartDataset: any = this.statisticsService.getLineChartData(summaryData.chart.data, chartLabel, fillLine, colour, backgroundColour);
-    let chartOptions = this.statisticsService.getLineChartOptions(lineTension, axisLabels, displayLegend, currency, aboveZero, displayTitles, summaryData.chart.labels);
+    let summaryData = await this.statisticsService.buildChart(
+      date ?? {
+        startDate: dayjs().startOf('month'),
+        endDate: dayjs().endOf('month'),
+      },
+      query,
+      ignoreDate,
+      format
+    );
+    let chartDataset: any = this.statisticsService.getLineChartData(
+      summaryData.chart.data,
+      chartLabel,
+      fillLine,
+      colour,
+      backgroundColour
+    );
+    let chartOptions = this.statisticsService.getLineChartOptions(
+      lineTension,
+      axisLabels,
+      displayLegend,
+      currency,
+      aboveZero,
+      displayTitles,
+      summaryData.chart.labels
+    );
 
     return {
       summary: summaryData,
       dataset: chartDataset,
-      options: chartOptions
+      options: chartOptions,
     };
   }
 
   async checkCompareDate(options: LineChartDataOptions, dataset: any) {
     if (options.date != null) {
-      let comparedAverageOrderChartData = await this.constructLineChartData(options);
+      let comparedAverageOrderChartData = await this.constructLineChartData(
+        options
+      );
 
-      dataset = [dataset, comparedAverageOrderChartData.dataset].map(({ datasets }) => datasets);
+      dataset = [dataset, comparedAverageOrderChartData.dataset].map(
+        ({ datasets }) => datasets
+      );
     } else {
       dataset = [dataset.datasets];
     }
@@ -538,7 +715,13 @@ export class StatisticsComponent {
 
     switch (type) {
       case 'average-currency':
-        let average = data.length > 0 ? data.reduce((sum: number, data: number) => sum + Number(data), 0) / data.length : 0;
+        let average =
+          data.length > 0
+            ? data.reduce(
+                (sum: number, data: number) => sum + Number(data),
+                0
+              ) / data.length
+            : 0;
         subheading = `£${average.toFixed(2)}`;
         break;
     }
@@ -630,15 +813,15 @@ export class StatisticsComponent {
     this.filteredReportData =
       direction == 'down'
         ? this.filteredReportData.sort(
-          (a: any, b: any) =>
-            this.stripAndConvert(a[this.headerToSort.field]) -
-            this.stripAndConvert(b[this.headerToSort.field])
-        )
+            (a: any, b: any) =>
+              this.stripAndConvert(a[this.headerToSort.field]) -
+              this.stripAndConvert(b[this.headerToSort.field])
+          )
         : this.filteredReportData.sort(
-          (a: any, b: any) =>
-            this.stripAndConvert(b[this.headerToSort.field]) -
-            this.stripAndConvert(a[this.headerToSort.field])
-        );
+            (a: any, b: any) =>
+              this.stripAndConvert(b[this.headerToSort.field]) -
+              this.stripAndConvert(a[this.headerToSort.field])
+          );
   }
 
   stripAndConvert(value: string): any {

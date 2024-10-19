@@ -2,7 +2,8 @@ body {
     margin: 0px;
     background-color: #eaeef3;
     font-family: 'Titillium Web', sans-serif;
-     ::selection {
+
+    ::selection {
         background-color: rgb(66, 66, 200);
         color: white;
     }
@@ -12,7 +13,16 @@ body {
     app-root>* {
         display: none;
     }
+
     app-root app-print-layout {
         display: block;
+    }
+
+    .grecaptcha-badge {
+        visibility: hidden !important;
+    }
+
+    body {
+        background-color: white !important;
     }
 }

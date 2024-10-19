@@ -7,7 +7,7 @@
                     <button class="button" (click)="addRow(null)">Add New +</button>
                     <button *ngIf="this.selectedRows.length > 0 && tableName == 'invoices'" class="button"
                         (click)="print()"><fa-icon [icon]="icons.faPrint" /></button>
-                    <button *ngIf="selectedRows.length > 1" class="button" (click)="deleteRows()"><fa-icon
+                    <button *ngIf="canShowMultipleDelete()" class="button" (click)="deleteRows()"><fa-icon
                             [icon]="icons.faTrashCan" /></button>
                     <button *ngIf="selectedRows.length == 1" class="button" (click)="duplicate()"><fa-icon
                             [icon]="icons.faCopy" /></button>

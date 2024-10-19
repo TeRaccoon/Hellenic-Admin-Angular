@@ -6,4 +6,18 @@
         <input type="date" [(ngModel)]="endDate">
         <button class="button" (click)="calculateProfitLoss()">Calculate</button>
     </div>
+    <div class="document-container">
+        <h1>HELLENIC GROCERY LTD</h1>
+        <h2>Profit And Loss Account</h2>
+
+        <div class="values-container">
+            <p class="row right">{{ year }}</p>
+            <p class="row">Cost of sale</p>
+            <div *ngFor="let cost of costs.cost" class="row">
+                <p>{{ cost.category }}</p>
+                <p>{{ cost.total | currency: 'GBP' }}</p>
+            </div>
+            <p class="row right">{{ costs.total | currency: 'GBP' }}</p>
+        </div>
+    </div>
 </div>

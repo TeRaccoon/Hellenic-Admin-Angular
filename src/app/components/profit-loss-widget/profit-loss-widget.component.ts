@@ -21,6 +21,13 @@ export class ProfitLossWidgetComponent {
   startDate: Date | null = null;
   endDate: Date | null = null;
 
+  costs: { cost: { category: string; total: number }[]; total: number } = {
+    cost: [],
+    total: 0,
+  };
+
+  year = new Date().getFullYear();
+
   constructor(private dataService: DataService) {}
 
   async calculateProfitLoss() {
@@ -44,6 +51,8 @@ export class ProfitLossWidgetComponent {
           'currency',
         ],
       });
+
+      await this.loadAccount();
     }
   }
 
@@ -52,6 +61,21 @@ export class ProfitLossWidgetComponent {
       'start-date': this.startDate,
       'end-date': this.endDate,
     });
+  }
+
+  async loadAccount() {
+    this.costs.cost = await this.dataService.processGet(
+      'costs',
+      {
+        'start-date': this.startDate,
+        'end-date': this.endDate,
+      },
+      true
+    );
+    this.costs.total = this.costs.cost.reduce(
+      (sum, current) => sum + current.total,
+      0
+    );
   }
 
   mapData(profitLossData: ProfitLossInput): ProfitLossData {
