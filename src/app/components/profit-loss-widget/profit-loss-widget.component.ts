@@ -57,14 +57,10 @@ export class ProfitLossWidgetComponent {
   }
 
   async getData(): Promise<ProfitLossInput> {
-    return await this.dataService.processGet(
-      'profit-loss',
-      {
-        'start-date': this.startDate,
-        'end-date': this.endDate,
-      },
-      true
-    );
+    return await this.dataService.processGet('profit-loss', {
+      'start-date': this.startDate,
+      'end-date': this.endDate,
+    });
   }
 
   async loadAccount() {
