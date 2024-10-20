@@ -144,11 +144,8 @@ export class ViewComponent {
   }
 
   changeTab(tableName: string) {
-    if (
-      tableName != 'debtor_creditor' &&
-      tableName != 'profit_loss' &&
-      tableName != 'statistics'
-    ) {
+    console.log(tableName);
+    if (tableName != 'debtor_creditor' && tableName != 'statistics') {
       this.router.navigate(['/view'], { queryParams: { table: tableName } });
     } else if (tableName == 'statistics') {
       this.router.navigate(['/statistics']);

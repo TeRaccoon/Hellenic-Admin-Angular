@@ -12,6 +12,7 @@ import { InvoiceViewComponent } from './components/invoice-view/invoice-view.com
 import { SettingsComponent } from './components/settings/settings.component';
 import { VatViewComponent } from './components/vat-view/vat-view.component';
 import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.component';
+import { ProfitLossWidgetComponent } from './components/profit-loss-widget/profit-loss-widget.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -19,21 +20,38 @@ const routes: Routes = [
   { path: 'view', component: ViewComponent, canActivate: [AuthGuard] },
   { path: 'page', component: TablelessViewComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-  { path: 'statistics', component: StatisticsComponent, canActivate: [AuthGuard] },
-  { path: "settings", component: SettingsComponent, canActivate: [AuthGuard] },
+  {
+    path: 'statistics',
+    component: StatisticsComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
   {
     path: 'print',
     component: PrintLayoutComponent,
     children: [
-      { path: 'invoice', component: InvoiceViewComponent, canActivate: [AuthGuard] },
+      {
+        path: 'invoice',
+        component: InvoiceViewComponent,
+        canActivate: [AuthGuard],
+      },
       { path: 'vat', component: VatViewComponent, canActivate: [AuthGuard] },
-      { path: 'balance-sheet', component: BalanceSheetComponent, canActivate: [AuthGuard] }
-    ]
-  }
+      {
+        path: 'balance-sheet',
+        component: BalanceSheetComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'profit-loss',
+        component: ProfitLossWidgetComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -76,7 +76,7 @@ export const TABLE_CATEGORIES = {
     { tableName: 'supplier_invoices', displayName: 'Supplier Invoices' },
     { tableName: 'general_ledger', displayName: 'General Ledger' },
     { tableName: 'payments', displayName: 'All Payments' },
-    { tableName: 'profit_loss', displayName: 'Profit / Loss' },
+    { tableName: 'profit-loss', displayName: 'Profit / Loss' },
     { tableName: 'customer_payments', displayName: 'Customer Payments' },
     { tableName: 'supplier_payments', displayName: 'Supplier Payments' },
     { tableName: 'debtor_creditor', displayName: 'Aged Debtor / Creditors' },
@@ -113,4 +113,4 @@ export const REVERSE_TABLE_NAME_MAP = new Map<string, string>(
   })
 );
 
-export const NON_VIEW_TABLES = ['debtor_creditor', 'statistics', 'profit_loss'];
+export const NON_VIEW_TABLES = ['debtor_creditor', 'statistics', 'profit-loss'];

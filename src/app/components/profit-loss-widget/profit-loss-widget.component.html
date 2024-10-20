@@ -1,23 +1,72 @@
 <div class="container">
-    <div class="widget-container">
+    <div class="widget-container print-exclude">
         <label>Start date:</label>
         <input type="date" [(ngModel)]="startDate">
         <label>End date:</label>
         <input type="date" [(ngModel)]="endDate">
         <button class="button" (click)="calculateProfitLoss()">Calculate</button>
     </div>
-    <div class="document-container">
+    <div *ngIf="documentVisible" class="document-container">
         <h1>HELLENIC GROCERY LTD</h1>
         <h2>Profit And Loss Account</h2>
 
         <div class="values-container">
             <p class="row right">{{ year }}</p>
-            <p class="row">Cost of sale</p>
-            <div *ngFor="let cost of costs.cost" class="row">
-                <p>{{ cost.category }}</p>
-                <p>{{ cost.total | currency: 'GBP' }}</p>
+            <div class="section">
+                <p class="row">Income</p>
+                <div *ngFor="let cost of income.cost" class="row">
+                    <p class="sub">{{ cost.category }}</p>
+                    <p class="sub">{{ cost.total | currency: 'GBP' }}</p>
+                </div>
+                <div class="row right">
+                    <p class="total-border">{{ income.total | currency: 'GBP' }}</p>
+                </div>
+                <div class="row right">
+                    <p class="total">{{ totals.income | currency: 'GBP' }}</p>
+                </div>
             </div>
-            <p class="row right">{{ costs.total | currency: 'GBP' }}</p>
+            <div class="section">
+                <p class="row">Cost of sale</p>
+                <div *ngFor="let cost of costs.cost" class="row">
+                    <p class="sub">{{ cost.category }}</p>
+                    <p class="sub">{{ cost.total | currency: 'GBP' }}</p>
+                </div>
+                <div class="row right">
+                    <p class="total-border">-{{ costs.total | currency: 'GBP' }}</p>
+                </div>
+                <div class="row right">
+                    <p class="total">{{ totals.costs | currency: 'GBP' }}</p>
+                </div>
+            </div>
+            <div class="section">
+                <p class="row">Expenses</p>
+                <div *ngFor="let cost of expenses.cost" class="row">
+                    <p class="sub">{{ cost.category }}</p>
+                    <p class="sub">{{ cost.total | currency: 'GBP' }}</p>
+                </div>
+                <div class="row right">
+                    <p class="total-border">-{{ expenses.total | currency: 'GBP' }}</p>
+                </div>
+                <div class="row right">
+                    <p class="total">{{ totals.expenses | currency: 'GBP' }}</p>
+                </div>
+            </div>
+            <div class="section">
+                <p class="row">Taxation</p>
+                <div *ngFor="let cost of tax.cost" class="row">
+                    <p class="sub">{{ cost.category }}</p>
+                    <p class="sub">{{ cost.total | currency: 'GBP' }}</p>
+                </div>
+                <div class="row right">
+                    <p class="total">-{{ tax.total | currency: 'GBP' }}</p>
+                </div>
+            </div>
+            <div class="section">
+                <div class="row">
+                    <p>Net Profit</p>
+                    <p class="sub">{{ totals.tax | currency: 'GBP' }}</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

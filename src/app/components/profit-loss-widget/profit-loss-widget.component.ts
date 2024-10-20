@@ -1,16 +1,12 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-
-type ProfitLossInput = {
-  income: number;
-  costs: number;
-  expenses: number;
-};
-
-type ProfitLossData = ProfitLossInput & {
-  grossProfit: number;
-  netProfit: number;
-};
+import {
+  Cost,
+  ProfitLossData,
+  ProfitLossInput,
+  Totals,
+} from '../../common/types/profit-loss/types';
+import { faPrint } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-profit-loss-widget',
@@ -18,13 +14,39 @@ type ProfitLossData = ProfitLossInput & {
   styleUrls: ['./profit-loss-widget.component.scss'],
 })
 export class ProfitLossWidgetComponent {
+  faPrint = faPrint;
+
   startDate: Date | null = null;
   endDate: Date | null = null;
 
-  costs: { cost: { category: string; total: number }[]; total: number } = {
+  income: Cost = {
     cost: [],
     total: 0,
   };
+
+  costs: Cost = {
+    cost: [],
+    total: 0,
+  };
+
+  expenses: Cost = {
+    cost: [],
+    total: 0,
+  };
+
+  tax: Cost = {
+    cost: [],
+    total: 0,
+  };
+
+  totals: Totals = {
+    income: 0,
+    costs: 0,
+    expenses: 0,
+    tax: 0,
+  };
+
+  documentVisible = false;
 
   year = new Date().getFullYear();
 
@@ -32,27 +54,9 @@ export class ProfitLossWidgetComponent {
 
   async calculateProfitLoss() {
     if (this.startDate != null && this.endDate != null) {
-      let profitLossInput: ProfitLossInput = await this.getData();
-      let profitLossData: ProfitLossData = this.mapData(profitLossInput);
-      this.dataService.storeData({
-        Data: [profitLossData],
-        Headers: [
-          'Sales Revenue',
-          'Cost of Sales',
-          'Gross Profit',
-          'Expenses',
-          'Net Profit',
-        ],
-        columnTypes: [
-          'currency',
-          'currency',
-          'currency',
-          'currency',
-          'currency',
-        ],
-      });
-
       await this.loadAccount();
+
+      this.documentVisible = true;
     }
   }
 
@@ -64,6 +68,30 @@ export class ProfitLossWidgetComponent {
   }
 
   async loadAccount() {
+    await this.loadIncome();
+    await this.loadCosts();
+    await this.loadExpenses();
+    await this.loadTax();
+  }
+
+  async loadIncome() {
+    this.income.cost = await this.dataService.processGet(
+      'income',
+      {
+        'start-date': this.startDate,
+        'end-date': this.endDate,
+      },
+      true
+    );
+    this.income.total = this.income.cost.reduce(
+      (sum, current) => sum + current.total,
+      0
+    );
+
+    this.totals.income = this.income.total;
+  }
+
+  async loadCosts() {
     this.costs.cost = await this.dataService.processGet(
       'costs',
       {
@@ -76,21 +104,45 @@ export class ProfitLossWidgetComponent {
       (sum, current) => sum + current.total,
       0
     );
+
+    this.totals.costs = this.income.total - this.costs.total;
   }
 
-  mapData(profitLossData: ProfitLossInput): ProfitLossData {
-    for (let key of Object.keys(profitLossData)) {
-      profitLossData[key as keyof ProfitLossInput] =
-        Number(profitLossData[key as keyof ProfitLossInput]) ?? 0;
-    }
+  async loadExpenses() {
+    this.expenses.cost = await this.dataService.processGet(
+      'expenses',
+      {
+        'start-date': this.startDate,
+        'end-date': this.endDate,
+      },
+      true
+    );
+    this.expenses.total = this.expenses.cost.reduce(
+      (sum, current) => sum + current.total,
+      0
+    );
 
-    return {
-      income: profitLossData.income,
-      costs: profitLossData.costs,
-      grossProfit: profitLossData.income - profitLossData.costs,
-      expenses: profitLossData.expenses,
-      netProfit:
-        profitLossData.income - profitLossData.costs - profitLossData.expenses,
-    };
+    this.totals.expenses = this.totals.costs - this.expenses.total;
+  }
+
+  async loadTax() {
+    this.tax.cost = await this.dataService.processGet(
+      'tax',
+      {
+        'start-date': this.startDate,
+        'end-date': this.endDate,
+      },
+      true
+    );
+    this.tax.total = this.tax.cost.reduce(
+      (sum, current) => sum + current.total,
+      0
+    );
+
+    this.totals.tax = this.totals.expenses - this.tax.total;
+  }
+
+  print() {
+    window.print();
   }
 }

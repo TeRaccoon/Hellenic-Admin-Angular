@@ -102,7 +102,7 @@ export class TableService {
     }
     if (
       table != 'debtor_creditor' &&
-      table != 'profit_loss' &&
+      table != 'profit-loss' &&
       table != 'statistics' &&
       table != 'settings' &&
       table != 'vat-returns'
@@ -112,6 +112,8 @@ export class TableService {
       this.router.navigate(['/statistics']);
     } else if (table == 'settings') {
       this.router.navigate(['/settings']);
+    } else if (table == 'profit-loss') {
+      this.router.navigate(['/print/profit-loss']);
     } else {
       this.router.navigate(['/page'], { queryParams: { table: table } });
     }

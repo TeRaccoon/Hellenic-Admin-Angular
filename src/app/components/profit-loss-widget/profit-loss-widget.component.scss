@@ -2,19 +2,19 @@
 
 .container {
     display: flex;
-    margin: 15px 15px 15px 16%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
 
     .widget-container {
+        display: flex;
         padding: 15px;
         margin-left: 10px;
         background-color: white;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
         border-radius: 10px;
         flex-direction: column;
-        display: flex;
-        width: 20%;
-        text-align: center;
-        max-height: 215px;
+        width: 200px;
 
         label {
             margin: 10px;
@@ -41,30 +41,53 @@
         background-color: white;
         display: flex;
         flex-direction: column;
-        padding: 1.54cm 40% 1.54cm 1.54cm;
-        width: 21cm;
         height: 29.7cm;
-        margin: 20px;
+        margin: 15px 15px 15px 16%;
+        box-sizing: border-box;
 
         .row {
             width: 100%;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .right {
             text-align: right;
             flex-direction: row-reverse;
         }
+
+        .sub {
+            margin: 5px 5px 5px 20px;
+        }
+
+        .section {
+            margin: 20px 0;
+
+            .total-border {
+                margin: 10px 0 0 0;
+                border-bottom: 2px solid black;
+            }
+
+            .total {
+                margin: 0px;
+            }
+        }
     }
 }
 
-@media screen and (min-width: 768px) and (max-width: 1024px) {
-    .container {
-        margin: 15px 15px 15px 23%;
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
 
-        .widget-container {
-            width: 50%;
-        }
+    .print-exclude {
+        display: none !important;
+    }
+
+    .grecaptcha-badge {
+        display: none !important;
+        visibility: hidden !important;
     }
 }
