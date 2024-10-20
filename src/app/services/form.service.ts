@@ -728,6 +728,8 @@ export class FormService {
     let query = 'images-from-item-id';
     if (table == 'image_locations') {
       query = 'images-from-page-section-id';
+    } else if (table === 'categories') {
+      query = 'images-from-categories-id';
     }
 
     let images = await this.dataService.processGet(query, { filter: id }, true);
