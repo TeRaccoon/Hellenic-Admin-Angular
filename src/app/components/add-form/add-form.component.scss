@@ -273,6 +273,13 @@
                     }
                 }
 
+                .upload-size-warning {
+                    font-size: small;
+                    color: red;
+                    margin: 5px 1px -3px 1px;
+                    padding: 0px;
+                }
+
                 .input-hidden {
                     opacity: 0;
                     max-height: 0;
