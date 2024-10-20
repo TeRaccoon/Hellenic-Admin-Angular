@@ -201,10 +201,11 @@ export class WidgetComponent {
   }
 
   async getStockedItemTotal() {
-    this.totalStock = (
-      await this.dataService.processGet('total-stock-from-item-id', {
-        filter: this.tableData.idData.id,
-      })
-    ).total_quantity;
+    this.totalStock =
+      (
+        await this.dataService.processGet('total-stock-from-item-id', {
+          filter: this.tableData.idData.id,
+        })
+      ).total_quantity ?? 0;
   }
 }
