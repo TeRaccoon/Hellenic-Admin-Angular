@@ -167,6 +167,8 @@ export class NavbarComponent {
     } else {
       this.searchResults = [];
     }
+
+    this.searchDropdownVisible = true;
     this.searching = false;
   }
 
