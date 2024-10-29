@@ -1,4 +1,5 @@
 @import "../variables";
+
 .checkbox {
     cursor: pointer;
 }
@@ -19,6 +20,7 @@
             font-size: 16px;
         }
     }
+
     .filter {
         background-color: white;
         font-size: 16px;
@@ -27,13 +29,16 @@
         border-radius: 5px;
         margin: 5px;
         padding: 6px;
+
         fa-icon {
             margin-left: 5px;
             font-size: 12px;
         }
+
         p {
             margin: 0;
         }
+
         &:hover {
             fa-icon {
                 color: #0740a9;
@@ -44,9 +49,11 @@
 
 .container {
     margin: 15px 15px 15px 16%;
+
     h2 {
         margin-left: 15px;
     }
+
     .table-container {
         background-color: white;
         padding: 10px;
@@ -54,6 +61,7 @@
         border-radius: 15px;
         overflow-x: auto;
         overflow-y: scroll;
+
         .table-footer {
             display: flex;
             justify-content: space-between;
@@ -61,6 +69,7 @@
             width: 90%;
             margin-left: auto;
             margin-right: auto;
+
             button {
                 background-color: white;
                 font-size: 16px;
@@ -70,26 +79,31 @@
                 margin: 2px;
                 padding: 5px;
                 cursor: pointer;
+
                 &:hover {
                     background-color: #eaeef3;
                 }
             }
+
             .active-page {
-                background-image: linear-gradient( to right, rgb(34, 130, 255), rgb(6, 63, 167));
+                background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
                 color: white;
             }
         }
+
         .options-container {
             display: flex;
             flex-direction: column;
             width: 90%;
             margin-left: auto;
             margin-right: auto;
+
             .row {
                 display: flex;
                 flex-direction: row;
                 justify-content: flex-start;
                 gap: 8px;
+
                 >button {
                     align-self: flex-start;
                     border-radius: 5px;
@@ -99,10 +113,12 @@
                     font-size: 17px;
                 }
             }
+
             div {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+
                 select {
                     background-color: white;
                     outline: none;
@@ -111,12 +127,14 @@
                     cursor: pointer;
                 }
             }
+
             .search-container {
                 border-radius: 5px;
                 border-style: solid;
                 border-color: black;
                 border-width: 1px;
                 padding: 6px;
+
                 button {
                     background-color: transparent;
                     border: none;
@@ -124,22 +142,27 @@
                     outline: none;
                     cursor: pointer;
                 }
+
                 input {
                     border: none;
+
                     &:active,
                     &:focus-visible {
                         outline: none;
                     }
+
                     &::placeholder {
                         font-size: 16px;
                     }
                 }
             }
         }
+
         .tab-parent {
             display: flex;
             width: 90%;
             margin: 0 auto;
+
             .tab,
             .active-tab {
                 background-image: linear-gradient(to top, #42424a, #191919);
@@ -150,10 +173,12 @@
                 width: 150px;
                 cursor: pointer;
             }
+
             .active-tab {
                 background-image: linear-gradient(to top, rgb(34, 130, 255), rgb(6, 63, 167));
             }
         }
+
         .table-wrapper {
             width: 90%;
             border-collapse: collapse;
@@ -162,6 +187,7 @@
             overflow-y: auto;
             overflow-x: auto;
             margin: 0 auto;
+
             table {
                 width: 100%;
                 border-collapse: collapse;
@@ -171,33 +197,40 @@
                 overflow-x: auto;
                 margin: 0 auto;
             }
+
             tr {
                 height: 56px;
             }
+
             th,
             td {
                 padding: 10px;
                 text-align: left;
                 font-size: 16px;
+
                 .text-container {
                     max-height: 100px;
                     width: 200px;
                     overflow-y: scroll;
                 }
+
                 a {
                     cursor: pointer;
                 }
+
                 img {
                     border: 1px solid transparent;
                     border-radius: 5px;
                     width: 100px;
                 }
             }
+
             td {
                 .ng-fa-icon {
                     cursor: pointer;
                 }
             }
+
             thead {
                 position: sticky;
                 top: 0;
@@ -205,25 +238,31 @@
                 background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
                 color: white;
             }
+
             .data-row {
                 background-color: #eaeef3;
+
                 .bin {
                     text-align: center;
                 }
+
                 .icon-data-container {
                     white-space: nowrap;
                 }
             }
+
             tr:nth-child(even) {
                 background-color: white;
             }
         }
     }
+
     .alternate-container {
         border: 2px solid black;
         border-radius: 0 15px 15px 15px;
         width: 100%;
         box-sizing: border-box;
+
         .no-data-container {
             background-color: white;
             padding: 10px;
@@ -237,18 +276,22 @@
             align-items: center;
             text-align: center;
             padding: 40px;
+
             .header {
                 display: flex;
                 width: 100%;
+
                 fa-icon {
                     cursor: pointer;
                     font-size: 20px;
+
                     &:hover {
                         color: #0e52c1;
                         transition: color 0.3s;
                     }
                 }
             }
+
             button {
                 border-radius: 5px;
                 padding: 8px;
