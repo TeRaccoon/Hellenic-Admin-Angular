@@ -1,0 +1,30 @@
+<div class="container">
+    <div class="search-container">
+        <div class="search-bar">
+            <input [(ngModel)]="searchInput" (input)="searchOptions($event)" (focus)="searchDropdownVisible = true"
+                type="text" [placeholder]="placeholder" />
+            <button>
+                <fa-icon *ngIf="!searching" [icon]="icons.search"></fa-icon>
+                <fa-icon *ngIf="searching" [icon]="icons.spinner" spinPulse [spin]="true" />
+            </button>
+        </div>
+        <div [class]="searchDropdownVisible ? 'search-dropdown-container' : 'search-dropdown-container hidden'">
+            <ng-container *ngIf="filteredOptions.length > 0 else searchEmpty">
+                <div *ngFor="let option of filteredOptions" class="search-option" (click)="selectOption(option)">
+                    <p>{{ option }}</p>
+                </div>
+            </ng-container>
+            <ng-template #searchEmpty>
+                <div *ngIf="!searching" class="search-option">
+                    <p>There were no results
+                        <fa-icon [icon]="icons.noFile" />
+                    </p>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+    <div *ngIf="selectedOption != ''" class="selected-option">
+        <p>{{ selectedOption }}</p>
+        <fa-icon [icon]="icons.x" (click)="clearSelectedOption()" />
+    </div>
+</div>

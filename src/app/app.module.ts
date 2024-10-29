@@ -37,6 +37,7 @@ import { WidgetComponent } from './components/widget/widget.component';
 import { TableWidgetComponent } from './components/table-widget/table-widget.component';
 import { VatViewComponent } from './components/vat-view/vat-view.component';
 import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.component';
+import { SearchContainerComponent } from './components/search-container/search-container.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.
     TableWidgetComponent,
     VatViewComponent,
     BalanceSheetComponent,
+    SearchContainerComponent,
   ],
   imports: [
     BrowserModule,
