@@ -62,6 +62,7 @@ export class SearchContainerComponent {
   clearSelectedOption() {
     this.searchInput = '';
     this.selectedOption = '';
+    this.filteredOptions = this.options;
     this.filterRemoved.emit();
   }
 
