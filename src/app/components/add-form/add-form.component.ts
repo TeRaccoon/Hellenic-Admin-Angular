@@ -744,11 +744,11 @@ export class AddFormComponent {
           this.addForm
             .get('barcode')
             ?.setValue(
-              Math.floor(Math.random() * 100 + 1) +
+              stockCode +
                 '-' +
-                stockCode +
+                this.addForm.get('expiry_date')?.value.toString() +
                 '-' +
-                this.addForm.get('expiry_date')?.value.toString()
+                this.generateRandomString(7)
             );
         }
       } else {
@@ -792,6 +792,19 @@ export class AddFormComponent {
         'billing_address_id'
       );
     }
+  }
+
+  generateRandomString(length: number): string {
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters[randomIndex];
+    }
+
+    return result;
   }
 
   updateSelectedTextReplacementDataFromKey(
