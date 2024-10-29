@@ -88,11 +88,11 @@ export class StatisticsService {
   getBarChartOptions(
     yTitle: string,
     xTitle: string,
-    displayLegend: boolean,
-    stacked: boolean,
-    currency: boolean,
-    displayTitles: boolean,
-    labels: any[]
+    labels: any[],
+    displayLegend: boolean = false,
+    stacked: boolean = false,
+    currency: boolean = false,
+    displayTitles: boolean = true
   ): ChartConfiguration['options'] {
     return {
       plugins: {
@@ -176,11 +176,11 @@ export class StatisticsService {
   getLineChartOptions(
     tension: number,
     axisLabels: axisLabels,
+    labels: any[],
     displayLegend: boolean,
     currency: boolean,
     aboveZero: boolean,
-    displayTitles: boolean,
-    labels: any[]
+    displayTitles: boolean
   ): ChartConfiguration['options'] {
     return {
       plugins: {
@@ -300,7 +300,8 @@ export class StatisticsService {
     dateRange: selectedDate,
     query: string,
     ignoreDate: boolean,
-    format = 'standard'
+    format = 'standard',
+    filter: string | null = null
   ) {
     let data = [];
     let xLabels = [];
@@ -320,6 +321,7 @@ export class StatisticsService {
         start: dateRange.startDate.toISOString().slice(0, 19).replace('T', ' '),
         end: dateRange.endDate.toISOString().slice(0, 19).replace('T', ' '),
         group: group,
+        filter: filter,
       });
 
       let chartData: any[] = queryData['chart'];
