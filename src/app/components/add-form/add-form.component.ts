@@ -693,12 +693,43 @@ export class AddFormComponent {
         },
         true
       );
-      this.replacementData['Invoice ID'].data = this.invoiceDetails.map(
-        (i: any) => ({
-          id: i.id,
-          replacement: i.title,
-        })
+      this.filteredReplacementData['Invoice ID'].data = this.replacementData[
+        'Invoice ID'
+      ].data = this.invoiceDetails.map((i: any) => ({
+        id: i.id,
+        replacement: i.title,
+      }));
+    } else if (this.tableName == 'credit_notes' && field == 'supplier_id') {
+      this.invoiceDetails = await this.dataService.processGet(
+        'supplier-invoice-from-supplier',
+        {
+          filter: dataId.toString(),
+        },
+        true
       );
+      this.filteredReplacementData['Invoice'].data = this.replacementData[
+        'Invoice'
+      ].data = this.invoiceDetails.map((i: any) => ({
+        id: i.id,
+        replacement: i.reference,
+      }));
+    } else if (
+      this.tableName == 'credit_notes_customers' &&
+      field == 'customer_id'
+    ) {
+      this.invoiceDetails = await this.dataService.processGet(
+        'invoice-by-customer',
+        {
+          filter: dataId.toString(),
+        },
+        true
+      );
+      this.filteredReplacementData['Invoice'].data = this.replacementData[
+        'Invoice'
+      ].data = this.invoiceDetails.map((i: any) => ({
+        id: i.id,
+        replacement: i.title,
+      }));
     } else if (
       this.tableName == 'supplier_payments' &&
       field == 'supplier_id'
@@ -710,12 +741,12 @@ export class AddFormComponent {
         },
         true
       );
-      this.replacementData['Invoice'].data = this.invoiceDetails.map(
-        (i: any) => ({
-          id: i.id,
-          replacement: i.reference,
-        })
-      );
+      this.filteredReplacementData['Invoice'].data = this.replacementData[
+        'Invoice'
+      ].data = this.invoiceDetails.map((i: any) => ({
+        id: i.id,
+        replacement: i.reference,
+      }));
     } else if (this.tableName == 'stocked_items' && field == 'item_id') {
       let lastPurchasePrice = await this.dataService.processGet(
         'last-purchase-price',
