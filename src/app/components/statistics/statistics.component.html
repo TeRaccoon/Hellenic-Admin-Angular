@@ -1,12 +1,22 @@
 <div class="chart-container">
     <div class="toolbar">
-        <div>
+        <app-search-container [options]="items" placeholder="Search items..." (optionSelected)="selectItem($event)"
+            (filterRemoved)="clearSelectedItem()" />
+
+        <app-search-container [options]="customers" placeholder="Search customers..."
+            (optionSelected)="selectCustomer($event)" (filterRemoved)="clearSelectedCustomer()" />
+
+        <div class="date-container">
             <label>Initial date:</label>
-            <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange" (datesUpdated)="updateDateRange()" />
+            <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true"
+                [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange"
+                (datesUpdated)="updateDateRange()" />
         </div>
-        <div>
+        <div class="date-container">
             <label>Compare to: </label>
-            <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="comparison" name="daterange" (datesUpdated)="updateComparisonRange()" />
+            <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true"
+                [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="comparison" name="daterange"
+                (datesUpdated)="updateComparisonRange()" />
         </div>
     </div>
     <div class="content">
@@ -19,6 +29,7 @@
             <canvas class="canvas" baseChart [data]="chart.data" [options]="chart.options" [type]="chart.type"></canvas>
         </div>
     </div>
+
 </div>
 <div *ngIf="reportChart != null" class="report-container">
     <div class="report">
@@ -32,7 +43,8 @@
                     <h3>{{ reportChart.chart.heading }}</h3>
                 </div>
                 <h1>{{ reportChart.chart.subheading }}</h1>
-                <canvas class="canvas" baseChart [data]="reportChart.chart.data" [options]="reportChart.chart.options" [type]="reportChart.chart.type"></canvas>
+                <canvas class="canvas" baseChart [data]="reportChart.chart.data" [options]="reportChart.chart.options"
+                    [type]="reportChart.chart.type"></canvas>
             </div>
             <div *ngIf="reportChart.report.data.length > 0 else noData" class="container table">
                 <div class="options">
@@ -43,12 +55,14 @@
                     <div *ngIf="optionsShown == 'filter'" class="table-options">
                         <div *ngFor="let filter of reportChart.report.filters" class="option-item">
                             <label>{{ filter.name }}</label>
-                            <input (change)="setFilter(filter)" [checked]="filterActive(filter)" type="checkbox" class="checkbox">
+                            <input (change)="setFilter(filter)" [checked]="filterActive(filter)" type="checkbox"
+                                class="checkbox">
                         </div>
                     </div>
                     <div *ngIf="optionsShown == 'sort'" class="table-options">
                         <select class="select-input" (change)="selectHeaderToSort($event)">
-                            <option *ngFor="let header of reportChart.report.headers; let i = index" [selected]="header == headerToSort.name" [value]="i">{{ header }}</option>
+                            <option *ngFor="let header of reportChart.report.headers; let i = index"
+                                [selected]="header == headerToSort.name" [value]="i">{{ header }}</option>
                         </select>
                         <fa-icon (click)="sortTable('down')" [class]="" [icon]="icons.sortLowToHigh" class="icon" />
                         <fa-icon (click)="sortTable('up')" [icon]="icons.sortHighToLow" class="icon" />

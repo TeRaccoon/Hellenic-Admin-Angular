@@ -1,8 +1,10 @@
 @import "../variables";
+
 .chart-container {
     margin: 15px 15px 15px 16%;
     display: flex;
     flex-direction: column;
+
     .toolbar {
         display: flex;
         margin: 0 10px 10px 10px;
@@ -12,12 +14,14 @@
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         position: sticky;
         top: 5px;
-        gap: 10px;
-        div {
+        gap: 20px;
+
+        .date-container {
             display: flex;
             align-items: center;
             gap: 5px;
-            input {
+
+            >input {
                 padding: 10px;
                 border-radius: 5px;
                 border: 1px solid rgb(215, 215, 215);
@@ -25,12 +29,14 @@
             }
         }
     }
+
     .content {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         flex-wrap: wrap;
         gap: 15px;
         margin: 10px;
+
         .chart {
             width: calc(33% - 35px);
             max-width: calc(33% - 35px);
@@ -39,14 +45,17 @@
             background: white;
             border-radius: 10px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
             h1 {
                 margin: 15px 10px;
                 font-size: 24px;
             }
+
             .header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+
                 h3 {
                     margin: 5px 10px;
                     border-bottom: 3px dotted #5c5c5c;
@@ -55,6 +64,7 @@
                     font-size: 16px;
                 }
             }
+
             .canvas {
                 margin: 10px;
             }
@@ -72,24 +82,29 @@
     background-color: rgba(0, 0, 0, 0.4);
     display: flex;
     height: 100vh;
+
     .report {
         margin: 5vh auto 0px auto;
         width: 80%;
         background-color: white;
         border-radius: 15px 15px 0 0;
         height: fit-content;
+
         .heading {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             padding: 10px;
+
             h1 {
                 margin: 5px;
             }
+
             fa-icon {
                 font-size: 20px;
                 text-align: end;
                 transition: color 0.6s ease;
+
                 &:hover {
                     cursor: pointer;
                     color: red;
@@ -97,24 +112,30 @@
                 }
             }
         }
+
         .data-container {
             display: flex;
             flex-direction: column;
+
             .container {
                 border-radius: 10px;
                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
                 margin: 20px;
+
                 .options {
                     padding: 10px;
+
                     .option-icons {
                         display: flex;
                         gap: 10px;
                     }
+
                     .table-options {
                         display: flex;
                         gap: 10px;
                         padding: 10px 0;
                         align-items: center;
+
                         .option-item {
                             display: flex;
                             align-items: center;
@@ -124,12 +145,15 @@
                     }
                 }
             }
+
             .chart {
                 padding: 10px;
+
                 h1 {
                     margin: 15px 10px;
                     font-size: 24px;
                 }
+
                 .header {
                     h3 {
                         margin: 5px 10px;
@@ -139,17 +163,21 @@
                         font-size: 16px;
                     }
                 }
+
                 .canvas {
                     max-height: 40vh;
                     margin: 10px;
                 }
             }
+
             .table {
                 overflow-y: auto;
                 padding: 10px;
+
                 .table-container {
                     border-radius: 10px;
                     border: 2px solid black;
+
                     table {
                         width: 100%;
                         border-collapse: separate;
@@ -157,30 +185,36 @@
                         border-radius: 8px;
                         overflow: hidden;
                     }
+
                     tr:nth-child(even) {
                         background-color: #f9f9f9;
                     }
+
                     tbody {
                         tr {
                             &:hover {
                                 background-color: #f0f0f0;
                             }
+
                             td {
                                 padding: 10px;
                             }
                         }
                     }
+
                     th,
                     td {
                         padding: 10px;
                         text-align: left;
                         font-size: 16px;
                     }
+
                     td {
                         .ng-fa-icon {
                             cursor: pointer;
                         }
                     }
+
                     thead {
                         position: sticky;
                         top: 0;
@@ -190,11 +224,13 @@
                     }
                 }
             }
+
             .error {
                 display: flex;
                 align-items: center;
                 padding: 10px;
                 gap: 10px;
+
                 fa-icon {
                     font-size: 20px;
                 }
@@ -207,6 +243,7 @@
     cursor: pointer;
     font-size: 22px;
     transition: color 0.6s ease;
+
     &:hover {
         color: $hellenicblue;
         transition: color 0.6s ease;
