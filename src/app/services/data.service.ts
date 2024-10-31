@@ -62,7 +62,7 @@ export class DataService {
   }
 
   async uploadImage(formData: FormData): Promise<Response> {
-    const url = this.urlService.getUrl('admin');
+    const url = this.urlService.getUrl('image-upload');
     return await lastValueFrom(this.http.post<Response>(url, formData));
   }
 
