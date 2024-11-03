@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import _, { trimEnd } from 'lodash';
+import _ from 'lodash';
 import { formIcons } from '../../common/icons/form-icons';
 import {
   keyedData,
@@ -670,139 +670,144 @@ export class AddFormComponent {
     field: string,
     alt: boolean
   ) {
+    this.updateReplacementData(key, dataId, dataValue);
+    this.setFormValue(field, dataId, alt);
+
+    if (this.tableName === 'invoices' && field === 'customer_id') {
+      await this.handleInvoiceCustomer(dataId);
+    } else if (
+      this.tableName === 'customer_payments' &&
+      field === 'customer_id'
+    ) {
+      await this.handleCustomerPayments(dataId);
+    } else if (this.tableName === 'credit_notes' && field === 'supplier_id') {
+      await this.handleCreditNotesSupplier(dataId);
+    } else if (
+      this.tableName === 'credit_notes_customers' &&
+      field === 'customer_id'
+    ) {
+      await this.handleCreditNotesCustomers(dataId);
+    } else if (
+      this.tableName === 'supplier_payments' &&
+      field === 'supplier_id'
+    ) {
+      await this.handleSupplierPayments(dataId);
+    } else if (this.tableName === 'stocked_items' && field === 'item_id') {
+      await this.handleStockedItems(dataId);
+    }
+
+    if (this.isBarcodeGenerationRequired(field)) {
+      await this.generateBarcode(alt);
+    }
+
+    this.selectOpen[key].opened = false;
+  }
+
+  private updateReplacementData(
+    key: string,
+    dataId: number,
+    dataValue: string
+  ) {
     this.selectedReplacementData[key] = {
       selectData: dataValue,
       selectDataId: dataId,
     };
-    if (alt) {
-      this.addItemForm.get(field)?.setValue(dataId);
-    } else {
-      this.addForm.get(field)?.setValue(dataId);
-    }
+  }
 
-    if (this.tableName == 'invoices' && field == 'customer_id') {
-      this.updateAddresses(dataId.toString());
-    } else if (
-      this.tableName == 'customer_payments' &&
-      field == 'customer_id'
-    ) {
-      this.invoiceDetails = await this.dataService.processGet(
-        'invoice-outstanding',
-        {
-          filter: dataId.toString(),
-        },
-        true
-      );
-      this.filteredReplacementData['Invoice ID'].data = this.replacementData[
-        'Invoice ID'
-      ].data = this.invoiceDetails.map((i: any) => ({
-        id: i.id,
-        replacement: i.title,
-      }));
-    } else if (this.tableName == 'credit_notes' && field == 'supplier_id') {
-      this.invoiceDetails = await this.dataService.processGet(
-        'supplier-invoice-from-supplier',
-        {
-          filter: dataId.toString(),
-        },
-        true
-      );
-      this.filteredReplacementData['Invoice'].data = this.replacementData[
-        'Invoice'
-      ].data = this.invoiceDetails.map((i: any) => ({
-        id: i.id,
-        replacement: i.reference,
-      }));
-    } else if (
-      this.tableName == 'credit_notes_customers' &&
-      field == 'customer_id'
-    ) {
-      this.invoiceDetails = await this.dataService.processGet(
-        'invoice-by-customer',
-        {
-          filter: dataId.toString(),
-        },
-        true
-      );
-      this.filteredReplacementData['Invoice'].data = this.replacementData[
-        'Invoice'
-      ].data = this.invoiceDetails.map((i: any) => ({
-        id: i.id,
-        replacement: i.title,
-      }));
-    } else if (
-      this.tableName == 'supplier_payments' &&
-      field == 'supplier_id'
-    ) {
-      this.invoiceDetails = await this.dataService.processGet(
-        'supplier-invoice-outstanding',
-        {
-          filter: dataId.toString(),
-        },
-        true
-      );
-      this.filteredReplacementData['Invoice'].data = this.replacementData[
-        'Invoice'
-      ].data = this.invoiceDetails.map((i: any) => ({
-        id: i.id,
-        replacement: i.reference,
-      }));
-    } else if (this.tableName == 'stocked_items' && field == 'item_id') {
-      let lastPurchasePrice = await this.dataService.processGet(
-        'last-purchase-price',
-        { filter: dataId }
-      );
-      if (lastPurchasePrice.length > 0 && lastPurchasePrice[0] != null) {
-        this.addForm.get('purchase_price')?.setValue(lastPurchasePrice[0]);
-      }
-    }
+  private setFormValue(field: string, dataId: number, alt: boolean) {
+    const form = alt ? this.addItemForm : this.addForm;
+    form.get(field)?.setValue(dataId);
+  }
 
+  private async handleInvoiceCustomer(dataId: number) {
+    this.updateAddresses(dataId.toString());
+    let customerType = await this.dataService.processGet('customer-type', {
+      filter: dataId.toString(),
+    });
+    this.addForm.get('type')?.setValue(customerType);
+  }
+
+  private async handleCustomerPayments(dataId: number) {
+    this.invoiceDetails = await this.dataService.processGet(
+      'invoice-outstanding',
+      { filter: dataId.toString() },
+      true
+    );
+    this.updateReplacementDataForInvoices(this.invoiceDetails);
+  }
+
+  private async handleCreditNotesSupplier(dataId: number) {
+    this.invoiceDetails = await this.dataService.processGet(
+      'supplier-invoice-from-supplier',
+      { filter: dataId.toString() },
+      true
+    );
+    this.updateReplacementDataForInvoices(this.invoiceDetails, 'reference');
+  }
+
+  private async handleCreditNotesCustomers(dataId: number) {
+    this.invoiceDetails = await this.dataService.processGet(
+      'invoice-by-customer',
+      { filter: dataId.toString() },
+      true
+    );
+    this.updateReplacementDataForInvoices(this.invoiceDetails);
+  }
+
+  private async handleSupplierPayments(dataId: number) {
+    this.invoiceDetails = await this.dataService.processGet(
+      'supplier-invoice-outstanding',
+      { filter: dataId.toString() },
+      true
+    );
+    this.updateReplacementDataForInvoices(this.invoiceDetails, 'reference');
+  }
+
+  private async handleStockedItems(dataId: number) {
+    const lastPurchasePrice = await this.dataService.processGet(
+      'last-purchase-price',
+      { filter: dataId }
+    );
+    if (lastPurchasePrice.length > 0 && lastPurchasePrice[0] != null) {
+      this.addForm.get('purchase_price')?.setValue(lastPurchasePrice[0]);
+    }
+  }
+
+  private updateReplacementDataForInvoices(
+    invoiceDetails: any[],
+    key: string = 'title'
+  ) {
+    this.filteredReplacementData['Invoice'].data = this.replacementData[
+      'Invoice'
+    ].data = invoiceDetails.map((i: any) => ({
+      id: i.id,
+      replacement: i[key],
+    }));
+  }
+
+  private isBarcodeGenerationRequired(field: string) {
+    return (
+      (this.tableName === 'stocked_items' ||
+        this.tableName === 'supplier_invoices') &&
+      (field === 'item_id' || field === 'expiry_date')
+    );
+  }
+
+  private async generateBarcode(alt: boolean) {
+    const form = alt ? this.addItemForm : this.addForm;
     if (
-      (this.tableName == 'stocked_items' ||
-        this.tableName == 'supplier_invoices') &&
-      (field == 'item_id' || field == 'expiry_date')
+      form.get('item_id')?.value != null &&
+      form.get('expiry_date')?.value != null
     ) {
-      if (!alt) {
-        if (
-          this.addForm.get('item_id')?.value != null &&
-          this.addForm.get('expiry_date')?.value != null
-        ) {
-          let item = await this.dataService.processGet('items', {
-            filter: this.addForm.get('item_id')?.value,
-          });
-          let stockCode = item['stock_code'];
-
-          this.addForm
-            .get('barcode')
-            ?.setValue(
-              stockCode +
-                '-' +
-                this.addForm.get('expiry_date')?.value.toString() +
-                '-' +
-                this.generateRandomString(7)
-            );
-        }
-      } else {
-        if (
-          this.addItemForm.get('item_id')?.value != null &&
-          this.addItemForm.get('expiry_date')?.value != null
-        ) {
-          let item = await this.dataService.processGet('items', {
-            filter: this.addItemForm.get('item_id')?.value,
-          });
-          let stockCode = item['stock_code'];
-          this.addItemForm
-            .get('barcode')
-            ?.setValue(
-              stockCode +
-                '-' +
-                this.addItemForm.get('expiry_date')?.value.toString()
-            );
-        }
-      }
+      const item = await this.dataService.processGet('items', {
+        filter: form.get('item_id')?.value,
+      });
+      const stockCode = item['stock_code'];
+      const barcode = `${stockCode}-${form.get('expiry_date')?.value}-${
+        alt ? this.generateRandomString(7) : ''
+      }`;
+      form.get('barcode')?.setValue(barcode);
     }
-
-    this.selectOpen[key].opened = false;
   }
 
   async updateAddresses(id: string) {
