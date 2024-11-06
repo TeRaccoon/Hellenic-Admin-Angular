@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { ConfigService } from './config.service';
 
-const HOST_NAME = 'http://localhost/';
 const API_EXTENSION = 'API/';
 const UPLOAD_EXTENSION = 'uploads/';
 const DATA_PATH = API_EXTENSION + 'manage_data.php';
@@ -14,10 +14,18 @@ const DOCUMENT_UPLOAD_PATH = API_EXTENSION + 'document_upload.php';
   providedIn: 'root',
 })
 export class UrlService {
-  constructor() {}
+  HOST_NAME = 'http://localhost/';
+
+  constructor(private config: ConfigService) {
+    this.loadConfig();
+  }
+
+  async loadConfig() {
+    this.HOST_NAME = this.config.getConfig().host;
+  }
 
   getUrl(extension = 'api', full = true) {
-    var url = full ? HOST_NAME : '';
+    var url = full ? this.HOST_NAME : '';
     switch (extension) {
       case 'uploads':
         return (url += UPLOAD_EXTENSION);

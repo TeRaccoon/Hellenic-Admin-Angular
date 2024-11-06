@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
@@ -38,6 +38,11 @@ import { TableWidgetComponent } from './components/table-widget/table-widget.com
 import { VatViewComponent } from './components/vat-view/vat-view.component';
 import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.component';
 import { SearchContainerComponent } from './components/search-container/search-container.component';
+import { ConfigService } from './services/config.service';
+
+export function initConfig(configService: ConfigService) {
+  return () => configService.loadConfig();
+}
 
 @NgModule({
   declarations: [
@@ -81,6 +86,13 @@ import { SearchContainerComponent } from './components/search-container/search-c
     RecaptchaV3Module,
   ],
   providers: [
+    ConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initConfig,
+      deps: [ConfigService],
+      multi: true,
+    },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     {
       provide: RECAPTCHA_V3_SITE_KEY,
