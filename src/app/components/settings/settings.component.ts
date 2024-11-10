@@ -6,7 +6,6 @@ import {
   faAsterisk,
   faCloudUpload,
 } from '@fortawesome/free-solid-svg-icons';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormService } from '../../services/form.service';
 
 @Component({
@@ -15,9 +14,18 @@ import { FormService } from '../../services/form.service';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent {
-  private readonly subscriptions = new Subscription();
+  settings: {
+    [key: string]: {
+      id: number;
+      name: string;
+      data: string;
+      required: string;
+      type: string;
+      key: string;
+      description: string;
+    };
+  } = {};
 
-  settings: any = [];
   bands: any = [];
   faSpinner = faSpinner;
   faAsterisk = faAsterisk;
@@ -25,18 +33,13 @@ export class SettingsComponent {
 
   loaded = false;
 
-  settingsForm: FormGroup;
-
   changes: any = {};
   originalValues: any = {};
 
   constructor(
     private dataService: DataService,
-    private fb: FormBuilder,
     private formService: FormService
-  ) {
-    this.settingsForm = this.fb.group({});
-  }
+  ) {}
 
   ngOnInit() {
     this.build();
@@ -44,15 +47,11 @@ export class SettingsComponent {
 
   async build() {
     await this.collectSettings();
-    this.buildForm();
-    this.changes = this.settingsForm.value;
-    this.originalValues = this.settingsForm.value;
+    this.changes = Object.values(this.settings).map((setting) => setting.data);
+    this.originalValues = Object.values(this.settings).map(
+      (setting) => setting.data
+    );
     this.loaded = true;
-    this.trackFormChanges();
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
   }
 
   async collectSettings() {
@@ -62,13 +61,15 @@ export class SettingsComponent {
 
     const editableSettings = settingsRaw.editable;
 
-    editableSettings.columns.forEach((column: any, index: number) => {
-      this.settings[column] = {
-        name: editableSettings.names[index],
-        data: settingsRaw.data[column],
+    settingsRaw.data.forEach((row: any, index: number) => {
+      this.settings[row.setting_key] = {
+        id: row.id,
+        name: row.name,
+        data: row.setting_value,
         required: editableSettings.required[index],
-        type: editableSettings.types[index],
-        key: column,
+        type: row.setting_type,
+        key: row.setting_key,
+        description: row.description,
       };
     });
 
@@ -76,26 +77,10 @@ export class SettingsComponent {
     this.bands = data['display_data'];
   }
 
-  buildForm() {
-    this.getColumnHeaders(this.settings).forEach((key: string) => {
-      const field = this.settings[key];
-
-      const validators = field['required'] ? [Validators.required] : [];
-      let initialValue = field['data'] !== null ? field['data'] : '';
-
-      if (field.type == "enum('Yes','No')") {
-        initialValue = initialValue == 'Yes' ? true : false;
-      }
-
-      this.settingsForm.addControl(
-        key,
-        this.fb.control(initialValue, validators)
-      );
-    });
-
-    this.settingsForm.addControl('id', this.fb.control('1'));
-    this.settingsForm.addControl('action', this.fb.control('append'));
-    this.settingsForm.addControl('table_name', this.fb.control('settings'));
+  updateInput(key: string, event: Event) {
+    let value: string = (event.target as HTMLInputElement).value;
+    this.settings[key].data = value;
+    this.changes[key] = value;
   }
 
   getColumnHeaders(obj: { [key: string]: any }): string[] {
@@ -103,23 +88,33 @@ export class SettingsComponent {
   }
 
   async formSubmit() {
-    const formData = { ...this.settingsForm.value };
-    Object.keys(formData).forEach((key) => {
-      if (typeof formData[key] === 'boolean') {
-        formData[key] = formData[key] === true ? 'Yes' : 'No';
-      }
-    });
+    let responses = [];
+    let keys = Object.keys(this.settings);
+    for (let i = 0; i < keys.length; i++) {
+      let key = keys[i];
+      responses[i] = (
+        await this.dataService.submitFormData({
+          action: 'append',
+          table_name: 'settings',
+          id: this.settings[key].id,
+          setting_value: this.settings[key].data,
+          setting_key: this.settings[key].key,
+          description: this.settings[key].description,
+          setting_type: this.settings[key].type,
+          name: this.settings[key].name,
+        })
+      ).success;
+    }
 
-    const formSubmitResponse = await this.dataService.submitFormData(formData);
-    this.endSubmission(formSubmitResponse);
+    this.endSubmission(responses);
   }
 
-  endSubmission(formSubmitResponse: { success: boolean; message: string }) {
+  endSubmission(responses: boolean[]) {
     let title = 'Error!';
     let message =
       'There was an issue saving the settings! Make sure everything is correct before trying to save.';
 
-    if (formSubmitResponse.success) {
+    if (!responses.includes(false)) {
       title = 'Success!';
       message = 'Settings saved successfully!';
 
@@ -129,14 +124,6 @@ export class SettingsComponent {
 
     this.formService.setMessageFormData({ title, message });
     this.formService.showMessageForm();
-  }
-
-  trackFormChanges() {
-    this.subscriptions.add(
-      this.settingsForm.valueChanges.subscribe((data) => {
-        this.changes = data;
-      })
-    );
   }
 
   async saveBand(index: number, minWeight: any, maxWeight: any, price: any) {

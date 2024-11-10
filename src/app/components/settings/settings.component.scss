@@ -1,36 +1,40 @@
 @import "../variables";
+
 .container {
     margin: 15px 15px 15px calc(16% + 10px);
+
     .panel-container {
         display: flex;
+
         .control-container {
             background: white;
             border-radius: 10px;
-            justify-content: center;
             display: flex;
-            text-align: center;
+            flex-direction: column;
             padding: 20px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             margin: 20px 20px 20px 0;
-            form {
-                width: inherit;
-            }
+
             label {
                 display: flex;
+
                 .ng-fa-icon {
                     display: flex;
                     font-size: 13px;
                     margin: 0 0 5px 2px;
                 }
             }
+
             .table-container {
                 display: flex;
                 flex-direction: column;
                 max-width: 100%;
+
                 h1 {
                     font-size: 18px;
                     margin: 5px;
                 }
+
                 .table-wrapper {
                     border-collapse: collapse;
                     border: 1px solid black;
@@ -39,6 +43,7 @@
                     overflow-y: auto;
                     overflow-x: auto;
                     margin: 0 auto;
+
                     table {
                         width: 100%;
                         border-collapse: collapse;
@@ -48,27 +53,33 @@
                         overflow-x: auto;
                         margin: 0 auto;
                     }
+
                     tr {
                         height: 56px;
                     }
+
                     tr:nth-child(even) {
                         background-color: rgb(247, 247, 247);
                     }
+
                     th,
                     td {
                         padding: 10px;
                         text-align: left;
                         font-size: 16px;
+
                         input {
                             border: none;
                             background-color: transparent;
                         }
                     }
+
                     td {
                         .ng-fa-icon {
                             cursor: pointer;
                         }
                     }
+
                     thead {
                         position: sticky;
                         top: 0;
@@ -78,14 +89,15 @@
                     }
                 }
             }
+
             .controller {
                 margin: 10px;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                .input-container {
-                    margin-top: 10px;
-                }
+                gap: 20px;
+                align-items: stretch;
+
                 .number {
                     width: 40px;
                     border-radius: 5px;
@@ -93,6 +105,7 @@
                     padding: 5px;
                 }
             }
+
             .button {
                 border-radius: 5px;
                 padding: 5px;
@@ -102,6 +115,7 @@
                 margin-left: auto;
             }
         }
+
         .documents-container {
             background: white;
             border-radius: 10px;
@@ -112,23 +126,27 @@
             padding: 20px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             margin: 20px 20px 20px 0;
+
             div {
                 margin: 10px;
+
                 label {
                     margin: 5px;
                 }
+
                 .file-upload {
                     border: 1px solid #ccc;
                     border-radius: 10px;
                     background-color: #FFF;
                     display: inline-block;
-                    padding: 10px!important;
+                    padding: 10px !important;
                     font-weight: normal;
                     font-size: 16px;
                     cursor: pointer;
                     box-sizing: border-box;
                     width: 100%;
                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+
                     input {
                         display: none;
                     }
