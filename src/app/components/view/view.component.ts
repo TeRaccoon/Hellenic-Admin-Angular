@@ -642,6 +642,10 @@ export class ViewComponent {
     let tableName = 'invoiced_items';
     let title = `Invoiced Items for ${row['title']}`;
 
+    let freeDeliveryMinimum = await this.dataService.processGet('settings', {
+      filter: 'free_delivery_minimum',
+    });
+
     let totalGross = 0;
     let totalNet = 0;
     let totalVAT = 0;
@@ -655,6 +659,10 @@ export class ViewComponent {
       totalVAT += vat;
       totalNet += net;
     });
+
+    if (totalNet > freeDeliveryMinimum) {
+      totalNet += 7.5;
+    }
 
     this.dataService.storeWidgetData({
       headers: tableColumns,
