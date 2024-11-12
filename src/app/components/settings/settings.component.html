@@ -11,6 +11,9 @@
                             <input type="number" class="number" [value]="settings[key].data"
                                 (change)="updateInput(key, $event)" />
                         </div>
+                        <div class="input-container" *ngSwitchCase="'Text'">
+                            <input type="text" [value]="settings[key].data" (change)="updateInput(key, $event)" />
+                        </div>
                         <div class="input-container" *ngSwitchDefault>
                             <input type="checkbox" class="checkbox" [checked]="settings[key].data == 'True'"
                                 [value]="settings[key].data" (change)="updateInput(key, $event)" />

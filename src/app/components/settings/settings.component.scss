@@ -100,9 +100,21 @@
 
                 .number {
                     width: 40px;
-                    border-radius: 5px;
                     border: 1px solid black;
                     padding: 5px;
+                }
+
+                input[type="text"],
+                input[type="number"],
+                input[type="password"],
+                input[type="date"] {
+                    background-color: #ffffff;
+                    border-radius: 8px;
+                    outline: none;
+                    border: 1px solid rgb(215, 215, 215);
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+                    font-size: 14px;
+                    padding: 10px;
                 }
             }
 
