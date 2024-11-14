@@ -153,7 +153,8 @@
                                     <input *ngSwitchDefault
                                         [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
                                         [type]="mappedFormData.get(key)!.inputType"
-                                        [formControlName]="mappedFormData.get(key)!.field">
+                                        [formControlName]="mappedFormData.get(key)!.field"
+                                        (change)="inputChanged(mappedFormData.get(key)!.field)">
                                 </ng-container>
                             </ng-template>
                         </div>
@@ -243,8 +244,10 @@
                             <div class="input-container replacement">
                                 <label>Warehouse <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                                 <div class="drop-select-container">
-                                    <input (input)="filterDropSelect('Warehouse ID', $event, false, 'warehouse_id', true)" type="text"
-                                        (focus)="onInputFocus('Warehouse ID')" (blur)="onInputBlur('Warehouse ID')"
+                                    <input
+                                        (input)="filterDropSelect('Warehouse ID', $event, false, 'warehouse_id', true)"
+                                        type="text" (focus)="onInputFocus('Warehouse ID')"
+                                        (blur)="onInputBlur('Warehouse ID')"
                                         [value]="selectedReplacementData['Warehouse ID']?.selectData">
                                     <div class="drop-select"
                                         [ngClass]="selectOpen['Warehouse ID']?.opened ? 'input-visible' : 'input-hidden'"

@@ -693,7 +693,7 @@ export class AddFormComponent {
     ) {
       await this.handleSupplierPayments(dataId);
     } else if (this.tableName === 'stocked_items' && field === 'item_id') {
-      await this.handleStockedItems(dataId);
+      await this.handleStockedItems(dataId, field);
     }
 
     if (this.isBarcodeGenerationRequired(field)) {
@@ -763,13 +763,23 @@ export class AddFormComponent {
     this.updateReplacementDataForInvoices(this.invoiceDetails, 'reference');
   }
 
-  private async handleStockedItems(dataId: number) {
+  private async handleStockedItems(dataId: number, field: string) {
     const lastPurchasePrice = await this.dataService.processGet(
       'last-purchase-price',
       { filter: dataId }
     );
     if (lastPurchasePrice.length > 0 && lastPurchasePrice[0] != null) {
       this.addForm.get('purchase_price')?.setValue(lastPurchasePrice[0]);
+    }
+  }
+
+  inputChanged(field: string) {
+    if (
+      this.tableName == 'stocked_items' &&
+      field == 'expiry_date' &&
+      this.addForm.get('item_id')?.value != null
+    ) {
+      this.generateBarcode();
     }
   }
 
@@ -793,7 +803,7 @@ export class AddFormComponent {
     );
   }
 
-  private async generateBarcode(alt: boolean) {
+  private async generateBarcode(alt: boolean = false) {
     const form = alt ? this.addItemForm : this.addForm;
     if (
       form.get('item_id')?.value != null &&
@@ -803,9 +813,9 @@ export class AddFormComponent {
         filter: form.get('item_id')?.value,
       });
       const stockCode = item['stock_code'];
-      const barcode = `${stockCode}-${form.get('expiry_date')?.value}-${
-        alt ? this.generateRandomString(7) : ''
-      }`;
+      const barcode = `${stockCode}-${
+        form.get('expiry_date')?.value
+      }-${this.generateRandomString(7)}`;
       form.get('barcode')?.setValue(barcode);
     }
   }
@@ -831,8 +841,7 @@ export class AddFormComponent {
   }
 
   generateRandomString(length: number): string {
-    const characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = '';
 
     for (let i = 0; i < length; i++) {

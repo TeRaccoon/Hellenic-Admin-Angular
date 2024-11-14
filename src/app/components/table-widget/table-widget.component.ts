@@ -84,7 +84,6 @@ export class TableWidgetComponent {
 
       if (this.tableName == 'vat-returns') {
         data = this.vatReturns(data);
-        console.log(data);
       }
 
       this.tableData!.alternativeData['values'] = [

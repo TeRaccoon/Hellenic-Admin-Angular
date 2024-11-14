@@ -1044,17 +1044,12 @@ export class StatisticsComponent {
       (sum, n) => (sum += n)
     );
 
-    console.log(totalSessions);
-
     const totalPaymentsMade = statisticsData.report.data.reduce(
       (sum: number, current: any) => {
         return sum + (current['Payments made'] || 0);
       },
       0
     );
-
-    console.log(totalPaymentsMade);
-    console.log(statisticsData.chart.data);
 
     let sessionPercentage =
       (statisticsData.chart.data[2] / statisticsData.chart.data[1]) * 100;

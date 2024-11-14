@@ -258,7 +258,6 @@ export class EditFormComponent {
           const options = this.formService.deriveEnumOptions(field.dataType);
           this.selectData.push({ key: key, data: options });
         }
-        console.log(field.inputType);
         if (field.inputType == 'file') {
           let fileName = this.mappedFormData.get('Image')?.value;
           this.selectedImage = fileName == null ? '' : fileName;
