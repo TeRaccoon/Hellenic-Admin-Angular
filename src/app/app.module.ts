@@ -93,7 +93,6 @@ export function initConfig(configService: ConfigService) {
       deps: [ConfigService],
       multi: true,
     },
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
     {
       provide: RECAPTCHA_V3_SITE_KEY,
       useValue: recaptcha.siteKey,
