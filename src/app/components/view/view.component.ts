@@ -129,6 +129,7 @@ export class ViewComponent {
             let reloadType = this.formService.getReloadType();
             if (reloadType == 'hard') {
               this.selectedRows = [];
+              this.sortedColumn = { columnName: '', ascending: false };
               await this.loadTable(String(this.tableName));
             } else if (reloadType == 'filter') {
               this.applyFilter();
