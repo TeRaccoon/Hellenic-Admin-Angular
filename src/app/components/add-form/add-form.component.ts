@@ -311,6 +311,11 @@ export class AddFormComponent {
           'warehouse_id',
           false
         );
+
+        let itemId = this.addForm.get('item_id')?.value;
+        if (itemId != null) {
+          this.handleStockedItems(itemId);
+        }
         break;
 
       case 'suppliers':
@@ -693,7 +698,7 @@ export class AddFormComponent {
     ) {
       await this.handleSupplierPayments(dataId);
     } else if (this.tableName === 'stocked_items' && field === 'item_id') {
-      await this.handleStockedItems(dataId, field);
+      await this.handleStockedItems(dataId);
     }
 
     if (this.isBarcodeGenerationRequired(field)) {
@@ -763,7 +768,7 @@ export class AddFormComponent {
     this.updateReplacementDataForInvoices(this.invoiceDetails, 'reference');
   }
 
-  private async handleStockedItems(dataId: number, field: string) {
+  private async handleStockedItems(dataId: number) {
     const lastPurchasePrice = await this.dataService.processGet(
       'last-purchase-price',
       { filter: dataId }
