@@ -1,0 +1,11 @@
+<div class="table-footer">
+    <p>Showing page {{ viewMetadata.currentPage }} out of {{ viewMetadata.pageCount }}</p>
+    <div class="page-section">
+        <button *ngIf="viewMetadata.currentPage > 1" (click)="previousPage()">Previous</button>
+        <button [class]="viewMetadata.currentPage == 1 ? 'active-page' : ''" (click)="changePage(1)"> {{ 1
+            }}</button>
+        <button *ngFor="let pageNumber of pageRange" (click)="changePage(pageNumber)"
+            [class]="viewMetadata.currentPage == pageNumber ? 'active-page' : ''">{{ pageNumber }}</button>
+        <button *ngIf="viewMetadata.currentPage < viewMetadata.pageCount" (click)="nextPage()">Next</button>
+    </div>
+</div>
