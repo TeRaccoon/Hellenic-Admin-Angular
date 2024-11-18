@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="no-data-container">
+        <div class="header">
+            <fa-icon (click)="back()" [icon]="arrowLeft" />
+        </div>
+        <div class="content">
+            <h1>Whoops! No data was found for {{ displayName }}!</h1>
+            <p>Could this be an error? If so, try refreshing the page otherwise add new data below!
+            </p>
+            <button class="button" (click)="addRow()">Add New +</button>
+        </div>
+    </div>
+</div>
