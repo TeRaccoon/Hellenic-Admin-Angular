@@ -41,6 +41,7 @@ import { SearchContainerComponent } from './components/search-container/search-c
 import { ConfigService } from './services/config.service';
 import { NoTableDataComponent } from './components/no-table-data/no-table-data.component';
 import { TableFooterComponent } from './components/table-footer/table-footer.component';
+import { InvoiceAddressComponent } from './components/invoice-address/invoice-address.component';
 
 export function initConfig(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -75,6 +76,7 @@ export function initConfig(configService: ConfigService) {
     SearchContainerComponent,
     NoTableDataComponent,
     TableFooterComponent,
+    InvoiceAddressComponent,
   ],
   imports: [
     BrowserModule,

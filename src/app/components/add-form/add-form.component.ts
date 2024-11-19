@@ -13,6 +13,7 @@ import {
   SaleType,
 } from '../../common/types/forms/types';
 import { Subscription } from 'rxjs';
+import { AddressUpdate } from '../invoice-address/types';
 
 @Component({
   selector: 'app-add-form',
@@ -912,9 +913,11 @@ export class AddFormComponent {
     this.filteredReplacementData[key].data = addressReplacement;
   }
 
-  updateAddressValues(key: any, field: any, event: any): void {
-    let value: string | boolean = event.target.value;
-    this.addresses[key] = { ...this.addresses[key], [field]: value };
+  updateAddressValues(addressUpdate: AddressUpdate): void {
+    this.addresses[addressUpdate.key] = {
+      ...this.addresses[addressUpdate.key],
+      [addressUpdate.field]: addressUpdate.value,
+    };
   }
 
   async addAddressToBook(key: string) {
