@@ -114,3 +114,42 @@ export const REVERSE_TABLE_NAME_MAP = new Map<string, string>(
 );
 
 export const NON_VIEW_TABLES = ['debtor_creditor', 'statistics', 'profit-loss'];
+
+export const CREDIT_NOTE_COLUMNS = [
+  { name: 'ID', type: 'number' },
+  { name: 'Supplier ID', type: 'number' },
+  { name: 'Invoice ID', type: 'number' },
+  { name: 'Amount', type: 'currency' },
+  { name: 'Description', type: 'text' },
+  { name: 'Paid', type: 'string' },
+  { name: 'Currency', type: 'string' },
+  { name: 'Due Date', type: 'date' },
+  { name: 'Date Issued', type: 'date' },
+];
+
+export const SUPPLIER_INVOICE_COLUMNS = [
+  { name: 'ID', type: 'number' },
+  { name: 'Item Name', type: 'string' },
+  { name: 'Picture', type: 'image' },
+  { name: 'Price', type: 'currency' },
+  { name: 'Purchase Date', type: 'date' },
+  { name: 'Quantity', type: 'number' },
+  { name: 'Expiry Date', type: 'string' },
+  { name: 'Packing Format', type: 'enum' },
+  { name: 'Barcode', type: 'string' },
+  { name: 'Warehouse', type: 'number' },
+];
+
+export const ADDRESS_COLUMNS = [
+  { name: 'ID', type: 'number' },
+  { name: 'Invoice Address One', type: 'string' },
+  { name: 'Invoice Address Two', type: 'string' },
+  { name: 'Invoice Address Three', type: 'string' },
+  { name: 'Invoice Address Four', type: 'string' },
+  { name: 'Invoice Postcode', type: 'string' },
+  { name: 'Delivery Address One', type: 'string' },
+  { name: 'Delivery Address Two', type: 'string' },
+  { name: 'Delivery Address Three', type: 'string' },
+  { name: 'Delivery Address Four', type: 'string' },
+  { name: 'Delivery Postcode', type: 'string' },
+];
