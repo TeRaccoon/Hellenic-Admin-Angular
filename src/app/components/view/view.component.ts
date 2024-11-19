@@ -21,6 +21,11 @@ import {
   BalanceSheetTable,
 } from '../../common/types/data-service/types';
 import { UrlService } from '../../services/url.service';
+import {
+  ADDRESS_COLUMNS,
+  CREDIT_NOTE_COLUMNS,
+  SUPPLIER_INVOICE_COLUMNS,
+} from '../../common/constants';
 
 @Component({
   selector: 'app-view',
@@ -222,42 +227,71 @@ export class ViewComponent {
     return obj ? Object.keys(obj) : [];
   }
 
+  getCustomColumnHeadersFromTable() {
+    switch (this.tableName) {
+      case 'items':
+        return ['Stock', 'Total Stock'];
+
+      case 'stocked_items':
+        return ['Image'];
+
+      case 'suppliers':
+        return ['Credit Notes'];
+
+      case 'supplier_invoices':
+        return ['Items', 'Credit Notes'];
+
+      case 'invoices':
+        return this.canDisplayColumn('invoiced-items') ? ['Items'] : [];
+
+      case 'customers':
+        return ['Addresses'];
+    }
+
+    return [];
+  }
+
   sortColumn(column: any) {
     this.filteredDisplayData = this.displayData;
-    let dataName: string = this.editable.columns.filter(
-      (_, index) => this.editable.names[index] == column
-    )[0];
-    if (dataName === undefined) {
-      dataName = 'id';
-    }
+    let dataName: string =
+      this.editable.columns.filter(
+        (_, index) => this.editable.names[index] === column
+      )[0] ?? 'id';
 
     if (this.sortedColumn.columnName == column) {
       this.sortedColumn.ascending = !this.sortedColumn.ascending;
     } else {
       this.sortedColumn = { columnName: column, ascending: false };
     }
+
     if (this.sortedColumn.ascending) {
-      this.filteredDisplayData.sort((a: any, b: any) => {
-        if (a[dataName] < b[dataName]) {
-          return -1;
-        }
-        if (a[dataName] > b[dataName]) {
-          return 1;
-        }
-        return 0;
-      });
+      this.sortAscending(dataName);
     } else {
-      this.filteredDisplayData.sort((a: any, b: any) => {
-        if (a[dataName] < b[dataName]) {
-          return 1;
-        }
-        if (a[dataName] > b[dataName]) {
-          return -1;
-        }
-        return 0;
-      });
+      this.sortDescending(dataName);
     }
+
     this.changePage(1);
+  }
+
+  sortDescending(dataName: string) {
+    this.filteredDisplayData.sort((a: any, b: any) => {
+      if (a[dataName] === b[dataName]) return 0;
+
+      return a[dataName] > b[dataName] ? 1 : -1;
+    });
+  }
+
+  sortAscending(dataName: string) {
+    this.filteredDisplayData.sort((a: any, b: any) => {
+      if (a[dataName] === b[dataName]) return 0;
+
+      return a[dataName] > b[dataName] ? -1 : 1;
+    });
+  }
+
+  changePage(page: number) {
+    this.viewMetaData.currentPage = page;
+    this.loadPage();
   }
 
   viewBalanceSheet() {
@@ -447,20 +481,8 @@ export class ViewComponent {
     );
   }
 
-  nextPage() {
-    if (this.viewMetaData.currentPage < this.viewMetaData.pageCount) {
-      this.viewMetaData.currentPage++;
-      this.loadPage();
-    }
-  }
-  previousPage() {
-    if (this.viewMetaData.currentPage > 1) {
-      this.viewMetaData.currentPage--;
-      this.loadPage();
-    }
-  }
-  changePage(page: number) {
-    this.viewMetaData.currentPage = page;
+  pageEvent(viewMetaData: viewMetadata) {
+    this.viewMetaData = viewMetaData;
     this.loadPage();
   }
 
@@ -697,17 +719,7 @@ export class ViewComponent {
   }
 
   async creditNoteSearch(id: number) {
-    let tableColumns = [
-      { name: 'ID', type: 'number' },
-      { name: 'Supplier ID', type: 'number' },
-      { name: 'Invoice ID', type: 'number' },
-      { name: 'Amount', type: 'currency' },
-      { name: 'Description', type: 'text' },
-      { name: 'Paid', type: 'string' },
-      { name: 'Currency', type: 'string' },
-      { name: 'Due Date', type: 'date' },
-      { name: 'Date Issued', type: 'date' },
-    ];
+    let tableColumns = CREDIT_NOTE_COLUMNS;
     let query =
       this.tableName == 'suppliers'
         ? 'credit-note-search-supplier'
@@ -739,18 +751,7 @@ export class ViewComponent {
 
   async supplierInvoiceSearch(invoiceId: string) {
     var row = this.data.filter((row: any) => row.id == invoiceId)[0];
-    let tableColumns = [
-      { name: 'ID', type: 'number' },
-      { name: 'Item Name', type: 'string' },
-      { name: 'Picture', type: 'image' },
-      { name: 'Price', type: 'currency' },
-      { name: 'Purchase Date', type: 'date' },
-      { name: 'Quantity', type: 'number' },
-      { name: 'Expiry Date', type: 'string' },
-      { name: 'Packing Format', type: 'enum' },
-      { name: 'Barcode', type: 'string' },
-      { name: 'Warehouse', type: 'number' },
-    ];
+    let tableColumns = SUPPLIER_INVOICE_COLUMNS;
     let tableRows = await this.dataService.processGet(
       'stocked-items-invoice',
       { filter: invoiceId },
@@ -771,19 +772,7 @@ export class ViewComponent {
   }
 
   async addressSearch(customerId: string, accountName: string) {
-    let tableColumns = [
-      { name: 'ID', type: 'number' },
-      { name: 'Invoice Address One', type: 'string' },
-      { name: 'Invoice Address Two', type: 'string' },
-      { name: 'Invoice Address Three', type: 'string' },
-      { name: 'Invoice Address Four', type: 'string' },
-      { name: 'Invoice Postcode', type: 'string' },
-      { name: 'Delivery Address One', type: 'string' },
-      { name: 'Delivery Address Two', type: 'string' },
-      { name: 'Delivery Address Three', type: 'string' },
-      { name: 'Delivery Address Four', type: 'string' },
-      { name: 'Delivery Postcode', type: 'string' },
-    ];
+    let tableColumns = ADDRESS_COLUMNS;
     let tableRows = await this.dataService.processGet(
       'customer-addresses-by-id',
       { filter: customerId },

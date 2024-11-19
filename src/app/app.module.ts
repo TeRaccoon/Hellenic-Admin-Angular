@@ -39,6 +39,8 @@ import { VatViewComponent } from './components/vat-view/vat-view.component';
 import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.component';
 import { SearchContainerComponent } from './components/search-container/search-container.component';
 import { ConfigService } from './services/config.service';
+import { NoTableDataComponent } from './components/no-table-data/no-table-data.component';
+import { TableFooterComponent } from './components/table-footer/table-footer.component';
 
 export function initConfig(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -71,6 +73,8 @@ export function initConfig(configService: ConfigService) {
     VatViewComponent,
     BalanceSheetComponent,
     SearchContainerComponent,
+    NoTableDataComponent,
+    TableFooterComponent,
   ],
   imports: [
     BrowserModule,

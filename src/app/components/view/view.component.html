@@ -85,28 +85,7 @@
                             <th>Select</th>
                             <ng-container *ngFor="let column of displayNames; let key = index">
                                 <ng-container *ngIf="key == 2">
-                                    <ng-container [ngSwitch]="tableName">
-                                        <ng-container *ngSwitchCase="'items'">
-                                            <th>Stock</th>
-                                            <th>Total Stock</th>
-                                        </ng-container>
-                                        <ng-container *ngSwitchCase="'stocked_items'">
-                                            <th>Image</th>
-                                        </ng-container>
-                                        <ng-container *ngSwitchCase="'suppliers'">
-                                            <th>Credit Notes</th>
-                                        </ng-container>
-                                        <ng-container *ngSwitchCase="'supplier_invoices'">
-                                            <th>Items</th>
-                                            <th>Credit Notes</th>
-                                        </ng-container>
-                                        <ng-container *ngSwitchCase="'invoices'">
-                                            <th *ngIf="canDisplayColumn('invoiced-items')">Items</th>
-                                        </ng-container>
-                                        <ng-container *ngSwitchCase="'customers'">
-                                            <th>Addresses</th>
-                                        </ng-container>
-                                    </ng-container>
+                                    <th *ngFor="let header of getCustomColumnHeadersFromTable()">{{ header }}</th>
                                 </ng-container>
                                 <th *ngIf="canDisplayColumn(column.toString())" (click)="sortColumn(column)">
                                     {{ column }}
@@ -244,32 +223,12 @@
                     </tbody>
                 </table>
                 <ng-template #noData>
-                    <div *ngIf="data.length === 0 && viewMetaData.loaded" class="alternate-container">
-                        <div class="no-data-container">
-                            <div class="header">
-                                <fa-icon (click)="back()" [icon]="icons.faArrowLeft" />
-                            </div>
-                            <div class="content">
-                                <h1>Whoops! No data was found for {{ displayName }}!</h1>
-                                <p>Could this be an error? If so, try refreshing the page otherwise add new data below!
-                                </p>
-                                <button class="button" (click)="addRow(null)">Add New +</button>
-                            </div>
-                        </div>
-                    </div>
+                    <app-no-table-data *ngIf="data.length === 0 && viewMetaData.loaded" (addRowEmitter)="addRow(null)"
+                        [displayName]="displayName" />
                 </ng-template>
             </div>
-            <div class="table-footer">
-                <p>Showing page {{ viewMetaData.currentPage }} out of {{ viewMetaData.pageCount }}</p>
-                <div class="page-section">
-                    <button (click)="previousPage()">Previous</button>
-                    <button [class]="viewMetaData.currentPage == 1 ? 'active-page' : ''" (click)="changePage(1)"> {{ 1
-                        }}</button>
-                    <button *ngFor="let pageNumber of getPageRange()" (click)="changePage(pageNumber)"
-                        [class]="viewMetaData.currentPage == pageNumber ? 'active-page' : ''">{{ pageNumber }}</button>
-                    <button (click)="nextPage()">Next</button>
-                </div>
-            </div>
+            <app-table-footer [viewMetadata]="viewMetaData" [pageRange]="getPageRange()"
+                (loadPage)="pageEvent($event)" />
             <ng-container [ngSwitch]="tableName">
                 <ng-container *ngSwitchCase="'general_ledger'">
                     <app-ledger-widget></app-ledger-widget>
