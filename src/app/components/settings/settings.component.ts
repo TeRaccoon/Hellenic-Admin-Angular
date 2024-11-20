@@ -79,6 +79,16 @@ export class SettingsComponent {
 
   updateInput(key: string, event: Event) {
     let value: string = (event.target as HTMLInputElement).value;
+    this.update(key, value);
+  }
+
+  updateCheckInput(key: string, event: Event) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    const value = isChecked ? 'Yes' : 'No';
+    this.update(key, value);
+  }
+
+  update(key: string, value: string) {
     this.settings[key].data = value;
     this.changes[key] = value;
   }
