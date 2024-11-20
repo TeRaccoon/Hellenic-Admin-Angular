@@ -241,6 +241,15 @@
                                 </select>
                             </div>
                         </ng-container>
+                        <div *ngIf="tableName == 'invoices'" class="input-container number">
+                            <label>Unit <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
+                            <select class="select-input" formControlName="unit">
+                                <option selected value="Unit">Individual</option>
+                                <option value="Box">Retail Box</option>
+                                <option value="Box">Box</option>
+                                <option value="Pallet">Pallet</option>
+                            </select>
+                        </div>
                         <div class="input-container number">
                             <label>Quantity <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                             <input class="number" type="number" formControlName="quantity">
@@ -290,6 +299,10 @@
                                         <td (click)="deleteRow(itemsList[index].id)">
                                             <fa-icon [icon]="icons.faX" />
                                         </td>
+                                    </tr>
+                                    <tr *ngIf="tableName == 'invoices'">
+                                        <td colspan="5" *ngIf="tableName == 'invoices'">Total (inc. delivery)</td>
+                                        <td>{{ invoiceTotal | currency:'GBP' }}</td>
                                     </tr>
                                 </tbody>
                             </table>

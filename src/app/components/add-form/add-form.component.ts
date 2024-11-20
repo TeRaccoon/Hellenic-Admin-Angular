@@ -14,6 +14,10 @@ import {
 } from '../../common/types/forms/types';
 import { Subscription } from 'rxjs';
 import { AddressUpdate } from '../invoice-address/types';
+import {
+  DISPLAY_INPUT_FIELD_TABLE_MAP_EXCLUSIONS,
+  DISPLAY_PRICE_WARNING_TABLES,
+} from './consts';
 
 @Component({
   selector: 'app-add-form',
@@ -107,6 +111,7 @@ export class AddFormComponent {
   selectOpen: { [key: string]: { opened: boolean | null } } = {};
 
   invoiceId: number | null = null;
+  invoiceTotal: number = 0;
   itemsList: any[] = [];
 
   constructor(
@@ -168,7 +173,7 @@ export class AddFormComponent {
     let query =
       this.tableName == 'supplier_invoices'
         ? 'stocked-items-invoice'
-        : 'invoiced-items';
+        : 'invoiced-items-with-total';
 
     this.itemsList = await this.dataService.processGet(
       query,
@@ -178,6 +183,8 @@ export class AddFormComponent {
       },
       true
     );
+
+    this.invoiceTotal = (await this.dataService.processGet('invoice')).total;
   }
 
   resetFormState(): void {
@@ -401,6 +408,7 @@ export class AddFormComponent {
           item_id: ['', [Validators.required]],
           quantity: ['', [Validators.required]],
           discount: ['', [Validators.required]],
+          unit: ['', [Validators.required]],
         });
       }
     }
@@ -646,7 +654,7 @@ export class AddFormComponent {
   }
 
   shouldDisplayPriceWarning() {
-    let includedTables = ['invoices'];
+    let includedTables = DISPLAY_PRICE_WARNING_TABLES;
     return includedTables.includes(this.tableName);
   }
 
@@ -1140,13 +1148,20 @@ export class AddFormComponent {
         ? 'stocked-items-invoice'
         : 'invoiced-items';
 
-    this.itemsList = await this.dataService.processGet(query, {
-      id: this.invoiceId?.toString(),
-      complex: true,
-    });
-    this.itemsList = Array.isArray(this.itemsList)
-      ? this.itemsList
-      : [this.itemsList];
+    this.itemsList = await this.dataService.processGet(
+      query,
+      {
+        id: this.invoiceId?.toString(),
+        complex: true,
+      },
+      true
+    );
+
+    this.invoiceTotal = (
+      await this.dataService.processGet('invoice', {
+        filter: this.invoiceId,
+      })
+    ).total;
 
     event.preventDefault();
     this.findInvalidControls();
@@ -1221,49 +1236,19 @@ export class AddFormComponent {
   }
 
   canDisplayInputField(key: string) {
-    switch (this.tableName) {
-      case 'invoices':
-        return !(
-          key == 'Title' ||
-          key == 'VAT' ||
-          key == 'Total' ||
-          key == 'Gross Value' ||
-          key == 'Status' ||
-          key == 'Printed' ||
-          key == 'Paid' ||
-          key == 'Outstanding Balance' ||
-          key == 'Delivery Type' ||
-          key == 'Type' ||
-          (key == 'Customer Name' && this.noCustomer) ||
-          (key == 'Billing Address' && this.saleType == SaleType.Cash)
-        );
+    const excludedFields =
+      DISPLAY_INPUT_FIELD_TABLE_MAP_EXCLUSIONS[this.tableName] || [];
 
-      case 'supplier_invoices':
-        return !(
-          key == 'Net Value' ||
-          key == 'VAT' ||
-          key == 'Total' ||
-          key == 'Paid' ||
-          key == 'Outstanding Balance'
-        );
-
-      case 'items':
-        return !(key == 'Total Sold');
-
-      case 'customer_payments':
-        return !(key == 'Linked Payment ID');
-
-      case 'stocked_items':
-        return !(key == 'Expired');
-
-      case 'customers':
-        return !(
-          key == 'Outstanding Balance' ||
-          key == 'Last Payment Date' ||
-          key == 'Password'
-        );
+    if (this.tableName === 'invoices') {
+      if (
+        (key === 'Customer Name' && this.noCustomer) ||
+        (key === 'Billing Address' && this.saleType === SaleType.Cash)
+      ) {
+        return false;
+      }
     }
-    return true;
+
+    return !excludedFields.includes(key);
   }
 
   close() {
