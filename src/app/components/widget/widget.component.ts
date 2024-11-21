@@ -51,6 +51,7 @@ export class WidgetComponent {
     extra: {
       totalGross: 0,
       totalVAT: 0,
+      delivery: 0,
       totalNet: 0,
     },
   };
@@ -107,12 +108,25 @@ export class WidgetComponent {
       { filter: this.tableData.idData.id },
       true
     );
+
+    let freeDeliveryMinimum = await this.dataService.processGet('settings', {
+      filter: 'free_delivery_minimum',
+    });
+
+    let isDelivery =
+      (
+        await this.dataService.processGet('invoice', {
+          filter: this.tableData.idData.id,
+        })
+      ).delivery_type == 'Delivery';
+
     this.formService.performReload();
 
     if (this.tableData.query == 'invoiced-items') {
       let totalGross = 0;
       let totalNet = 0;
       let totalVAT = 0;
+      let delivery = 0;
 
       this.tableData.rows.forEach((row: any) => {
         const gross = row.gross || 0;
@@ -124,9 +138,15 @@ export class WidgetComponent {
         totalNet += net;
       });
 
+      if (totalNet > freeDeliveryMinimum && isDelivery) {
+        totalNet += 7.5;
+        delivery = 7.5;
+      }
+
       this.tableData.extra = {
         totalGross: totalGross,
         totalVAT: totalVAT,
+        delivery: delivery,
         totalNet: totalNet,
       };
     }
