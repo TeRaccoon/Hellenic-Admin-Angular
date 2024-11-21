@@ -15,6 +15,7 @@ const DOCUMENT_UPLOAD_PATH = API_EXTENSION + 'document_upload.php';
 })
 export class UrlService {
   HOST_NAME = 'http://localhost/';
+  UPLOAD_EXTENSION = 'uploads/';
 
   constructor(private config: ConfigService) {
     this.loadConfig();
@@ -22,6 +23,7 @@ export class UrlService {
 
   async loadConfig() {
     this.HOST_NAME = this.config.getConfig().host;
+    this.UPLOAD_EXTENSION = this.config.getConfig().uploadExtension;
   }
 
   getUrl(extension = 'api', full = true) {

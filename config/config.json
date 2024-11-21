@@ -1,3 +1,4 @@
 {
-  "host": "https://new.hellenicgrocery.co.uk/"
+  "host": "https://new.hellenicgrocery.co.uk/",
+  "uploadExtension": "../uploads/"
 }
