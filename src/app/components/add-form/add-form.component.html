@@ -278,7 +278,7 @@
                                         <th>Barcode</th>
                                     </ng-container>
                                 </thead>
-                                <tbody *ngIf="itemsList.length > 0">
+                                <tbody *ngIf="itemsList.length > 0 && itemsList[0] != null">
                                     <tr *ngFor="let item of itemsList; let index = index">
                                         <td>{{ item.name ?? item.item_name }}</td>
                                         <td>{{ item.quantity }}</td>

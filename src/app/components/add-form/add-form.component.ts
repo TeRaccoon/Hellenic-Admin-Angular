@@ -184,6 +184,8 @@ export class AddFormComponent {
       true
     );
 
+    console.log(this.itemsList);
+
     this.invoiceTotal = (await this.dataService.processGet('invoice')).total;
   }
 
@@ -1156,6 +1158,8 @@ export class AddFormComponent {
       },
       true
     );
+
+    console.log(this.itemsList);
 
     this.invoiceTotal = (
       await this.dataService.processGet('invoice', {
