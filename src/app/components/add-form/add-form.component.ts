@@ -380,40 +380,44 @@ export class AddFormComponent {
     }
   }
 
+  async resetAddItemForm() {
+    if (this.tableName == 'supplier_invoices') {
+      this.addItemForm = this.fb.group({
+        //fb = form builder
+        purchase_date: [
+          new Date().toISOString().split('T')[0],
+          [Validators.required], //Validators.required indicates a required field
+        ],
+        expiry_date: [
+          new Date().toISOString().split('T')[0],
+          [Validators.required],
+        ],
+        item_id: ['', [Validators.required]],
+        purchase_price: ['', [Validators.required]],
+        quantity: ['', [Validators.required]],
+
+        packing_format: ['Individual', [Validators.required]], //Syntax: name of field : ['Default value', [Validators]]
+        barcode: ['', [Validators.required]],
+        warehouse_id: ['', [Validators.required]],
+      });
+      this.invoiceId = await this.dataService.processGet('next-id', {
+        filter: 'supplier_invoices',
+      });
+    } else {
+      this.addItemForm = this.fb.group({
+        item_id: ['', [Validators.required]],
+        quantity: ['', [Validators.required]],
+        discount: ['', [Validators.required]],
+        unit: ['', [Validators.required]],
+      });
+    }
+  }
+
   async buildForm() {
     //Responsible for setting up the forms required to send data to the server
     if (this.shouldDisplayItemWidget()) {
       delete this.formData['Item ID'];
-      if (this.tableName == 'supplier_invoices') {
-        this.addItemForm = this.fb.group({
-          //fb = form builder
-          purchase_date: [
-            new Date().toISOString().split('T')[0],
-            [Validators.required], //Validators.required indicates a required field
-          ],
-          expiry_date: [
-            new Date().toISOString().split('T')[0],
-            [Validators.required],
-          ],
-          item_id: ['', [Validators.required]],
-          purchase_price: ['', [Validators.required]],
-          quantity: ['', [Validators.required]],
-
-          packing_format: ['Individual', [Validators.required]], //Syntax: name of field : ['Default value', [Validators]]
-          barcode: ['', [Validators.required]],
-          warehouse_id: ['', [Validators.required]],
-        });
-        this.invoiceId = await this.dataService.processGet('next-id', {
-          filter: 'supplier_invoices',
-        });
-      } else {
-        this.addItemForm = this.fb.group({
-          item_id: ['', [Validators.required]],
-          quantity: ['', [Validators.required]],
-          discount: ['', [Validators.required]],
-          unit: ['', [Validators.required]],
-        });
-      }
+      await this.resetAddItemForm();
     }
 
     let formDataArray = Object.entries(this.formData);
@@ -1160,8 +1164,6 @@ export class AddFormComponent {
       true
     );
 
-    console.log(this.itemsList);
-
     this.invoiceTotal = (
       await this.dataService.processGet('invoice', {
         filter: this.invoiceId,
@@ -1170,6 +1172,13 @@ export class AddFormComponent {
 
     event.preventDefault();
     this.findInvalidControls();
+
+    await this.resetAddItemForm();
+    this.selectedReplacementData['Item ID'] = {
+      selectData: '',
+      selectDataId: 0,
+    };
+    this.filteredReplacementData['Item ID'] = this.replacementData['Item ID'];
   }
 
   addressNotListed(key: string) {
