@@ -247,7 +247,7 @@
                             <select [class]="itemInputHasError('unit') ? 'error-input' : ''" class="select-input"
                                 formControlName="unit">
                                 <option selected value="Unit">Individual</option>
-                                <option value="Box">Retail Box</option>
+                                <option value="Retail Box">Retail Box</option>
                                 <option value="Box">Box</option>
                                 <option value="Pallet">Pallet</option>
                             </select>
@@ -271,6 +271,7 @@
                                     <th>Quantity</th>
                                     <th>Price</th>
                                     <ng-container *ngIf="tableName == 'invoices'">
+                                        <th>Unit</th>
                                         <th>Discount</th>
                                         <th>VAT</th>
                                         <th>Total</th>
@@ -289,6 +290,7 @@
                                         <ng-container *ngIf="tableName == 'invoices'">
                                             <td>{{ (item.price ?? 0) | currency:'GBP' }}
                                                 {{ item.price == null ? '*' : '' }}</td>
+                                            <td> {{ item.unit == 'Unit' ? 'Individual' : item.unit }}</td>
                                             <td>{{ item.discount }}%</td>
                                             <td>{{ item.vat }}</td>
                                             <td>{{ item.total * ((100 - item.discount) / 100 ) | currency:'GBP' }}</td>
