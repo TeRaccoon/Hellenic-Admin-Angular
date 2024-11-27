@@ -83,6 +83,8 @@ export class AddFormComponent {
 
   formState!: formState;
 
+  addItemFormSubmitAttempted = false;
+
   debounceSearch: (
     key: string,
     filter: string,
@@ -407,7 +409,7 @@ export class AddFormComponent {
       this.addItemForm = this.fb.group({
         item_id: ['', [Validators.required]],
         quantity: ['', [Validators.required]],
-        discount: ['', [Validators.required]],
+        discount: [''],
         unit: ['', [Validators.required]],
       });
     }
@@ -1117,68 +1119,76 @@ export class AddFormComponent {
       await this.formSubmit(false);
     }
 
-    this.addItemForm.addControl('action', this.fb.control('add'));
+    console.log(this.addItemForm);
 
-    if (this.tableName == 'supplier_invoices') {
-      this.addItemForm.addControl(
-        'supplier_invoice_id',
-        this.fb.control(this.invoiceId)
+    this.addItemFormSubmitAttempted = true;
+
+    if (this.addItemForm.valid) {
+      this.addItemForm.addControl('action', this.fb.control('add'));
+
+      if (this.tableName == 'supplier_invoices') {
+        this.addItemForm.addControl(
+          'supplier_invoice_id',
+          this.fb.control(this.invoiceId)
+        );
+        this.addItemForm.addControl(
+          'table_name',
+          this.fb.control('stocked_items')
+        );
+      } else {
+        this.addItemForm.addControl(
+          'invoice_id',
+          this.fb.control(this.invoiceId)
+        );
+        this.addItemForm.addControl(
+          'table_name',
+          this.fb.control('invoiced_items')
+        );
+      }
+
+      let submissionResponse = await this.dataService.submitFormData(
+        this.addItemForm.value
       );
-      this.addItemForm.addControl(
-        'table_name',
-        this.fb.control('stocked_items')
+      if (!submissionResponse.success) {
+        this.formService.setMessageFormData({
+          title: 'Error!',
+          message: submissionResponse.message,
+        });
+        this.formService.showMessageForm();
+      }
+
+      let query =
+        this.tableName == 'supplier_invoices'
+          ? 'stocked-items-invoice'
+          : 'invoiced-items';
+
+      this.itemsList = await this.dataService.processGet(
+        query,
+        {
+          id: this.invoiceId?.toString(),
+          complex: true,
+        },
+        true
       );
-    } else {
-      this.addItemForm.addControl(
-        'invoice_id',
-        this.fb.control(this.invoiceId)
-      );
-      this.addItemForm.addControl(
-        'table_name',
-        this.fb.control('invoiced_items')
-      );
+
+      this.invoiceTotal = (
+        await this.dataService.processGet('invoice', {
+          filter: this.invoiceId,
+        })
+      ).total;
+
+      event.preventDefault();
+      this.findInvalidControls();
+
+      await this.resetAddItemForm();
+      this.selectedReplacementData['Item ID'] = {
+        selectData: '',
+        selectDataId: 0,
+      };
+      this.filteredReplacementData['Item ID'] = this.replacementData['Item ID'];
+
+      this.addItemFormSubmitAttempted = false;
     }
-
-    let submissionResponse = await this.dataService.submitFormData(
-      this.addItemForm.value
-    );
-    if (!submissionResponse.success) {
-      this.formService.setMessageFormData({
-        title: 'Error!',
-        message: submissionResponse.message,
-      });
-      this.formService.showMessageForm();
-    }
-
-    let query =
-      this.tableName == 'supplier_invoices'
-        ? 'stocked-items-invoice'
-        : 'invoiced-items';
-
-    this.itemsList = await this.dataService.processGet(
-      query,
-      {
-        id: this.invoiceId?.toString(),
-        complex: true,
-      },
-      true
-    );
-
-    this.invoiceTotal = (
-      await this.dataService.processGet('invoice', {
-        filter: this.invoiceId,
-      })
-    ).total;
-
-    event.preventDefault();
-    this.findInvalidControls();
-
-    await this.resetAddItemForm();
-    this.selectedReplacementData['Item ID'] = {
-      selectData: '',
-      selectDataId: 0,
-    };
-    this.filteredReplacementData['Item ID'] = this.replacementData['Item ID'];
   }
 
   addressNotListed(key: string) {
@@ -1235,6 +1245,15 @@ export class AddFormComponent {
   inputHasError(field: string) {
     return (
       this.addForm.get(field)?.invalid && this.formState.submissionAttempted
+    );
+  }
+
+  itemInputHasError(field: string) {
+    console.log(this.addItemForm.get(field));
+
+    console.log(this.addItemFormSubmitAttempted);
+    return (
+      this.addItemForm.get(field)?.invalid && this.addItemFormSubmitAttempted
     );
   }
 
