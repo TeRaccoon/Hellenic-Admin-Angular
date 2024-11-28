@@ -312,7 +312,11 @@
                                         </td>
                                     </tr>
                                     <tr *ngIf="tableName == 'invoices'">
-                                        <td colspan="5" *ngIf="tableName == 'invoices'">Total (inc. delivery)</td>
+                                        <td colspan="5">Total (inc. delivery)</td>
+                                        <td>{{ invoiceTotal | currency:'GBP' }}</td>
+                                    </tr>
+                                    <tr *ngIf="tableName == 'supplier_invoices'">
+                                        <td colspan="6">Total</td>
                                         <td>{{ invoiceTotal | currency:'GBP' }}</td>
                                     </tr>
                                 </tbody>

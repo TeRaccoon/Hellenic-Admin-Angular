@@ -186,8 +186,11 @@ export class AddFormComponent {
       true
     );
 
+    query =
+      this.tableName == 'supplier_invoices' ? 'supplier-invoice' : 'invoice';
+
     this.invoiceTotal = (
-      await this.dataService.processGet('invoice', { filter: this.invoiceId })
+      await this.dataService.processGet(query, { filter: this.invoiceId })
     ).total;
   }
 
@@ -1170,8 +1173,11 @@ export class AddFormComponent {
         true
       );
 
+      query =
+        this.tableName == 'supplier_invoices' ? 'supplier-invoice' : 'invoice';
+
       this.invoiceTotal = (
-        await this.dataService.processGet('invoice', {
+        await this.dataService.processGet(query, {
           filter: this.invoiceId,
         })
       ).total;
