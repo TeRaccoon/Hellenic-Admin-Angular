@@ -186,7 +186,9 @@ export class AddFormComponent {
       true
     );
 
-    this.invoiceTotal = (await this.dataService.processGet('invoice')).total;
+    this.invoiceTotal = (
+      await this.dataService.processGet('invoice', { filter: this.invoiceId })
+    ).total;
   }
 
   resetFormState(): void {
