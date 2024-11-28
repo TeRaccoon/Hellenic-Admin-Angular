@@ -204,6 +204,11 @@
                                 <label>Purchase Price <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                                 <input class="number" type="number" formControlName="purchase_price">
                             </div>
+                            <div class="input-container number">
+                                <label>Quantity <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
+                                <input [class]="itemInputHasError('quantity') ? 'error-input' : ''" class="number"
+                                    type="number" formControlName="quantity">
+                            </div>
                             <div class="input-container date">
                                 <label>Purchase Date <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
                                 <input class="date" type="date" formControlName="purchase_date">
@@ -252,12 +257,12 @@
                                 <option value="Pallet">Pallet</option>
                             </select>
                         </div>
-                        <div class="input-container number">
-                            <label>Quantity <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
-                            <input [class]="itemInputHasError('quantity') ? 'error-input' : ''" class="number"
-                                type="number" formControlName="quantity">
-                        </div>
                         <ng-container *ngIf="tableName == 'invoices'">
+                            <div class="input-container number">
+                                <label>Quantity <fa-icon class="asterisk" [icon]="icons.faAsterisk" /></label>
+                                <input [class]="itemInputHasError('quantity') ? 'error-input' : ''" class="number"
+                                    type="number" formControlName="quantity">
+                            </div>
                             <div class="input-container number">
                                 <label>Discount</label>
                                 <input [class]="itemInputHasError('discount') ? 'error-input' : ''" class="number"
