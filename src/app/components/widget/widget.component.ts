@@ -122,6 +122,10 @@ export class WidgetComponent {
 
     this.formService.performReload();
 
+    if (this.tableData.tableName == 'stocked_items') {
+      this.getStockedItemTotal();
+    }
+
     if (this.tableData.query == 'invoiced-items') {
       let totalGross = 0;
       let totalNet = 0;
