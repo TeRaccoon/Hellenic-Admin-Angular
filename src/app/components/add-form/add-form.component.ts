@@ -814,8 +814,8 @@ export class AddFormComponent {
     invoiceDetails: any[],
     key: string = 'title'
   ) {
-    this.filteredReplacementData['Invoice'].data = this.replacementData[
-      'Invoice'
+    this.filteredReplacementData['Invoice ID'].data = this.replacementData[
+      'Invoice ID'
     ].data = invoiceDetails.map((i: any) => ({
       id: i.id,
       replacement: i[key],
