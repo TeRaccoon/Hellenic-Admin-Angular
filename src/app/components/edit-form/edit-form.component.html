@@ -54,6 +54,7 @@
                                         <fa-icon [ngClass]="file == null ? '' : 'success'"
                                             [icon]="icons.faCloudUpload" /> {{ file == null ? "Upload Image" : file.name
                                         }}
+                                        <label class="upload-size-warning">(8mb max)</label>
                                     </label>
                                 </ng-template>
                             </ng-container>
