@@ -405,12 +405,14 @@ export class FormService {
         replacementData['Invoice'] = { data: data };
         break;
 
-        case 'offers':
-          var data = await this.getIdReplacementData(
-            'customers_id_name_code', dataService);
-          formData['Customer'].inputType = 'replacement';
-          replacementData['Customer'] = { data: data };
-          break;
+      case 'offers':
+        var data = await this.getIdReplacementData(
+          'customers_id_name_code',
+          dataService
+        );
+        formData['Customer'].inputType = 'replacement';
+        replacementData['Customer'] = { data: data };
+        break;
 
       case 'credit_notes_customers':
         var data = await this.getIdReplacementData(
