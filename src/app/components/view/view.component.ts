@@ -690,7 +690,7 @@ export class ViewComponent {
       totalNet += net;
     });
 
-    if (totalNet > freeDeliveryMinimum && isDelivery) {
+    if (totalNet < freeDeliveryMinimum && isDelivery) {
       totalNet += 7.5;
       delivery = 7.5;
     }
