@@ -671,7 +671,12 @@ export class FormService {
     return await this.dataService.uploadImage(formData);
   }
 
-  async processImageName(id: string | null, name: string, tableName: string) {
+  async processImageName(
+    id: string | null,
+    name: string,
+    tableName: string,
+    postUpload = false
+  ) {
     name = name.replaceAll(/[^a-zA-Z0-9_]/g, '_');
 
     let fileName = name + '.png';
@@ -681,6 +686,10 @@ export class FormService {
 
     if (id != null && query != null) {
       imageCount = await this.dataService.processGet(query, { filter: id });
+    }
+
+    if ((postUpload = true)) {
+      imageCount++;
     }
 
     if (imageCount != null) {

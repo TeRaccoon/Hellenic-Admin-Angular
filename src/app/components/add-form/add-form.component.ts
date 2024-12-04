@@ -536,7 +536,6 @@ export class AddFormComponent {
         'Please fill out the relevant fields to upload an image for before trying to upload!';
       return false;
     }
-
     return { id: id, name: name };
   }
 
@@ -602,7 +601,8 @@ export class AddFormComponent {
     let imageFileName = await this.formService.processImageName(
       id,
       name,
-      this.tableName
+      this.tableName,
+      true
     );
 
     this.addForm.get('image_file_name')?.setValue(imageFileName);
