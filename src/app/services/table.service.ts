@@ -86,7 +86,6 @@ export class TableService {
         this.dataService.setTabs(TABLE_CATEGORIES['Finance']);
         break;
 
-      case 'discount_codes':
       case 'page_section_text':
       case 'image_locations':
       case 'page_sections':
