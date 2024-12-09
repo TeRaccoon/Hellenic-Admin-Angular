@@ -190,9 +190,9 @@
                     <ng-container *ngIf="canUploadImages()">
                         <div class="image-upload-container">
                             <input accept="image/*" type="file" (change)="primeImage($event)">
-                            <fa-icon [icon]="icons.faCloudUpload" [ngClass]="file == null ? '' : 'success'" /> Drop
-                            Image Here to Upload
-                            <button class="button" (click)="submitImageOnly()">Upload</button>
+                            <fa-icon [icon]="icons.faCloudUpload" [ngClass]="file == null ? '' : 'success'" /> {{ file ?
+                            "" : "Drop Image Here to Upload" }}
+                            <button *ngIf="file" class="button" (click)="submitImageOnly()">Click to upload</button>
                         </div>
                     </ng-container>
                     <div class="form-footer">
