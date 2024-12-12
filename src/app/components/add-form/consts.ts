@@ -8,6 +8,7 @@ export const DISPLAY_INPUT_FIELD_TABLE_MAP_EXCLUSIONS: {
     'VAT',
     'Total',
     'Gross Value',
+    'Discount Value',
     'Status',
     'Printed',
     'Paid',

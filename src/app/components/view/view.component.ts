@@ -840,6 +840,7 @@ export class ViewComponent {
         if (this.authService.getAccessLevel() == 'Driver') {
           switch (column) {
             case 'gross_value':
+            case 'discount_value':
             case 'VAT':
             case 'total':
             case 'outstanding_balance':
