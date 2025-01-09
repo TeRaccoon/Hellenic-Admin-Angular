@@ -41,6 +41,7 @@ import { ConfigService } from './services/config.service';
 import { NoTableDataComponent } from './components/no-table-data/no-table-data.component';
 import { TableFooterComponent } from './components/table-footer/table-footer.component';
 import { InvoiceAddressComponent } from './components/invoice-address/invoice-address.component';
+import { NewsletterWidgetComponent } from './components/newsletter-widget/newsletter-widget.component';
 
 export function initConfig(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -76,6 +77,7 @@ export function initConfig(configService: ConfigService) {
     NoTableDataComponent,
     TableFooterComponent,
     InvoiceAddressComponent,
+    NewsletterWidgetComponent,
   ],
   imports: [
     BrowserModule,

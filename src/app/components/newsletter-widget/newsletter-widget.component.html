@@ -1,0 +1,5 @@
+<form [formGroup]="newsletterForm" (ngSubmit)="submit">
+    <quill-editor [styles]="{height: '300px', backgroundColor: 'white', borderRadius: '5px'}"
+        [formControlName]="'newsletter'"></quill-editor>
+    <button type="submit">Send</button>
+</form>

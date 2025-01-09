@@ -420,7 +420,6 @@ export class AddFormComponent {
   }
 
   async buildForm() {
-    //Responsible for setting up the forms required to send data to the server
     if (this.shouldDisplayItemWidget()) {
       delete this.formData['Item ID'];
       await this.resetAddItemForm();
