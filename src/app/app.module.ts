@@ -89,7 +89,11 @@ export function initConfig(configService: ConfigService) {
     FormsModule,
     NgChartsModule,
     NgxDaterangepickerMd.forRoot(),
-    QuillModule.forRoot(),
+    QuillModule.forRoot({
+      modules: {
+        imageResize: true,
+      },
+    }),
     RecaptchaV3Module,
   ],
   providers: [
