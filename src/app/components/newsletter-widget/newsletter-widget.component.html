@@ -1,5 +1,18 @@
-<form [formGroup]="newsletterForm" (ngSubmit)="submit">
-    <quill-editor [styles]="{height: '300px', backgroundColor: 'white', borderRadius: '5px'}"
-        [formControlName]="'newsletter'"></quill-editor>
-    <button type="submit">Send</button>
-</form>
+<div class="container">
+    <div class="form-container">
+        <h1>Newsletter</h1>
+        <form [formGroup]="newsletterForm" (ngSubmit)="submit()">
+            <quill-editor [styles]="{height: '300px', backgroundColor: 'white', borderRadius: '5px'}"
+                [formControlName]="'newsletter'" [modules]="modules"></quill-editor>
+            <div>
+                <button class="button" type="submit">{{ buttonText }} <fa-icon *ngIf="isLoading" [icon]="loading"
+                        spinPulse [spin]="true" /></button>
+                <button class="button" type="button" (click)="toggleMailingListVisibility()">Show Mailing List</button>
+            </div>
+        </form>
+    </div>
+    <div class="mailing-list-container" *ngIf="mailingListVisible">
+        <h2>Mailing List</h2>
+        <p *ngFor="let customer of newsletterCustomers">{{ customer }}</p>
+    </div>
+</div>

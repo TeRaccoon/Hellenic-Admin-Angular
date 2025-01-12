@@ -1,6 +1,8 @@
 $hellenicblue: rgb(0, 140, 255);
 
 .button {
+    border-radius: 5px;
+    padding: 5px;
     outline: none;
     background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
     border: none;

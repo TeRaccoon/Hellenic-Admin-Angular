@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { Subscription } from 'rxjs';
 import {
   faSpinner,
   faAsterisk,
