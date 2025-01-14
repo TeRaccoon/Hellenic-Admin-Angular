@@ -16,21 +16,35 @@ export class DeleteFormComponent {
   ids: number[] = [];
   tableName: string = '';
 
+  formText: string;
+
   faX = faX;
+
+  confirm = false;
 
   constructor(
     private dataService: DataService,
     private formService: FormService
-  ) {}
+  ) {
+    this.formText = 'Are you sure you want to delete this row?';
+  }
 
   ngOnInit() {
     this.subscriptions.add(
       this.formService.getDeleteFormVisibility().subscribe((visible) => {
         this.formVisible = visible ? 'visible' : 'hidden';
-        this.ids = this.formService.getDeleteFormIds();
-        this.tableName = this.formService.getSelectedTable();
+        this.load();
       })
     );
+  }
+
+  load() {
+    this.ids = this.formService.getDeleteFormIds();
+    this.tableName = this.formService.getSelectedTable();
+
+    if (this.ids.length > 1) {
+      this.formText = 'Are you sure you want to delete these rows?';
+    }
   }
 
   ngOnDestroy(): void {
@@ -42,27 +56,57 @@ export class DeleteFormComponent {
   }
 
   async deleteRow() {
-    var idString = '';
-    if (this.ids.length > 1) {
-      this.ids.forEach((id) => {
-        idString += id + ', ';
-      });
-      idString = idString.substring(0, idString.length - 2);
-    } else {
-      idString = String(this.ids[0]);
-    }
+    let idString = this.setIdString();
 
     let deletionResponse = await this.dataService.submitFormData({
       action: 'delete',
       id: idString,
       table_name: this.tableName,
     });
+
     this.formService.setMessageFormData({
       title: deletionResponse.success ? 'Success!' : 'Error!',
       message: deletionResponse.message,
     });
+
+    if ((deletionResponse.error = 'FOREIGN_KEY')) {
+      this.formText = `There was an error! ${deletionResponse.message} Are you sure you want to proceed?`;
+    } else {
+      this.formService.showMessageForm();
+      this.hide();
+      this.formService.requestReload('hard');
+    }
+  }
+
+  async deleteRowHard() {
+    let idString = this.setIdString();
+
+    let deletionResponse = await this.dataService.submitFormData({
+      action: 'delete-hard',
+      id: idString,
+      table_name: this.tableName,
+    });
+
+    this.formService.setMessageFormData({
+      title: deletionResponse.success ? 'Success!' : 'Error!',
+      message: deletionResponse.message,
+    });
+
     this.formService.showMessageForm();
     this.hide();
     this.formService.requestReload('hard');
+  }
+
+  setIdString() {
+    if (this.ids.length > 1) {
+      let idString = '';
+
+      this.ids.forEach((id) => {
+        idString += id + ', ';
+      });
+      return idString.substring(0, idString.length - 2);
+    } else {
+      return String(this.ids[0]);
+    }
   }
 }
