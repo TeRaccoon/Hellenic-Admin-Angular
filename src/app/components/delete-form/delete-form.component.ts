@@ -3,6 +3,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
+import { Response } from '../../common/types/data-service/types';
 
 @Component({
   selector: 'app-delete-form',
@@ -70,7 +71,10 @@ export class DeleteFormComponent {
     });
 
     if ((deletionResponse.error = 'FOREIGN_KEY')) {
-      this.formText = `There was an error! ${deletionResponse.message} Are you sure you want to proceed?`;
+      if (this.ids.length == 1) {
+        this.confirm = true;
+      }
+      this.formText = `There was an error! ${deletionResponse.message} THIS IS A VERY DANGEROUS ACTION. All related entries in other tables will be removed. Are you sure you want to proceed?`;
     } else {
       this.formService.showMessageForm();
       this.hide();
@@ -81,8 +85,22 @@ export class DeleteFormComponent {
   async deleteRowHard() {
     let idString = this.setIdString();
 
+    let referencedColumns = await this.dataService.processPost({
+      action: 'column-usage',
+      table_name: this.tableName,
+    });
+
+    for (const column of referencedColumns) {
+      await this.dataService.submitFormData({
+        action: 'delete-hard',
+        id: idString,
+        column: column.COLUMN_NAME,
+        table_name: column.TABLE_NAME,
+      });
+    }
+
     let deletionResponse = await this.dataService.submitFormData({
-      action: 'delete-hard',
+      action: 'delete',
       id: idString,
       table_name: this.tableName,
     });

@@ -8,9 +8,9 @@
         </div>
         <div class="content-section">
             <p>{{ formText }}</p>
-            <div class="form-footer">
-                <button *ngIf="!confirm" class="button" (click)="deleteRow()">Delete</button>
-                <button *ngIf="confirm" class="button" (click)="deleteRowHard()">Confirm Delete?</button>
-            </div>
+        </div>
+        <div class="form-footer">
+            <button *ngIf="!confirm" class="button" (click)="deleteRow()">Delete</button>
+            <button *ngIf="confirm" class="button" (click)="deleteRowHard()">Confirm Delete?</button>
         </div>
     </div>
