@@ -27,5 +27,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": ["quill-blot-formatter.d.ts"]
+  "include": ["src/**/*.ts", "quill-blot-formatter.d.ts"]
 }
