@@ -164,6 +164,7 @@ export class SettingsComponent {
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,
     });
+
     this.formService.showMessageForm();
   }
 }
