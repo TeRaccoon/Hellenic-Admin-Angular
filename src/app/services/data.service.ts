@@ -52,6 +52,19 @@ export class DataService {
     return response;
   }
 
+  async processDocument(location: string) {
+    const url = this.urlService.getUrl('admin');
+    let value = await lastValueFrom(
+      this.http.post(url, {
+        body: {
+          action: 'document',
+          url: this.urlService.getUrl('uploads') + location,
+        },
+      })
+    );
+    return value;
+  }
+
   async submitFormData(data: any) {
     const url = this.urlService.getUrl('data');
 
