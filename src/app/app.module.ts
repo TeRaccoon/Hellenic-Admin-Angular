@@ -42,6 +42,7 @@ import { NoTableDataComponent } from './components/no-table-data/no-table-data.c
 import { TableFooterComponent } from './components/table-footer/table-footer.component';
 import { InvoiceAddressComponent } from './components/invoice-address/invoice-address.component';
 import { NewsletterWidgetComponent } from './components/newsletter-widget/newsletter-widget.component';
+import { DocumentUploadWidgetComponent } from './components/document-upload-widget/document-upload-widget.component';
 
 export function initConfig(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -78,6 +79,7 @@ export function initConfig(configService: ConfigService) {
     TableFooterComponent,
     InvoiceAddressComponent,
     NewsletterWidgetComponent,
+    DocumentUploadWidgetComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,49 @@
+@import "../variables";
+
+.container {
+    display: flex;
+    gap: 20px;
+    max-height: 45.5vw;
+
+    .form-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        padding: 20px;
+
+        h1 {
+            margin: 0 0 15px 0;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+
+            .options {
+                margin: 10px 0px;
+                display: flex;
+                gap: 10px;
+
+                select {
+                    background-color: #ffffff;
+                    border-radius: 8px;
+                    outline: none;
+                    border: 1px solid rgb(215, 215, 215);
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+                    font-size: 16px;
+                    padding: 6px;
+                    cursor: pointer;
+                }
+
+                button {
+                    font-weight: bold;
+                    font-size: 15px;
+                    padding: 4px 8px;
+                }
+            }
+
+
+        }
+
+    }
+}
