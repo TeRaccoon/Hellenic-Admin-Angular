@@ -83,6 +83,7 @@ export class TableService {
       case 'payments':
       case 'customer_payments':
       case 'supplier_payments':
+      case 'expense_options':
         this.dataService.setTabs(TABLE_CATEGORIES['Finance']);
         break;
 

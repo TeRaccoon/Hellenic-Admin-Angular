@@ -248,6 +248,15 @@ export class FormService {
     formType?: string
   ) {
     switch (tableName) {
+      case 'payments':
+        var data = await this.getIdReplacementData(
+          'expense_options_id',
+          dataService
+        );
+        formData['Category'].inputType = 'replacement';
+        replacementData['Category'] = { data: data };
+        break;
+
       case 'price_list':
         var data = await this.getIdReplacementData(
           'items_id_name_sku',

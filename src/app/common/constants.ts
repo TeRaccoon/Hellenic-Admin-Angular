@@ -21,6 +21,7 @@ export const TABLE_NAMES = [
   'credit_notes_customers',
   'expired_items',
   'invoiced_items',
+  'expense_options',
 ];
 
 export const TABLE_NAME_PAIRS = [
@@ -46,6 +47,7 @@ export const TABLE_NAME_PAIRS = [
   { credit_notes_customers: 'Credit Notes Customers' },
   { expired_items: 'Expired Items' },
   { invoiced_items: 'Invoiced Items' },
+  { expense_options: 'Expense Options' },
 ];
 
 export const TABLE_CATEGORIES = {
@@ -79,6 +81,7 @@ export const TABLE_CATEGORIES = {
     { tableName: 'supplier_payments', displayName: 'Supplier Payments' },
     { tableName: 'debtor_creditor', displayName: 'Aged Debtor / Creditors' },
     { tableName: 'vat-returns', displayName: 'VAT Returns' },
+    { tableName: 'expense_options', displayName: 'Expense Options' },
   ],
   Website: [
     { tableName: 'offers', displayName: 'Offers' },
