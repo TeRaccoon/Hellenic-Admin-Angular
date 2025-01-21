@@ -3,7 +3,6 @@ import { Document } from '../../common/types/document-upload-widget/types';
 
 import Quill from 'quill';
 import BlotFormatter from 'quill-blot-formatter/dist/BlotFormatter';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 
@@ -34,6 +33,7 @@ export class DocumentUploadWidgetComponent {
       { title: 'Terms & Conditions', type: 'terms-and-conditions' },
       { title: 'Shipping Policy', type: 'shipping-policy' },
       { title: 'Refund Policy', type: 'refund-policy' },
+      { title: 'Business Terms', type: 'business-terms' },
     ];
 
     this.selectedDocument = this.documents[0];
