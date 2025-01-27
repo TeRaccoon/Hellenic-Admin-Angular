@@ -3,7 +3,6 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
-import { Response } from '../../common/types/data-service/types';
 
 @Component({
   selector: 'app-delete-form',
@@ -88,14 +87,14 @@ export class DeleteFormComponent {
     let referencedColumns = await this.dataService.processPost({
       action: 'column-usage',
       table_name: this.tableName,
+      id: idString,
     });
 
     for (const column of referencedColumns) {
       await this.dataService.submitFormData({
-        action: 'delete-hard',
-        id: idString,
-        column: column.COLUMN_NAME,
-        table_name: column.TABLE_NAME,
+        action: 'delete',
+        id: column.id,
+        table_name: column.table,
       });
     }
 
