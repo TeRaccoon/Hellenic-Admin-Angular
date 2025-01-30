@@ -1,6 +1,6 @@
 export const recaptcha = {
   production: true,
-  siteKey: '6LccBscqAAAAAECnubf0zcWsX0sFPJocrJaiS0ft',
+  siteKey: '6LdYMcgqAAAAABKCNZjop8lUNGQkYnsHDWQJMrUQ',
 };
 
 export const environment = {

@@ -8,7 +8,7 @@ import { NgChartsModule } from 'ng2-charts';
 import _ from 'lodash';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
-import { recaptcha } from '../environments/environment';
+import { environment, recaptcha } from '../environments/environment';
 import { QuillModule } from 'ngx-quill';
 
 import { AppRoutingModule } from './app-routing.module';
