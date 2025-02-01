@@ -5,6 +5,11 @@
 
     .panel-container {
         display: flex;
+        flex-direction: column;
+
+        >div {
+            display: flex;
+        }
 
         .control-container {
             background: white;
