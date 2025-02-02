@@ -35,9 +35,11 @@ import {
 export class ViewComponent {
   private readonly subscriptions = new Subscription();
 
-  accessible = false;
-
   icons = tableIcons;
+
+  buttonConfigs: any[] = [];
+
+  accessible = false;
 
   apiUrlBase;
   imageUrlBase;
@@ -104,6 +106,46 @@ export class ViewComponent {
       fields: [],
       values: [],
     };
+
+    this.buttonConfigs = [
+      {
+        condition: () =>
+          this.selectedRows.length > 0 && this.tableName === 'invoices',
+        icon: this.icons.faPrint,
+        action: () => this.print(),
+      },
+      {
+        condition: () => this.canShowMultipleDelete(),
+        icon: this.icons.faTrashCan,
+        action: () => this.deleteRows(),
+      },
+      {
+        condition: () => this.selectedRows.length === 1,
+        icon: this.icons.faCopy,
+        action: () => this.duplicate(),
+      },
+      {
+        condition: () => this.tableName === 'suppliers',
+        icon: this.icons.faFileInvoice,
+        action: () => this.createCreditNote(),
+      },
+      {
+        condition: () =>
+          (this.tableName === 'customers' || this.tableName === 'suppliers') &&
+          this.selectedRows.length === 1,
+        label: 'Balance Sheet',
+        action: () => this.viewBalanceSheet(),
+      },
+      {
+        condition: () =>
+          this.selectedRows.length === 1 && this.tableName === 'invoices',
+        icon: this.distanceLoading
+          ? this.icons.faSpinner
+          : this.icons.faTruckFront,
+        action: () => this.calculateDistance(),
+        spin: () => this.distanceLoading,
+      },
+    ];
   }
 
   ngOnInit() {

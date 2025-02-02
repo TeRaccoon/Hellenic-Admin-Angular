@@ -1,261 +1,281 @@
-<div class="container" *ngIf="accessible">
-    <ng-container *ngIf="viewMetaData.loaded else loading">
-        <h2>Data for {{ displayName }}</h2>
-        <div class="table-container">
-            <div class="options-container">
-                <div class="row">
-                    <button class="button" (click)="addRow(null)">Add New +</button>
-                    <button *ngIf="this.selectedRows.length > 0 && tableName == 'invoices'" class="button"
-                        (click)="print()"><fa-icon [icon]="icons.faPrint" /></button>
-                    <button *ngIf="canShowMultipleDelete()" class="button" (click)="deleteRows()"><fa-icon
-                            [icon]="icons.faTrashCan" /></button>
-                    <button *ngIf="selectedRows.length == 1" class="button" (click)="duplicate()"><fa-icon
-                            [icon]="icons.faCopy" /></button>
-                    <button *ngIf="tableName == 'suppliers'" class="button" (click)="createCreditNote()"><fa-icon
-                            [icon]="icons.faFileInvoice" /></button>
-                    <button *ngIf="(tableName == 'customers' || tableName == 'suppliers') && selectedRows.length == 1"
-                        class="button" (click)="viewBalanceSheet()">
-                        Balance Sheet
+@if (accessible) {
+<div class="container">
+    @if (viewMetaData.loaded) {
+    <h2>Data for {{ displayName }}</h2>
+    <div class="table-container">
+        <div class="options-container">
+            <div class="row">
+                <button class="button" (click)="addRow(null)">Add New +</button>
+                @for (button of buttonConfigs; track button) {
+                    @if (button.condition()) {
+                    <button class="button" (click)="button.action()">
+                        @if (button.icon) {
+                        <fa-icon [icon]="button.icon" [spin]="button.spin ? button.spin() : false" />
+                        }
+                        @if (button.label) {
+                        <span>{{ button.label }}</span>
+                        }
                     </button>
-                    <button *ngIf="this.selectedRows.length == 1 && tableName == 'invoices'" class="button"
-                        (click)="calculateDistance()">
-                        <fa-icon *ngIf="!distanceLoading; else loading" [icon]="icons.faTruckFront"></fa-icon>
-                        <ng-template #loading>
-                            <fa-icon [icon]="icons.faSpinner" spinPulse [spin]="true"></fa-icon>
-                        </ng-template>
-                    </button>
-                </div>
-                <div>
-                    <p>Show
-                        <select (change)="changeEntries($event)">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select> entries
-                    </p>
-                    <div class="filter-container">
-                        <ng-container *ngIf="displayColumnFilters.length > 0">
-                            <div *ngFor="let filter of displayColumnFilters; let i = index" class="filter"
-                                (click)="removeColumnFilter(i)">
-                                <p>{{ filter }}</p>
-                                <fa-icon [icon]="icons.faX" />
-                            </div>
-                        </ng-container>
-                        <div *ngIf="getFilterData().searchFilter != '' && getFilterData().searchFilterApplied"
-                            class="filter" (click)="clearFilter('table', true)">
-                            <p>{{ getFilterData().searchFilter }}</p>
+                    }
+                }
+            </div>
+            <div>
+                <p>Show
+                    <select (change)="changeEntries($event)">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select> entries
+                </p>
+                <div class="filter-container">
+                    @if (displayColumnFilters.length > 0) {
+                        @for (filter of displayColumnFilters; track filter; let i = $index) {
+                        <div class="filter" (click)="removeColumnFilter(i)">
+                            <p>{{ filter }}</p>
                             <fa-icon [icon]="icons.faX" />
                         </div>
-                        <ng-container *ngIf="columnDateFilters.length > 0">
-                            <div *ngFor="let filter of columnDateFilters; let i = index" class="filter"
-                                (click)="removeColumnDateFilter(i)">
-                                <p>{{ filter.startDate }}</p>
-                                <fa-icon [icon]="icons.faArrowsLeftRight" />
-                                <p>{{ filter.endDate }}</p>
-                                <fa-icon [icon]="icons.faX" />
-                            </div>
-                        </ng-container>
-                        <div class="advanced-filter-container">
-                            <button class="button" (click)="showAdvancedFilter()"><fa-icon
-                                    [icon]="icons.faFilter" /></button>
+                        }
+                    }
+                    @if (getFilterData().searchFilter != '' && getFilterData().searchFilterApplied) {
+                    <div class="filter" (click)="clearFilter('table', true)">
+                        <p>{{ getFilterData().searchFilter }}</p>
+                        <fa-icon [icon]="icons.faX" />
+                    </div>
+                    }
+                    @if (columnDateFilters.length > 0) {
+                        @for (filter of columnDateFilters; track filter; let i = $index) {
+                        <div class="filter" (click)="removeColumnDateFilter(i)">
+                            <p>{{ filter.startDate }}</p>
+                            <fa-icon [icon]="icons.faArrowsLeftRight" />
+                            <p>{{ filter.endDate }}</p>
+                            <fa-icon [icon]="icons.faX" />
                         </div>
-                        <div class="search-container">
-                            <form>
-                                <input type="text" placeholder="Search..." [(ngModel)]="getFilterData().searchFilter"
-                                    name="searchText" />
-                                <button type="submit" (click)="setTableFilter()">
-                                    <fa-icon [icon]="icons.faSearch"></fa-icon>
-                                </button>
-                            </form>
-                        </div>
+                        }
+                    }
+                    <div class="advanced-filter-container">
+                        <button class="button" (click)="showAdvancedFilter()"><fa-icon
+                                [icon]="icons.faFilter" /></button>
+                    </div>
+                    <div class="search-container">
+                        <form>
+                            <input type="text" placeholder="Search..." [(ngModel)]="getFilterData().searchFilter"
+                                name="searchText" />
+                            <button type="submit" (click)="setTableFilter()">
+                                <fa-icon [icon]="icons.faSearch"></fa-icon>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
-            <div *ngIf="tabs.length > 0" class="tab-parent">
-                <div *ngFor="let tab of tabs" (click)="changeTab(tab.tableName)"
-                    [class]="tableName == tab.tableName ? 'active-tab' : 'tab'">
-                    {{tab.displayName}}
-                </div>
-            </div>
-            <div class="table-wrapper">
-                <table *ngIf="data && data.length > 0 else noData">
-                    <thead>
-                        <tr *ngIf="data[0]">
-                            <th>Select</th>
-                            <ng-container *ngFor="let column of displayNames; let key = index">
-                                <ng-container *ngIf="key == 2">
-                                    <th *ngFor="let header of getCustomColumnHeadersFromTable()">{{ header }}</th>
-                                </ng-container>
-                                <th *ngIf="canDisplayColumn(column.toString())" (click)="sortColumn(column)">
-                                    {{ column }}
-                                    <fa-icon *ngIf="this.sortedColumn.columnName == column.toString()"
-                                        [icon]="this.sortedColumn.ascending ? icons.faArrowUp : icons.faArrowDown" />
-                                </th>
-                            </ng-container>
-                            <ng-container *ngIf="tableName == 'items'">
-                                <th>Allergen Information</th>
-                                <th>Nutrition Information</th>
-                            </ng-container>
-                            <th *ngIf="canDisplayColumn('edit-row')">Edit</th>
-                            <th *ngIf="canDisplayColumn('delete-row')">Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="data-row"
-                            *ngFor="let item of filteredDisplayData.slice(0, viewMetaData.entryLimit); let key = index;">
-                            <ng-container *ngIf="itemContainsFilter(item)">
-                                <td>
-                                    <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox"
-                                        [checked]="selectedRows.indexOf(item['id']) != -1">
-                                </td>
-                                <ng-container
-                                    *ngFor="let column of getColumnHeaders(data[0]); let columnIndex = index;">
-                                    <ng-container *ngIf="columnIndex == 2">
-                                        <ng-container [ngSwitch]="tableName">
-                                            <ng-container *ngSwitchCase="'items'">
-                                                <td (click)="stockSearch(item.id)"
-                                                    [ngClass]="shouldColourCell(item[column])"
-                                                    [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
-                                                    <fa-icon [icon]="icons.faBox"></fa-icon>
-                                                </td>
-                                                <td>{{ stockData[item['id']] ? stockData[item['id']] : 0 }}</td>
-                                            </ng-container>
-                                            <ng-container *ngSwitchCase="'stocked_items'">
-                                                <td>
-                                                    <img
-                                                        [src]="images[item['item_id']] == null ? imageUrlBase + 'placeholder.jpg' :  imageUrlBase + images[item['item_id']]" />
-                                                </td>
-                                            </ng-container>
-                                            <ng-container *ngSwitchCase="'supplier_invoices'">
-                                                <td *ngIf="canDisplayColumn('invoiced-items')"
-                                                    (click)="supplierInvoiceSearch(item.id)">
-                                                    <fa-icon [icon]="icons.faBasketShopping"></fa-icon>
-                                                </td>
-                                                <td (click)="creditNoteSearch(item.id)">
-                                                    <fa-icon [icon]="icons.faNoteSticky"></fa-icon>
-                                                </td>
-                                            </ng-container>
-                                            <ng-container *ngSwitchCase="'suppliers'">
-                                                <td (click)="creditNoteSearch(item.id)">
-                                                    <fa-icon [icon]="icons.faNoteSticky"></fa-icon>
-                                                </td>
-                                            </ng-container>
-                                            <ng-container *ngSwitchCase="'invoices'">
-                                                <td *ngIf="canDisplayColumn('invoiced-items')"
-                                                    (click)="invoiceSearch(item.id)">
-                                                    <fa-icon [icon]="icons.faBasketShopping"></fa-icon>
-                                                </td>
-                                            </ng-container>
-                                            <ng-container *ngSwitchCase="'customers'">
-                                                <td (click)="addressSearch(item.id, item.account_name)">
-                                                    <fa-icon [icon]="icons.faAddressBook"></fa-icon>
-                                                </td>
-                                            </ng-container>
-                                        </ng-container>
-                                    </ng-container>
-
-                                    <td *ngIf="canDisplayColumn(column)" [ngClass]="shouldColourCell(item[column])"
-                                        [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
-
-                                        <ng-container [ngSwitch]="dataTypes[columnIndex]">
-                                            <img *ngSwitchCase="'file'"
-                                                [src]="item[column] == null ? imageUrlBase + 'placeholder.jpg' : imageUrlBase + item[column]" />
-
-                                            <ng-container *ngSwitchCase="'enum(\'No\',\'Yes\')'">
-                                                <input
-                                                    (change)="changeCheckBox($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column)"
-                                                    type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
-                                            </ng-container>
-
-                                            <ng-container *ngSwitchCase="'float'">
-                                                <ng-container *ngIf="column != 'amount_eur'">
-                                                    {{ item[column] == null ? '---' : item[column] | currency:'GBP' }}
-                                                </ng-container>
-                                                <ng-container *ngIf="column == 'amount_eur'">
-                                                    {{ item[column] == null ? '---' : item[column] | currency:'EUR' }}
-                                                </ng-container>
-                                            </ng-container>
-
-                                            <ng-container *ngSwitchCase="'decimal(19,2)'">
-                                                <ng-container *ngIf="column != 'amount_eur'">
-                                                    {{ item[column] == null ? '---' : item[column] | currency:'GBP' }}
-                                                </ng-container>
-                                                <ng-container *ngIf="column == 'amount_eur'">
-                                                    {{ item[column] == null ? '---' : item[column] | currency:'EUR' }}
-                                                </ng-container>
-                                            </ng-container>
-
-                                            <ng-container *ngSwitchCase="'double'">
-                                                {{ item[column] == null ? '---' : item[column] + '%' }}
-                                            </ng-container>
-
-                                            <ng-container *ngSwitchCase="'text'">
-                                                <div class="text-container">
-                                                    {{ item[column] == null ? '---' : item[column] }}
-                                                </div>
-                                            </ng-container>
-
-                                            <ng-container *ngSwitchCase="'date'">
-                                                {{ item[column] == null ? '---' : item[column] | date: 'dd/MM/yyyy' }}
-                                            </ng-container>
-
-                                            <ng-container *ngSwitchDefault>
-                                                {{ item[column] == null ? '---' : item[column] }}
-                                                <ng-container *ngIf="displayWithIcon(column, item)"
-                                                    class="icon-container">
-                                                    <fa-icon class="row-icon"
-                                                        (click)="iconClick($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column, item)"
-                                                        [icon]="icon"></fa-icon>
-                                                </ng-container>
-                                            </ng-container>
-                                        </ng-container>
-                                    </td>
-
-                                    <ng-container *ngIf="tableName == 'items'">
-                                        <td (click)="editRow(item.id, 'allergen_information')">
-                                            <fa-icon [icon]="icons.faBookMedical"></fa-icon>
-                                        </td>
-                                        <td (click)="editRow(item.id, 'nutrition_info')">
-                                            <fa-icon [icon]="icons.faBookOpen"></fa-icon>
-                                        </td>
-                                    </ng-container>
-                                    <td *ngIf="canDisplayColumn('edit-row')">
-                                        <a (click)="editRow(item.id, '')">
-                                            <fa-icon [icon]="icons.faPencil"></fa-icon>
-                                        </a>
-                                    </td>
-                                    <td *ngIf="canDisplayColumn('delete-row')" class="bin">
-                                        <a (click)="deleteRow(item.id)">
-                                            <fa-icon [icon]="icons.faTrashCan"></fa-icon>
-                                        </a>
-                                    </td>
-                                </ng-container>
-                        </tr>
-                    </tbody>
-                </table>
-                <ng-template #noData>
-                    <app-no-table-data *ngIf="data.length === 0 && viewMetaData.loaded" (addRowEmitter)="addRow(null)"
-                        [displayName]="displayName" />
-                </ng-template>
-            </div>
-            <app-table-footer [viewMetadata]="viewMetaData" [pageRange]="getPageRange()"
-                (loadPage)="pageEvent($event)" />
-            <ng-container [ngSwitch]="tableName">
-                <ng-container *ngSwitchCase="'general_ledger'">
-                    <app-ledger-widget></app-ledger-widget>
-                </ng-container>
-            </ng-container>
         </div>
-    </ng-container>
-    <ng-template #loading>
-        <ng-container *ngIf="!viewMetaData.loaded">
-            <div class="loading-container">
-                <fa-icon class="loading-icon" [icon]="icons.faSpinner" spinPulse [spin]="true" />
+        @if (tabs.length > 0) {
+        <div class="tab-parent">
+            @for (tab of tabs; track tab) {
+            <div (click)="changeTab(tab.tableName)" [class]="tableName == tab.tableName ? 'active-tab' : 'tab'">
+                {{tab.displayName}}
             </div>
-        </ng-container>
+            }
+        </div>
+        }
+        <div class="table-wrapper">
+            @if (data && data.length > 0) {
+            <table>
+                <thead>
+                    @if (data[0]) {
+                    <tr>
+                        <th>Select</th>
+                        @for (column of displayNames; track column; let key = $index) {
+                            @if (key == 2) {
+                                @for (header of getCustomColumnHeadersFromTable(); track header) {
+                                <th>{{ header }}</th>
+                                }
+                            }
+                            @if (canDisplayColumn(column.toString())) {
+                            <th (click)="sortColumn(column)">
+                                {{ column }}
+                                @if (this.sortedColumn.columnName == column.toString()) {
+                                <fa-icon [icon]="this.sortedColumn.ascending ? icons.faArrowUp : icons.faArrowDown" />
+                                }
+                            </th>
+                            }
+                        }
+                        @if (tableName == 'items') {
+                        <th>Allergen Information</th>
+                        <th>Nutrition Information</th>
+                        }
+                        @if (canDisplayColumn('edit-row')) {
+                        <th>Edit</th>
+                        }
+                        @if (canDisplayColumn('delete-row')) {
+                        <th>Delete</th>
+                        }
+                    </tr>
+                    }
+                </thead>
+                <tbody>
+                    @for (item of filteredDisplayData.slice(0, viewMetaData.entryLimit); track item; let key = $index) {
+                    <tr class="data-row">
+                        @if (itemContainsFilter(item)) {
+                        <td>
+                            <input (change)="selectRow($event, item['id'])" type="checkbox" class="checkbox"
+                                [checked]="selectedRows.indexOf(item['id']) != -1">
+                        </td>
+                        @for (column of getColumnHeaders(data[0]); track column; let columnIndex = $index) {
+                        @if (columnIndex == 2) {
+                        @switch (tableName) {
+                        @case ('items') {
+                        <td (click)="stockSearch(item.id)" [ngClass]="shouldColourCell(item[column])"
+                            [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
+                            <fa-icon [icon]="icons.faBox"></fa-icon>
+                        </td>
+                        <td>{{ stockData[item['id']] ? stockData[item['id']] : 0 }}</td>
+                        }
+                        @case ('stocked_items') {
+                        <td>
+                            <img
+                                [src]="images[item['item_id']] == null ? imageUrlBase + 'placeholder.jpg' :  imageUrlBase + images[item['item_id']]" />
+                        </td>
+                        }
+                        @case ('supplier_invoices') {
+                        @if (canDisplayColumn('invoiced-items')) {
+                        <td (click)="supplierInvoiceSearch(item.id)">
+                            <fa-icon [icon]="icons.faBasketShopping"></fa-icon>
+                        </td>
+                        }
+                        <td (click)="creditNoteSearch(item.id)">
+                            <fa-icon [icon]="icons.faNoteSticky"></fa-icon>
+                        </td>
+                        }
+                        @case ('suppliers') {
+                        <td (click)="creditNoteSearch(item.id)">
+                            <fa-icon [icon]="icons.faNoteSticky"></fa-icon>
+                        </td>
+                        }
+                        @case ('invoices') {
+                        @if (canDisplayColumn('invoiced-items')) {
+                        <td (click)="invoiceSearch(item.id)">
+                            <fa-icon [icon]="icons.faBasketShopping"></fa-icon>
+                        </td>
+                        }
+                        }
+                        @case ('customers') {
+                        <td (click)="addressSearch(item.id, item.account_name)">
+                            <fa-icon [icon]="icons.faAddressBook"></fa-icon>
+                        </td>
+                        }
+                        }
+                        }
+                        @if (canDisplayColumn(column)) {
+                        <td [ngClass]="shouldColourCell(item[column])"
+                            [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(column, item) ? ' icon-data-container' : '')">
+                            @switch (dataTypes[columnIndex]) {
+                            @case ('file') {
+                            <img
+                                [src]="item[column] == null ? imageUrlBase + 'placeholder.jpg' : imageUrlBase + item[column]" />
+                            }
+                            @case ('enum(\'No\',\'Yes\')') {
+                            <input
+                                (change)="changeCheckBox($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column)"
+                                type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
+                            }
+                            @case ('float') {
+                            @if (column != 'amount_eur') {
+                            {{ item[column] == null ? '---' : item[column] | currency:'GBP' }}
+                            }
+                            @if (column == 'amount_eur') {
+                            {{ item[column] == null ? '---' : item[column] | currency:'EUR' }}
+                            }
+                            }
+                            @case ('decimal(19,2)') {
+                            @if (column != 'amount_eur') {
+                            {{ item[column] == null ? '---' : item[column] | currency:'GBP' }}
+                            }
+                            @if (column == 'amount_eur') {
+                            {{ item[column] == null ? '---' : item[column] | currency:'EUR' }}
+                            }
+                            }
+                            @case ('double') {
+                            {{ item[column] == null ? '---' : item[column] + '%' }}
+                            }
+                            @case ('text') {
+                            <div class="text-container">
+                                {{ item[column] == null ? '---' : item[column] }}
+                            </div>
+                            }
+                            @case ('date') {
+                            {{ item[column] == null ? '---' : item[column] | date: 'dd/MM/yyyy' }}
+                            }
+                            @default {
+                            {{ item[column] == null ? '---' : item[column] }}
+                            @if (displayWithIcon(column, item)) {
+                            <ng-container class="icon-container">
+                                <fa-icon class="row-icon"
+                                    (click)="iconClick($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column, item)"
+                                    [icon]="icon"></fa-icon>
+                            </ng-container>
+                            }
+                            }
+                            }
+                        </td>
+                        }
+                        }
+                        @if (tableName == 'items') {
+                        <td (click)="editRow(item.id, 'allergen_information')">
+                            <fa-icon [icon]="icons.faBookMedical"></fa-icon>
+                        </td>
+                        <td (click)="editRow(item.id, 'nutrition_info')">
+                            <fa-icon [icon]="icons.faBookOpen"></fa-icon>
+                        </td>
+                        }
+                        @if (canDisplayColumn('edit-row')) {
+                        <td>
+                            <a (click)="editRow(item.id, '')">
+                                <fa-icon [icon]="icons.faPencil"></fa-icon>
+                            </a>
+                        </td>
+                        }
+                        @if (canDisplayColumn('delete-row')) {
+                        <td class="bin">
+                            <a (click)="deleteRow(item.id)">
+                                <fa-icon [icon]="icons.faTrashCan"></fa-icon>
+                            </a>
+                        </td>
+                        }
+                        }
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            } @else {
+            @if (data.length === 0 && viewMetaData.loaded) {
+            <app-no-table-data (addRowEmitter)="addRow(null)" [displayName]="displayName" />
+            }
+            }
+        </div>
+        <app-table-footer [viewMetadata]="viewMetaData" [pageRange]="getPageRange()" (loadPage)="pageEvent($event)" />
+        @switch (tableName) {
+        @case ('general_ledger') {
+        <app-ledger-widget></app-ledger-widget>
+        }
+        }
+    </div>
+    } @else {
+    @if (!viewMetaData.loaded) {
+    <div class="loading-container">
+        <fa-icon class="loading-icon" [icon]="icons.faSpinner" spinPulse [spin]="true" />
+    </div>
+    }
+    }
+    <ng-template #loading>
+        @if (!viewMetaData.loaded) {
+        <div class="loading-container">
+            <fa-icon class="loading-icon" [icon]="icons.faSpinner" spinPulse [spin]="true" />
+        </div>
+        }
     </ng-template>
 </div>
+}
 <app-edit-form />
 <app-add-form />
 <app-delete-form />
