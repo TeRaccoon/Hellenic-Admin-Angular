@@ -1,19 +1,23 @@
 <div class="container">
-    <div (click)="goHome()" class="header-section">
-        <h1>Hellenic Admin</h1>
-    </div>
-    <div class="options-container">
-        <div *ngFor="let category of getTableCategories(tables)">
-            <button class="sidebar-button" (click)="toggleDropdown(category)">{{ category }}
-                <fa-icon [icon]="isDropdownVisible[category] ? faCaretDown : faCaretRight"></fa-icon>
-            </button>
-            <div class="dropdown-container" [ngClass]="{'hidden': !isDropdownVisible[category]}">
-                <ng-container *ngFor="let table of tables[category]">
-                    <a *ngIf="canDisplayTable(table.tableName)"
-                        [class]="table.tableName == selectedTable ? 'selected-tab' : ''"
-                        (click)="changeTable(table.tableName)">{{ table.displayName }}</a>
-                </ng-container>
-            </div>
+  <div (click)="goHome()" class="header-section">
+    <h1>Hellenic Admin</h1>
+  </div>
+  <div class="options-container">
+    @for (category of getTableCategories(tables); track category) {
+      <div>
+        <button class="sidebar-button" (click)="toggleDropdown(category)">{{ category }}
+          <fa-icon [icon]="isDropdownVisible[category] ? faCaretDown : faCaretRight"></fa-icon>
+        </button>
+        <div class="dropdown-container" [ngClass]="{'hidden': !isDropdownVisible[category]}">
+          @for (table of tables[category]; track table) {
+            @if (canDisplayTable(table.tableName)) {
+              <a
+                [class]="table.tableName == selectedTable ? 'selected-tab' : ''"
+              (click)="changeTable(table.tableName)">{{ table.displayName }}</a>
+            }
+          }
         </div>
-    </div>
+      </div>
+    }
+  </div>
 </div>

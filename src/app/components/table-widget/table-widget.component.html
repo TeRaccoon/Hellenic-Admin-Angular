@@ -1,51 +1,61 @@
 <div class="container">
-    <div class="options-container">
-        <div *ngIf="tableData.displayDateRange" class="date-container">
-            <label>Start date:</label>
-            <input type="date" [(ngModel)]="startDate">
-            <label>End date:</label>
-            <input type="date" [(ngModel)]="endDate">
-            <button class="button" (click)="collectData()">Calculate</button>
-        </div>
-        <div class="vat-return-options-container" *ngIf="tableName == 'vat-returns'">
-            <select [(ngModel)]="selectedVatGroup">
-                <option *ngFor="let return of vatHistory" [ngValue]="return">{{ return }}</option>
-            </select>
-            <button class="button" (click)="loadVATReturns()">Show VAT Return</button>
-        </div>
+  <div class="options-container">
+    @if (tableData.displayDateRange) {
+      <div class="date-container">
+        <label>Start date:</label>
+        <input type="date" [(ngModel)]="startDate">
+        <label>End date:</label>
+        <input type="date" [(ngModel)]="endDate">
+        <button class="button" (click)="collectData()">Calculate</button>
+      </div>
+    }
+    @if (tableName == 'vat-returns') {
+      <div class="vat-return-options-container">
+        <select [(ngModel)]="selectedVatGroup">
+          @for (return of vatHistory; track return) {
+            <option [ngValue]="return">{{ return }}</option>
+          }
+        </select>
+        <button class="button" (click)="loadVATReturns()">Show VAT Return</button>
+      </div>
+    }
+  </div>
+  @if (vatReturnHistory.length > 0) {
+    <div class="vat-returns-table-container">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Box Number</th>
+              <th>Accounts Value</th>
+              <th>Previous Adjustments</th>
+              <th>Current Adjustments</th>
+              <th>New Adjustments</th>
+              <th>Fuel Scale Charge</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of this.tableData.alternativeData.altText; track row; let index = $index) {
+              <tr>
+                <td>{{ row }}</td>
+                <td>{{ index + 1 }}</td>
+                <td>{{ vatReturnHistory[index].accounts_value | currency: 'GBP' }}</td>
+                <td>{{ vatReturnHistory[index].previous_adjustments | currency: 'GBP' }}</td>
+                <td>{{ vatReturnHistory[index].current_adjustments | currency: 'GBP' }}</td>
+                <td>{{ vatReturnHistory[index].new_adjustments | currency: 'GBP' }}</td>
+                <td>{{ vatReturnHistory[index].fuel_scale_charge | currency: 'GBP' }}</td>
+                <td>{{ vatReturnHistory[index].total | currency: 'GBP' }}</td>
+              </tr>
+            }
+          </tbody>
+          <div class="notes-container">
+            <h4>Notes:</h4>
+            <p>{{ vatReturnHistory[0].notes }}</p>
+          </div>
+        </table>
+      </div>
     </div>
-    <div *ngIf="vatReturnHistory.length > 0" class="vat-returns-table-container">
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Box Number</th>
-                        <th>Accounts Value</th>
-                        <th>Previous Adjustments</th>
-                        <th>Current Adjustments</th>
-                        <th>New Adjustments</th>
-                        <th>Fuel Scale Charge</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let row of this.tableData.alternativeData.altText; let index = index">
-                        <td>{{ row }}</td>
-                        <td>{{ index + 1 }}</td>
-                        <td>{{ vatReturnHistory[index].accounts_value | currency: 'GBP' }}</td>
-                        <td>{{ vatReturnHistory[index].previous_adjustments | currency: 'GBP' }}</td>
-                        <td>{{ vatReturnHistory[index].current_adjustments | currency: 'GBP' }}</td>
-                        <td>{{ vatReturnHistory[index].new_adjustments | currency: 'GBP' }}</td>
-                        <td>{{ vatReturnHistory[index].fuel_scale_charge | currency: 'GBP' }}</td>
-                        <td>{{ vatReturnHistory[index].total | currency: 'GBP' }}</td>
-                    </tr>
-                </tbody>
-                <div class="notes-container">
-                    <h4>Notes:</h4>
-                    <p>{{ vatReturnHistory[0].notes }}</p>
-                </div>
-            </table>
-        </div>
-    </div>
+  }
 </div>

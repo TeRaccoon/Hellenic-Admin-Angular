@@ -1,13 +1,15 @@
-<div *ngIf="loaded" class="container">
+@if (loaded) {
+  <div class="container">
     <h2>Login</h2>
     <ng-container>
-        <form [formGroup]="loginForm" (ngSubmit)="formSubmit()">
-            <input [class]="error ? 'input-error' : ''" type="text" formControlName="username" placeholder="Username" required>
-            <input [class]="error ? 'input-error' : ''" type="password" formControlName="password" placeholder="Password" required>
-            <ng-container *ngIf="error != null">
-                <p class="error">{{ error }}</p>
-            </ng-container>
-            <button class="button" name="action" value="login" type="submit">Login</button>
-        </form>
+      <form [formGroup]="loginForm" (ngSubmit)="formSubmit()">
+        <input [class]="error ? 'input-error' : ''" type="text" formControlName="username" placeholder="Username" required>
+        <input [class]="error ? 'input-error' : ''" type="password" formControlName="password" placeholder="Password" required>
+        @if (error != null) {
+          <p class="error">{{ error }}</p>
+        }
+        <button class="button" name="action" value="login" type="submit">Login</button>
+      </form>
     </ng-container>
-</div>
+  </div>
+}

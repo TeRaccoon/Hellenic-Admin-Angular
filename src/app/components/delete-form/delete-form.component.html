@@ -1,16 +1,20 @@
 <div class="container" [class]="formVisible">
-    <div class="content">
-        <div class="header-section">
-            <h1>Deleting...</h1>
-            <a (click)="hide()">
-                <fa-icon [icon]="faX" />
-            </a>
-        </div>
-        <div class="content-section">
-            <p>{{ formText }}</p>
-        </div>
-        <div class="form-footer">
-            <button *ngIf="!confirm" class="button" (click)="deleteRow()">Delete</button>
-            <button *ngIf="confirm" class="button" (click)="deleteRowHard()">Confirm Delete?</button>
-        </div>
+  <div class="content">
+    <div class="header-section">
+      <h1>Deleting...</h1>
+      <a (click)="hide()">
+        <fa-icon [icon]="faX" />
+      </a>
     </div>
+    <div class="content-section">
+      <p>{{ formText }}</p>
+    </div>
+    <div class="form-footer">
+      @if (!confirm) {
+        <button class="button" (click)="deleteRow()">Delete</button>
+      }
+      @if (confirm) {
+        <button class="button" (click)="deleteRowHard()">Confirm Delete?</button>
+      }
+    </div>
+  </div>

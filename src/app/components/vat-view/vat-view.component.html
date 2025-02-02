@@ -1,34 +1,36 @@
 <div class="menu-bar print-exclude">
-    <button class="button" (click)="print()"><fa-icon [icon]="faPrint" /></button>
+  <button class="button" (click)="print()"><fa-icon [icon]="faPrint" /></button>
 </div>
 <div class="container">
-    <h1>{{ vatData.period }}</h1>
-    <table>
-        <thead>
-            <tr>
-                <th></th>
-                <th>Box Num</th>
-                <th>Per Accounts</th>
-                <th>Previous Adjustments Reversal</th>
-                <th>New Adjustments</th>
-                <th>Fuel Scale Charge</th>
-                <th>This Return</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let label of vatData.labels; let index = index">
-                <td class="label">{{ label }}</td>
-                <td>{{ index + 1 }}</td>
-                <td>{{ format(vatData.originalValues[index]) | currency: 'GBP' }}</td>
-                <td>{{ format(vatData.previousAdjustments[index]) | currency: 'GBP' }}</td>
-                <td>{{ format(vatData.newAdjustments[index]) | currency: 'GBP' }}</td>
-                <td>{{ format(vatData.fuelScaleCharge[index]) | currency: 'GBP' }}</td>
-                <td>{{ format(vatData.total[index]) | currency: 'GBP' }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="notes">
-        <h3>Notes</h3>
-        <p>{{ vatData.notes }}</p>
-    </div>
+  <h1>{{ vatData.period }}</h1>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Box Num</th>
+        <th>Per Accounts</th>
+        <th>Previous Adjustments Reversal</th>
+        <th>New Adjustments</th>
+        <th>Fuel Scale Charge</th>
+        <th>This Return</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (label of vatData.labels; track label; let index = $index) {
+        <tr>
+          <td class="label">{{ label }}</td>
+          <td>{{ index + 1 }}</td>
+          <td>{{ format(vatData.originalValues[index]) | currency: 'GBP' }}</td>
+          <td>{{ format(vatData.previousAdjustments[index]) | currency: 'GBP' }}</td>
+          <td>{{ format(vatData.newAdjustments[index]) | currency: 'GBP' }}</td>
+          <td>{{ format(vatData.fuelScaleCharge[index]) | currency: 'GBP' }}</td>
+          <td>{{ format(vatData.total[index]) | currency: 'GBP' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <div class="notes">
+    <h3>Notes</h3>
+    <p>{{ vatData.notes }}</p>
+  </div>
 </div>

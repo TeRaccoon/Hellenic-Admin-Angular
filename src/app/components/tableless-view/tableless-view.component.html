@@ -1,103 +1,119 @@
 <div class="container">
-    <ng-container *ngIf="tableHeaders != null && tableData != null && tableData.length > 0 else noData">
-        <div class="table-container">
-            <table>
+  @if (tableHeaders != null && tableData != null && tableData.length > 0) {
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            @for (header of tableHeaders; track header) {
+              <th>{{ header }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of tableData; track row) {
+            <tr class="data-row">
+              @for (key of getObjectKeys(row); track key; let index = $index) {
+                <td>
+                  @switch (columnTypes[index]) {
+                    @case ('currency') {
+                      {{ row[key] | currency: 'GBP' }}
+                    }
+                    @case ('date') {
+                      {{ row[key] | date: 'dd/MM/yyyy' }}
+                    }
+                    @case ('string') {
+                      {{ row[key] }}
+                    }
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    @if (tableData != null) {
+      <div class="no-data-container">
+        <div class="content">
+          <h1>Whoops! No data was found!</h1>
+          <p>Could this be an error? If so, try refreshing the page!</p>
+        </div>
+      </div>
+    }
+  }
+  @if (tableName === 'vat-returns' && alternativeData != null) {
+    <div class="vat-return-container">
+      @if (page == 1) {
+        <div>
+          <h1>Results</h1>
+          <div class="vat-return-table">
+            @for (text of alternativeData.text; track text; let index = $index) {
+              <div class="row">
+                <h2>{{ index + 1 }}</h2>
+                <p>{{ text }}</p>
+                <p class="currency">{{ alternativeData.values[index] | currency: 'GBP' }}</p>
+              </div>
+            }
+          </div>
+          <button (click)="page = page + 1" class="button">Continue</button>
+        </div>
+      }
+      @if (page == 2) {
+        <div>
+          <h1>VAT Return Adjustments</h1>
+          <div class="vat-adjustments-container">
+            <form [formGroup]="vatReturnForm" (submit)="submitVATReturn()">
+              <table class="vat-adjustments-table">
                 <thead>
-                    <tr>
-                        <th *ngFor="let header of tableHeaders">{{ header }}</th>
-                    </tr>
+                  <tr>
+                    <th></th>
+                    <th>Box Num</th>
+                    <th>Accounts Val. GBP</th>
+                    <th>Previous Adjustments GBP</th>
+                    <th>New Adjustments GBP</th>
+                    <th>Fuel Scale Charge GBP</th>
+                    <th>This Return GBP</th>
+                  </tr>
                 </thead>
                 <tbody>
-                    <tr class="data-row" *ngFor="let row of tableData">
-                        <td *ngFor="let key of getObjectKeys(row); let index = index">
-                            <ng-container [ngSwitch]="columnTypes[index]">
-                                <ng-container *ngSwitchCase="'currency'">
-                                    {{ row[key] | currency: 'GBP' }}
-                                </ng-container>
-                                <ng-container *ngSwitchCase="'date'">
-                                    {{ row[key] | date: 'dd/MM/yyyy' }}
-                                </ng-container>
-                                <ng-container *ngSwitchCase="'string'">
-                                    {{ row[key] }}
-                                </ng-container>
-                            </ng-container>
-                        </td>
+                  @for (text of alternativeData.altText; track text; let row = $index) {
+                    <tr>
+                      <td>
+                        <h3>{{ text }}</h3>
+                      </td>
+                      <td>{{ row + 1 }}</td>
+                      <td>{{ alternativeData.values[row] | number: '1.2-2' }}</td>
+                      @for (array of getTimes(3); track array; let column = $index) {
+                        @if (shouldDisplayInput(column, row)) {
+                          <td><input type="number" step="0.01" [formControlName]="getFormControlName()">
+                          </td>
+                        } @else {
+                          <td>0.00</td>
+                        }
+                      }
+                      <td>{{ getRowTotal(row) | number: '1.2-2' }}</td>
                     </tr>
+                  }
                 </tbody>
-            </table>
+              </table>
+              <h2>Notes (required)</h2>
+              <textarea formControlName="notes"></textarea>
+              <button class="button" type="submit">Continue</button>
+            </form>
+          </div>
         </div>
-    </ng-container>
-    <ng-template #noData>
-        <div *ngIf="tableData != null" class="no-data-container">
-            <div class="content">
-                <h1>Whoops! No data was found!</h1>
-                <p>Could this be an error? If so, try refreshing the page!</p>
-            </div>
-        </div>
-    </ng-template>
-    <div *ngIf="tableName === 'vat-returns' && alternativeData != null" class="vat-return-container">
-        <div *ngIf="page == 1">
-            <h1>Results</h1>
-            <div class="vat-return-table">
-                <div *ngFor="let text of alternativeData.text; let index = index" class="row">
-                    <h2>{{ index + 1 }}</h2>
-                    <p>{{ text }}</p>
-                    <p class="currency">{{ alternativeData.values[index] | currency: 'GBP' }}</p>
-                </div>
-            </div>
-            <button (click)="page = page + 1" class="button">Continue</button>
-        </div>
-        <div *ngIf="page == 2">
-            <h1>VAT Return Adjustments</h1>
-            <div class="vat-adjustments-container">
-                <form [formGroup]="vatReturnForm" (submit)="submitVATReturn()">
-                    <table class="vat-adjustments-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Box Num</th>
-                                <th>Accounts Val. GBP</th>
-                                <th>Previous Adjustments GBP</th>
-                                <th>New Adjustments GBP</th>
-                                <th>Fuel Scale Charge GBP</th>
-                                <th>This Return GBP</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let text of alternativeData.altText; let row = index">
-                                <td>
-                                    <h3>{{ text }}</h3>
-                                </td>
-                                <td>{{ row + 1 }}</td>
-                                <td>{{ alternativeData.values[row] | number: '1.2-2' }}</td>
-                                <ng-container *ngFor="let array of getTimes(3); let column = index">
-                                    <ng-container *ngIf="shouldDisplayInput(column, row) else notEditable">
-                                        <td><input type="number" step="0.01" [formControlName]="getFormControlName()">
-                                        </td>
-                                    </ng-container>
-                                    <ng-template #notEditable>
-                                        <td>0.00</td>
-                                    </ng-template>
-                                </ng-container>
-                                <td>{{ getRowTotal(row) | number: '1.2-2' }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <h2>Notes (required)</h2>
-                    <textarea formControlName="notes"></textarea>
-                    <button class="button" type="submit">Continue</button>
-                </form>
-            </div>
-        </div>
+      }
     </div>
+  }
 </div>
-<ng-container *ngIf="tableName === 'debtor_creditor'">
-    <app-debtor-creditor-widget></app-debtor-creditor-widget>
-</ng-container>
-<ng-container *ngIf="tableName === 'profit-loss'">
-    <app-profit-loss-widget></app-profit-loss-widget>
-</ng-container>
-<ng-container *ngIf="tableName === 'vat-returns' && !dataCollected">
-    <app-table-widget></app-table-widget>
-</ng-container>
+@if (tableName === 'debtor_creditor') {
+  <app-debtor-creditor-widget></app-debtor-creditor-widget>
+}
+@if (tableName === 'profit-loss') {
+  <app-profit-loss-widget></app-profit-loss-widget>
+}
+@if (tableName === 'vat-returns' && !dataCollected) {
+  <app-table-widget></app-table-widget>
+}
 <app-message-form />

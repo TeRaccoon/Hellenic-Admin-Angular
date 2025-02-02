@@ -1,37 +1,40 @@
 <div class="container">
-    <div class="date-select-container">
-        <label>Start date:</label>
-        <input type="date" [(ngModel)]="startDate" [class]="hasError && this.startDate == '' ? 'error' : ''">
-        <label>End date:</label>
-        <input type="date" [(ngModel)]="endDate" [class]="hasError && this.startDate == '' ? 'error' : ''">
-        <button class="button" (click)="calculateTrialBalance()">Calculate</button>
+  <div class="date-select-container">
+    <label>Start date:</label>
+    <input type="date" [(ngModel)]="startDate" [class]="hasError && this.startDate == '' ? 'error' : ''">
+    <label>End date:</label>
+    <input type="date" [(ngModel)]="endDate" [class]="hasError && this.startDate == '' ? 'error' : ''">
+    <button class="button" (click)="calculateTrialBalance()">Calculate</button>
+  </div>
+  @if (balanceData.length > 0) {
+    <div class="trial-balance-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Debit</th>
+            <th>Credit</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of balanceData; track row) {
+            <tr class="data-row">
+              <td>{{ row.account_code }}</td>
+              <td>{{ row.total_debit | currency:'GBP' }}</td>
+              <td>{{ row.total_credit | currency:'GBP' }}</td>
+              <td>{{ row.balance | currency:'GBP' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
-    <ng-container *ngIf="balanceData.length > 0 else noData">
-        <div class="trial-balance-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Account</th>
-                        <th>Debit</th>
-                        <th>Credit</th>
-                        <th>Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="data-row" *ngFor="let row of balanceData">
-                        <td>{{ row.account_code }}</td>
-                        <td>{{ row.total_debit | currency:'GBP' }}</td>
-                        <td>{{ row.total_credit | currency:'GBP' }}</td>
-                        <td>{{ row.balance | currency:'GBP' }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </ng-container>
-    <ng-template #noData>
-        <div *ngIf="searched" class="no-data">
-            <h1>Whoops!</h1>
-            <p>There was no data found for the date range you entered!</p>
-        </div>
-    </ng-template>
+  } @else {
+    @if (searched) {
+      <div class="no-data">
+        <h1>Whoops!</h1>
+        <p>There was no data found for the date range you entered!</p>
+      </div>
+    }
+  }
 </div>
