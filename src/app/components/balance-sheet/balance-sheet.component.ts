@@ -106,6 +106,7 @@ export class BalanceSheetComponent {
     this.transactions = this.transactions.sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
+    console.log(this.transactions);
     this.filteredTransactions = this.transactions;
   }
 
