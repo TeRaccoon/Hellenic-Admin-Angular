@@ -975,6 +975,8 @@ export class ViewComponent {
     this.columnDateFilters.forEach((filter: any) => {
       this.filterDateColumns(filter);
     });
+
+    this.viewMetaData.pageCount = this.calculatePageCount();
   }
 
   filterColumns(columnFilter: any) {
