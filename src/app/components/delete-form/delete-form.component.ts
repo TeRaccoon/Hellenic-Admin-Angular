@@ -52,6 +52,7 @@ export class DeleteFormComponent {
   }
 
   hide() {
+    this.confirm = false;
     this.formService.hideDeleteForm();
   }
 

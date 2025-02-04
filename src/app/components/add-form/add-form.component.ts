@@ -389,10 +389,9 @@ export class AddFormComponent {
   async resetAddItemForm() {
     if (this.tableName == 'supplier_invoices') {
       this.addItemForm = this.fb.group({
-        //fb = form builder
         purchase_date: [
           new Date().toISOString().split('T')[0],
-          [Validators.required], //Validators.required indicates a required field
+          [Validators.required],
         ],
         expiry_date: [
           new Date().toISOString().split('T')[0],
@@ -402,7 +401,7 @@ export class AddFormComponent {
         purchase_price: ['', [Validators.required]],
         quantity: ['', [Validators.required]],
 
-        packing_format: ['Individual', [Validators.required]], //Syntax: name of field : ['Default value', [Validators]]
+        packing_format: ['Individual', [Validators.required]],
         barcode: ['', [Validators.required]],
         warehouse_id: ['', [Validators.required]],
       });
