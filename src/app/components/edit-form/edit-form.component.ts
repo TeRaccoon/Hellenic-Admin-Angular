@@ -262,7 +262,11 @@ export class EditFormComponent {
           let fileName = this.mappedFormData.get('Image')?.value;
           this.selectedImage = fileName == null ? '' : fileName;
           if (this.tableName == 'categories') {
-            this.imageReplacements = [fileName];
+            if (fileName === null) {
+              this.imageReplacements = [];
+            } else {
+              this.imageReplacements = [fileName];
+            }
           }
         }
 
