@@ -176,7 +176,7 @@
                             }
                             @case ('enum(\'No\',\'Yes\')') {
                             <input
-                                (change)="changeCheckBox($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column)"
+                                (change)="changeCheckBox($event, item.id, column)"
                                 type="checkbox" class="checkbox" [checked]="item[column] == 'Yes'">
                             }
                             @case ('float') {
@@ -211,7 +211,7 @@
                             @if (displayWithIcon(column, item)) {
                             <ng-container class="icon-container">
                                 <fa-icon class="row-icon"
-                                    (click)="iconClick($event, key + (viewMetaData.currentPage - 1) * viewMetaData.entryLimit, column, item)"
+                                    (click)="iconClick(column, item)"
                                     [icon]="icon"></fa-icon>
                             </ng-container>
                             }

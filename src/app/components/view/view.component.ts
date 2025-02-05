@@ -593,7 +593,7 @@ export class ViewComponent {
   async changeCheckBox(event: Event, key: number, columnName: string) {
     const option = event.target as HTMLInputElement;
     let checked = option.checked;
-    let data = { ...this.data[key] };
+    let data = { ...this.data.filter((d: any) => d.id == key)[0] };
     data[columnName] = checked ? 'Yes' : 'No';
     data['action'] = 'append';
     data['table_name'] = String(this.tableName);
@@ -921,11 +921,11 @@ export class ViewComponent {
     return false;
   }
 
-  async iconClick(event: Event, key: number, column: string, row: any) {
+  async iconClick(column: string, row: any) {    
     switch (this.tableName) {
       case 'invoices':
         if (column == 'id') {
-          let data = { ...this.data[key] };
+          let data = { ...this.data.filter((d: any) => d.id == row.id)[0] };
           data['status'] =
             data['status'] == 'Complete' ? 'Pending' : 'Complete';
           row['status'] = data['status'];
