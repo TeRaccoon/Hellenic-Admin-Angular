@@ -18,6 +18,7 @@ import {
   DISPLAY_INPUT_FIELD_TABLE_MAP_EXCLUSIONS,
   DISPLAY_PRICE_WARNING_TABLES,
 } from './consts';
+import { faCropSimple } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-add-form',
@@ -716,6 +717,8 @@ export class AddFormComponent {
       await this.handleSupplierPayments(dataId);
     } else if (this.tableName === 'stocked_items' && field === 'item_id') {
       await this.handleStockedItems(dataId);
+    } else if (this.tableName === 'supplier_invoices' && alt && field === 'item_id') {
+      await this.handleSupplierInvoices(dataId);
     }
 
     if (this.isBarcodeGenerationRequired(field)) {
@@ -792,6 +795,16 @@ export class AddFormComponent {
     );
     if (lastPurchasePrice.length > 0 && lastPurchasePrice[0] != null) {
       this.addForm.get('purchase_price')?.setValue(lastPurchasePrice[0]);
+    }
+  }
+
+  private async handleSupplierInvoices(dataId: number) {
+    const lastPurchasePrice = await this.dataService.processGet(
+      'last-purchase-price',
+      { filter: dataId }
+    );
+    if (lastPurchasePrice.length > 0 && lastPurchasePrice[0] != null) {
+      this.addItemForm.get('purchase_price')?.setValue(lastPurchasePrice[0]);
     }
   }
 
