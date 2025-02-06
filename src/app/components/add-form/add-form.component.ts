@@ -1127,6 +1127,11 @@ export class AddFormComponent {
   }
 
   async addItem(event: Event) {
+    if (!this.addForm.valid) {
+      this.formState.submissionAttempted = true;
+      return;
+    }
+
     if (!this.invoiceCreated) {
       await this.formSubmit(false);
     }
