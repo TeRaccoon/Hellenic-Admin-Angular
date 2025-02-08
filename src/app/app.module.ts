@@ -104,7 +104,8 @@ export function initConfig(configService: ConfigService) {
     },
     {
       provide: RECAPTCHA_V3_SITE_KEY,
-      useValue: recaptcha.siteKey,
+      useFactory: (configService: ConfigService) => configService.reCAPTCHASiteKey,
+      deps: [ConfigService]
     },
   ],
   bootstrap: [AppComponent],

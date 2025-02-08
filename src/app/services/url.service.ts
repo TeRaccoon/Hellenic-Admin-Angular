@@ -16,14 +16,15 @@ const DOCUMENT_UPLOAD_PATH = API_EXTENSION + 'document_upload.php';
 export class UrlService {
   HOST_NAME = 'http://localhost/';
   UPLOAD_EXTENSION = 'uploads/';
+  API_EXTENSION = 'API/'
 
   constructor(private config: ConfigService) {
     this.loadConfig();
   }
 
   async loadConfig() {
-    this.HOST_NAME = this.config.getConfig().host;
-    this.UPLOAD_EXTENSION = this.config.getConfig().uploadExtension;
+    this.HOST_NAME = this.config.getConfig()!.host;
+    this.UPLOAD_EXTENSION = this.config.getConfig()!.uploadExtension;
   }
 
   getUrl(extension = 'api', full = true) {
