@@ -19,9 +19,11 @@
             padding: 20px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             margin: 20px 20px 20px 0;
+            flex: 1;
 
             label {
                 display: flex;
+                flex-basis: 25%;
 
                 .ng-fa-icon {
                     display: flex;
@@ -102,10 +104,24 @@
                 justify-content: space-between;
                 gap: 20px;
 
+                .input-container {
+                    flex: 1;
+                    display: flex;
+                    justify-content: end;
+                }
+
                 .number {
                     width: 40px;
                     border: 1px solid black;
                     padding: 5px;
+                }
+
+                input[type="text"] {
+                    width: 80%;
+                }
+
+                input[type="number"] {
+                    width: 8%;
                 }
 
                 input[type="text"],
