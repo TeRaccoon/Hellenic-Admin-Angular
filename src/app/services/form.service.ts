@@ -255,6 +255,13 @@ export class FormService {
         );
         formData['Category'].inputType = 'replacement';
         replacementData['Category'] = { data: data };
+
+        data = await this.getIdReplacementData(
+          'supplier_id_name_code',
+          dataService
+        );
+        formData['Supplier ID'].inputType = 'replacement';
+        replacementData['Supplier ID'] = { data: data };
         break;
 
       case 'price_list':
