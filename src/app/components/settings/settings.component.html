@@ -9,6 +9,9 @@
                 @if (changes[key] !== originalValues[key]) {
                   <fa-icon [icon]="faAsterisk"></fa-icon>
                 }
+                @if (settings[key]['type'] == 'Redacted') {
+                   (Redacted)
+                }
               </label>
               @switch (settings[key]['type']) {
                 @case ('Number') {
@@ -20,6 +23,11 @@
                   @case ('Text') {
                     <div class="input-container">
                       <input type="text" [value]="settings[key].data" (change)="updateInput(key, $event)" />
+                    </div>
+                  }
+                  @case ('Redacted') {
+                    <div class="input-container">
+                      <input type="text" (change)="updateInput(key, $event)" />
                     </div>
                   }
                   @default {

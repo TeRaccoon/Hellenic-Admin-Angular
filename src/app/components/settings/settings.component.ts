@@ -101,18 +101,21 @@ export class SettingsComponent {
     let keys = Object.keys(this.settings);
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i];
-      responses[i] = (
-        await this.dataService.submitFormData({
-          action: 'append',
-          table_name: 'settings',
-          id: this.settings[key].id,
-          setting_value: this.settings[key].data,
-          setting_key: this.settings[key].key,
-          description: this.settings[key].description,
-          setting_type: this.settings[key].type,
-          name: this.settings[key].name,
-        })
-      ).success;
+
+      if (this.settings[key].data != '') {
+        responses[i] = (
+          await this.dataService.submitFormData({
+            action: 'append',
+            table_name: 'settings',
+            id: this.settings[key].id,
+            setting_value: this.settings[key].data,
+            setting_key: this.settings[key].key,
+            description: this.settings[key].description,
+            setting_type: this.settings[key].type,
+            name: this.settings[key].name,
+          })
+        ).success;
+      }
     }
 
     this.endSubmission(responses);
