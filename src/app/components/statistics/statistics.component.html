@@ -19,20 +19,26 @@
         (datesUpdated)="updateComparisonRange()" />
     </div>
   </div>
-  <div class="content">
-    @for (chart of charts; track chart; let index = $index) {
-      <div class="chart">
-        <div class="header">
-          <h3>{{ chart.heading }}</h3>
-          <fa-icon class="icon" (click)="setReportChart(chart, index)" [icon]="icons.faFileContract" />
+  @if (loaded) {
+    <div class="content">
+      @for (chart of charts; track chart; let index = $index) {
+        <div class="chart">
+          <div class="header">
+            <h3>{{ chart.heading }}</h3>
+            <fa-icon class="icon" (click)="setReportChart(chart, index)" [icon]="icons.faFileContract" />
+          </div>
+          <h1>{{ chart.subheading }}</h1>
+          <canvas class="canvas" baseChart [data]="chart.data" [options]="chart.options" [type]="chart.type"></canvas>
         </div>
-        <h1>{{ chart.subheading }}</h1>
-        <canvas class="canvas" baseChart [data]="chart.data" [options]="chart.options" [type]="chart.type"></canvas>
-      </div>
-    }
-  </div>
-
+      }
+    </div>
+  } @else {
+    <div class="loading-container">
+      <fa-icon class="loading-icon" [icon]="icons.spinner" spinPulse [spin]="true" />
+    </div>
+  }
 </div>
+
 @if (reportChart != null) {
   <div class="report-container">
     <div class="report">

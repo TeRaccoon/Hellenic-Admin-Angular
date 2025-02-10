@@ -65,6 +65,8 @@ export class StatisticsComponent {
   filteredReportData: any = null;
   headerToSort = { name: '', field: '' };
 
+  loaded = false
+
   constructor(
     private statisticsService: StatisticsService,
     private dataService: DataService
@@ -535,6 +537,7 @@ export class StatisticsComponent {
       },
       recurringCustomersHeading
     );
+    this.loaded = true;
   }
 
   async constructLineChart(
