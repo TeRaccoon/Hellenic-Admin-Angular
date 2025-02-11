@@ -16,7 +16,10 @@
       <label>Compare to: </label>
       <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true"
         [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="comparison" name="daterange"
-        (datesUpdated)="updateComparisonRange()" />
+        (datesUpdated)="updateDateRange()" />
+        @if (comparison.startDate != null && comparison.endDate != null) {
+          <button class="clear-button" (click)="clearCompareDate()"><fa-icon [icon]="icons.x" /></button>
+        }
     </div>
     <p>{{ error }}</p>
   </div>
@@ -45,7 +48,7 @@
     <div class="report">
       <div class="heading">
         <h1>{{ reportChart.chart.heading }} Report</h1>
-        <fa-icon (click)="setReportChart(null)" [icon]="icons.faX" />
+        <fa-icon (click)="setReportChart(null)" [icon]="icons.x" />
       </div>
       <div class="data-container">
         <div class="container chart">

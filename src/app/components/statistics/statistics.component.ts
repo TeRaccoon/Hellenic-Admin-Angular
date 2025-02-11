@@ -87,24 +87,20 @@ export class StatisticsComponent {
   }
 
   updateDateRange() {
-    if (this.selected.startDate && this.selected.endDate) {
-      this.reset();
-      this.build();
-    }
+    this.reset();
+    this.build(this.comparison);
   }
 
-  updateComparisonRange() {
-    if (
-      this.comparison &&
-      this.comparison.startDate &&
-      this.comparison.endDate
-    ) {
-      this.reset();
-      this.build(this.comparison);
-    }
+  clearCompareDate() {
+    this.comparison = {
+      startDate: null,
+      endDate: null,
+    };
+
+    this.updateDateRange();
   }
 
-  build(compareDate: selectedDate | null = null) {
+  build(compareDate: selectedDate) {
     if (this.selectedItem != '') {
       this.selectItem(this.selectedItem);
     } else if (this.selectedCustomer != '') {
@@ -129,12 +125,16 @@ export class StatisticsComponent {
 
   async buildCharts(
     date: selectedDate,
-    compareDate: selectedDate | null = null
+    compareDate: selectedDate | null
   ) {
     if (compareDate && this.hasMonthYearMismatch(date, compareDate)) {
       this.error = 'Can only compare between months or years. Please make sure the range for both is one or the other, not both';
       this.loaded = true;
       return;
+    }
+
+    if (compareDate?.endDate == null && compareDate?.startDate == null) {
+      compareDate = null;
     }
 
     this.error = '';

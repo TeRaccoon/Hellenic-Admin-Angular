@@ -35,6 +35,16 @@
                 color: red;
             }
         }
+
+        .clear-button {
+            background-color: transparent;
+            border: transparent;
+            color: #191919;
+            transition: color 0.5s ease;
+            &:hover {
+                color: red;
+            }
+        }
     }
 
     .loading-container {

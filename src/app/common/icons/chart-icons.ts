@@ -11,7 +11,7 @@ import {
 
 export const chartIcons = {
   faFileContract,
-  faX,
+  x: faX,
   faFilter,
   sort: faArrowUpWideShort,
   sortLowToHigh: faArrowDown19,
