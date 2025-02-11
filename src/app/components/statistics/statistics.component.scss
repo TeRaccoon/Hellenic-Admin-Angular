@@ -29,6 +29,12 @@
                 outline: none;
             }
         }
+
+        .error {
+            p {
+                color: red;
+            }
+        }
     }
 
     .loading-container {

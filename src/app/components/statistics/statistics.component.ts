@@ -66,6 +66,7 @@ export class StatisticsComponent {
   headerToSort = { name: '', field: '' };
 
   loaded = false
+  error = '';
 
   constructor(
     private statisticsService: StatisticsService,
@@ -119,10 +120,26 @@ export class StatisticsComponent {
     this.reportChart = null;
   }
 
+  hasMonthYearMismatch(dateA: selectedDate, dateB: selectedDate): boolean {
+    const dateAMonthCheck = dateA.endDate?.get('year') == dateA.startDate?.get('year');
+    const dateBMonthCheck = dateB.endDate?.get('year') == dateB.startDate?.get('year');
+
+    return dateAMonthCheck !== dateBMonthCheck;
+  }  
+
   async buildCharts(
     date: selectedDate,
     compareDate: selectedDate | null = null
   ) {
+    if (compareDate && this.hasMonthYearMismatch(date, compareDate)) {
+      this.error = 'Can only compare between months or years. Please make sure the range for both is one or the other, not both';
+      this.loaded = true;
+      return;
+    }
+
+    this.error = '';
+    this.loaded = false;
+    
     const lineTension = 0.3;
     const primaryColour = 'rgb(0, 140, 255)';
     const secondaryColour = 'rgb(255, 97, 18)';
