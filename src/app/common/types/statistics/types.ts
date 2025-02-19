@@ -1,7 +1,7 @@
 import { ChartConfiguration, ChartType } from 'chart.js';
 import dayjs, { Dayjs } from 'dayjs';
 
-export interface chart {
+export interface Chart {
   data: ChartConfiguration['data'];
   options: ChartConfiguration['options'];
   type: ChartType;
@@ -10,41 +10,41 @@ export interface chart {
   queries: string | string[];
 }
 
-export interface report {
+export interface Report {
   data: any[];
   headers: string[] | null;
   dataTypes: string[];
   formatted: boolean;
-  filters: filter[];
+  filters: Filter[];
   keys: string[];
 }
 
-export interface filter {
+export interface Filter {
   name: string;
   predicate: Function;
 }
 
-export interface selectedDate {
+export interface SelectedDate {
   startDate: Dayjs | null;
   endDate: Dayjs | null;
 }
 
-export interface chartLabels {
+export interface ChartLabels {
   primary: string | string[];
   secondary: string | string[];
 }
 
-export interface axisLabels {
+export interface AxisLabels {
   x: string;
   y: string;
 }
 
 export interface LineChartOptions {
-  date: selectedDate;
-  compareDate: selectedDate | null;
+  date?: SelectedDate;
+  compareDate?: SelectedDate | null;
   queries: string | string[];
-  chartLabels: chartLabels;
-  axisLabels: axisLabels;
+  chartLabels?: ChartLabels;
+  axisLabels: AxisLabels;
   displayLegend?: boolean;
   currency?: boolean;
   aboveZero?: boolean;
@@ -60,11 +60,11 @@ export interface LineChartOptions {
 }
 
 export interface LineChartDataOptions {
-  date: selectedDate | null;
+  date: SelectedDate | null;
   query: string;
   chartLabel: string;
-  axisLabels: axisLabels;
-  compareDate?: selectedDate;
+  axisLabels: AxisLabels;
+  compareDate?: SelectedDate;
   displayLegend?: boolean;
   currency?: boolean;
   aboveZero?: boolean;
@@ -90,6 +90,19 @@ export interface ReportOptions {
 }
 
 export interface SubheadingOptions {
-  type: string;
+  type: SubheadingType;
   filter?: boolean;
+}
+
+export interface LineChartConfig {
+  lineChartOptions: LineChartOptions,
+  subheadingOptions: SubheadingOptions,
+  reportOptions: ReportOptions,
+  heading: string,
+  filter?: string
+}
+
+export enum SubheadingType {
+  AverageCurrency = 'average-currency',
+  AverageDualComparative = 'average-dual-comparative'
 }

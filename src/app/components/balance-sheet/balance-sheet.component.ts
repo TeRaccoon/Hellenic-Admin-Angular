@@ -13,7 +13,7 @@ import {
   TransactionType,
 } from '../../common/types/balance-sheet/types';
 import { faPrint } from '@fortawesome/free-solid-svg-icons';
-import { selectedDate } from '../../common/types/statistics/types';
+import { SelectedDate } from '../../common/types/statistics/types';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { UrlService } from '../../services/url.service';
@@ -45,11 +45,11 @@ export class BalanceSheetComponent {
   transactions: Transaction[] = [];
   filteredTransactions: Transaction[] = [];
 
-  selected: selectedDate = {
+  selected: SelectedDate = {
     startDate: dayjs().startOf('month'),
     endDate: dayjs().endOf('month'),
   };
-  comparison: selectedDate = {
+  comparison: SelectedDate = {
     startDate: null,
     endDate: null,
   };
