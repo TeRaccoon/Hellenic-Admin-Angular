@@ -1,12 +1,19 @@
 import { Injectable } from '@angular/core';
 import dayjs, { Dayjs } from 'dayjs';
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { DataService } from './data.service';
 import { ChartConfiguration } from 'chart.js';
 import {
-  axisLabels,
-  report,
-  selectedDate,
+  AxisLabels,
+  LineChartConfig,
+  LineChartDataOptions,
+  LineChartOptions,
+  Report,
+  ReportOptions,
+  SelectedDate,
+  SubheadingType,
+  SubheadingOptions,
+  Chart
 } from '../common/types/statistics/types';
 
 @Injectable({
@@ -31,7 +38,7 @@ export class StatisticsService {
     'Dec',
   ];
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService) { }
 
   getMonths() {
     return this.months;
@@ -175,7 +182,7 @@ export class StatisticsService {
 
   getLineChartOptions(
     tension: number,
-    axisLabels: axisLabels,
+    axisLabels: AxisLabels,
     labels: any[],
     displayLegend: boolean,
     currency: boolean,
@@ -296,8 +303,245 @@ export class StatisticsService {
     };
   }
 
+  generateSubheading(data: any, chartDatasets: any[], type: SubheadingType, filter = false) {
+    if (filter) {
+      data = data.filter((data: any) => data !== 0);
+    }
+
+    let subheading = '0';
+
+    switch (type) {
+      case SubheadingType.AverageCurrency:
+        let average =
+          data.length > 0
+            ? data.reduce(
+              (sum: number, data: number) => sum + Number(data),
+              0
+            ) / data.length
+            : 0;
+        subheading = `£${average.toFixed(2)}`;
+        break;
+
+      case SubheadingType.AverageDualComparative:
+        console.log(chartDatasets);
+        break;
+    }
+
+    return subheading;
+  }
+
+  stripAndConvert(value: string): any {
+    if (typeof value === 'string') {
+      return parseFloat(value.replace(/[£,]/g, ''));
+    }
+    return value;
+  }
+
+  async checkCompareDate(options: LineChartDataOptions, dataset: any) {
+    if (options.date != null) {
+      let comparedAverageOrderChartData = await this.constructLineChartData(
+        options
+      );
+
+      dataset = [dataset, comparedAverageOrderChartData.dataset].map(
+        ({ datasets }) => datasets
+      );
+    } else {
+      dataset = [dataset.datasets];
+    }
+
+    return dataset;
+  }
+
+  async constructLineChart(
+    options: LineChartOptions,
+    subheadingOptions: SubheadingOptions,
+    reportOptions: ReportOptions,
+    heading: string,
+    filter?: string
+  ): Promise<{ chart: Chart, report: Report }> {
+    const {
+      date,
+      compareDate = null,
+      queries,
+      chartLabels,
+      axisLabels,
+      displayLegend = compareDate != null,
+      currency = true,
+      aboveZero = true,
+      displayTitles = false,
+      ignoreDate = false,
+      format = 'standard',
+      fillLine = true,
+      colours = [
+        'rgb(0, 140, 255)',
+        'rgb(0, 0, 255)',
+        'rgb(0, 200, 255)',
+        'rgb(0, 140, 200)',
+        'rgb(0, 140, 100)',
+      ],
+      backgroundColours = [
+        'rgb(0, 140, 255, 0.4)',
+        'rgb(0, 0, 255, 0.4)',
+        'rgb(0, 200, 255, 0.4)',
+        'rgb(0, 140, 200, 0.4)',
+        'rgb(0, 140, 100, 0.4)',
+      ],
+      secondaryColours = [
+        'rgb(255, 97, 18)',
+        'rgb(255, 20, 200)',
+        'rgb(255, 117, 0)',
+        'rgb(255, 97, 38)',
+        'rgb(255, 117, 58)',
+      ],
+      secondaryBackgroundColours = [
+        'rgb(255, 97, 18, 0.4)',
+        'rgb(255, 20, 200, 0.4)',
+        'rgb(255, 117, 0, 0.4)',
+        'rgb(255, 97, 38, 0.4)',
+        'rgb(255, 117, 58, 0.4)',
+      ],
+      lineTension = 0.3,
+    } = options;
+
+    let dataQueries = Array.isArray(queries) ? queries : [queries];
+    let dataLabelsPrimary = Array.isArray(chartLabels!.primary)
+      ? chartLabels!.primary
+      : [chartLabels!.primary];
+    let dataLabelsSecondary = Array.isArray(chartLabels!.secondary)
+      ? chartLabels!.secondary
+      : [chartLabels!.secondary];
+
+    let chartDatasets = [];
+    let chartData: any;
+
+    for (let index = 0; index < dataQueries.length; index++) {
+      chartData = await this.constructLineChartData({
+        date: date!,
+        query: dataQueries[index],
+        chartLabel: dataLabelsPrimary[index],
+        axisLabels: axisLabels,
+        displayLegend: displayLegend,
+        currency: currency,
+        aboveZero: aboveZero,
+        displayTitles: displayTitles,
+        ignoreDate: ignoreDate,
+        format: format,
+        fillLine: fillLine,
+        colour: colours[index],
+        backgroundColour: backgroundColours[index],
+        lineTension: lineTension,
+        filter,
+      });
+
+      chartData.dataset = await this.checkCompareDate(
+        {
+          date: compareDate,
+          query: dataQueries[index],
+          chartLabel: dataLabelsSecondary[index],
+          axisLabels: axisLabels,
+          displayLegend: displayLegend,
+          currency: currency,
+          aboveZero: aboveZero,
+          displayTitles: displayTitles,
+          ignoreDate: ignoreDate,
+          format: format,
+          fillLine: fillLine,
+          colour: secondaryColours[index],
+          backgroundColour: secondaryBackgroundColours[index],
+          lineTension: lineTension,
+        },
+        chartData.dataset
+      );
+
+      chartDatasets.push(...chartData.dataset);
+    }
+
+    let subheading = this.generateSubheading(
+      chartData.summary.chart.data,
+      chartDatasets,
+      subheadingOptions.type,
+      subheadingOptions.filter
+    );
+
+    return {
+      chart: {
+        data: {
+          datasets: chartDatasets,
+          labels: chartData.summary.chart.labels,
+        },
+        options: chartData.options,
+        type: 'line',
+        heading: heading,
+        subheading: subheading,
+        queries: queries,
+      },
+      report: {
+        data: chartData.summary.report.data,
+        headers: reportOptions.headers,
+        dataTypes: reportOptions.dataTypes,
+        formatted: reportOptions.formatted,
+        filters: reportOptions.filters,
+        keys: reportOptions.keys,
+      }
+    };
+  }
+
+  async constructLineChartData(options: LineChartDataOptions) {
+    const {
+      date,
+      query,
+      chartLabel,
+      axisLabels,
+      displayLegend = false,
+      currency = true,
+      aboveZero = true,
+      displayTitles = false,
+      ignoreDate = false,
+      format = 'standard',
+      fillLine = true,
+      colour = 'rgb(0, 140, 255)',
+      backgroundColour = 'rgb(0, 140, 255, 0.4)',
+      lineTension = 0.3,
+      filter,
+    } = options;
+
+    let summaryData = await this.buildChart(
+      date ?? {
+        startDate: dayjs().startOf('month'),
+        endDate: dayjs().endOf('month'),
+      },
+      query,
+      ignoreDate,
+      format,
+      filter
+    );
+    let chartDataset: any = this.getLineChartData(
+      summaryData.chart.data,
+      chartLabel,
+      fillLine,
+      colour,
+      backgroundColour
+    );
+    let chartOptions = this.getLineChartOptions(
+      lineTension,
+      axisLabels,
+      summaryData.chart.labels,
+      displayLegend,
+      currency,
+      aboveZero,
+      displayTitles
+    );
+
+    return {
+      summary: summaryData,
+      dataset: chartDataset,
+      options: chartOptions,
+    };
+  }
+
   async buildChart(
-    dateRange: selectedDate,
+    dateRange: SelectedDate,
     query: string,
     ignoreDate: boolean,
     format = 'standard',
@@ -419,7 +663,7 @@ export class StatisticsService {
     };
   }
 
-  formatReport(report: report, selectedDate: selectedDate) {
+  formatReport(report: Report, selectedDate: SelectedDate) {
     let keys = report.keys;
     let dataTypes = report.dataTypes;
 
@@ -493,9 +737,9 @@ export class StatisticsService {
         return value == null
           ? '£0.00'
           : new Intl.NumberFormat('en-GB', {
-              style: 'currency',
-              currency: 'GBP',
-            }).format(Number(value));
+            style: 'currency',
+            currency: 'GBP',
+          }).format(Number(value));
 
       case 'percentage':
         return value == null ? '0.00%' : `${Number(value).toFixed(2)}%`;
@@ -512,5 +756,207 @@ export class StatisticsService {
       default:
         return '---';
     }
+  }
+
+  getDefaultLineChartConfig(initialDate: SelectedDate, compareDate: SelectedDate): LineChartConfig[] {
+    const dateLabel = {
+      primary:
+        initialDate.startDate!.format('DD MMM').toString() +
+        ' to ' +
+        initialDate.endDate!.format('DD MMM').toString(),
+      secondary:
+        compareDate?.startDate!.format('DD MMM').toString() +
+        ' to ' +
+        compareDate?.endDate!.format('DD MMM').toString(),
+    };
+
+    return [
+      {
+        lineChartOptions: {
+          date: initialDate,
+          compareDate: compareDate,
+          queries: 'average-invoice-value',
+          chartLabels: {
+            primary: compareDate != null ? dateLabel.primary : 'Total Value',
+            secondary:
+              compareDate?.startDate && compareDate.endDate
+                ? dateLabel.secondary
+                : 'Total Value',
+          },
+          axisLabels: { x: 'Date', y: 'Order Value (£)' }
+        },
+        subheadingOptions: {
+          type: SubheadingType.AverageCurrency,
+          filter: true
+        },
+        reportOptions: {
+          headers: ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'],
+          dataTypes: ['text', 'currency', 'currency', 'int', 'currency'],
+          formatted: false,
+          filters: [
+            { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+            { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+          ],
+          keys: ['dateKey', 'total', 'discounts', 'orders', 'average']
+        },
+        heading: 'Average Order Value'
+      },
+      {
+        lineChartOptions: {
+          date: initialDate,
+          compareDate: compareDate,
+          queries: 'total-invoices',
+          chartLabels: {
+            primary: compareDate != null ? dateLabel.primary : 'Total Value',
+            secondary:
+              compareDate?.startDate && compareDate.endDate
+                ? dateLabel.secondary
+                : 'Total Value',
+          },
+          axisLabels: { x: 'Date', y: 'Order Amount' }
+        },
+        subheadingOptions: {
+          type: SubheadingType.AverageCurrency,
+          filter: true
+        },
+        reportOptions: {
+          headers: ['Date', 'Orders', 'Average Units Ordered', 'Average Order Value'],
+          dataTypes: ['text', 'int', 'number', 'currency'],
+          formatted: false,
+          filters: [
+            { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+            { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+          ],
+          keys: ['dateKey', 'total_orders', 'average_units_ordered', 'average_order_value']
+        },
+        heading: 'Total Orders'
+      },
+      {
+        lineChartOptions: {
+          date: initialDate,
+          compareDate: compareDate,
+          queries: 'total-invoice-value',
+          chartLabels: {
+            primary: compareDate != null ? dateLabel.primary : 'Total Orders',
+            secondary:
+              compareDate?.startDate && compareDate.endDate
+                ? dateLabel.secondary
+                : 'Total Orders',
+          },
+          axisLabels: { x: 'Date', y: 'Total Value' }
+        },
+        subheadingOptions: {
+          type: SubheadingType.AverageCurrency,
+          filter: true
+        },
+        reportOptions: {
+          headers: ['Date', 'Orders', 'Discounts', 'Net Sales', 'Tax', 'Gross Sales'],
+          dataTypes: ['text', 'int', 'currency', 'currency', 'currency', 'currency'],
+          formatted: false,
+          filters: [
+            { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+            { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+          ],
+          keys: ['dateKey', 'total_orders', 'discounts', 'net', 'tax', 'total']
+        },
+        heading: 'Total Invoices Value'
+      },
+      {
+        lineChartOptions: {
+          date: initialDate,
+          compareDate: compareDate,
+          queries: ['recurring-customers', 'non-recurring-customers'],
+          chartLabels: {
+            primary:
+              compareDate != null
+                ? [
+                  `${dateLabel.primary}: Recurring`,
+                  `${dateLabel.primary}: First Time`,
+                ]
+                : ['Recurring', 'First Time'],
+            secondary:
+              compareDate?.startDate && compareDate.endDate
+                ? [
+                  `${dateLabel.secondary}: Recurring`,
+                  `${dateLabel.secondary}: First Time`,
+                ]
+                : 'Total Value',
+          },
+          axisLabels: { x: '', y: 'Total Sales' },
+          currency: false,
+          displayLegend: true
+        },
+        subheadingOptions: {
+          type: SubheadingType.AverageDualComparative,
+          filter: true
+        },
+        reportOptions: {
+          headers: ['Date', 'Customers', 'Customer Type'],
+          dataTypes: ['text', 'int', 'text'],
+          formatted: false,
+          filters: [
+            { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+            { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+            {
+              name: 'Recurring Only',
+              predicate: (value: any) => value.customer_type == 'First Time',
+            },
+            {
+              name: 'First Time Only',
+              predicate: (value: any) => value.customer_type == 'Recurring',
+            },
+          ],
+          keys: ['dateKey', 'total']
+        },
+        heading: 'Recurring Customers'
+      }
+    ]
+  }
+
+  getItemLineChartConfig(initialDate: SelectedDate, compareDate: SelectedDate, selectedItem: string): LineChartConfig[] {
+    const dateLabel = {
+      primary:
+        initialDate.startDate!.format('DD MMM').toString() +
+        ' to ' +
+        initialDate.endDate!.format('DD MMM').toString(),
+      secondary:
+        compareDate?.startDate!.format('DD MMM').toString() +
+        ' to ' +
+        compareDate?.endDate!.format('DD MMM').toString(),
+    };
+
+    return [
+      {
+        lineChartOptions: {
+          date: initialDate,
+          compareDate: compareDate,
+          queries: 'item-sales-per-period',
+          chartLabels: {
+            primary: compareDate != null ? dateLabel.primary : 'Total Value',
+            secondary:
+              compareDate?.startDate && compareDate.endDate
+                ? dateLabel.secondary
+                : 'Total Value',
+          },
+          axisLabels: { x: 'Date', y: 'Total Sales (£)' }
+        },
+        subheadingOptions: {
+          type: SubheadingType.AverageCurrency,
+          filter: false
+        },
+        reportOptions: {
+          headers: ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'],
+          dataTypes: ['text', 'currency', 'currency', 'int', 'currency'],
+          formatted: false,
+          filters: [
+            { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+            { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+          ],
+          keys: ['dateKey', 'total', 'discounts', 'orders', 'average']
+        },
+        heading: 'Sales Per Period',
+        filter: selectedItem
+      }
+    ]
   }
 }

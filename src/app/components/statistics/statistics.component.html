@@ -9,18 +9,17 @@
     <div class="date-container">
       <label>Initial date:</label>
       <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true"
-        [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="selected" name="daterange"
-        (datesUpdated)="updateDateRange()" />
+        [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="initialDate" name="daterange" />
     </div>
     <div class="date-container">
       <label>Compare to: </label>
       <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true"
-        [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="comparison" name="daterange"
-        (datesUpdated)="updateDateRange()" />
+        [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="comparison" name="daterange" />
         @if (comparison.startDate != null && comparison.endDate != null) {
           <button class="clear-button" (click)="clearCompareDate()"><fa-icon [icon]="icons.x" /></button>
         }
     </div>
+    <button (click)="search()" class="button">Search</button>
     <p>{{ error }}</p>
   </div>
   @if (loaded) {
@@ -36,7 +35,7 @@
         </div>
       }
     </div>
-  } @else {
+  } @else if (loaded != null) {
     <div class="loading-container">
       <fa-icon class="loading-icon" [icon]="icons.spinner" spinPulse [spin]="true" />
     </div>
