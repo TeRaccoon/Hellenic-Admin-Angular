@@ -48,19 +48,24 @@
             color: white;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
 
-            a {
-                display: inline-block;
-                position: relative;
-                padding: 1.5em;
-                margin: -1.5em;
-                cursor: pointer;
-            }
 
             h1 {
                 text-align: center;
                 width: 100%;
                 font-size: 25px;
                 margin: auto;
+            }
+
+            .popup-options {
+                display: flex;
+
+                a {
+                    display: inline-block;
+                    position: relative;
+                    padding: 1.5em;
+                    margin: -1.5em -1rem;
+                    cursor: pointer;
+                }
             }
         }
 

@@ -57,6 +57,18 @@
                 font-size: 25px;
                 margin: auto;
             }
+
+            .popup-options {
+                display: flex;
+
+                a {
+                    display: inline-block;
+                    position: relative;
+                    padding: 1.5em;
+                    margin: -1.5em -1rem;
+                    cursor: pointer;
+                }
+            }
         }
 
         .content-section {

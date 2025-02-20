@@ -123,17 +123,27 @@ export class EditFormComponent {
   ngOnInit() {
     this.subscriptions.add(
       this.formService.getEditFormVisibility().subscribe((visible) => {
-        this.clearForm();
-        this.formState.visible = visible ? 'visible' : 'hidden';
-        if (visible) {
-          this.loadForm();
-        }
+        this.changeVisibility(visible);
       })
     );
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  changeVisibility(visible: boolean) {
+    if (!this.formState.hidden) {
+      this.clearForm();
+    }
+
+    this.formState.visible = visible;
+
+    if (visible && this.formState.hidden != this.tableName) {
+      this.loadForm();
+    }
+
+    this.formState.hidden = null;
   }
 
   resetFormState(): void {
@@ -143,8 +153,9 @@ export class EditFormComponent {
       submitted: false,
       error: null,
       locked: false,
-      visible: 'hidden',
+      visible: false,
       imageUploaded: false,
+      hidden: null
     };
   }
 
@@ -193,9 +204,9 @@ export class EditFormComponent {
             this.formData[key].value == null
               ? ''
               : this.filteredReplacementData[key].data.find(
-                  (item: { id: number; data: string }) =>
-                    item.id === Number(this.formData[key].value)
-                )!.replacement;
+                (item: { id: number; data: string }) =>
+                  item.id === Number(this.formData[key].value)
+              )!.replacement;
           this.selectedReplacementData[key] = {
             selectData: tempReplacement,
             selectDataId: Number(this.formData[key].value),
@@ -580,6 +591,11 @@ export class EditFormComponent {
 
   hide() {
     this.formService.hideEditForm();
+  }
+
+  minimize() {
+    this.formState.visible = false;
+    this.formState.hidden = this.tableName;
   }
 
   async updateSelectedReplacementDataFromKey(

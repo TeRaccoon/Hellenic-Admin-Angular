@@ -47,7 +47,8 @@ export interface formState {
   submitted: boolean;
   error: string | null;
   locked: boolean;
-  visible: 'visible' | 'hidden';
+  visible: boolean;
+  hidden: string | null;
   imageUploaded?: boolean;
 }
 

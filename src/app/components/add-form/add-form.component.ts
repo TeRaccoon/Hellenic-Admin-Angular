@@ -18,7 +18,6 @@ import {
   DISPLAY_INPUT_FIELD_TABLE_MAP_EXCLUSIONS,
   DISPLAY_PRICE_WARNING_TABLES,
 } from './consts';
-import { faCropSimple } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-add-form',
@@ -49,7 +48,6 @@ export class AddFormComponent {
     showAddMore: false,
   };
 
-  formVisible = 'hidden';
   tableName: string = '';
 
   file: File | null = null;
@@ -120,7 +118,7 @@ export class AddFormComponent {
   constructor(
     private dataService: DataService,
     private formService: FormService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.addForm = this.fb.group({});
     this.addItemForm = this.fb.group({});
@@ -140,18 +138,15 @@ export class AddFormComponent {
         save: false,
       },
     };
+
+    this.resetFormState();
   }
 
   ngOnInit() {
     this.debounceSearch = _.debounce(this.performSearch.bind(this), 1000);
-
     this.subscriptions.add(
       this.formService.getAddFormVisibility().subscribe(async (visible) => {
-        this.clearForm();
-        this.formVisible = visible ? 'visible' : 'hidden';
-        if (this.formVisible) {
-          this.loadForm();
-        }
+        this.changeVisibility(visible);
       })
     );
 
@@ -170,6 +165,20 @@ export class AddFormComponent {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  changeVisibility(visible: boolean) {
+    if (!this.formState.hidden) {
+      this.clearForm();
+    }
+
+    this.formState.visible = visible;
+
+    if (visible && this.formState.hidden != this.tableName) {
+      this.loadForm();
+    }
+
+    this.formState.hidden = null;
   }
 
   async reload() {
@@ -202,14 +211,13 @@ export class AddFormComponent {
       submitted: false,
       error: null,
       locked: false,
-      visible: 'hidden',
+      visible: false,
+      imageUploaded: false,
+      hidden: null
     };
   }
 
   async loadForm() {
-    this.clearForm();
-    this.resetFormState();
-
     this.formData = this.formService.getAddFormData();
     this.tableName = this.formService.getSelectedTable();
     this.formSettings = this.formService.getFormSettings();
@@ -276,9 +284,9 @@ export class AddFormComponent {
           this.formData[key].value == null
             ? null
             : this.filteredReplacementData[key].data.find(
-                (item: { id: number; data: string }) =>
-                  item.id === Number(this.formData[key].value)
-              )?.replacement;
+              (item: { id: number; data: string }) =>
+                item.id === Number(this.formData[key].value)
+            )?.replacement;
         this.selectedReplacementData[key] = {
           selectData: tempReplacement,
           selectDataId: Number(this.formData[key].value),
@@ -681,11 +689,15 @@ export class AddFormComponent {
   }
 
   hide() {
+    this.formState.visible = false;
     this.formService.hideAddForm();
   }
 
-  //The alt parameter determines whether it is updating for a primary or secondary table.
-  //Alt true means secondary
+  minimize() {
+    this.formState.visible = false;
+    this.formState.hidden = this.tableName;
+  }
+
   async updateSelectedReplacementDataFromKey(
     dataId: number,
     dataValue: string,
@@ -848,9 +860,8 @@ export class AddFormComponent {
         filter: form.get('item_id')?.value,
       });
       const stockCode = item['stock_code'];
-      const barcode = `${stockCode}-${
-        form.get('expiry_date')?.value
-      }-${this.generateRandomString(7)}`;
+      const barcode = `${stockCode}-${form.get('expiry_date')?.value
+        }-${this.generateRandomString(7)}`;
       form.get('barcode')?.setValue(barcode);
     }
   }
