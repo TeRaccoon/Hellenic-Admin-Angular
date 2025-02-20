@@ -610,9 +610,9 @@ export class StatisticsComponent {
     );
 
     let sessionPercentage =
-      (statisticsData.chart.data[2] / statisticsData.chart.data[1]) * 100;
-
-    sessionPercentage = sessionPercentage > 100 ? 100 : sessionPercentage;
+      totalPaymentsMade == 0 && totalSessions == 0
+        ? 0
+        : ((totalPaymentsMade / totalSessions) * 100).toFixed(2).toString();
 
     this.charts.push({
       data: pieChartConfigData,
@@ -621,6 +621,15 @@ export class StatisticsComponent {
       heading: storeConversionHeading,
       subheading: sessionPercentage + '%',
       queries: 'total-invoices',
+    });
+
+    this.reports.push({
+      data: statisticsData.report.data,
+      headers: storeConversionHeaders,
+      dataTypes: storeConversionDataTypes,
+      formatted: false,
+      filters: storeConversionFilters,
+      keys: storeConversionKeys,
     });
   }
 
