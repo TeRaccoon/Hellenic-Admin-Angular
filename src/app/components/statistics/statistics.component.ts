@@ -422,6 +422,7 @@ export class StatisticsComponent {
   }
 
   async selectCustomer(customer: string) {
+    this.loaded = false;
     this.reset();
 
     let date = this.initialDate;
@@ -631,9 +632,11 @@ export class StatisticsComponent {
       filters: storeConversionFilters,
       keys: storeConversionKeys,
     });
+    this.loaded = true;
   }
 
   async selectItem(item: string) {
+    this.loaded = false;
     this.reset();
 
     let date = this.initialDate;
@@ -661,13 +664,86 @@ export class StatisticsComponent {
     this.selectedItem = item;
     this.selectedCustomer = '';
 
+    //Popular Units
+    const popularUnitHeading = 'Most Popular Unit';
+    const popularUnitLabel = 'Total';
+    const popularUnitQuery = 'popular-units';
+    const popularUnitHeaders = [
+      'Date',
+      'Reached checkout',
+      'Added to cart',
+      'Payments made',
+      'Total sessions',
+    ];
+    const popularUnitDataTypes = ['text', 'int', 'int', 'int', 'int'];
+    const popularUnitFilters = [
+      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+    ];
+    const popularUnitKeys = [
+      'dateKey',
+      'Unit',
+      'Wholesale Box',
+      'Retail Box',
+      'Pallet',
+    ];
+
+    let statisticsData = await this.statisticsService.buildChart(
+      this.initialDate,
+      popularUnitQuery,
+      false,
+      'pie',
+      this.selectedItem
+    );
+    let pieChartDataset = this.statisticsService.getPieChartData(
+      statisticsData.chart.data.flat(),
+      popularUnitLabel,
+      [
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(54, 162, 235, 0.5)',
+        'rgba(255, 205, 86, 0.5)',
+        'rgba(42, 205, 86, 0.5',
+      ],
+      [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)',
+        'rgba(42, 205, 86, 0.5',
+      ]
+    );
+
+    const pieChartConfigData = {
+      datasets: [pieChartDataset.datasets],
+      labels: statisticsData.chart.labels,
+    };
+
+    let chartOptions = this.statisticsService.getPieChartOptions(true, false);
+
+    this.charts.push({
+      data: pieChartConfigData,
+      options: chartOptions,
+      type: 'pie',
+      heading: popularUnitHeading,
+      subheading: '',
+      queries: 'popular-units',
+    });
+
+    this.reports.push({
+      data: statisticsData.report.data,
+      headers: popularUnitHeaders,
+      dataTypes: popularUnitDataTypes,
+      formatted: false,
+      filters: popularUnitFilters,
+      keys: popularUnitKeys
+    });
+
     //Top Purchasing Customers
     const topPurchasingHeading = 'Top Purchasing Customers';
     const topPurchasingLabel = 'Total Sales';
     const topPurchasingQuery = 'customers-who-ordered-item-by-name';
     const topPurchasingAxisLabels = { x: 'Customer Name', y: 'Total Sales' };
 
-    let statisticsData = await this.statisticsService.buildChart(
+    statisticsData = await this.statisticsService.buildChart(
       this.initialDate,
       topPurchasingQuery,
       true,
@@ -686,7 +762,7 @@ export class StatisticsComponent {
       datasets: [barChartDataset.datasets],
     };
 
-    let chartOptions = this.statisticsService.getBarChartOptions(
+    let barChartOptions = this.statisticsService.getBarChartOptions(
       topPurchasingAxisLabels.y,
       topPurchasingAxisLabels.x,
       statisticsData.chart.labels
@@ -694,7 +770,7 @@ export class StatisticsComponent {
 
     this.charts.push({
       data: barChartConfigData,
-      options: chartOptions,
+      options: barChartOptions,
       type: 'bar',
       heading: topPurchasingHeading,
       subheading: statisticsData.chart.labels[0],
@@ -761,85 +837,7 @@ export class StatisticsComponent {
       this.selectedItem
     );
 
-    //Popular Units
-    const popularUnitHeading = 'Most Popular Unit';
-    const popularUnitLabel = 'Total';
-    const popularUnitQuery = 'popular-units';
-    // const popularUnitHeaders = [
-    //   'Date',
-    //   'Reached checkout',
-    //   'Added to cart',
-    //   'Payments made',
-    //   'Total sessions',
-    // ];
-    // const popularUnitDataTypes = ['text', 'int', 'int', 'int', 'int'];
-    // const popularUnitFilters = [
-    //   { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-    //   { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
-    // ];
-    // const popularUnitKeys = [
-    //   'dateKey',
-    //   'Reached checkout',
-    //   'Added to cart',
-    //   'Payments made',
-    //   'Total sessions',
-    // ];
-
-    statisticsData = await this.statisticsService.buildChart(
-      this.initialDate,
-      popularUnitQuery,
-      false,
-      'pie',
-      this.selectedItem
-    );
-    let pieChartDataset = this.statisticsService.getPieChartData(
-      statisticsData.chart.data.flat(),
-      popularUnitLabel,
-      [
-        'rgba(255, 99, 132, 0.5)',
-        'rgba(54, 162, 235, 0.5)',
-        'rgba(255, 205, 86, 0.5)',
-        'rgba(42, 205, 86, 0.5',
-      ],
-      [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 205, 86)',
-        'rgba(42, 205, 86, 0.5',
-      ]
-    );
-
-    const pieChartConfigData = {
-      datasets: [pieChartDataset.datasets],
-      labels: statisticsData.chart.labels,
-    };
-
-    chartOptions = this.statisticsService.getPieChartOptions(true, false);
-
-    let totalSessions = pieChartDataset.datasets.data.reduce(
-      (sum, n) => (sum += n)
-    );
-
-    const totalPaymentsMade = statisticsData.report.data.reduce(
-      (sum: number, current: any) => {
-        return sum + (current['Payments made'] || 0);
-      },
-      0
-    );
-
-    let sessionPercentage =
-      totalPaymentsMade == 0 && totalSessions == 0
-        ? 0
-        : ((totalPaymentsMade / totalSessions) * 100).toFixed(2).toString();
-
-    this.charts.push({
-      data: pieChartConfigData,
-      options: chartOptions,
-      type: 'pie',
-      heading: popularUnitHeading,
-      subheading: sessionPercentage + '%',
-      queries: 'popular-units',
-    });
+    this.loaded = true;
   }
 
   clearSelectedItem() {
