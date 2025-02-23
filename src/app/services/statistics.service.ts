@@ -698,15 +698,18 @@ export class StatisticsService {
           this.formatObject(reportRow, keys, dataTypes);
         });
       }
-      report.data.sort((a, b) => {
-        const datePartsA = a.dateKey.split('-');
-        const datePartsB = b.dateKey.split('-');
+      if (report.sort) {
+        report.data.sort((a, b) => {
+          const datePartsA = a.dateKey.split('-');
+          const datePartsB = b.dateKey.split('-');
 
-        const dateA = new Date(datePartsA[2], datePartsA[1] - 1, datePartsA[0]);
-        const dateB = new Date(datePartsB[2], datePartsB[1] - 1, datePartsB[0]);
+          const dateA = new Date(datePartsA[2], datePartsA[1] - 1, datePartsA[0]);
+          const dateB = new Date(datePartsB[2], datePartsB[1] - 1, datePartsB[0]);
 
-        return dateA.getTime() - dateB.getTime();
-      });
+          return dateA.getTime() - dateB.getTime();
+        });
+      }
+
       report.formatted = true;
 
       return report;

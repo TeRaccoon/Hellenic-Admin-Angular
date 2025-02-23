@@ -15,114 +15,112 @@
       <label>Compare to: </label>
       <input type="text" matInput ngxDaterangepickerMd [ranges]="ranges" [alwaysShowCalendars]="true"
         [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" [(ngModel)]="comparison" name="daterange" />
-        @if (comparison.startDate != null && comparison.endDate != null) {
-          <button class="clear-button" (click)="clearCompareDate()"><fa-icon [icon]="icons.x" /></button>
-        }
+      @if (comparison.startDate != null && comparison.endDate != null) {
+      <button class="clear-button" (click)="clearCompareDate()"><fa-icon [icon]="icons.x" /></button>
+      }
     </div>
     <button (click)="search()" class="button">Search</button>
     <p>{{ error }}</p>
   </div>
   @if (loaded) {
-    <div class="content">
-      @for (chart of charts; track chart; let index = $index) {
-        <div class="chart">
-          <div class="header">
-            <h3>{{ chart.heading }}</h3>
-            <fa-icon class="icon" (click)="setReportChart(chart, index)" [icon]="icons.faFileContract" />
-          </div>
-          <h1>{{ chart.subheading }}</h1>
-          <canvas class="canvas" baseChart [data]="chart.data" [options]="chart.options" [type]="chart.type"></canvas>
-        </div>
-      }
+  <div class="content">
+    @for (chart of charts; track chart; let index = $index) {
+    <div class="chart">
+      <div class="header">
+        <h3>{{ chart.heading }}</h3>
+        <fa-icon class="icon" (click)="setReportChart(chart, index)" [icon]="icons.faFileContract" />
+      </div>
+      <h1>{{ chart.subheading }}</h1>
+      <canvas class="canvas" baseChart [data]="chart.data" [options]="chart.options" [type]="chart.type"></canvas>
     </div>
+    }
+  </div>
   } @else if (loaded != null) {
-    <div class="loading-container">
-      <fa-icon class="loading-icon" [icon]="icons.spinner" spinPulse [spin]="true" />
-    </div>
+  <div class="loading-container">
+    <fa-icon class="loading-icon" [icon]="icons.spinner" spinPulse [spin]="true" />
+  </div>
   }
 </div>
 
 @if (reportChart != null && loaded) {
-  <div class="report-container">
-    <div class="report">
-      <div class="heading">
-        <h1>{{ reportChart.chart.heading }} Report</h1>
-        <fa-icon (click)="setReportChart(null)" [icon]="icons.x" />
-      </div>
-      <div class="data-container">
-        <div class="container chart">
-          <div class="header">
-            <h3>{{ reportChart.chart.heading }}</h3>
-          </div>
-          <h1>{{ reportChart.chart.subheading }}</h1>
-          <canvas class="canvas" baseChart [data]="reportChart.chart.data" [options]="reportChart.chart.options"
-          [type]="reportChart.chart.type"></canvas>
+<div class="report-container">
+  <div class="report">
+    <div class="heading">
+      <h1>{{ reportChart.chart.heading }} Report</h1>
+      <fa-icon (click)="setReportChart(null)" [icon]="icons.x" />
+    </div>
+    <div class="data-container">
+      <div class="container chart">
+        <div class="header">
+          <h3>{{ reportChart.chart.heading }}</h3>
         </div>
-        @if (reportChart.report.data.length > 0) {
-          <div class="container table">
-            <div class="options">
-              <div class="option-icons">
-                <fa-icon (click)="toggleTableOptions('filter')" [icon]="icons.faFilter" class="icon" />
-                <fa-icon (click)="toggleTableOptions('sort')" [icon]="icons.sort" class="icon" />
-              </div>
-              @if (optionsShown == 'filter') {
-                <div class="table-options">
-                  @for (filter of reportChart.report.filters; track filter) {
-                    <div class="option-item">
-                      <label>{{ filter.name }}</label>
-                      <input (change)="setFilter(filter)" [checked]="filterActive(filter)" type="checkbox"
-                        class="checkbox">
-                    </div>
-                  }
-                </div>
-              }
-              @if (optionsShown == 'sort') {
-                <div class="table-options">
-                  <select class="select-input" (change)="selectHeaderToSort($event)">
-                    @for (header of reportChart.report.headers; track header; let i = $index) {
-                      <option
-                      [selected]="header == headerToSort.name" [value]="i">{{ header }}</option>
-                    }
-                  </select>
-                  <fa-icon (click)="sortTable('down')" [class]="" [icon]="icons.sortLowToHigh" class="icon" />
-                  <fa-icon (click)="sortTable('up')" [icon]="icons.sortHighToLow" class="icon" />
-                </div>
-              }
-            </div>
-            <div class="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    @for (header of reportChart.report.headers; track header) {
-                      <th>{{ header }}</th>
-                    }
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (row of filteredReportData; track row) {
-                    <tr>
-                      @for (key of reportChart.report.keys; track key; let index = $index) {
-                        <td>
-                          @switch (reportChart.report.dataTypes[index]) {
-                            @default {
-                              <span>{{ row[key] }}</span>
-                            }
-                          }
-                        </td>
-                      }
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-        } @else {
-          <div class="container error">
-            <fa-icon [icon]="icons.warning" />
-            <h3>There is no data for this given filter!</h3>
-          </div>
-        }
+        <h1>{{ reportChart.chart.subheading }}</h1>
+        <canvas class="canvas" baseChart [data]="reportChart.chart.data" [options]="reportChart.chart.options"
+          [type]="reportChart.chart.type"></canvas>
       </div>
+      @if (reportChart.report.data.length > 0) {
+      <div class="container table">
+        <div class="options">
+          <div class="option-icons">
+            <fa-icon (click)="toggleTableOptions('filter')" [icon]="icons.faFilter" class="icon" />
+            <fa-icon (click)="toggleTableOptions('sort')" [icon]="icons.sort" class="icon" />
+          </div>
+          @if (optionsShown == 'filter') {
+          <div class="table-options">
+            @for (filter of reportChart.report.filters; track filter) {
+            <div class="option-item">
+              <label>{{ filter.name }}</label>
+              <input (change)="setFilter(filter)" [checked]="filterActive(filter)" type="checkbox" class="checkbox">
+            </div>
+            }
+          </div>
+          }
+          @if (optionsShown == 'sort') {
+          <div class="table-options">
+            <select class="select-input" (change)="selectHeaderToSort($event)">
+              @for (header of reportChart.report.headers; track header; let i = $index) {
+              <option [selected]="header == headerToSort.name" [value]="i">{{ header }}</option>
+              }
+            </select>
+            <fa-icon (click)="sortTable('down')" [class]="" [icon]="icons.sortLowToHigh" class="icon" />
+            <fa-icon (click)="sortTable('up')" [icon]="icons.sortHighToLow" class="icon" />
+          </div>
+          }
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                @for (header of reportChart.report.headers; track header) {
+                <th>{{ header }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of filteredReportData; track row) {
+              <tr>
+                @for (key of reportChart.report.keys; track key; let index = $index) {
+                <td>
+                  @switch (reportChart.report.dataTypes[index]) {
+                  @default {
+                  <span>{{ row[key] }}</span>
+                  }
+                  }
+                </td>
+                }
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+      } @else {
+      <div class="container error">
+        <fa-icon [icon]="icons.warning" />
+        <h3>There is no data for this given filter!</h3>
+      </div>
+      }
     </div>
   </div>
+</div>
 }

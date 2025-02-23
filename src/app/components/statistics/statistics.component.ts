@@ -670,10 +670,10 @@ export class StatisticsComponent {
     const popularUnitQuery = 'popular-units';
     const popularUnitHeaders = [
       'Date',
-      'Reached checkout',
-      'Added to cart',
-      'Payments made',
-      'Total sessions',
+      'Unit',
+      'Wholesale Box',
+      'Retail Box',
+      'Pallet',
     ];
     const popularUnitDataTypes = ['text', 'int', 'int', 'int', 'int'];
     const popularUnitFilters = [
@@ -737,11 +737,81 @@ export class StatisticsComponent {
       keys: popularUnitKeys
     });
 
+    //Sales per period
+    const salesPerPeriodHeading = 'Sales Per Period';
+    const salesPerPeriodAxisLabels = { x: 'Date', y: 'Total Sales (£)' };
+    const salesPerPeriodHeaders = [
+      'Date',
+      'Unit',
+      'Amount Sold',
+    ];
+    const salesPerPeriodDataTypes = [
+      'text',
+      'text',
+      'int',
+    ];
+    const salesPerPeriodQuery = 'item-sales-per-period';
+    const salesPerPeriodFilters = [
+      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+    ];
+    const salesPerPeriodKeys = [
+      'dateKey',
+      'unit',
+      'amount_sold',
+    ];
+    const salesPerPeriodDateLabels = {
+      primary: compareDate != null ? dateLabel.primary : 'Total Value',
+      secondary:
+        compareDate?.startDate && compareDate.endDate
+          ? dateLabel.secondary
+          : 'Total Value',
+    };
+
+    await this.constructLineChart(
+      {
+        date: date,
+        compareDate: compareDate,
+        queries: salesPerPeriodQuery,
+        chartLabels: salesPerPeriodDateLabels,
+        axisLabels: salesPerPeriodAxisLabels,
+      },
+      {
+        type: SubheadingType.AverageCurrency,
+        filter: false,
+      },
+      {
+        headers: salesPerPeriodHeaders,
+        dataTypes: salesPerPeriodDataTypes,
+        formatted: false,
+        filters: salesPerPeriodFilters,
+        keys: salesPerPeriodKeys,
+      },
+      salesPerPeriodHeading,
+      this.selectedItem
+    );
+
     //Top Purchasing Customers
     const topPurchasingHeading = 'Top Purchasing Customers';
     const topPurchasingLabel = 'Total Sales';
     const topPurchasingQuery = 'customers-who-ordered-item-by-name';
     const topPurchasingAxisLabels = { x: 'Customer Name', y: 'Total Sales' };
+    const topPurchasingHeaders = [
+      'Account Name',
+      'Total Purchases',
+    ];
+    const topPurchasingDataTypes = [
+      'text',
+      'int',
+    ];
+    const topPurchasingFilters = [
+      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+    ];
+    const topPurchasingKeys = [
+      'Account Name',
+      'Total Purchases',
+    ];
 
     statisticsData = await this.statisticsService.buildChart(
       this.initialDate,
@@ -777,65 +847,15 @@ export class StatisticsComponent {
       queries: topPurchasingQuery,
     });
 
-    //Sales per period
-    const salesPerPeriodHeading = 'Sales Per Period';
-    const salesPerPeriodAxisLabels = { x: 'Date', y: 'Total Sales (£)' };
-    const salesPerPeriodHeaders = [
-      'Date',
-      'Gross Sales',
-      'Discounts',
-      'Orders',
-      'Average Order Value',
-    ];
-    const salesPerPeriodDataTypes = [
-      'text',
-      'currency',
-      'currency',
-      'int',
-      'currency',
-    ];
-    const salesPerPeriodQuery = 'item-sales-per-period';
-    const salesPerPeriodFilters = [
-      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
-      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
-    ];
-    const salesPerPeriodKeys = [
-      'dateKey',
-      'total',
-      'discounts',
-      'orders',
-      'average',
-    ];
-    const salesPerPeriodDateLabels = {
-      primary: compareDate != null ? dateLabel.primary : 'Total Value',
-      secondary:
-        compareDate?.startDate && compareDate.endDate
-          ? dateLabel.secondary
-          : 'Total Value',
-    };
-
-    await this.constructLineChart(
-      {
-        date: date,
-        compareDate: compareDate,
-        queries: salesPerPeriodQuery,
-        chartLabels: salesPerPeriodDateLabels,
-        axisLabels: salesPerPeriodAxisLabels,
-      },
-      {
-        type: SubheadingType.AverageCurrency,
-        filter: false,
-      },
-      {
-        headers: salesPerPeriodHeaders,
-        dataTypes: salesPerPeriodDataTypes,
-        formatted: false,
-        filters: salesPerPeriodFilters,
-        keys: salesPerPeriodKeys,
-      },
-      salesPerPeriodHeading,
-      this.selectedItem
-    );
+    this.reports.push({
+      data: statisticsData.report.data,
+      headers: topPurchasingHeaders,
+      dataTypes: topPurchasingDataTypes,
+      formatted: false,
+      filters: topPurchasingFilters,
+      keys: topPurchasingKeys,
+      sort: false
+    });
 
     this.loaded = true;
   }

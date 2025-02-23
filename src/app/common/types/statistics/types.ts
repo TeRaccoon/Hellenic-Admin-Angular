@@ -17,6 +17,7 @@ export interface Report {
   formatted: boolean;
   filters: Filter[];
   keys: string[];
+  sort?: boolean;
 }
 
 export interface Filter {
