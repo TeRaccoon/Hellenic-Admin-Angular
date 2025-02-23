@@ -909,7 +909,7 @@ export class StatisticsService {
               predicate: (value: any) => value.customer_type == 'Recurring',
             },
           ],
-          keys: ['dateKey', 'total']
+          keys: ['dateKey', 'total', 'type']
         },
         heading: 'Recurring Customers'
       }

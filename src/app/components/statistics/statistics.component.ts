@@ -337,6 +337,8 @@ export class StatisticsComponent {
       this.optionsShown = false;
 
       let report: Report = this.reports[index];
+      report.data = Array.isArray(report.data) ? report.data : [report.data];
+
       if (report.data.length > 0) {
         if (!report.formatted) {
           report = this.statisticsService.formatReport(report, this.initialDate);
