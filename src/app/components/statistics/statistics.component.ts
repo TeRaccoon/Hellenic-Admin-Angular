@@ -461,6 +461,43 @@ export class StatisticsComponent {
     const topPurchasedLabel = 'Total Sales';
     const topPurchasedQuery = 'top-purchased-item-by-customer-name';
     const topPurchasedAxisLabels = { x: 'Item Name', y: 'Total Sales' };
+    const topPurchasedHeaders = [
+      'Item Name',
+      'Product Vendor',
+      'Product Type',
+      'Net Quantity',
+      'Gross Sales',
+      'Discounts',
+      'Net Sales',
+      'VAT',
+      'Total Sales',
+    ];
+    const topPurchasedDataTypes = [
+      'text',
+      'text',
+      'text',
+      'int',
+      'int',
+      'percentage',
+      'currency',
+      'currency',
+      'currency',
+    ];
+    const topPurchasedFilters = [
+      { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
+      { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
+    ];
+    const topPurchasedKeys = [
+      'item_name',
+      'brand',
+      'category',
+      'net_quantity',
+      'gross_sales_before_discount',
+      'total_discount',
+      'net_sales',
+      'vat',
+      'total_sales',
+    ];
 
     let statisticsData = await this.statisticsService.buildChart(
       this.initialDate,
@@ -494,6 +531,16 @@ export class StatisticsComponent {
       heading: topPurchasedHeading,
       subheading: statisticsData.chart.labels[0],
       queries: topPurchasedQuery,
+    });
+
+    this.reports.push({
+      data: statisticsData.report.data,
+      headers: topPurchasedHeaders,
+      dataTypes: topPurchasedDataTypes,
+      formatted: false,
+      filters: topPurchasedFilters,
+      keys: topPurchasedKeys,
+      sort: false
     });
 
     //Average Order Value
