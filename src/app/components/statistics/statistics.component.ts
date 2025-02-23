@@ -724,7 +724,7 @@ export class StatisticsComponent {
       options: chartOptions,
       type: 'pie',
       heading: popularUnitHeading,
-      subheading: '',
+      subheading: statisticsData.chart.labels[0],
       queries: 'popular-units',
     });
 
