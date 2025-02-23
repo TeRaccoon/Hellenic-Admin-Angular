@@ -161,6 +161,7 @@ export class StatisticsComponent {
       'Net Sales',
       'VAT',
       'Total Sales',
+      'Customer Type'
     ];
     const topSellingDataTypes = [
       'text',
@@ -172,13 +173,14 @@ export class StatisticsComponent {
       'currency',
       'currency',
       'currency',
+      'text'
     ];
     const topSellingFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
     const topSellingKeys = [
-      'dateKey',
+      'item_name',
       'brand',
       'category',
       'net_quantity',
@@ -187,6 +189,7 @@ export class StatisticsComponent {
       'net_sales',
       'vat',
       'total_sales',
+      'customer_type'
     ];
 
     let statisticsData = await this.statisticsService.buildChart(
@@ -226,6 +229,7 @@ export class StatisticsComponent {
       formatted: false,
       filters: topSellingFilters,
       keys: topSellingKeys,
+      sort: false
     });
 
     //Store / Cart Conversion Rate
