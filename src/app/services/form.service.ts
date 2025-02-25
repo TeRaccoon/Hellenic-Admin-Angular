@@ -51,7 +51,7 @@ export class FormService {
 
   private waitingToReload = new BehaviorSubject<boolean>(false);
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService) { }
 
   getReloadRequest(): Observable<boolean> {
     return this.waitingToReload.asObservable();
@@ -441,6 +441,10 @@ export class FormService {
         data = await this.getIdReplacementData('invoice_id_title', dataService);
         formData['Invoice'].inputType = 'replacement';
         replacementData['Invoice'] = { data: data };
+
+        data = await this.getIdReplacementData('invoiced_item_id_name', dataService);
+        formData['Invoiced Item ID'].inputType = 'replacement';
+        replacementData['Invoiced Item ID'] = { data: data };
         break;
 
       case 'customer_address':
@@ -590,8 +594,8 @@ export class FormService {
         value: editableData.values
           ? editableData.values[index]
           : row
-          ? row[columnName]
-          : null,
+            ? row[columnName]
+            : null,
       };
     });
     this.formSettings = settings;

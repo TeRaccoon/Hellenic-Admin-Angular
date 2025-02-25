@@ -731,6 +731,8 @@ export class AddFormComponent {
       await this.handleStockedItems(dataId);
     } else if (this.tableName === 'supplier_invoices' && alt && field === 'item_id') {
       await this.handleSupplierInvoices(dataId);
+    } else if (this.tableName === 'credit_notes_customers' && field === 'invoice_id') {
+      await this.handleCreditNotesCustomersInvoices(dataId);
     }
 
     if (this.isBarcodeGenerationRequired(field)) {
@@ -788,7 +790,16 @@ export class AddFormComponent {
       { filter: dataId.toString() },
       true
     );
-    this.updateReplacementDataForInvoices(this.invoiceDetails);
+    this.updateReplacementDataForInvoices(this.invoiceDetails, 'title', 'Invoice');
+  }
+
+  private async handleCreditNotesCustomersInvoices(dataId: number) {
+    const invoicedItems = await this.dataService.processGet(
+      'invoiced-item-by-invoice',
+      { filter: dataId.toString() },
+      true
+    );
+    this.updateReplacementDataForInvoices(invoicedItems, 'item_name', 'Invoiced Item ID')
   }
 
   private async handleSupplierPayments(dataId: number) {
@@ -832,10 +843,11 @@ export class AddFormComponent {
 
   private updateReplacementDataForInvoices(
     invoiceDetails: any[],
-    key: string = 'title'
+    key: string = 'title',
+    replacementKey = 'Invoice ID'
   ) {
-    this.filteredReplacementData['Invoice ID'].data = this.replacementData[
-      'Invoice ID'
+    this.filteredReplacementData[replacementKey].data = this.replacementData[
+      replacementKey
     ].data = invoiceDetails.map((i: any) => ({
       id: i.id,
       replacement: i[key],
