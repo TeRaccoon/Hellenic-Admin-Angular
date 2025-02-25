@@ -260,7 +260,6 @@ export class EditFormComponent {
 
     this.mappedFormData = new Map(formDataArray);
     this.mappedFormDataKeys = Array.from(this.mappedFormData.keys());
-
     for (const key in this.formData) {
       if (this.formData.hasOwnProperty(key)) {
         const field = this.formData[key];

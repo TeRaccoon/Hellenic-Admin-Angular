@@ -368,7 +368,6 @@ export class ViewComponent {
 
   async editRow(id: any, table: string) {
     var row = this.data.filter((row: any) => row.id == id)[0];
-
     if (table == '') {
       if (this.tableName == 'invoices') {
         if (row['status'] == 'Complete') {
@@ -921,7 +920,7 @@ export class ViewComponent {
     return false;
   }
 
-  async iconClick(column: string, row: any) {    
+  async iconClick(column: string, row: any) {
     switch (this.tableName) {
       case 'invoices':
         if (column == 'id') {
@@ -988,8 +987,8 @@ export class ViewComponent {
       : String(columnFilter.filter).toLowerCase();
     this.displayColumnFilters.push(
       this.displayNames[Object.keys(this.data[0]).indexOf(column)] +
-        ': ' +
-        columnFilter.filter
+      ': ' +
+      columnFilter.filter
     );
 
     this.displayData = this.filteredDisplayData.filter((data) => {
@@ -1208,9 +1207,9 @@ export class ViewComponent {
     const a =
       Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
       Math.cos(lat1Rad) *
-        Math.cos(lat2Rad) *
-        Math.sin(deltaLon / 2) *
-        Math.sin(deltaLon / 2);
+      Math.cos(lat2Rad) *
+      Math.sin(deltaLon / 2) *
+      Math.sin(deltaLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     const distance = (R * c) / 1000; // Distance in km
