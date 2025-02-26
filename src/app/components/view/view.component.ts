@@ -369,22 +369,19 @@ export class ViewComponent {
   async editRow(id: any, table: string) {
     var row = this.data.filter((row: any) => row.id == id)[0];
     if (table == '') {
-      if (this.tableName == 'invoices') {
-        if (row['status'] == 'Complete') {
-          this.formService.setMessageFormData({
-            title: 'Warning!',
-            message:
-              'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!',
-          });
-          this.formService.showMessageForm();
-        } else {
-          this.formService.processEditFormData(row, this.editable);
-          this.prepareEditFormService(id, table);
-        }
-      } else {
-        this.formService.processEditFormData(row, this.editable);
-        this.prepareEditFormService(id, table);
+      if (this.tableName == 'invoices' && row['status'] == 'Complete') {
+        this.formService.setMessageFormData({
+          title: 'Warning!',
+          message:
+            'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!',
+        });
+        this.formService.showMessageForm();
+
+        return;
       }
+
+      this.formService.processEditFormData(row, this.editable);
+      this.prepareEditFormService(id, table);
 
       return;
     }
@@ -473,20 +470,21 @@ export class ViewComponent {
 
   deleteRow(id: number) {
     if (this.canDelete(id)) {
-      this.formService.setSelectedTable(String(this.tableName));
-      this.formService.setDeleteFormIds([id]);
-      this.formService.showDeleteForm();
-      this.formService.setReloadType('hard');
+      this.performDelete([id]);
     }
   }
 
   deleteRows() {
     if (this.selectedRows.every((id) => this.canDelete(id))) {
-      this.formService.setSelectedTable(String(this.tableName));
-      this.formService.setDeleteFormIds(this.selectedRows);
-      this.formService.showDeleteForm();
-      this.formService.setReloadType('hard');
+      this.performDelete(this.selectedRows);
     }
+  }
+
+  performDelete(ids: number[]) {
+    this.formService.setSelectedTable(this.tableName);
+    this.formService.setDeleteFormIds(ids);
+    this.formService.showDeleteForm();
+    this.formService.setReloadType('hard');
   }
 
   canDelete(id: number) {
@@ -498,6 +496,18 @@ export class ViewComponent {
             title: 'Error',
             message:
               'You cannot delete this payment because it is linked. Please delete or alter the linked payment instead!',
+          });
+          this.formService.showMessageForm();
+          return false;
+        }
+        break;
+
+      case 'invoices':
+        if (row['status'] == 'Complete') {
+          this.formService.setMessageFormData({
+            title: 'Error',
+            message:
+              'You cannot delete this invoice because it has been marked completed!',
           });
           this.formService.showMessageForm();
           return false;
