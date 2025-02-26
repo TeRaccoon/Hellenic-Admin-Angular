@@ -1319,6 +1319,15 @@ export class AddFormComponent {
       }
     }
 
+    if (this.tableName === 'credit_notes_customers') {
+      if (key === 'Restock' && this.addForm.get('invoiced_item_id')?.value == '') {
+        return false;
+      }
+      if (key === 'Invoiced Item ID' && this.addForm.get('invoice_id')?.value == '') {
+        return false
+      }
+    }
+
     return !excludedFields.includes(key);
   }
 
