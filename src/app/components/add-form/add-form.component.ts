@@ -637,6 +637,8 @@ export class AddFormComponent {
   }
 
   endSubmission(reset: boolean, hideForm: boolean) {
+    this.checkEdgeCases();
+
     if (this.shouldDisplayItemWidget()) {
       this.invoiceCreated = true;
       this.disableControls();
@@ -656,6 +658,64 @@ export class AddFormComponent {
       }
     }
     this.formState.submitted = true;
+  }
+
+  checkEdgeCases() {
+    if (this.tableName == 'credit_notes_customers') {
+      this.checkCreditNoteCustomerEdgeCase();
+    }
+  }
+
+  async checkCreditNoteCustomerEdgeCase() {
+    let invoicedItemID = this.addForm.get('invoiced_item_id')?.value;
+    let restock = this.addForm.get('restock')?.value
+
+    if (invoicedItemID == null) {
+      return;
+    }
+
+    if (restock == 'Yes') {
+      this.restockInvoicedItem(invoicedItemID);
+    } else {
+      this.addDamagesPayment(invoicedItemID);
+    }
+  }
+
+  async addDamagesPayment(invoicedItemID: string) {
+    let damage = this.dataService.processPost({
+      action: 'calculate-damage-from-invoiced-item-id',
+      id: invoicedItemID
+    });
+  }
+
+  async restockInvoicedItem(invoicedItemID: string) {
+    let invoicedItem = await this.dataService.processPost({
+      action: 'invoiced-item',
+      id: invoicedItemID
+    });
+
+    if (invoicedItem.restocked == 'Yes') {
+      this.formService.setMessageFormData({
+        title: 'Warning',
+        message: 'Item has already been restocked. No action will be taken!',
+      });
+
+      return;
+    }
+
+    invoicedItem.restocked = 'Yes'
+
+    let response = await this.dataService.submitFormData({
+      table_name: 'invoiced_items',
+      action: 'append',
+      ...invoicedItem
+    });
+
+    this.formService.setMessageFormData({
+      title: response.success ? 'Success!' : 'Error!',
+      message: response.message,
+    });
+    this.formService.showMessageForm();
   }
 
   disableControls() {
