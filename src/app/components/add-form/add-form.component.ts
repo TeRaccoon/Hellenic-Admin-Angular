@@ -1011,34 +1011,37 @@ export class AddFormComponent {
     key: string,
     secondaryKey: string
   ) {
-    let addressReplacement = addressData.map((address: any) => {
-      let replacement;
-      if (key == 'Delivery Address') {
-        replacement = [
-          address.delivery_address_one,
-          address.delivery_address_two,
-          address.delivery_address_three,
-          address.delivery_address_four,
-          address.delivery_postcode,
-        ];
-      } else {
-        replacement = [
-          address.invoice_address_one,
-          address.invoice_address_two,
-          address.invoice_address_three,
-          address.invoice_address_four,
-          address.invoice_postcode,
-        ];
-      }
-      replacement = replacement
-        .filter((component) => component != null)
-        .join(' ');
+    let addressReplacement = addressData
+      .map((address: any) => {
+        let replacement;
+        if (key === 'Delivery Address') {
+          replacement = [
+            address.delivery_address_one,
+            address.delivery_address_two,
+            address.delivery_address_three,
+            address.delivery_address_four,
+            address.delivery_postcode,
+          ];
+        } else {
+          replacement = [
+            address.invoice_address_one,
+            address.invoice_address_two,
+            address.invoice_address_three,
+            address.invoice_address_four,
+            address.invoice_postcode,
+          ];
+        }
 
-      return {
-        id: Number(address.id),
-        replacement: replacement,
-      };
-    });
+        replacement = replacement.filter((component) => component?.trim()).join(' ');
+
+        return replacement
+          ? { id: Number(address.id), replacement }
+          : null;
+      })
+      .filter(Boolean);
+
+    console.log(`Key: ${key} Address replacement:`)
+    console.log(addressReplacement)
 
     this.selectedReplacementData[key] = {
       selectData: addressReplacement[0].replacement,
