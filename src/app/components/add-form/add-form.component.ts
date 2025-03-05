@@ -412,11 +412,12 @@ export class AddFormComponent {
 
         packing_format: ['Individual', [Validators.required]],
         barcode: ['', [Validators.required]],
-        warehouse_id: ['', [Validators.required]],
       });
-      this.invoiceId = await this.dataService.processGet('next-id', {
-        filter: 'supplier_invoices',
-      });
+      if (this.invoiceId == null) {
+        this.invoiceId = await this.dataService.processGet('next-id', {
+          filter: 'supplier_invoices',
+        }) - 1;
+      }
     } else {
       this.addItemForm = this.fb.group({
         item_id: ['', [Validators.required]],
@@ -1240,12 +1241,13 @@ export class AddFormComponent {
       return;
     }
 
+    console.log(this.addItemForm);
     if (!this.invoiceCreated) {
       await this.formSubmit(false);
     }
 
     this.addItemFormSubmitAttempted = true;
-
+    console.log(this.addItemForm);
     if (this.addItemForm.valid) {
       this.addItemForm.addControl('action', this.fb.control('add'));
 
