@@ -682,9 +682,24 @@ export class AddFormComponent {
   }
 
   async addDamagesPayment(invoicedItemID: string) {
-    let damage = this.dataService.processPost({
+    let damage = await this.dataService.processPost({
       action: 'calculate-damage-from-invoiced-item-id',
       id: invoicedItemID
+    });
+
+    let response = await this.dataService.submitFormData({
+      table_name: 'payments',
+      action: 'add',
+      amount: damage,
+      payment_type: 'Other',
+      category: 1,
+      description: `Damages payment for returned product. Invoiced item ID: ${invoicedItemID}`,
+      reference: `DMG-${invoicedItemID}`
+    });
+
+    this.formService.setMessageFormData({
+      title: response.success ? 'Success!' : 'Error!',
+      message: response.message,
     });
   }
 
@@ -793,6 +808,8 @@ export class AddFormComponent {
       await this.handleSupplierInvoices(dataId);
     } else if (this.tableName === 'credit_notes_customers' && field === 'invoice_id') {
       await this.handleCreditNotesCustomersInvoices(dataId);
+    } else if (this.tableName === 'credit_notes_customers' && field === 'invoiced_item_id') {
+      await this.handleCreditNotesCustomersInvoicedItems(dataId);
     }
 
     if (this.isBarcodeGenerationRequired(field)) {
@@ -860,6 +877,14 @@ export class AddFormComponent {
       true
     );
     this.updateReplacementDataForInvoices(invoicedItems, 'item_name', 'Invoiced Item ID')
+  }
+
+  private async handleCreditNotesCustomersInvoicedItems(dataId: number) {
+    const damage = Number(await this.dataService.processPost({
+      action: 'calculate-damage-from-invoiced-item-id',
+      id: dataId
+    })).toFixed(2);
+    this.addForm.get('amount')?.setValue(damage);
   }
 
   private async handleSupplierPayments(dataId: number) {
