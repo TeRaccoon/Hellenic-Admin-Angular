@@ -153,3 +153,10 @@ export const ADDRESS_COLUMNS = [
   { name: 'Delivery Address Four', type: 'string' },
   { name: 'Delivery Postcode', type: 'string' },
 ];
+
+export const PRICE_LIST_ITEM_COLUMNS = [
+  { name: 'ID', type: 'number' },
+  { name: 'Item', type: 'string' },
+  { name: 'Price', type: 'currency' },
+  { name: 'Date Added', type: 'date' }
+];

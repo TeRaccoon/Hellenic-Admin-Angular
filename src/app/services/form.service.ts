@@ -266,18 +266,27 @@ export class FormService {
 
       case 'price_list':
         var data = await this.getIdReplacementData(
+          'customers_id_name_code',
+          dataService
+        );
+        formData['Customer Name'].inputType = 'replacement';
+        replacementData['Customer Name'] = { data: data };
+        break;
+
+      case 'price_list_items':
+        var data = await this.getIdReplacementData(
           'items_id_name_sku',
           dataService
         );
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
-        var data = await this.getIdReplacementData(
-          'customers_id_name_code',
+        data = await this.getIdReplacementData(
+          'price_list_id_reference',
           dataService
         );
-        formData['Customer Name'].inputType = 'replacement';
-        replacementData['Customer Name'] = { data: data };
+        formData['Price List ID'].inputType = 'replacement';
+        replacementData['Price List ID'] = { data: data };
         break;
 
       case 'customers':
@@ -780,7 +789,7 @@ export class FormService {
     let settings: settings = { showAddMore: false };
     switch (tableName) {
       case 'price_list':
-        settings.showAddMore = true;
+        settings.showAddMore = false;
         break;
     }
     return settings;

@@ -7,7 +7,9 @@
           <fa-icon [icon]="faX" />
         </a>
       </div>
-      @if (tableData.rows && tableData.rows.length > 0 && tableData.rows[0] != null) {
+      @if (
+        tableData.rows && tableData.rows.length > 0 && tableData.rows[0] != null
+      ) {
         <div class="table-container">
           @if (tableData.disabled?.value) {
             <p class="warning-message">{{ tableData.disabled.message }}</p>
@@ -23,17 +25,24 @@
             <tbody>
               @for (row of tableData.rows; track row) {
                 <tr>
-                  @for (key of getColumnKeys(row); track key; let index = $index) {
+                  @for (
+                    key of getColumnKeys(row);
+                    track key;
+                    let index = $index
+                  ) {
                     <td>
                       @switch (tableData.headers[index].type) {
-                        @case ('image') {
-                          <img [src]="imageUrlBase + row[key]">
+                        @case ("image") {
+                          <img [src]="imageUrlBase + row[key]" />
                         }
-                        @case ('currency') {
-                          {{ row[key] | currency: 'GBP' }}
+                        @case ("currency") {
+                          {{ row[key] | currency: "GBP" }}
                         }
-                        @case ('percent') {
-                          {{ row[key] | number : '1.2-2' }}%
+                        @case ("percent") {
+                          {{ row[key] | number: "1.2-2" }}%
+                        }
+                        @case ("date") {
+                          {{ row[key] | date: "dd/MM/yyyy" }}
                         }
                         @default {
                           {{ row[key] }}
@@ -41,17 +50,25 @@
                       }
                     </td>
                   }
-                  <td (click)="!tableData.disabled?.value && editRow(row['id'])">
-                    <fa-icon [class]="tableData.disabled?.value ? 'disabled-icon' : ''"
-                      [icon]="faPenToSquare" />
+                  <td
+                    (click)="!tableData.disabled?.value && editRow(row['id'])"
+                  >
+                    <fa-icon
+                      [class]="tableData.disabled?.value ? 'disabled-icon' : ''"
+                      [icon]="faPenToSquare"
+                    />
                   </td>
-                  <td (click)="!tableData.disabled?.value && deleteRow(row['id'])">
-                    <fa-icon [class]="tableData.disabled?.value ? 'disabled-icon' : ''"
-                      [icon]="faTrashCan" />
+                  <td
+                    (click)="!tableData.disabled?.value && deleteRow(row['id'])"
+                  >
+                    <fa-icon
+                      [class]="tableData.disabled?.value ? 'disabled-icon' : ''"
+                      [icon]="faTrashCan"
+                    />
                   </td>
                 </tr>
               }
-              @if (tableData.query == 'stocked-items') {
+              @if (tableData.query == "stocked-items") {
                 <tr>
                   <td>Total:</td>
                   <td [attr.colspan]="8">{{ totalStock }}</td>
@@ -59,35 +76,45 @@
               }
             </tbody>
           </table>
-          @if (tableData.query == 'invoiced-items') {
+          @if (tableData.query == "invoiced-items") {
             <div class="summary-container">
               <h1>Transaction Summary</h1>
               <div>
                 <p class="header">Gross Amount:</p>
-                <p>{{ tableData.extra.totalGross | currency: 'GBP' }}</p>
+                <p>{{ tableData.extra.totalGross | currency: "GBP" }}</p>
               </div>
               <div>
                 <p class="header">VAT Amount:</p>
-                <p>{{ tableData.extra.totalVAT | currency: 'GBP' }}</p>
+                <p>{{ tableData.extra.totalVAT | currency: "GBP" }}</p>
               </div>
               <div>
                 <p class="header">Delivery:</p>
-                <p>{{ tableData.extra.delivery | currency: 'GBP' }}</p>
+                <p>{{ tableData.extra.delivery | currency: "GBP" }}</p>
               </div>
               <div>
                 <p class="header">Net Amount:</p>
-                <p>{{ tableData.extra.totalNet | currency: 'GBP' }}</p>
+                <p>{{ tableData.extra.totalNet | currency: "GBP" }}</p>
               </div>
             </div>
           }
           <div class="widget-footer">
-            <button class="button" (click)="!tableData.disabled?.value && addRow()">Add more</button>
+            <button
+              class="button"
+              (click)="!tableData.disabled?.value && addRow()"
+            >
+              Add more
+            </button>
           </div>
         </div>
       } @else {
         <div class="error-container">
           <p>Error! There is no data. Would you like to add some?</p>
-          <button (click)="!tableData.disabled?.value && addRow()" class="button">Add Data</button>
+          <button
+            (click)="!tableData.disabled?.value && addRow()"
+            class="button"
+          >
+            Add Data
+          </button>
         </div>
       }
     </div>

@@ -24,6 +24,7 @@ import { UrlService } from '../../services/url.service';
 import {
   ADDRESS_COLUMNS,
   CREDIT_NOTE_COLUMNS,
+  PRICE_LIST_ITEM_COLUMNS,
   SUPPLIER_INVOICE_COLUMNS,
 } from '../../common/constants';
 
@@ -288,6 +289,9 @@ export class ViewComponent {
 
       case 'customers':
         return ['Addresses'];
+
+      case 'price_list':
+        return ['Items'];
     }
 
     return [];
@@ -849,6 +853,29 @@ export class ViewComponent {
       title: title,
       idData: { id: customerId, columnName: 'Customer Name' },
       query: 'customer-addresses-by-id',
+    });
+    this.formService.showWidget();
+  }
+
+  async priceListItemSearch(id: string, reference: string) {
+    let tableColumns = PRICE_LIST_ITEM_COLUMNS;
+    let query = 'price-list-items-by-id'
+    let tableRows = await this.dataService.processGet(
+      query,
+      { filter: id },
+      true
+    );
+
+    let tableName = 'price_list_items';
+    let title = `Price List Items for ${reference}`;
+
+    this.dataService.storeWidgetData({
+      headers: tableColumns,
+      rows: tableRows,
+      tableName: tableName,
+      title: title,
+      idData: { id: id, columnName: 'Price List ID' },
+      query: query,
     });
     this.formService.showWidget();
   }
