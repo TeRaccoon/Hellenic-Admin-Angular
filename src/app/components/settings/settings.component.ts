@@ -38,7 +38,7 @@ export class SettingsComponent {
   constructor(
     private dataService: DataService,
     private formService: FormService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.build();
@@ -135,7 +135,6 @@ export class SettingsComponent {
     }
 
     this.formService.setMessageFormData({ title, message });
-    this.formService.showMessageForm();
   }
 
   async saveBand(index: number, minWeight: any, maxWeight: any, price: any) {
@@ -154,7 +153,6 @@ export class SettingsComponent {
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,
     });
-    this.formService.showMessageForm();
   }
 
   async uploadDocument(event: any, documentType: string) {
@@ -167,7 +165,5 @@ export class SettingsComponent {
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,
     });
-
-    this.formService.showMessageForm();
   }
 }

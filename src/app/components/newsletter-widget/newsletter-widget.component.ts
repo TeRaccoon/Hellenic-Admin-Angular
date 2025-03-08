@@ -98,7 +98,6 @@ export class NewsletterWidgetComponent {
           title: 'Error',
           message: failureString,
         });
-        this.formService.showMessageForm();
       }
 
       this.isLoading = false;

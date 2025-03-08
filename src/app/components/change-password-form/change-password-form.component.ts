@@ -69,7 +69,6 @@ export class ChangePasswordFormComponent {
       title: submissionResponse.success ? 'Success!' : 'Error!',
       message: submissionResponse.message,
     });
-    this.formService.showMessageForm();
     this.hide();
     this.formService.requestReload();
   }

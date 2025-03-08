@@ -356,7 +356,6 @@ export class EditFormComponent {
         title: 'Error!',
         message: response.message,
       });
-      this.formService.showMessageForm();
     }
   }
 
@@ -559,7 +558,6 @@ export class EditFormComponent {
         message: insertResponse.message,
       });
     }
-    this.formService.showMessageForm();
   }
 
   endSubmission(reset: boolean, hideForm: boolean) {

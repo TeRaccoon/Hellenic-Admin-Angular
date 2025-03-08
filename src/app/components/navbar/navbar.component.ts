@@ -202,7 +202,6 @@ export class NavbarComponent {
       title: 'Whoops!',
       message: 'Something went wrong! Please try again',
     });
-    this.formService.showMessageForm();
   }
 
   changePassword() {

@@ -53,8 +53,6 @@ export class DocumentUploadWidgetComponent {
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,
     });
-
-    this.formService.showMessageForm();
   }
 
   async load() {

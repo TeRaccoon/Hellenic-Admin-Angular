@@ -632,7 +632,6 @@ export class AddFormComponent {
       title: formSubmitResponse.success ? 'Success!' : 'Error!',
       message: formSubmitResponse.message,
     });
-    this.formService.showMessageForm();
 
     this.endSubmission(formSubmitResponse.success, formSubmitResponse.success);
   }
@@ -731,7 +730,6 @@ export class AddFormComponent {
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,
     });
-    this.formService.showMessageForm();
   }
 
   disableControls() {
@@ -1282,7 +1280,6 @@ export class AddFormComponent {
           title: 'Error!',
           message: submissionResponse.message,
         });
-        this.formService.showMessageForm();
       }
 
       let query =
@@ -1427,7 +1424,6 @@ export class AddFormComponent {
       title: 'Success',
       message: 'Invoice saved successfully!',
     });
-    this.formService.showMessageForm();
     this.hide();
   }
 

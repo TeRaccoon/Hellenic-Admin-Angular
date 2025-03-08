@@ -271,7 +271,6 @@ export class TablelessViewComponent {
         title: 'Warning',
         message: 'Please fill out all the required fields before continuing',
       });
-      this.formService.showMessageForm();
     }
   }
 
@@ -288,7 +287,6 @@ export class TablelessViewComponent {
           'There is already a VAT return that exists for this period. Creating a new one will overwrite the old!',
         footer: 'Click submit again to overwrite the old VAT return',
       });
-      this.formService.showMessageForm();
 
       return false;
     } else {

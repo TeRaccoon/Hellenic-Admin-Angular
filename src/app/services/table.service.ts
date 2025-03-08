@@ -21,7 +21,7 @@ export class TableService {
     private authService: AuthService,
     private formService: FormService,
     private dataService: DataService
-  ) {}
+  ) { }
 
   getSelectedTable() {
     return this.selectedTable.asObservable();
@@ -46,7 +46,6 @@ export class TableService {
         message:
           "You don't have permission to access this page! If you think you should, contact the site administrator.",
       });
-      this.formService.showMessageForm();
       return;
     }
 

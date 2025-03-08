@@ -102,6 +102,7 @@ export class FormService {
   showMessageForm() {
     this.isMessageFormVisible.next(true);
   }
+
   hideMessageForm() {
     this.isMessageFormVisible.next(false);
   }
@@ -195,8 +196,9 @@ export class FormService {
     this.deleteFormIds = deleteFormIds;
   }
 
-  setMessageFormData(messageFormData: message) {
+  setMessageFormData(messageFormData: message, display = true) {
     this.messageFormData = messageFormData;
+    display && this.isMessageFormVisible.next(true);
   }
 
   setSelectedTable(selectedTable: string) {

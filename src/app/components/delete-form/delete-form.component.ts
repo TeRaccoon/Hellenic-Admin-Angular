@@ -76,7 +76,6 @@ export class DeleteFormComponent {
       }
       this.formText = `There was an error! ${deletionResponse.message} THIS IS A VERY DANGEROUS ACTION. All related entries in other tables will be removed. Are you sure you want to proceed?`;
     } else {
-      this.formService.showMessageForm();
       this.hide();
       this.formService.requestReload('hard');
     }
@@ -110,7 +109,6 @@ export class DeleteFormComponent {
       message: deletionResponse.message,
     });
 
-    this.formService.showMessageForm();
     this.hide();
     this.formService.requestReload('hard');
   }
