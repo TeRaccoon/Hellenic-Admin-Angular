@@ -85,7 +85,7 @@ export class ViewComponent {
     private route: ActivatedRoute,
     private dataService: DataService,
     private _location: Location,
-    private urlService: UrlService
+    private urlService: UrlService,
   ) {
     this.apiUrlBase = this.urlService.getUrl();
     this.imageUrlBase = this.urlService.getUrl('uploads');
@@ -166,7 +166,7 @@ export class ViewComponent {
           this.loadPage();
           this.tabs = this.dataService.getTabs();
         }
-      })
+      }),
     );
 
     this.subscriptions.add(
@@ -184,7 +184,7 @@ export class ViewComponent {
             }
             this.formService.performReload();
           }
-        })
+        }),
     );
   }
 
@@ -209,7 +209,7 @@ export class ViewComponent {
       let totalStockData = await this.dataService.processGet(
         'total-stock',
         undefined,
-        true
+        true,
       );
 
       totalStockData.forEach((stock: any) => {
@@ -221,7 +221,7 @@ export class ViewComponent {
       let images = await this.dataService.processGet(
         'stocked-item-images',
         undefined,
-        true
+        true,
       );
 
       if (images != null) {
@@ -301,7 +301,7 @@ export class ViewComponent {
     this.filteredDisplayData = this.displayData;
     let dataName: string =
       this.editable.columns.filter(
-        (_, index) => this.editable.names[index] === column
+        (_, index) => this.editable.names[index] === column,
       )[0] ?? 'id';
 
     if (this.sortedColumn.columnName == column) {
@@ -416,7 +416,7 @@ export class ViewComponent {
               this.prepareEditFormService(appendOrAdd.id, table);
             } else {
               let values: (string | null)[] = Array(
-                editFormData.columns.length
+                editFormData.columns.length,
               ).fill(null);
               const itemIdIndex = editFormData.names.indexOf('Item ID');
               values[itemIdIndex] = id;
@@ -438,7 +438,7 @@ export class ViewComponent {
 
   prepareEditFormService(id: any, table: string) {
     this.formService.setSelectedTable(
-      table == '' ? String(this.tableName) : table
+      table == '' ? String(this.tableName) : table,
     );
     this.formService.setSelectedId(id);
     this.formService.showEditForm();
@@ -447,7 +447,7 @@ export class ViewComponent {
 
   prepareAddFormService(table: string) {
     this.formService.setSelectedTable(
-      table == '' ? String(this.tableName) : table
+      table == '' ? String(this.tableName) : table,
     );
     this.formService.showAddForm();
     this.formService.setReloadType('hard');
@@ -465,7 +465,7 @@ export class ViewComponent {
     this.formService.processAddFormData(
       addFormData,
       null,
-      this.formService.constructFormSettings(this.tableName)
+      this.formService.constructFormSettings(this.tableName),
     );
     this.formService.setSelectedTable(String(this.tableName));
     this.formService.showAddForm();
@@ -635,22 +635,22 @@ export class ViewComponent {
     const hasMissingWarehouseOrCustomer = this.selectedRows.some(
       (selectedRow) => {
         var currentRow = this.data.filter(
-          (row: any) => row.id == selectedRow
+          (row: any) => row.id == selectedRow,
         )[0];
         if (currentRow['warehouse_id'] == null) {
           this.showErrorMessage(
-            `Invoice ${selectedRow} is missing a warehouse! Please assign a warehouse before attempting to print.`
+            `Invoice ${selectedRow} is missing a warehouse! Please assign a warehouse before attempting to print.`,
           );
           return true;
         }
         if (currentRow['customer_id'] == null) {
           this.showErrorMessage(
-            `Invoice ${selectedRow} is missing a customer! Please assign a customer before attempting to print.`
+            `Invoice ${selectedRow} is missing a customer! Please assign a customer before attempting to print.`,
           );
           return true;
         }
         return false;
-      }
+      },
     );
 
     if (hasMissingWarehouseOrCustomer) {
@@ -678,7 +678,7 @@ export class ViewComponent {
       let tableRows = await this.dataService.processGet(
         'stocked-items',
         { filter: itemId },
-        true
+        true,
       );
       let tableName = 'stocked_items';
       let title = `Stocked Items for ${row['item_name']}`;
@@ -714,7 +714,7 @@ export class ViewComponent {
     let tableRows = await this.dataService.processGet(
       'invoiced-items',
       { filter: invoiceId },
-      true
+      true,
     );
     let tableName = 'invoiced_items';
     let title = `Invoiced Items for ${row['title']}`;
@@ -798,7 +798,7 @@ export class ViewComponent {
     let tableRows = await this.dataService.processGet(
       query,
       { filter: id },
-      true
+      true,
     );
     let tableName = 'credit_notes';
     let title = `Credit Notes from ${reference}`;
@@ -820,7 +820,7 @@ export class ViewComponent {
     let tableRows = await this.dataService.processGet(
       'stocked-items-invoice',
       { filter: invoiceId },
-      true
+      true,
     );
     let tableName = 'stocked_items';
     let title = `Stocked Items from ${row['reference']}`;
@@ -841,7 +841,7 @@ export class ViewComponent {
     let tableRows = await this.dataService.processGet(
       'customer-addresses-by-id',
       { filter: customerId },
-      true
+      true,
     );
     let tableName = 'customer_address';
     let title = `Customer Addresses for ${accountName}`;
@@ -859,11 +859,11 @@ export class ViewComponent {
 
   async priceListItemSearch(id: string, reference: string) {
     let tableColumns = PRICE_LIST_ITEM_COLUMNS;
-    let query = 'price-list-items-by-id'
+    let query = 'price-list-items-by-id';
     let tableRows = await this.dataService.processGet(
       query,
       { filter: id },
-      true
+      true,
     );
 
     let tableName = 'price_list_items';
@@ -894,6 +894,14 @@ export class ViewComponent {
         break;
     }
     return '';
+  }
+
+  getCurrencyCode(column: string) {
+    return (
+      (this.tableName == 'supplier_invoices' &&
+        (column == 'net_value' || column == 'VAT' || column == 'total_eur' || column == 'outstanding_balance')) ||
+      column == 'amount_eur'
+    ) ? 'EUR' : 'GBP';
   }
 
   back() {
@@ -989,7 +997,7 @@ export class ViewComponent {
       return Math.ceil(this.displayData.length / this.viewMetaData.entryLimit);
     } else {
       return Math.ceil(
-        this.filteredDisplayData.length / this.viewMetaData.entryLimit
+        this.filteredDisplayData.length / this.viewMetaData.entryLimit,
       );
     }
   }
@@ -1025,7 +1033,7 @@ export class ViewComponent {
     this.displayColumnFilters.push(
       this.displayNames[Object.keys(this.data[0]).indexOf(column)] +
       ': ' +
-      columnFilter.filter
+      columnFilter.filter,
     );
 
     this.displayData = this.filteredDisplayData.filter((data) => {
@@ -1033,7 +1041,7 @@ export class ViewComponent {
         filter != null &&
         data[column] != null &&
         String(
-          isCaseSensitive ? data[column] : String(data[column]).toLowerCase()
+          isCaseSensitive ? data[column] : String(data[column]).toLowerCase(),
         ).includes(filter)
       ) {
         return data;
@@ -1092,10 +1100,10 @@ export class ViewComponent {
 
   removeColumnFilter(columnFilterIndex: number) {
     this.displayColumnFilters = this.displayColumnFilters.filter(
-      (filter) => filter != this.displayColumnFilters[columnFilterIndex]
+      (filter) => filter != this.displayColumnFilters[columnFilterIndex],
     );
     this.filterService.removeColumnFilter(
-      this.columnFilters[columnFilterIndex].filter
+      this.columnFilters[columnFilterIndex].filter,
     );
     this.columnFilters = this.filterService.getColumnFilter();
 
@@ -1104,7 +1112,7 @@ export class ViewComponent {
 
   removeColumnDateFilter(columnFilterIndex: number) {
     this.filterService.removeColumnDateFilter(
-      this.columnDateFilters[columnFilterIndex]
+      this.columnDateFilters[columnFilterIndex],
     );
     this.columnDateFilters = this.filterService.getColumnDateFilter();
     this.reloadTable();
@@ -1128,9 +1136,9 @@ export class ViewComponent {
               .toUpperCase()
               .includes(
                 String(
-                  this.filterService.getFilterData().searchFilter
-                ).toUpperCase()
-              )
+                  this.filterService.getFilterData().searchFilter,
+                ).toUpperCase(),
+              ),
           )
         ) {
           temporaryData.push(data);
@@ -1145,7 +1153,7 @@ export class ViewComponent {
     this.filterService.setTableColumns(
       this.displayNames,
       columns,
-      this.dataTypes
+      this.dataTypes,
     );
     this.formService.showFilterForm();
   }
@@ -1158,7 +1166,7 @@ export class ViewComponent {
   async calculateDistance() {
     if (this.selectedRows.length !== 1) {
       this.showWarningMessage(
-        'Please select a single row to calculate the distance!'
+        'Please select a single row to calculate the distance!',
       );
       return;
     }
@@ -1168,14 +1176,14 @@ export class ViewComponent {
 
     if (!row['warehouse_id']) {
       this.showWarningMessage(
-        "This invoice doesn't have a designated warehouse. To calculate the distance please assign a warehouse!"
+        "This invoice doesn't have a designated warehouse. To calculate the distance please assign a warehouse!",
       );
       return;
     }
 
     if (!row['customer_id']) {
       this.showWarningMessage(
-        "This invoice doesn't have a designated customer. To calculate the distance please assign a customer!"
+        "This invoice doesn't have a designated customer. To calculate the distance please assign a customer!",
       );
       return;
     }
@@ -1198,7 +1206,7 @@ export class ViewComponent {
       !coordinates['warehouse_coordinates']
     ) {
       this.showErrorMessage(
-        'There was an error getting the coordinates! One of the postcodes may not be in the database.'
+        'There was an error getting the coordinates! One of the postcodes may not be in the database.',
       );
       return;
     }
@@ -1208,14 +1216,14 @@ export class ViewComponent {
       !coordinates['warehouse_postcode']
     ) {
       this.showErrorMessage(
-        "There was an error getting the postcodes! Either the warehouse or the customer doesn't have a postcode."
+        "There was an error getting the postcodes! Either the warehouse or the customer doesn't have a postcode.",
       );
       return;
     }
 
     const distance = this.calculateHaversine(
       coordinates['customer_coordinates'],
-      coordinates['warehouse_coordinates']
+      coordinates['warehouse_coordinates'],
     );
     this.formService.setMessageFormData({
       title: 'Distance',

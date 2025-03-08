@@ -245,150 +245,115 @@ export class FormService {
       };
     }, // complex variable. key:string indicates the key to get data from the variable. replacementData['beer']
     dataService: DataService,
-    formType?: string
+    formType?: string,
   ) {
     switch (tableName) {
       case 'payments':
-        var data = await this.getIdReplacementData(
-          'expense_options_id',
-          dataService
-        );
+        var data = await this.getIdReplacementData('expense_options_id');
         formData['Category'].inputType = 'replacement';
         replacementData['Category'] = { data: data };
 
-        data = await this.getIdReplacementData(
-          'supplier_id_name_code',
-          dataService
-        );
+        data = await this.getIdReplacementData('supplier_id_name_code');
         formData['Supplier ID'].inputType = 'replacement';
         replacementData['Supplier ID'] = { data: data };
         break;
 
+      case 'suppliers':
+        var data = await this.getIdReplacementData('supplier_id_types');
+        formData['Type'].inputType = 'replacement';
+        replacementData['Type'] = { data: data };
+        break;
+
       case 'price_list':
-        var data = await this.getIdReplacementData(
-          'customers_id_name_code',
-          dataService
-        );
+        var data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
         break;
 
       case 'price_list_items':
-        var data = await this.getIdReplacementData(
-          'items_id_name_sku',
-          dataService
-        );
+        var data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
-        data = await this.getIdReplacementData(
-          'price_list_id_reference',
-          dataService
-        );
+        data = await this.getIdReplacementData('price_list_id_reference');
         formData['Price List ID'].inputType = 'replacement';
         replacementData['Price List ID'] = { data: data };
         break;
 
       case 'customers':
-        formData['Password'].inputTpe = 'password';
+        formData['Password'].inputType = 'password';
         break;
 
       case 'items':
-        var data = await this.getIdReplacementData('categories', dataService);
+        var data = await this.getIdReplacementData('categories');
         formData['Category'].inputType = 'alternative-select';
         this.alternativeSelectData['Category'] = { data: data };
 
-        data = await this.getIdReplacementData('sub-categories', dataService);
+        data = await this.getIdReplacementData('sub-categories');
         formData['Sub-category'].inputType = 'alternative-select';
         this.alternativeSelectData['Sub-category'] = { data: data };
 
-        data = await this.getIdReplacementData('offer_id_name', dataService);
+        data = await this.getIdReplacementData('offer_id_name');
         formData['Offer ID'].inputType = 'replacement';
         replacementData['Offer ID'] = { data: data };
 
-        data = await this.getIdReplacementData('brands', dataService);
+        data = await this.getIdReplacementData('brands');
         formData['Brand'].inputType = 'replacement-text';
         replacementData['Brand'] = { data: data };
         break;
 
       case 'invoiced_items':
-        var data = await this.getIdReplacementData(
-          'items_id_name_sku',
-          dataService
-        );
+        var data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
-        data = await this.getIdReplacementData('invoice_id_title', dataService);
+        data = await this.getIdReplacementData('invoice_id_title');
         formData['Invoice ID'].inputType = 'replacement';
         replacementData['Invoice ID'] = { data: data };
         break;
 
       case 'stocked_items':
-        var data = await this.getIdReplacementData(
-          'items_id_name_sku',
-          dataService
-        );
+        var data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
-        var data = await this.getIdReplacementData(
-          'warehouse_id_name',
-          dataService
-        );
+        var data = await this.getIdReplacementData('warehouse_id_name');
         formData['Warehouse'].inputType = 'replacement';
         replacementData['Warehouse'] = { data: data };
 
         var data = await this.getIdReplacementData(
           'supplier_invoice_id_reference',
-          dataService
         );
         formData['Supplier Invoice ID'].inputType = 'replacement';
         replacementData['Supplier Invoice ID'] = { data: data };
         break;
 
       case 'sub_categories':
-        var data = await this.getIdReplacementData(
-          'category_id_name',
-          dataService
-        );
+        var data = await this.getIdReplacementData('category_id_name');
         formData['Parent Category'].inputType = 'replacement';
         replacementData['Parent Category'] = { data: data };
         break;
 
       case 'invoices':
-        var data = await this.getIdReplacementData(
-          'customers_id_name_code',
-          dataService
-        );
+        var data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
 
-        data = await this.getIdReplacementData(
-          'warehouse_id_name',
-          dataService
-        );
+        data = await this.getIdReplacementData('warehouse_id_name');
         formData['Warehouse ID'].inputType = 'replacement';
         replacementData['Warehouse ID'] = { data: data };
 
-        data = await this.getIdReplacementData(
-          'customer_address_id_full',
-          dataService
-        );
+        data = await this.getIdReplacementData('customer_address_id_full');
         formData['Delivery Address'].inputType = 'replacement';
         replacementData['Delivery Address'] = { data: data };
 
         data = await this.getIdReplacementData(
           'customer_billing_address_id_full',
-          dataService
         );
         formData['Billing Address'].inputType = 'replacement';
         replacementData['Billing Address'] = { data: data };
 
-        data = await this.getIdReplacementData(
-          'items_id_name_sku',
-          dataService
-        );
+        data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'] = {
           inputType: 'replacement',
           value: null,
@@ -401,76 +366,55 @@ export class FormService {
         let query =
           formType == 'edit' ? 'invoice_id_title' : 'invoice_id_title_unpaid';
 
-        var data = await this.getIdReplacementData(query, dataService);
+        var data = await this.getIdReplacementData(query);
         formData['Invoice ID'].inputType = 'replacement';
         replacementData['Invoice ID'] = { data: data };
 
-        data = await this.getIdReplacementData(
-          'customers_id_name_code',
-          dataService
-        );
+        data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer'].inputType = 'replacement';
         replacementData['Customer'] = { data: data };
         break;
 
       case 'credit_notes':
       case 'supplier_payments':
-        var data = await this.getIdReplacementData(
-          'supplier_id_name_code',
-          dataService
-        );
+        var data = await this.getIdReplacementData('supplier_id_name_code');
         formData['Supplier'].inputType = 'replacement';
         replacementData['Supplier'] = { data: data };
 
-        data = await this.getIdReplacementData(
-          'supplier_invoice_id_reference',
-          dataService
-        );
+        data = await this.getIdReplacementData('supplier_invoice_id_reference');
         formData['Invoice'].inputType = 'replacement';
         replacementData['Invoice'] = { data: data };
         break;
 
       case 'offers':
-        var data = await this.getIdReplacementData(
-          'customers_id_name_code',
-          dataService
-        );
+        var data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer'].inputType = 'replacement';
         replacementData['Customer'] = { data: data };
         break;
 
       case 'credit_notes_customers':
-        var data = await this.getIdReplacementData(
-          'customers_id_name_code',
-          dataService
-        );
+        var data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer'].inputType = 'replacement';
         replacementData['Customer'] = { data: data };
 
-        data = await this.getIdReplacementData('invoice_id_title', dataService);
+        data = await this.getIdReplacementData('invoice_id_title');
         formData['Invoice'].inputType = 'replacement';
         replacementData['Invoice'] = { data: data };
 
-        data = await this.getIdReplacementData('invoiced_item_id_name', dataService);
+        data = await this.getIdReplacementData('invoiced_item_id_name');
         formData['Invoiced Item ID'].inputType = 'replacement';
         replacementData['Invoiced Item ID'] = { data: data };
         break;
 
       case 'customer_address':
-        var data = await this.getIdReplacementData(
-          'customers_id_name',
-          dataService
-        );
+        var data = await this.getIdReplacementData('customers_id_name');
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
         break;
 
       case 'page_section_text':
       case 'image_locations':
-        var data = await this.getIdReplacementData(
-          'page_section_id_name',
-          dataService
-        );
+        var data = await this.getIdReplacementData('page_section_id_name');
         formData['Page Section ID'].inputType = 'replacement';
         replacementData['Page Section ID'] = { data: data };
         break;
@@ -478,26 +422,17 @@ export class FormService {
       case 'retail_item_images':
       case 'allergen_information':
       case 'nutrition_info':
-        var data = await this.getIdReplacementData(
-          'items_id_name',
-          dataService
-        );
+        var data = await this.getIdReplacementData('items_id_name');
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
         break;
 
       case 'supplier_invoices':
-        var data = await this.getIdReplacementData(
-          'supplier_id_name_code',
-          dataService
-        );
+        var data = await this.getIdReplacementData('supplier_id_name_code');
         formData['Supplier ID'].inputType = 'replacement';
         replacementData['Supplier ID'] = { data: data };
 
-        data = await this.getIdReplacementData(
-          'items_id_name_sku',
-          dataService
-        );
+        data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'] = {
           inputType: 'replacement',
           value: null,
@@ -505,10 +440,7 @@ export class FormService {
         };
         replacementData['Item ID'] = { data: data };
 
-        data = await this.getIdReplacementData(
-          'warehouse_id_name',
-          dataService
-        );
+        data = await this.getIdReplacementData('warehouse_id_name');
         formData['Warehouse ID'] = {
           inputType: 'replacement',
           value: null,
@@ -548,11 +480,8 @@ export class FormService {
     return null;
   }
 
-  async getIdReplacementData(
-    query: string,
-    dataService: DataService
-  ): Promise<any> {
-    return await dataService.processGet(query, {}, true);
+  async getIdReplacementData(query: string): Promise<any> {
+    return await this.dataService.processGet(query, {}, true);
   }
 
   setReloadType(reloadType: string) {
@@ -590,7 +519,7 @@ export class FormService {
     row?: any,
     settings: settings = {
       showAddMore: false,
-    }
+    },
   ) {
     this.addFormData = {};
     var inputDataTypes: string[] = this.dataTypeToInputType(editableData.types);
@@ -653,7 +582,7 @@ export class FormService {
     name: string,
     image: File,
     tableName: string,
-    showMessageOnlyOnError = false
+    showMessageOnlyOnError = false,
   ) {
     let imageFileName = await this.processImageName(id, name, tableName);
 
@@ -669,7 +598,7 @@ export class FormService {
       if (addToDatabase) {
         const recordUploadResponse = await this.addImageLocationToDatabase(
           id,
-          imageFileName
+          imageFileName,
         );
         if (!recordUploadResponse.success) {
           title = 'Error!';
@@ -704,7 +633,7 @@ export class FormService {
     id: string | null,
     name: string,
     tableName: string,
-    postUpload = false
+    postUpload = false,
   ) {
     name = name.replaceAll(/[^a-zA-Z0-9_]/g, '_');
 

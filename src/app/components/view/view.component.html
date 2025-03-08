@@ -284,36 +284,20 @@
                                 />
                               }
                               @case ("float") {
-                                @if (column != "amount_eur") {
-                                  {{
-                                    item[column] == null
-                                      ? "---"
-                                      : (item[column] | currency: "GBP")
-                                  }}
-                                }
-                                @if (column == "amount_eur") {
-                                  {{
-                                    item[column] == null
-                                      ? "---"
-                                      : (item[column] | currency: "EUR")
-                                  }}
-                                }
+                                {{
+                                  item[column] == null
+                                    ? "---"
+                                    : (item[column]
+                                      | currency: getCurrencyCode(column))
+                                }}
                               }
                               @case ("decimal(19,2)") {
-                                @if (column != "amount_eur") {
-                                  {{
-                                    item[column] == null
-                                      ? "---"
-                                      : (item[column] | currency: "GBP")
-                                  }}
-                                }
-                                @if (column == "amount_eur") {
-                                  {{
-                                    item[column] == null
-                                      ? "---"
-                                      : (item[column] | currency: "EUR")
-                                  }}
-                                }
+                                {{
+                                  item[column] == null
+                                    ? "---"
+                                    : (item[column]
+                                      | currency: getCurrencyCode(column))
+                                }}
                               }
                               @case ("double") {
                                 {{
