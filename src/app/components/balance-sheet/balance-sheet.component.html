@@ -22,11 +22,15 @@
       <option>Both</option>
     </select>
   </div>
+  <div (click)="emailSupplier()">
+    <p>Email supplier</p>
+    <fa-icon [icon]="email" />
+  </div>
 </div>
 <div class="container">
   <div class="content">
     <div class="header-section print-exclude">
-      <h1>{{ inputData.Title }}</h1>
+      <h1>{{ inputData.title }}</h1>
     </div>
     <div class="transaction-list">
       <h2>Transactions</h2>

@@ -12,7 +12,6 @@ import {
   PaymentStatus,
   TransactionType,
 } from '../../common/types/balance-sheet/types';
-import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import { SelectedDate } from '../../common/types/statistics/types';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
@@ -21,6 +20,8 @@ import {
   CUSTOMER_QUERIES,
   SUPPLIER_QUERIES,
 } from '../../common/types/data-service/const';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { FormService } from '../../services/form.service';
 
 dayjs.extend(isBetween);
 
@@ -33,17 +34,8 @@ type Transaction = Order | Payment | CreditNote;
 })
 export class BalanceSheetComponent {
   paymentStatus = PaymentStatus;
-
-  faPrint = faPrint;
-
-  imageUrlBase;
-
   inputData!: BalanceSheetData;
-
-  invoiceSummary: InvoiceSummary | null = null;
-
-  transactions: Transaction[] = [];
-  filteredTransactions: Transaction[] = [];
+  queries!: BalanceSheetQueries;
 
   selected: SelectedDate = {
     startDate: dayjs().startOf('month'),
@@ -54,7 +46,15 @@ export class BalanceSheetComponent {
     endDate: null,
   };
 
-  queries!: BalanceSheetQueries;
+  imageUrlBase;
+
+  invoiceSummary: InvoiceSummary | null = null;
+
+  transactions: Transaction[] = [];
+  filteredTransactions: Transaction[] = [];
+
+  email = faEnvelope;
+
 
   ranges: any = {
     Yesterday: [dayjs().subtract(1, 'days'), dayjs().subtract(1, 'days')],
@@ -72,14 +72,15 @@ export class BalanceSheetComponent {
 
   constructor(
     private dataService: DataService,
-    private urlService: UrlService
+    private urlService: UrlService,
+    private formService: FormService
   ) {
     this.imageUrlBase = this.urlService.getUrl('uploads');
 
     this.inputData = this.dataService.retrieveBalanceSheetData();
 
     this.queries =
-      this.inputData.Table == 'customers' ? CUSTOMER_QUERIES : SUPPLIER_QUERIES;
+      this.inputData.table == 'customers' ? CUSTOMER_QUERIES : SUPPLIER_QUERIES;
   }
 
   ngOnInit() {
@@ -88,12 +89,12 @@ export class BalanceSheetComponent {
 
   async gatherData() {
     let orders: Order[] = await this.processData(
-      this.queries.Orders,
+      this.queries.orders,
       TransactionType.Order
     );
-    await this.processData(this.queries.Payments, TransactionType.Payment);
+    await this.processData(this.queries.payments, TransactionType.Payment);
     await this.processData(
-      this.queries.CreditNotes,
+      this.queries.creditNotes,
       TransactionType.CreditNote
     );
 
@@ -106,7 +107,6 @@ export class BalanceSheetComponent {
     this.transactions = this.transactions.sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
-    console.log(this.transactions);
     this.filteredTransactions = this.transactions;
   }
 
@@ -144,7 +144,7 @@ export class BalanceSheetComponent {
   async processData(query: string, type: TransactionType) {
     let data = await this.dataService.processGet(
       query,
-      { filter: this.inputData.CustomerId },
+      { filter: this.inputData.customerId },
       true
     );
 
@@ -186,5 +186,17 @@ export class BalanceSheetComponent {
             value == 'Both' ||
             (value != 'Cash' && transaction.payment_type != 'Cash')))
     );
+  }
+
+  emailSupplier() {
+    if (this.inputData.email == '' || this.inputData.email == null) {
+      this.formService.setMessageFormData({
+        title: 'Error!',
+        message: 'There is no email linked to this account!'
+      });
+      return;
+    }
+
+
   }
 }

@@ -18,8 +18,19 @@ body {
     padding: 10px;
     margin-bottom: 15px;
 
-    label {
+    div {
+        display: flex;
+        align-items: center;
+        gap: 1vh;
+    }
+
+    label,
+    p {
         font-weight: bold;
+    }
+
+    p {
+        margin: 10px 0;
     }
 
     select,

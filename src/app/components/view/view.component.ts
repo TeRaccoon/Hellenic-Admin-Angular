@@ -352,9 +352,10 @@ export class ViewComponent {
     let balanceSheetTitle = `Balance Sheet for ${row['account_name']} - ${account_number}`;
 
     let balanceSheetData: BalanceSheetData = {
-      Title: balanceSheetTitle,
-      CustomerId: id,
-      Table: this.tableName as BalanceSheetTable,
+      title: balanceSheetTitle,
+      customerId: id,
+      table: this.tableName as BalanceSheetTable,
+      email: row['email']
     };
 
     this.dataService.storeBalanceSheetData(balanceSheetData);
@@ -379,7 +380,6 @@ export class ViewComponent {
           message:
             'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!',
         });
-        this.formService.showMessageForm();
 
         return;
       }
@@ -501,7 +501,6 @@ export class ViewComponent {
             message:
               'You cannot delete this payment because it is linked. Please delete or alter the linked payment instead!',
           });
-          this.formService.showMessageForm();
           return false;
         }
         break;
@@ -513,7 +512,6 @@ export class ViewComponent {
             message:
               'You cannot delete this invoice because it has been marked completed!',
           });
-          this.formService.showMessageForm();
           return false;
         }
         break;
@@ -985,7 +983,6 @@ export class ViewComponent {
               title: 'Error!',
               message: 'There was an error trying to unlock the booking!',
             });
-            this.formService.showMessageForm();
           }
         }
         break;
@@ -1229,17 +1226,14 @@ export class ViewComponent {
       title: 'Distance',
       message: `The distance between the warehouse at ${coordinates['warehouse_postcode']} and the customer postcode at ${coordinates['customer_postcode']} in a straight line is ${distance}km`,
     });
-    this.formService.showMessageForm();
   }
 
   showWarningMessage(message: string) {
     this.formService.setMessageFormData({ title: 'Warning!', message });
-    this.formService.showMessageForm();
   }
 
   showErrorMessage(message: string) {
     this.formService.setMessageFormData({ title: 'Error!', message });
-    this.formService.showMessageForm();
   }
 
   calculateHaversine(coord1: any, coord2: any): string {

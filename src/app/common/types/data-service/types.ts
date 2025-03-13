@@ -1,7 +1,8 @@
 export interface BalanceSheetData {
-  CustomerId: number;
-  Title: string;
-  Table: BalanceSheetTable;
+  customerId: number;
+  title: string;
+  table: BalanceSheetTable;
+  email: string;
 }
 
 export enum BalanceSheetTable {
@@ -10,9 +11,9 @@ export enum BalanceSheetTable {
 }
 
 export interface BalanceSheetQueries {
-  Orders: string;
-  Payments: string;
-  CreditNotes: string;
+  orders: string;
+  payments: string;
+  creditNotes: string;
 }
 
 export interface Response {
