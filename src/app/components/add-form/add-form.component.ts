@@ -196,12 +196,21 @@ export class AddFormComponent {
       true
     );
 
-    query =
-      this.tableName == 'supplier_invoices' ? 'supplier-invoice' : 'invoice';
+    let key;
+
+    if (this.tableName == 'supplier_invoices') {
+      query = 'supplier-invoice';
+      key = 'total_eur'
+    } else {
+      query = 'invoice';
+      key = 'total'
+    }
 
     this.invoiceTotal = (
-      await this.dataService.processGet(query, { filter: this.invoiceId })
-    ).total;
+      await this.dataService.processGet(query, {
+        filter: this.invoiceId,
+      })
+    )[key];
   }
 
   resetFormState(): void {
@@ -1038,9 +1047,6 @@ export class AddFormComponent {
       })
       .filter(Boolean);
 
-    console.log(`Key: ${key} Address replacement:`)
-    console.log(addressReplacement)
-
     this.selectedReplacementData[key] = {
       selectData: addressReplacement[0].replacement,
       selectDataId: addressReplacement[0].id,
@@ -1242,13 +1248,11 @@ export class AddFormComponent {
       return;
     }
 
-    console.log(this.addItemForm);
     if (!this.invoiceCreated) {
       await this.formSubmit(false);
     }
 
     this.addItemFormSubmitAttempted = true;
-    console.log(this.addItemForm);
     if (this.addItemForm.valid) {
       this.addItemForm.addControl('action', this.fb.control('add'));
 
@@ -1296,14 +1300,21 @@ export class AddFormComponent {
         true
       );
 
-      query =
-        this.tableName == 'supplier_invoices' ? 'supplier-invoice' : 'invoice';
+      let key;
+
+      if (this.tableName == 'supplier_invoices') {
+        query = 'supplier-invoice';
+        key = 'total_eur'
+      } else {
+        query = 'invoice';
+        key = 'total'
+      }
 
       this.invoiceTotal = (
         await this.dataService.processGet(query, {
           filter: this.invoiceId,
         })
-      ).total;
+      )[key];
 
       event.preventDefault();
       this.findInvalidControls();
