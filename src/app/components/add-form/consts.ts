@@ -23,6 +23,9 @@ export const DISPLAY_INPUT_FIELD_TABLE_MAP_EXCLUSIONS: {
     'Paid',
     'Outstanding Balance',
   ],
+  invoiced_items: [
+    'Restocked'
+  ],
   items: ['Total Sold'],
   customer_payments: ['Linked Payment ID'],
   stocked_items: ['Expired'],

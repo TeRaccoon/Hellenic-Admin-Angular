@@ -1,14 +1,10 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
-import {
-  faX,
-  faTrashCan,
-  faPenToSquare,
-  faFileCircleXmark,
-} from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { UrlService } from '../../services/url.service';
+import { widgetIcons } from '../../common/icons/widget-icons';
+import { DEFAULT_TABLE_DATA } from '../../common/consts/widget';
 
 @Component({
   selector: 'app-widget',
@@ -18,45 +14,16 @@ import { UrlService } from '../../services/url.service';
 export class WidgetComponent {
   private readonly subscriptions = new Subscription();
 
-  faX = faX;
-  faTrashCan = faTrashCan;
-  faPenToSquare = faPenToSquare;
-  faFileCircleXmark = faFileCircleXmark;
-
+  icons = widgetIcons;
   imageUrlBase;
 
   visible = false;
 
+  tableData = DEFAULT_TABLE_DATA;
   formName = '';
 
-  tableData = {
-    headers: [
-      {
-        name: '',
-        type: '',
-      },
-    ],
-    rows: [],
-    tableName: '',
-    title: '',
-    idData: {
-      id: '',
-      columnName: '',
-    },
-    query: '',
-    disabled: {
-      value: false,
-      message: '',
-    },
-    extra: {
-      totalGross: 0,
-      totalVAT: 0,
-      delivery: 0,
-      totalNet: 0,
-    },
-  };
-
   totalStock: number = 0;
+  freeDeliveryMinimum: null | number = null;
 
   constructor(
     private dataService: DataService,
@@ -84,19 +51,28 @@ export class WidgetComponent {
         if (this.tableData.tableName == 'stocked_items') {
           this.getStockedItemTotal();
         }
+
+        if (this.tableData.tableName == 'invoiced_items' && this.freeDeliveryMinimum == null) {
+          this.fetchFreeDeliveryMinimum();
+        }
       })
     );
 
     this.subscriptions.add(
-      this.formService
-        .getReloadRequest()
-        .subscribe(async (reloadRequested: boolean) => {
-          if (reloadRequested) {
-            await this.reload();
-          }
-        })
+      this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
+        if (reloadRequested) {
+          await this.reload();
+        }
+      })
     );
   }
+
+  private async fetchFreeDeliveryMinimum() {
+    this.freeDeliveryMinimum = await this.dataService.processGet('settings', {
+      filter: 'free_delivery_minimum',
+    });
+  }
+
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
@@ -109,18 +85,12 @@ export class WidgetComponent {
       true
     );
 
-    let freeDeliveryMinimum = await this.dataService.processGet('settings', {
-      filter: 'free_delivery_minimum',
-    });
-
     let isDelivery =
       (
         await this.dataService.processGet('invoice', {
           filter: this.tableData.idData.id,
         })
       ).delivery_type == 'Delivery';
-
-    this.formService.performReload();
 
     if (this.tableData.tableName == 'stocked_items') {
       this.getStockedItemTotal();
@@ -142,7 +112,10 @@ export class WidgetComponent {
         totalNet += net;
       });
 
-      if (totalNet > freeDeliveryMinimum && isDelivery) {
+      console.log(this.freeDeliveryMinimum);
+      console.log(isDelivery);
+
+      if (this.freeDeliveryMinimum && totalNet < this.freeDeliveryMinimum && isDelivery) {
         totalNet += 7.5;
         delivery = 7.5;
       }
@@ -153,7 +126,11 @@ export class WidgetComponent {
         delivery: delivery,
         totalNet: totalNet,
       };
+
+      console.log(this.tableData.extra);
     }
+
+    this.formService.performReload();
   }
 
   hide() {

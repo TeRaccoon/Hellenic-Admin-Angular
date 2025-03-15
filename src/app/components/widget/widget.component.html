@@ -4,14 +4,14 @@
       <div class="header-section">
         <h1>{{ tableData.title }}</h1>
         <a (click)="hide()">
-          <fa-icon [icon]="faX" />
+          <fa-icon [icon]="icons.x" />
         </a>
       </div>
       @if (
         tableData.rows && tableData.rows.length > 0 && tableData.rows[0] != null
       ) {
         <div class="table-container">
-          @if (tableData.disabled?.value) {
+          @if (tableData.disabled.value) {
             <p class="warning-message">{{ tableData.disabled.message }}</p>
           }
           <table>
@@ -50,20 +50,18 @@
                       }
                     </td>
                   }
-                  <td
-                    (click)="!tableData.disabled?.value && editRow(row['id'])"
-                  >
+                  <td (click)="!tableData.disabled.value && editRow(row['id'])">
                     <fa-icon
-                      [class]="tableData.disabled?.value ? 'disabled-icon' : ''"
-                      [icon]="faPenToSquare"
+                      [class]="tableData.disabled.value ? 'disabled-icon' : ''"
+                      [icon]="icons.edit"
                     />
                   </td>
                   <td
-                    (click)="!tableData.disabled?.value && deleteRow(row['id'])"
+                    (click)="!tableData.disabled.value && deleteRow(row['id'])"
                   >
                     <fa-icon
-                      [class]="tableData.disabled?.value ? 'disabled-icon' : ''"
-                      [icon]="faTrashCan"
+                      [class]="tableData.disabled.value ? 'disabled-icon' : ''"
+                      [icon]="icons.bin"
                     />
                   </td>
                 </tr>
@@ -100,7 +98,7 @@
           <div class="widget-footer">
             <button
               class="button"
-              (click)="!tableData.disabled?.value && addRow()"
+              (click)="!tableData.disabled.value && addRow()"
             >
               Add more
             </button>
@@ -110,7 +108,7 @@
         <div class="error-container">
           <p>Error! There is no data. Would you like to add some?</p>
           <button
-            (click)="!tableData.disabled?.value && addRow()"
+            (click)="!tableData.disabled.value && addRow()"
             class="button"
           >
             Add Data
