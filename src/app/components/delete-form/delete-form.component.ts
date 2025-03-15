@@ -39,6 +39,8 @@ export class DeleteFormComponent {
   }
 
   load() {
+    this.formText = 'Are you sure you want to delete this row?';
+
     this.ids = this.formService.getDeleteFormIds();
     this.tableName = this.formService.getSelectedTable();
 
@@ -65,17 +67,17 @@ export class DeleteFormComponent {
       table_name: this.tableName,
     });
 
-    this.formService.setMessageFormData({
-      title: deletionResponse.success ? 'Success!' : 'Error!',
-      message: deletionResponse.message,
-    });
-
-    if ((deletionResponse.error = 'FOREIGN_KEY')) {
+    if ((deletionResponse.error == 'FOREIGN_KEY')) {
       if (this.ids.length == 1) {
         this.confirm = true;
       }
       this.formText = `There was an error! ${deletionResponse.message} THIS IS A VERY DANGEROUS ACTION. All related entries in other tables will be removed. Are you sure you want to proceed?`;
     } else {
+      this.formService.setMessageFormData({
+        title: deletionResponse.success ? 'Success!' : 'Error!',
+        message: deletionResponse.message,
+      });
+
       this.hide();
       this.formService.requestReload('hard');
     }
