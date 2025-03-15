@@ -31,7 +31,6 @@ export class WidgetComponent {
     private urlService: UrlService
   ) {
     this.imageUrlBase = this.urlService.getUrl('uploads');
-    console.log(this.tableData.disabled);
   }
 
   ngOnInit() {
@@ -124,8 +123,6 @@ export class WidgetComponent {
         delivery: delivery,
         totalNet: totalNet,
       };
-
-      console.log(this.tableData.extra);
     }
 
     this.formService.performReload();

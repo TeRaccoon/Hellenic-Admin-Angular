@@ -445,6 +445,7 @@
                   <fa-icon class="asterisk" [icon]="icons.faAsterisk"
                 /></label>
                 <input
+                  [class]="itemInputHasError('quantity') ? 'error-input' : ''"
                   class="number"
                   type="number"
                   formControlName="purchase_price"

@@ -224,6 +224,7 @@ export class AddFormComponent {
       imageUploaded: false,
       hidden: null
     };
+    this.addItemFormSubmitAttempted = false;
   }
 
   async loadForm() {
