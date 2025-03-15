@@ -627,7 +627,7 @@
                           <td>{{ item.vat }}</td>
                           <td>
                             {{
-                              item.total * ((100 - item.discount) / 100)
+                              item.net * ((100 - item.discount) / 100)
                                 | currency: "GBP"
                             }}
                           </td>
