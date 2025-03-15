@@ -4,7 +4,7 @@ import { FormService } from '../../services/form.service';
 import { Subscription } from 'rxjs';
 import { UrlService } from '../../services/url.service';
 import { widgetIcons } from '../../common/icons/widget-icons';
-import { DEFAULT_TABLE_DATA } from '../../common/consts/widget';
+import { DEFAULT_WIDGET_DATA } from '../../common/types/widget/const';
 
 @Component({
   selector: 'app-widget',
@@ -19,7 +19,7 @@ export class WidgetComponent {
 
   visible = false;
 
-  tableData = DEFAULT_TABLE_DATA;
+  tableData = DEFAULT_WIDGET_DATA;
   formName = '';
 
   totalStock: number = 0;
@@ -31,6 +31,7 @@ export class WidgetComponent {
     private urlService: UrlService
   ) {
     this.imageUrlBase = this.urlService.getUrl('uploads');
+    console.log(this.tableData.disabled);
   }
 
   ngOnInit() {
@@ -111,9 +112,6 @@ export class WidgetComponent {
         totalVAT += vat;
         totalNet += net;
       });
-
-      console.log(this.freeDeliveryMinimum);
-      console.log(isDelivery);
 
       if (this.freeDeliveryMinimum && totalNet < this.freeDeliveryMinimum && isDelivery) {
         totalNet += 7.5;

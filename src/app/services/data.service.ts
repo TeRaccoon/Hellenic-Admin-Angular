@@ -4,6 +4,7 @@ import { Observable, Subject, lastValueFrom } from 'rxjs';
 import { UrlService } from './url.service';
 import { BalanceSheetData, Response } from '../common/types/data-service/types';
 import { DEFAULT_BALANCE_SHEET } from '../common/types/data-service/const';
+import { WidgetData } from '../common/types/widget/types';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +12,7 @@ import { DEFAULT_BALANCE_SHEET } from '../common/types/data-service/const';
 export class DataService {
   private dataSubject = new Subject<any[]>();
   tableData: any = null;
-  private widgetData = new Subject<{
-    [key: string]: { name: string; quantity: number }[];
-  }>();
+  private widgetData = new Subject<WidgetData>();
   private tableWidgetData: any = {};
   private balanceSheetData: BalanceSheetData;
   altTableData: any = {};
@@ -102,7 +101,7 @@ export class DataService {
     return this.tableData;
   }
 
-  storeWidgetData(data: any) {
+  storeWidgetData(data: WidgetData) {
     this.widgetData.next(data);
   }
 

@@ -27,6 +27,7 @@ import {
   PRICE_LIST_ITEM_COLUMNS,
   SUPPLIER_INVOICE_COLUMNS,
 } from '../../common/constants';
+import { DEFAULT_DISABLED_WIDGET_DATA } from '../../common/types/widget/const';
 
 @Component({
   selector: 'app-view',
@@ -688,6 +689,8 @@ export class ViewComponent {
         title: title,
         idData: { id: itemId, columnName: 'Item ID' },
         query: 'stocked-items',
+        disabled: DEFAULT_DISABLED_WIDGET_DATA,
+        extra: undefined
       });
       this.formService.showWidget();
     }
@@ -781,7 +784,7 @@ export class ViewComponent {
     this.prepareAddFormService('credit_notes');
   }
 
-  async creditNoteSearch(id: number) {
+  async creditNoteSearch(id: string) {
     let tableColumns = CREDIT_NOTE_COLUMNS;
     let query =
       this.tableName == 'suppliers'
@@ -808,6 +811,8 @@ export class ViewComponent {
       title: title,
       idData: { id: id, columnName: idColumnName },
       query: query,
+      disabled: DEFAULT_DISABLED_WIDGET_DATA,
+      extra: undefined
     });
     this.formService.showWidget();
   }
@@ -830,6 +835,8 @@ export class ViewComponent {
       title: title,
       idData: { id: invoiceId, columnName: 'Supplier Invoice ID' },
       query: 'stocked-items-invoice',
+      disabled: DEFAULT_DISABLED_WIDGET_DATA,
+      extra: undefined
     });
     this.formService.showWidget();
   }
@@ -851,6 +858,8 @@ export class ViewComponent {
       title: title,
       idData: { id: customerId, columnName: 'Customer Name' },
       query: 'customer-addresses-by-id',
+      disabled: DEFAULT_DISABLED_WIDGET_DATA,
+      extra: undefined
     });
     this.formService.showWidget();
   }
@@ -874,6 +883,8 @@ export class ViewComponent {
       title: title,
       idData: { id: id, columnName: 'Price List ID' },
       query: query,
+      disabled: DEFAULT_DISABLED_WIDGET_DATA,
+      extra: undefined
     });
     this.formService.showWidget();
   }

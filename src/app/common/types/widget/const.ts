@@ -1,4 +1,11 @@
-export const DEFAULT_TABLE_DATA = {
+import { WidgetData } from "./types";
+
+export const DEFAULT_DISABLED_WIDGET_DATA = {
+    value: false,
+    message: '',
+};
+
+export const DEFAULT_WIDGET_DATA: WidgetData = {
     headers: [
         {
             name: '',
@@ -13,10 +20,7 @@ export const DEFAULT_TABLE_DATA = {
         columnName: '',
     },
     query: '',
-    disabled: {
-        value: false,
-        message: '',
-    },
+    disabled: DEFAULT_DISABLED_WIDGET_DATA,
     extra: {
         totalGross: 0,
         totalVAT: 0,

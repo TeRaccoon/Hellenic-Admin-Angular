@@ -74,7 +74,7 @@
               }
             </tbody>
           </table>
-          @if (tableData.query == "invoiced-items") {
+          @if (tableData.query == "invoiced-items" && tableData.extra) {
             <div class="summary-container">
               <h1>Transaction Summary</h1>
               <div>
