@@ -445,9 +445,9 @@ export class AddFormComponent {
     }
 
     let formDataArray = Object.entries(this.formData);
-    formDataArray.sort((a: any, b: any) =>
-      a[1].inputType.localeCompare(b[1].inputType)
-    );
+    // formDataArray.sort((a: any, b: any) =>
+    //   a[1].inputType.localeCompare(b[1].inputType)
+    // );
     this.mappedFormData = new Map(formDataArray);
     this.mappedFormDataKeys = Array.from(this.mappedFormData.keys());
 
