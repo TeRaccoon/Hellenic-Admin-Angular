@@ -449,11 +449,26 @@ export class AddFormComponent {
     console.log([...formDataArray]);
 
     formDataArray = [...formDataArray].sort((a: [string, { inputType: string }], b: [string, { inputType: string }]) => {
-      console.log("sorting")
-      if ((a[1].inputType === "text" || a[1].inputType === "textarea") && (b[1].inputType !== "text" && b[1].inputType !== "textarea")) return 1;
-      if ((a[1].inputType !== "text" && a[1].inputType !== "textarea") && (b[1].inputType === "text" || b[1].inputType === "textarea")) return -1;
-      return a[1].inputType.localeCompare(b[1].inputType);
+      console.log("sorting");
+
+      const aType = a[1].inputType;
+      const bType = b[1].inputType;
+
+      const isAText = aType === "text" || aType === "textarea";
+      const isBText = bType === "text" || bType === "textarea";
+
+      // Move "text" and "textarea" to the bottom
+      if (isAText && !isBText) return 1;
+      if (!isAText && isBText) return -1;
+
+      // If both are text-related, sort "text" before "textarea"
+      if (aType === "text" && bType === "textarea") return -1;
+      if (aType === "textarea" && bType === "text") return 1;
+
+      // Default case: Sort alphabetically
+      return aType.localeCompare(bType);
     });
+
 
 
     console.log([...formDataArray]);
