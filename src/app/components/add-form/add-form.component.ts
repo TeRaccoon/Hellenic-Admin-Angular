@@ -448,15 +448,12 @@ export class AddFormComponent {
     let formDataArray = Object.entries(this.formData);
     console.log(formDataArray);
 
-    formDataArray.sort((a: any, b: any) => {
-      if (a[1].inputType === "text" && b[1].inputType !== "text") {
-        return 1;
-      }
-      if (a[1].inputType !== "text" && b[1].inputType === "text") {
-        return -1;
-      }
+    formDataArray = [...formDataArray].sort((a: [string, { inputType: string }], b: [string, { inputType: string }]) => {
+      if (a[1].inputType === "text" && b[1].inputType !== "text") return 1;
+      if (a[1].inputType !== "text" && b[1].inputType === "text") return -1;
       return a[1].inputType.localeCompare(b[1].inputType);
     });
+
 
     console.log(formDataArray);
 
