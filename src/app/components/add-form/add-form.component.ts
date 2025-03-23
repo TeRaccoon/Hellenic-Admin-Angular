@@ -446,7 +446,7 @@ export class AddFormComponent {
 
 
     let formDataArray = Object.entries(this.formData);
-    console.log(formDataArray);
+    console.log([...formDataArray]);
 
     formDataArray = [...formDataArray].sort((a: [string, { inputType: string }], b: [string, { inputType: string }]) => {
       console.log("sorting")
@@ -456,7 +456,7 @@ export class AddFormComponent {
     });
 
 
-    console.log(formDataArray);
+    console.log([...formDataArray]);
 
     this.mappedFormData = new Map(formDataArray);
     this.mappedFormDataKeys = Array.from(this.mappedFormData.keys());
