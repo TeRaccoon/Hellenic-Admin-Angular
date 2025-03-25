@@ -105,7 +105,6 @@ body {
         padding: 20px;
         background-color: white;
         border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
         h2 {
             color: $primary-color;
@@ -122,6 +121,8 @@ body {
             border-bottom: 1px solid $accent-color;
             height: auto;
             align-items: center;
+            page-break-inside: avoid;
+            break-inside: avoid;
 
             &:last-child {
                 border-bottom: none;
@@ -150,7 +151,7 @@ body {
         .credit-note {
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #dcdcdc;
+            page-break-inside: avoid;
             break-inside: avoid;
             grid-column: span 5;
 
@@ -207,5 +208,17 @@ body {
     .grecaptcha-badge {
         display: none !important;
         visibility: hidden !important;
+    }
+}
+
+@media print {
+    * {
+        background: white !important;
+    }
+}
+
+@media print {
+    .print-exclude {
+        display: none;
     }
 }

@@ -3,6 +3,7 @@ import { DataService } from '../../services/data.service';
 import {
   BalanceSheetData,
   BalanceSheetQueries,
+  Response,
 } from '../../common/types/data-service/types';
 import {
   CreditNote,
@@ -22,6 +23,9 @@ import {
 } from '../../common/types/data-service/const';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { FormService } from '../../services/form.service';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { MailService } from '../../services/mail.service';
 
 dayjs.extend(isBetween);
 
@@ -37,13 +41,9 @@ export class BalanceSheetComponent {
   inputData!: BalanceSheetData;
   queries!: BalanceSheetQueries;
 
-  selected: SelectedDate = {
+  dateRange: SelectedDate = {
     startDate: dayjs().startOf('month'),
     endDate: dayjs().endOf('month'),
-  };
-  comparison: SelectedDate = {
-    startDate: null,
-    endDate: null,
   };
 
   imageUrlBase;
@@ -54,7 +54,6 @@ export class BalanceSheetComponent {
   filteredTransactions: Transaction[] = [];
 
   email = faEnvelope;
-
 
   ranges: any = {
     Yesterday: [dayjs().subtract(1, 'days'), dayjs().subtract(1, 'days')],
@@ -73,12 +72,12 @@ export class BalanceSheetComponent {
   constructor(
     private dataService: DataService,
     private urlService: UrlService,
-    private formService: FormService
+    private formService: FormService,
+    private mailService: MailService
   ) {
     this.imageUrlBase = this.urlService.getUrl('uploads');
 
     this.inputData = this.dataService.retrieveBalanceSheetData();
-
     this.queries =
       this.inputData.table == 'customers' ? CUSTOMER_QUERIES : SUPPLIER_QUERIES;
   }
@@ -163,11 +162,11 @@ export class BalanceSheetComponent {
   }
 
   updateDateRange() {
-    if (this.selected.startDate && this.selected.endDate) {
+    if (this.dateRange.startDate && this.dateRange.endDate) {
       this.filteredTransactions = this.transactions.filter((transaction) =>
         dayjs(transaction.date).isBetween(
-          this.selected.startDate,
-          this.selected.endDate,
+          this.dateRange.startDate,
+          this.dateRange.endDate,
           null,
           '[]'
         )
@@ -188,7 +187,7 @@ export class BalanceSheetComponent {
     );
   }
 
-  emailSupplier() {
+  async emailSupplier() {
     if (this.inputData.email == '' || this.inputData.email == null) {
       this.formService.setMessageFormData({
         title: 'Error!',
@@ -197,6 +196,70 @@ export class BalanceSheetComponent {
       return;
     }
 
+    const data = document.getElementById('balance-sheet');
+    if (!data) {
+      return;
+    }
 
+    const pdf = await this.constructPDF(data);
+    let response = await this.constructEmail(pdf);
+
+    this.formService.setMessageFormData({
+      title: response.success ? 'Success!' : 'Error!',
+      message: response.message,
+    });
+  }
+
+  constructPDF(data: HTMLElement): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      html2canvas(data, { useCORS: true, allowTaint: true })
+        .then((canvas) => {
+          const imgWidth = 210.5;
+          const pageHeight = 295;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          let heightLeft = imgHeight;
+
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          let position = 0;
+
+          const imgData = canvas.toDataURL('image/png');
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+
+          while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+          }
+
+          resolve(pdf.output('blob'));
+        })
+    });
+  }
+
+  constructEmail(pdf: Blob): Promise<Response> {
+    const emailHTML = this.mailService.getSupplierInvoiceEmail(this.dateRange);
+    console.log(pdf);
+
+    return new Promise(() => {
+      const reader = new FileReader();
+      reader.readAsDataURL(pdf);
+      reader.onloadend = () => {
+        const base64data = reader.result?.toString().split(',')[1];
+        const emailData = {
+          action: 'mail',
+          mail_type: 'newsletter',
+          subject: 'Balance Sheet',
+          attachment: base64data,
+          email_HTML: emailHTML,
+          address: this.inputData.email,
+          name: 'Customer',
+          filename: 'Balance Sheet.pdf',
+        };
+
+        this.mailService.sendEmail(emailData)
+      };
+    });
   }
 }

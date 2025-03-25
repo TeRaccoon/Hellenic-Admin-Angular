@@ -618,7 +618,9 @@
                         @if (tableName == "invoices") {
                           <td>
                             {{ item.price ?? 0 | currency: "GBP" }}
-                            {{ item.price == null ? "*" : "" }}
+                            {{
+                              item.price == null || item.price == 0 ? "*" : ""
+                            }}
                           </td>
                           <td>
                             {{ item.unit == "Unit" ? "Individual" : item.unit }}
