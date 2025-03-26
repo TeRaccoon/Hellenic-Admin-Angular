@@ -981,7 +981,7 @@ export class AddFormComponent {
     );
   }
 
-  private async generateBarcode(alt: boolean = false) {
+  async generateBarcode(alt: boolean = false) {
     const form = alt ? this.addItemForm : this.addForm;
     if (
       form.get('item_id')?.value != null &&

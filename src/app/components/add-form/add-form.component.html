@@ -478,7 +478,12 @@
                   >Expiry Date
                   <fa-icon class="asterisk" [icon]="icons.faAsterisk"
                 /></label>
-                <input class="date" type="date" formControlName="expiry_date" />
+                <input
+                  class="date"
+                  type="date"
+                  formControlName="expiry_date"
+                  (change)="generateBarcode(true)"
+                />
               </div>
               <div class="input-container text">
                 <label
