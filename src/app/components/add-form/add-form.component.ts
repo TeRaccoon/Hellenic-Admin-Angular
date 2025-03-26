@@ -426,7 +426,7 @@ export class AddFormComponent {
       if (this.invoiceId == null) {
         this.invoiceId = await this.dataService.processGet('next-id', {
           filter: 'supplier_invoices',
-        }) - 1;
+        });
       }
     } else {
       this.addItemForm = this.fb.group({
