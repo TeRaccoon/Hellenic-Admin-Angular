@@ -21,7 +21,7 @@ import {
   CUSTOMER_QUERIES,
   SUPPLIER_QUERIES,
 } from '../../common/types/data-service/const';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FormService } from '../../services/form.service';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -54,6 +54,9 @@ export class BalanceSheetComponent {
   filteredTransactions: Transaction[] = [];
 
   email = faEnvelope;
+  loading = faSpinner;
+
+  isLoading = false;
 
   ranges: any = {
     Yesterday: [dayjs().subtract(1, 'days'), dayjs().subtract(1, 'days')],
@@ -188,6 +191,8 @@ export class BalanceSheetComponent {
   }
 
   async emailSupplier() {
+    this.isLoading = true;
+
     if (this.inputData.email == '' || this.inputData.email == null) {
       this.formService.setMessageFormData({
         title: 'Error!',
@@ -202,12 +207,14 @@ export class BalanceSheetComponent {
     }
 
     const pdf = await this.constructPDF(data);
-    let response = await this.constructEmail(pdf);
+    const response = await this.constructEmail(pdf);
 
     this.formService.setMessageFormData({
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,
     });
+
+    this.isLoading = false;
   }
 
   constructPDF(data: HTMLElement): Promise<Blob> {
@@ -238,28 +245,25 @@ export class BalanceSheetComponent {
     });
   }
 
-  constructEmail(pdf: Blob): Promise<Response> {
-    const emailHTML = this.mailService.getSupplierInvoiceEmail(this.dateRange);
-    console.log(pdf);
+  async constructEmail(pdf: Blob) {
+    const reader = new FileReader();
 
-    return new Promise(() => {
-      const reader = new FileReader();
+    const base64data = await new Promise<string>((resolve) => {
+      reader.onloadend = () => resolve(reader.result?.toString().split(',')[1] || '');
       reader.readAsDataURL(pdf);
-      reader.onloadend = () => {
-        const base64data = reader.result?.toString().split(',')[1];
-        const emailData = {
-          action: 'mail',
-          mail_type: 'newsletter',
-          subject: 'Balance Sheet',
-          attachment: base64data,
-          email_HTML: emailHTML,
-          address: this.inputData.email,
-          name: 'Customer',
-          filename: 'Balance Sheet.pdf',
-        };
-
-        this.mailService.sendEmail(emailData)
-      };
     });
+
+    const emailData = {
+      action: 'mail',
+      mail_type: 'newsletter',
+      subject: 'Balance Sheet',
+      attachment: base64data,
+      email_HTML: this.mailService.getSupplierInvoiceEmail(this.dateRange),
+      address: this.inputData.email,
+      name: 'Customer',
+      filename: 'Balance Sheet.pdf',
+    };
+
+    return this.mailService.sendEmail(emailData);
   }
 }

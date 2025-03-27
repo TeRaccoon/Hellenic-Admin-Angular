@@ -24,7 +24,11 @@
   </div>
   <div (click)="emailSupplier()">
     <p>Email supplier</p>
-    <fa-icon [icon]="email" />
+    @if (isLoading) {
+      <fa-icon class="loading-icon" [icon]="loading" spinPulse [spin]="true" />
+    } @else {
+      <fa-icon [icon]="email" />
+    }
   </div>
 </div>
 <div class="container" id="balance-sheet">
@@ -116,3 +120,4 @@
     </div>
   </div>
 </div>
+<app-message-form />
