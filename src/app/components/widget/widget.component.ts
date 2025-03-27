@@ -60,7 +60,7 @@ export class WidgetComponent {
 
     this.subscriptions.add(
       this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
-        if (reloadRequested) {
+        if (reloadRequested && this.visible) {
           await this.reload();
         }
       })
