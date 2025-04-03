@@ -8,7 +8,6 @@ import { NgChartsModule } from 'ng2-charts';
 import _ from 'lodash';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
-import { environment, recaptcha } from '../environments/environment';
 import { QuillModule } from 'ngx-quill';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -43,6 +42,7 @@ import { TableFooterComponent } from './components/table-footer/table-footer.com
 import { InvoiceAddressComponent } from './components/invoice-address/invoice-address.component';
 import { NewsletterWidgetComponent } from './components/newsletter-widget/newsletter-widget.component';
 import { DocumentUploadWidgetComponent } from './components/document-upload-widget/document-upload-widget.component';
+import { DropselectComponent } from "./components/dropselect/dropselect.component";
 
 export function initConfig(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -80,6 +80,7 @@ export function initConfig(configService: ConfigService) {
     InvoiceAddressComponent,
     NewsletterWidgetComponent,
     DocumentUploadWidgetComponent,
+    DropselectComponent
   ],
   imports: [
     BrowserModule,
@@ -110,4 +111,4 @@ export function initConfig(configService: ConfigService) {
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,0 +1,44 @@
+<div class="drop-select-container">
+  <div class="input-wrapper">
+    <input
+      autocomplete="off"
+      [class]="class"
+      [disabled]="disabled"
+      (input)="filterDropSelect($event)"
+      type="text"
+      (focus)="onInputFocus()"
+      (blur)="onInputBlur()"
+      [value]="selectData"
+      [ngClass]="open ? 'input-visible' : 'input-hidden'"
+    />
+    @if (loading) {
+      <fa-icon class="loading-icon" [icon]="spinner" spinPulse [spin]="true" />
+    }
+  </div>
+  <div
+    class="drop-select"
+    [class]="open ? 'dropdown-visible' : 'dropdown-hidden'"
+  >
+    @if (filteredData.length == 0) {
+      <p>Nothing to show here!</p>
+    } @else {
+      @for (option of filteredData; track option) {
+        @if (option.replacement != "") {
+          <p
+            (click)="
+              updateSelectedReplacementDataFromKey(
+                option.id,
+                option.replacement,
+                key,
+                field,
+                false
+              )
+            "
+          >
+            {{ option.replacement }}
+          </p>
+        }
+      }
+    }
+  </div>
+</div>

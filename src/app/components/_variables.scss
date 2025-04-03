@@ -69,7 +69,7 @@ $hellenicblue: rgb(0, 140, 255);
 .drop-select {
     background-color: white;
     border-radius: 0 0 8px 8px;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 400px;
     width: 100%;
     z-index: 2;

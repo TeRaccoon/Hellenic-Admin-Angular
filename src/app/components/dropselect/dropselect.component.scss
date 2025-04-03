@@ -1,0 +1,79 @@
+.drop-select-container {
+    position: relative;
+    width: 100%;
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            outline: none;
+            border: 1px solid rgb(215, 215, 215);
+            font-size: 16px;
+            padding: 10px;
+            padding-right: 35px;
+        }
+
+        .input-hidden {
+            border-radius: 8px;
+            transition: border-radius 0.5s 0.8s ease;
+        }
+
+        .input-visible {
+            border-radius: 8px 8px 0px 0px;
+            transition: border-radius 0.5s 0.2s ease;
+        }
+
+        .loading-icon {
+            position: absolute;
+            right: 10px;
+            color: #999;
+            font-size: 18px;
+        }
+    }
+
+    .drop-select {
+        background-color: white;
+        border-radius: 0 0 8px 8px;
+        overflow-y: auto;
+        max-height: 400px;
+        width: 100%;
+        z-index: 2;
+        box-sizing: border-box;
+
+        p {
+            padding: 5px;
+            margin: 0px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #eaeef3;
+            }
+        }
+    }
+
+    .image-row {
+        img {
+            width: 100%;
+            margin: 10px;
+        }
+    }
+
+    .dropdown-hidden {
+        opacity: 0;
+        max-height: 0;
+        border: 1px solid transparent;
+        transition: max-height 1s ease 0.1s, opacity 0.5s 0.8s ease, border 0s 0.8s;
+    }
+
+    .dropdown-visible {
+        opacity: 1;
+        max-height: 500px;
+        border: 1px solid rgb(215, 215, 215);
+        transition: max-height 1s ease 0.1s, opacity 0.5s ease;
+    }
+}
