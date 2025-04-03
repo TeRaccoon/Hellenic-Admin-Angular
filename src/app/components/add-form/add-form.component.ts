@@ -11,6 +11,7 @@ import {
   keyedAddress,
   formState,
   SaleType,
+  ReplacementData,
 } from '../../common/types/forms/types';
 import { Subscription } from 'rxjs';
 import { AddressUpdate } from '../invoice-address/types';
@@ -802,6 +803,12 @@ export class AddFormComponent {
     this.formState.hidden = this.tableName;
   }
 
+  async updateSelectedReplacementDataFromKeyEvent(eventData: ReplacementData) {
+    const { dataId, dataValue, key, field, alt } = eventData;
+    await this.updateSelectedReplacementDataFromKey(dataId, dataValue, key, field, alt);
+  }
+
+
   async updateSelectedReplacementDataFromKey(
     dataId: number,
     dataValue: string,
@@ -1024,6 +1031,15 @@ export class AddFormComponent {
     return result;
   }
 
+  updateSelectedTextReplacement(
+    value: string,
+    key: string,
+    field: string
+  ) {
+    this.addForm.get(field)?.setValue(value);
+    this.selectedTextReplacementData[key] = value;
+  }
+
   updateSelectedTextReplacementDataFromKey(
     value: string,
     key: string,
@@ -1199,7 +1215,6 @@ export class AddFormComponent {
   ) {
     const filter = event.target.value || '';
     this.selectedReplacementData[key]!.selectData = filter;
-
     if (this.replacementData[key]?.data.length > 0) {
       let derivedField = includeField
         ? this.mappedFormData.get(key)!.field
@@ -1404,13 +1419,13 @@ export class AddFormComponent {
 
   inputHasError(field: string) {
     return (
-      this.addForm.get(field)?.invalid && this.formState.submissionAttempted
+      this.addForm.get(field)?.invalid && this.formState.submissionAttempted ? 'error-input' : ''
     );
   }
 
   itemInputHasError(field: string) {
     return (
-      this.addItemForm.get(field)?.invalid && this.addItemFormSubmitAttempted
+      this.addItemForm.get(field)?.invalid && this.addItemFormSubmitAttempted ? 'error-input' : ''
     );
   }
 

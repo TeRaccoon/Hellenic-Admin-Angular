@@ -1,3 +1,11 @@
+export interface ReplacementData {
+  dataId: number;
+  dataValue: string;
+  key: string;
+  field: string;
+  alt: boolean;
+}
+
 export interface settings {
   showAddMore: boolean;
 }
