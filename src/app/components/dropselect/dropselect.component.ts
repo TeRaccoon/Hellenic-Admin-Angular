@@ -14,7 +14,7 @@ export class DropselectComponent implements OnInit {
   @Input() disabled!: boolean;
   @Input() class!: string;
   @Input() field!: string;
-  @Input() alterative!: boolean;
+  @Input() alternative!: boolean;
   @Input() key: any;
   @Input() text = false;
 
@@ -75,7 +75,7 @@ export class DropselectComponent implements OnInit {
           this.filteredData[0].replacement,
           this.key,
           this.field,
-          this.alterative
+          this.alternative
         );
       }
       this.open = false;
