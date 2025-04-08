@@ -1,0 +1,35 @@
+<div class="container">
+  <h3>Documents to reconcile</h3>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Total</th>
+          <th>Outstanding balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (invoice of invoicesDetails; track invoice) {
+          <tr>
+            <td>
+              {{
+                tableName == "customer_payments"
+                  ? invoice.title
+                  : invoice.reference
+              }}
+            </td>
+            <td>
+              {{ invoice.created_at | date: "dd/MM/yyyy" }}
+            </td>
+            <td>{{ invoice.total | currency: "GBP" }}</td>
+            <td>
+              {{ invoice.outstanding_balance | currency: "GBP" }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
