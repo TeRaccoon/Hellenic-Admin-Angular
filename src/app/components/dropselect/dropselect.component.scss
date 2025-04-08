@@ -20,12 +20,14 @@
 
         .input-hidden {
             border-radius: 8px;
-            transition: border-radius 0.5s 0.8s ease;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            transition: border-radius 0.5s 1s ease;
         }
 
         .input-visible {
             border-radius: 8px 8px 0px 0px;
-            transition: border-radius 0.5s 0.2s ease;
+            box-shadow: 0;
+            transition: border-radius 0.5s ease;
         }
 
         .loading-icon {
@@ -67,13 +69,21 @@
         opacity: 0;
         max-height: 0;
         border: 1px solid transparent;
-        transition: max-height 1s ease 0.1s, opacity 0.5s 0.8s ease, border 0s 0.8s;
+        box-shadow: 0;
+        transition:
+            max-height 1s ease,
+            opacity 0.5s 1s ease,
+            border 0s 1s;
     }
 
     .dropdown-visible {
         opacity: 1;
         max-height: 500px;
         border: 1px solid rgb(215, 215, 215);
-        transition: max-height 1s ease 0.1s, opacity 0.5s ease;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        transition:
+            max-height 1s ease 0.4s,
+            opacity 0.5s ease;
     }
+
 }
