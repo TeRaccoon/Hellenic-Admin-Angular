@@ -50,10 +50,7 @@
                       <fa-icon class="asterisk" [icon]="icons.faAsterisk" />
                     }
                   </label>
-                  @if (
-                    (key == "Delivery Address" || key == "Billing Address") &&
-                    !addressNotListedKeys.includes(key)
-                  ) {
+                  @if (shouldDisplayAddressNotListed(key)) {
                     <label class="label-link" (click)="addressNotListed(key)"
                       ><a>Address not listed?</a></label
                     >
@@ -93,12 +90,7 @@
                           [ngClass]="file == null ? '' : 'success'"
                           [icon]="icons.faCloudUpload"
                         />
-                        {{
-                          file == null
-                            ? "Upload
-            Image"
-                            : file.name
-                        }}
+                        {{ file == null ? "Upload Image" : file.name }}
                         <label class="upload-size-warning">(8mb max)</label>
                       </label>
                     }
@@ -178,7 +170,7 @@
                             inputHasError(mappedFormData.get(key)!.field)
                           "
                           [field]="mappedFormData.get(key)!.field"
-                          [alterative]="false"
+                          [alternative]="false"
                           [key]="key"
                           (update)="
                             updateSelectedReplacementDataFromKeyEvent($event)
@@ -259,69 +251,21 @@
             }
           }
           @if (
-            tableName == "customer_payments" || tableName == "supplier_payments"
+            (tableName == "customer_payments" ||
+              tableName == "supplier_payments") &&
+            invoicesDetails.length > 0
           ) {
-            <div class="invoice-details-container">
-              <h3>Documents to reconcile</h3>
-              <div class="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Date</th>
-                      <th>Total</th>
-                      <th>Outstanding balance</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (invoice of invoiceDetails; track invoice) {
-                      <tr>
-                        <td>
-                          {{
-                            tableName == "customer_payments"
-                              ? invoice["title"]
-                              : invoice["reference"]
-                          }}
-                        </td>
-                        <td>
-                          {{ invoice["created_at"] | date: "dd/MM/yyyy" }}
-                        </td>
-                        <td>{{ invoice["total"] | currency: "GBP" }}</td>
-                        <td>
-                          {{ invoice["outstanding_balance"] | currency: "GBP" }}
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <app-documents-to-reconcile
+              [invoicesDetails]="invoicesDetails"
+              [tableName]="tableName"
+            />
           }
-          <div class="form-footer">
-            @if (!shouldDisplayItemWidget()) {
-              <button class="button" (click)="formSubmit(true)" type="submit">
-                Submit
-              </button>
-            } @else {
-              <button
-                class="button"
-                [ngClass]="invoiceCreated ? 'button-success' : ''"
-                (click)="formSubmit(false)"
-                type="submit"
-              >
-                @if (invoiceCreated) {
-                  <fa-icon [icon]="icons.faCheck" />
-                } @else {
-                  Create
-                }
-              </button>
-            }
-            @if (formSettings.showAddMore) {
-              <button class="button" (click)="formSubmit(false)" type="submit">
-                Add more
-              </button>
-            }
-          </div>
+          <app-form-footer
+            [success]="invoiceCreated"
+            [addMore]="formSettings.showAddMore"
+            [withWidget]="shouldDisplayItemWidget()"
+            (formSubmit)="formSubmit($event)"
+          />
         </form>
         @if (shouldDisplayItemWidget()) {
           <form class="form-container" [formGroup]="addItemForm">
@@ -330,47 +274,15 @@
               <label
                 >Item Name <fa-icon class="asterisk" [icon]="icons.faAsterisk"
               /></label>
-              <div class="drop-select-container">
-                <input
-                  [class]="itemInputHasError('item_id')"
-                  (input)="
-                    filterDropSelect('Item ID', $event, false, 'item_id', true)
-                  "
-                  type="text"
-                  (focus)="onInputFocus('Item ID')"
-                  (blur)="onInputBlur('Item ID')"
-                  [value]="selectedReplacementData['Item ID']?.selectData"
-                  formControlName="item_id"
-                />
-                <div
-                  class="drop-select"
-                  [ngClass]="
-                    selectOpen['Item ID']?.opened
-                      ? 'input-visible'
-                      : 'input-hidden'
-                  "
-                  required
-                >
-                  @for (
-                    option of filteredReplacementData["Item ID"].data;
-                    track option
-                  ) {
-                    <p
-                      (click)="
-                        updateSelectedReplacementDataFromKey(
-                          option.id,
-                          option.replacement,
-                          'Item ID',
-                          'item_id',
-                          true
-                        )
-                      "
-                    >
-                      {{ option.replacement }}
-                    </p>
-                  }
-                </div>
-              </div>
+              <app-dropselect
+                [selectData]="selectedReplacementData['Item ID']?.selectData"
+                [replacementData]="replacementData['Item ID'].data"
+                [class]="itemInputHasError('item_id')"
+                [field]="'item_id'"
+                [alternative]="true"
+                [key]="'Item ID'"
+                (update)="updateSelectedReplacementDataFromKeyEvent($event)"
+              />
             </div>
             @if (tableName == "supplier_invoices") {
               <div class="input-container number">
@@ -430,54 +342,15 @@
                   >Warehouse
                   <fa-icon class="asterisk" [icon]="icons.faAsterisk"
                 /></label>
-                <div class="drop-select-container">
-                  <input
-                    (input)="
-                      filterDropSelect(
-                        'Warehouse ID',
-                        $event,
-                        false,
-                        'warehouse_id',
-                        true
-                      )
-                    "
-                    type="text"
-                    (focus)="onInputFocus('Warehouse ID')"
-                    (blur)="onInputBlur('Warehouse ID')"
-                    [value]="
-                      selectedReplacementData['Warehouse ID']?.selectData
-                    "
+                <app-dropselect
+                  [selectData]="selectedReplacementData['Warehouse ID']"
+                  [replacementData]="replacementData['Warehouse ID'].data"
+                  [class]="itemInputHasError('warehouse_id')"
+                  [field]="'warehouse_id'"
+                  [alternative]="true"
+                  [key]="'Warehouse ID'"
+                  (update)="updateSelectedReplacementDataFromKeyEvent($event)"
                   />
-                  <div
-                    class="drop-select"
-                    [ngClass]="
-                      selectOpen['Warehouse ID']?.opened
-                        ? 'input-visible'
-                        : 'input-hidden'
-                    "
-                    required
-                  >
-                    @for (
-                      option of filteredReplacementData["Warehouse ID"].data;
-                      track option
-                    ) {
-                      <p
-                        (click)="
-                          updateSelectedReplacementDataFromKey(
-                            option.id,
-                            option.replacement,
-                            'Warehouse ID',
-                            'warehouse_id',
-                            true
-                          )
-                        "
-                      >
-                        {{ option.replacement }}
-                      </p>
-                    }
-                  </div>
-                </div>
-              </div>
               <div class="input-container select">
                 <label
                   >Packing Format
@@ -601,21 +474,19 @@
                 }
               </table>
             </div>
-            <div class="form-footer">
-              @if (shouldDisplayPriceWarning()) {
-                <div>
-                  <fa-icon [icon]="icons.faAsterisk" />
-                  <p>Indicates no price for this customer type</p>
-                </div>
-              }
-              <div>
-                @if (shouldDisplayItemWidget()) {
-                  <button (click)="addItem($event)" class="button">
-                    Add invoiced items
-                  </button>
-                }
-                <button (click)="close()" class="button">Save</button>
+            @if (shouldDisplayPriceWarning()) {
+              <div class="warning-box">
+                <fa-icon [icon]="icons.faAsterisk" />
+                <p>Indicates no price for this customer type</p>
               </div>
+            }
+            <div class="form-footer">
+              @if (shouldDisplayItemWidget()) {
+                <button (click)="addItem($event)" class="button">
+                  Add invoiced items
+                </button>
+              }
+              <button (click)="close()" class="button">Save</button>
             </div>
           </form>
         }
