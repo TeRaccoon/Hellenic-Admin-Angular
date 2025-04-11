@@ -1,29 +1,5 @@
 $hellenicblue: rgb(0, 140, 255);
 
-.button {
-    border-radius: 5px;
-    padding: 5px;
-    outline: none;
-    background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
-    border: none;
-    color: white;
-    cursor: pointer;
-
-    &:hover {
-        background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
-    }
-}
-
-.button:disabled {
-    cursor: default;
-    color: #eaeef3;
-    background-image: linear-gradient(to right, rgb(186, 186, 186), rgb(87, 87, 87));
-
-    &:hover {
-        background-image: linear-gradient(to right, rgb(186, 186, 186), rgb(87, 87, 87));
-    }
-}
-
 .sidebar-button {
     color: white;
     display: flex;
