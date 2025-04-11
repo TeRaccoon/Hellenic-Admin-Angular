@@ -284,85 +284,7 @@
                 (update)="updateSelectedReplacementDataFromKeyEvent($event)"
               />
             </div>
-            @if (tableName == "supplier_invoices") {
-              <div class="input-container number">
-                <label
-                  >Purchase Price
-                  <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <input
-                  [class]="itemInputHasError('quantity') ? 'error-input' : ''"
-                  class="number"
-                  type="number"
-                  formControlName="purchase_price"
-                />
-              </div>
-              <div class="input-container number">
-                <label
-                  >Quantity <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <input
-                  [class]="itemInputHasError('quantity')"
-                  class="number"
-                  type="number"
-                  formControlName="quantity"
-                />
-              </div>
-              <div class="input-container date">
-                <label
-                  >Purchase Date
-                  <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <input
-                  class="date"
-                  type="date"
-                  formControlName="purchase_date"
-                />
-              </div>
-              <div class="input-container date">
-                <label
-                  >Expiry Date
-                  <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <input
-                  class="date"
-                  type="date"
-                  formControlName="expiry_date"
-                  (change)="generateBarcode(true)"
-                />
-              </div>
-              <div class="input-container text">
-                <label
-                  >Barcode <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <input class="text" type="text" formControlName="barcode" />
-              </div>
-              <div class="input-container replacement">
-                <label
-                  >Warehouse
-                  <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <app-dropselect
-                  [selectData]="selectedReplacementData['Warehouse ID']"
-                  [replacementData]="replacementData['Warehouse ID'].data"
-                  [class]="itemInputHasError('warehouse_id')"
-                  [field]="'warehouse_id'"
-                  [alternative]="true"
-                  [key]="'Warehouse ID'"
-                  (update)="updateSelectedReplacementDataFromKeyEvent($event)"
-                  />
-              <div class="input-container select">
-                <label
-                  >Packing Format
-                  <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <select class="select-input" formControlName="packing_format">
-                  <option selected value="Individual">Individual</option>
-                  <option value="Box">Box</option>
-                  <option value="Pallet">Pallet</option>
-                </select>
-              </div>
-            }
+            @if (tableName == "supplier_invoices") {}
             @if (tableName == "invoices") {
               <div class="input-container number">
                 <label
@@ -379,8 +301,6 @@
                   <option value="Pallet">Pallet</option>
                 </select>
               </div>
-            }
-            @if (tableName == "invoices") {
               <div class="input-container number">
                 <label
                   >Quantity <fa-icon class="asterisk" [icon]="icons.faAsterisk"
@@ -402,78 +322,13 @@
                 />
               </div>
             }
-            <div class="table-container">
-              <table>
-                <thead>
-                  <th>Item Name</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                  @if (tableName == "invoices") {
-                    <th>Unit</th>
-                    <th>Discount</th>
-                    <th>VAT</th>
-                    <th>Total</th>
-                  }
-                  @if (tableName == "supplier_invoices") {
-                    <th>Purchase Date</th>
-                    <th>Expiry Date</th>
-                    <th>Packing Format</th>
-                    <th>Barcode</th>
-                  }
-                </thead>
-                @if (itemsList.length > 0 && itemsList[0] != null) {
-                  <tbody>
-                    @for (item of itemsList; track item; let index = $index) {
-                      <tr>
-                        <td>{{ item.name ?? item.item_name }}</td>
-                        <td>{{ item.quantity }}</td>
-                        @if (tableName == "invoices") {
-                          <td>
-                            {{ item.price ?? 0 | currency: "GBP" }}
-                            {{
-                              item.price == null || item.price == 0 ? "*" : ""
-                            }}
-                          </td>
-                          <td>
-                            {{ item.unit == "Unit" ? "Individual" : item.unit }}
-                          </td>
-                          <td>{{ item.discount }}%</td>
-                          <td>{{ item.vat }}</td>
-                          <td>
-                            {{
-                              item.net * ((100 - item.discount) / 100)
-                                | currency: "GBP"
-                            }}
-                          </td>
-                        }
-                        @if (tableName == "supplier_invoices") {
-                          <td>{{ item.purchase_price }}</td>
-                          <td>{{ item.purchase_date }}</td>
-                          <td>{{ item.expiry_date }}</td>
-                          <td>{{ item.packing_format }}</td>
-                          <td>{{ item.barcode }}</td>
-                        }
-                        <td (click)="deleteRow(itemsList[index].id)">
-                          <fa-icon [icon]="icons.faX" />
-                        </td>
-                      </tr>
-                    }
-                    @if (tableName == "invoices") {
-                      <tr>
-                        <td colspan="5">Total (inc. delivery)</td>
-                        <td>{{ invoiceTotal | currency: "GBP" }}</td>
-                      </tr>
-                    }
-                    @if (tableName == "supplier_invoices") {
-                      <tr>
-                        <td colspan="6">Total</td>
-                        <td>{{ invoiceTotal | currency: "EUR" }}</td>
-                      </tr>
-                    }
-                  </tbody>
-                }
-              </table>
-            </div>
+            @if (invoiceId != null) {
+              <app-form-items-table
+                [tableName]="tableName"
+                [invoiceId]="invoiceId"
+              />
+            }
+
             @if (shouldDisplayPriceWarning()) {
               <div class="warning-box">
                 <fa-icon [icon]="icons.faAsterisk" />

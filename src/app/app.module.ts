@@ -43,6 +43,11 @@ import { InvoiceAddressComponent } from './components/invoice-address/invoice-ad
 import { NewsletterWidgetComponent } from './components/newsletter-widget/newsletter-widget.component';
 import { DocumentUploadWidgetComponent } from './components/document-upload-widget/document-upload-widget.component';
 import { DropselectComponent } from "./components/dropselect/dropselect.component";
+import { DocumentsToReconcileComponent } from './components/documents-to-reconcile/documents-to-reconcile.component';
+import { FormFooterComponent } from './components/form-footer/form-footer.component';
+import { FormItemsTableComponent } from './components/form-items-table/form-items-table.component';
+import { SupplierInvoiceItemFormControlsComponent } from './components/supplier-invoice-item-form-controls/supplier-invoice-item-form-controls.component';
+import { TableViewOptionsComponent } from './components/table-view-options/table-view-options.component';
 
 export function initConfig(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -80,7 +85,12 @@ export function initConfig(configService: ConfigService) {
     InvoiceAddressComponent,
     NewsletterWidgetComponent,
     DocumentUploadWidgetComponent,
-    DropselectComponent
+    DropselectComponent,
+    DocumentsToReconcileComponent,
+    FormFooterComponent,
+    FormItemsTableComponent,
+    SupplierInvoiceItemFormControlsComponent,
+    TableViewOptionsComponent
   ],
   imports: [
     BrowserModule,
