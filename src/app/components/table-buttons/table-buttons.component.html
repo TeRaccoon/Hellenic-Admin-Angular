@@ -1,0 +1,16 @@
+<button class="button" (click)="addRow(null)">Add New +</button>
+@for (button of buttonConfigs; track button) {
+  @if (button.condition()) {
+    <button class="button" (click)="button.action()">
+      @if (button.icon) {
+        <fa-icon
+          [icon]="getIcon(button)"
+          [spin]="button.spin ? button.spin() : false"
+        />
+      }
+      @if (button.label) {
+        <span>{{ button.label }}</span>
+      }
+    </button>
+  }
+}
