@@ -6,11 +6,11 @@ export interface ReplacementData {
   alt: boolean;
 }
 
-export interface settings {
+export interface Settings {
   showAddMore: boolean;
 }
 
-export interface data {
+export interface Data {
   inputType: string;
   dataType: string;
   field: string;
@@ -18,11 +18,11 @@ export interface data {
   value: any;
 }
 
-export interface keyedData {
-  [key: string]: data;
+export interface KeyedData {
+  [key: string]: Data;
 }
 
-export interface editableData {
+export interface EditableData {
   columns: any[];
   types: any[];
   names: any[];
@@ -31,13 +31,13 @@ export interface editableData {
   values: any[];
 }
 
-export interface message {
+export interface Message {
   title: string;
   message: string;
   footer?: string;
 }
 
-export interface address {
+export interface Address {
   line1: string;
   line2: string;
   line3: string;
@@ -45,11 +45,11 @@ export interface address {
   save: boolean;
 }
 
-export interface keyedAddress {
-  [key: string]: address;
+export interface KeyedAddress {
+  [key: string]: Address;
 }
 
-export interface formState {
+export interface FormState {
   loaded: boolean;
   submissionAttempted: boolean;
   submitted: boolean;
