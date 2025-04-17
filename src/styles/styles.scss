@@ -1,0 +1,54 @@
+$hellenicblue: rgb(0, 140, 255);
+
+body {
+    margin: 0px;
+    background-color: #eaeef3;
+    font-family: 'Titillium Web', sans-serif;
+
+    ::selection {
+        background-color: rgb(66, 66, 200);
+        color: white;
+    }
+}
+
+.button {
+    border-radius: 5px;
+    padding: 5px;
+    outline: none;
+    background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
+    border: none;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+        background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
+    }
+}
+
+.button:disabled {
+    cursor: default;
+    color: #eaeef3;
+    background-image: linear-gradient(to right, rgb(186, 186, 186), rgb(87, 87, 87));
+
+    &:hover {
+        background-image: linear-gradient(to right, rgb(186, 186, 186), rgb(87, 87, 87));
+    }
+}
+
+@media print {
+    app-root>* {
+        display: none;
+    }
+
+    app-root app-print-layout {
+        display: block;
+    }
+
+    .grecaptcha-badge {
+        visibility: hidden !important;
+    }
+
+    body {
+        background-color: white !important;
+    }
+}

@@ -47,7 +47,7 @@ import { DocumentsToReconcileComponent } from './components/documents-to-reconci
 import { FormFooterComponent } from './components/form-footer/form-footer.component';
 import { FormItemsTableComponent } from './components/form-items-table/form-items-table.component';
 import { SupplierInvoiceItemFormControlsComponent } from './components/supplier-invoice-item-form-controls/supplier-invoice-item-form-controls.component';
-import { TableViewOptionsComponent } from './components/table-view-options/table-view-options.component';
+import { TableButtonsComponent } from './components/table-buttons/table-buttons.component';
 
 export function initConfig(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -90,7 +90,7 @@ export function initConfig(configService: ConfigService) {
     FormFooterComponent,
     FormItemsTableComponent,
     SupplierInvoiceItemFormControlsComponent,
-    TableViewOptionsComponent
+    TableButtonsComponent
   ],
   imports: [
     BrowserModule,
