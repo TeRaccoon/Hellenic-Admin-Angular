@@ -13,13 +13,9 @@ import {
   viewMetadata,
   FilterData,
 } from '../../common/types/view/types';
-import { editableData } from '../../common/types/forms/types';
-import { tableIcons } from '../../common/icons/table-icons';
+import { EditableData } from '../../common/types/forms/types';
+import { TABLE_ICONS } from '../../common/icons/table-icons';
 import { TableService } from '../../services/table.service';
-import {
-  BalanceSheetData,
-  BalanceSheetTable,
-} from '../../common/types/data-service/types';
 import { UrlService } from '../../services/url.service';
 import {
   ADDRESS_COLUMNS,
@@ -28,6 +24,8 @@ import {
   SUPPLIER_INVOICE_COLUMNS,
 } from '../../common/constants';
 import { DEFAULT_DISABLED_WIDGET_DATA } from '../../common/types/widget/const';
+import { TableOptionsService } from '../../services/table-options.service';
+import { INVOICE_COLUMNS, STOCK_COLUMNS } from '../../common/consts/table-options';
 
 @Component({
   selector: 'app-view',
@@ -37,9 +35,7 @@ import { DEFAULT_DISABLED_WIDGET_DATA } from '../../common/types/widget/const';
 export class ViewComponent {
   private readonly subscriptions = new Subscription();
 
-  icons = tableIcons;
-
-  buttonConfigs: any[] = [];
+  icons = TABLE_ICONS;
 
   accessible = false;
 
@@ -58,7 +54,7 @@ export class ViewComponent {
   displayData: any[] = [];
   dataTypes: any[] = [];
   filteredDisplayData: any[] = [];
-  editable: editableData;
+  editable: EditableData;
   stockData: any = {};
 
   selectedRows: number[] = [];
@@ -67,7 +63,7 @@ export class ViewComponent {
 
   distanceLoading = false;
 
-  icon = tableIcons.faLock;
+  icon = TABLE_ICONS.lock;
 
   filter: string = '';
 
@@ -87,6 +83,7 @@ export class ViewComponent {
     private dataService: DataService,
     private _location: Location,
     private urlService: UrlService,
+    private optionsService: TableOptionsService
   ) {
     this.apiUrlBase = this.urlService.getUrl();
     this.imageUrlBase = this.urlService.getUrl('uploads');
@@ -108,46 +105,6 @@ export class ViewComponent {
       fields: [],
       values: [],
     };
-
-    this.buttonConfigs = [
-      {
-        condition: () =>
-          this.selectedRows.length > 0 && this.tableName === 'invoices',
-        icon: this.icons.faPrint,
-        action: () => this.print(),
-      },
-      {
-        condition: () => this.canShowMultipleDelete(),
-        icon: this.icons.faTrashCan,
-        action: () => this.deleteRows(),
-      },
-      {
-        condition: () => this.selectedRows.length === 1,
-        icon: this.icons.faCopy,
-        action: () => this.duplicate(),
-      },
-      {
-        condition: () => this.tableName === 'suppliers',
-        icon: this.icons.faFileInvoice,
-        action: () => this.createCreditNote(),
-      },
-      {
-        condition: () =>
-          (this.tableName === 'customers' || this.tableName === 'suppliers') &&
-          this.selectedRows.length === 1,
-        label: 'Balance Sheet',
-        action: () => this.viewBalanceSheet(),
-      },
-      {
-        condition: () =>
-          this.selectedRows.length === 1 && this.tableName === 'invoices',
-        icon: this.distanceLoading
-          ? this.icons.faSpinner
-          : this.icons.faTruckFront,
-        action: () => this.calculateDistance(),
-        spin: () => this.distanceLoading,
-      },
-    ];
   }
 
   ngOnInit() {
@@ -341,35 +298,19 @@ export class ViewComponent {
     this.loadPage();
   }
 
-  viewBalanceSheet() {
-    let id = this.selectedRows[0];
-    let row = this.data.filter((row: any) => row.id == id)[0];
-
-    let account_number =
-      this.tableName == 'customers'
-        ? row['account_number']
-        : row['account_code'];
-
-    let balanceSheetTitle = `Balance Sheet for ${row['account_name']} - ${account_number}`;
-
-    let balanceSheetData: BalanceSheetData = {
-      title: balanceSheetTitle,
-      customerId: id,
-      table: this.tableName as BalanceSheetTable,
-      email: row['email']
-    };
-
-    this.dataService.storeBalanceSheetData(balanceSheetData);
-
-    this.router.navigate(['/print/balance-sheet']);
+  getRow(id: number) {
+    return this.data.filter((row: any) => row.id == id)[0];
   }
 
   duplicate() {
-    let id = this.selectedRows[0];
-    let row = this.data.filter((row: any) => row.id == id)[0];
+    let row = this.getRow(this.selectedRows[0]);
 
     this.formService.processAddFormData(this.editable, row);
-    this.prepareAddFormService(this.tableName);
+    this.optionsService.prepareAddFormService(this.tableName);
+  }
+
+  addRow(values: any) {
+    this.optionsService.addRow(this.editable, values, this.tableName);
   }
 
   async editRow(id: any, table: string) {
@@ -424,7 +365,7 @@ export class ViewComponent {
               editFormData.values = values;
 
               this.formService.processAddFormData(editFormData);
-              this.prepareAddFormService(table);
+              this.optionsService.prepareAddFormService(table);
             }
             break;
         }
@@ -446,78 +387,12 @@ export class ViewComponent {
     this.formService.setReloadType('hard');
   }
 
-  prepareAddFormService(table: string) {
-    this.formService.setSelectedTable(
-      table == '' ? String(this.tableName) : table,
-    );
-    this.formService.showAddForm();
-    this.formService.setReloadType('hard');
-  }
-
-  async addRow(values: any) {
-    var addFormData = {
-      columns: this.editable.columns,
-      types: this.editable.types,
-      names: this.editable.names,
-      required: this.editable.required,
-      fields: this.editable.fields,
-      values: values,
-    };
-    this.formService.processAddFormData(
-      addFormData,
-      null,
-      this.formService.constructFormSettings(this.tableName),
-    );
-    this.formService.setSelectedTable(String(this.tableName));
-    this.formService.showAddForm();
-    this.formService.setReloadType('hard');
-  }
-
   deleteRow(id: number) {
-    if (this.canDelete(id)) {
-      this.performDelete([id]);
+    let row = this.data.filter((row: any) => row.id == id)[0];
+
+    if (this.optionsService.canDelete(row, this.tableName)) {
+      this.optionsService.performDelete([id], this.tableName);
     }
-  }
-
-  deleteRows() {
-    if (this.selectedRows.every((id) => this.canDelete(id))) {
-      this.performDelete(this.selectedRows);
-    }
-  }
-
-  performDelete(ids: number[]) {
-    this.formService.setSelectedTable(this.tableName);
-    this.formService.setDeleteFormIds(ids);
-    this.formService.showDeleteForm();
-    this.formService.setReloadType('hard');
-  }
-
-  canDelete(id: number) {
-    var row = this.data.filter((row: any) => row.id == id)[0];
-    switch (this.tableName) {
-      case 'customer_payments':
-        if (row['linked_payment_id'] != null) {
-          this.formService.setMessageFormData({
-            title: 'Error',
-            message:
-              'You cannot delete this payment because it is linked. Please delete or alter the linked payment instead!',
-          });
-          return false;
-        }
-        break;
-
-      case 'invoices':
-        if (row['status'] == 'Complete') {
-          this.formService.setMessageFormData({
-            title: 'Error',
-            message:
-              'You cannot delete this invoice because it has been marked completed!',
-          });
-          return false;
-        }
-        break;
-    }
-    return true;
   }
 
   changeEntries(event: Event) {
@@ -595,13 +470,6 @@ export class ViewComponent {
     return range;
   }
 
-  canShowMultipleDelete() {
-    const excludedTables = ['invoiced_items']; //Creates a variable called excludedTables that stores a list containing 'invoiced_items'
-    return (
-      !excludedTables.includes(this.tableName) && this.selectedRows.length > 1
-    );
-  }
-
   async changeCheckBox(event: Event, key: number, columnName: string) {
     const option = event.target as HTMLInputElement;
     let checked = option.checked;
@@ -625,54 +493,11 @@ export class ViewComponent {
     }
   }
 
-  print() {
-    if (this.selectedRows.length < 1) {
-      this.showErrorMessage('Please select an invoice before trying to print!');
-      return;
-    }
-
-    const hasMissingWarehouseOrCustomer = this.selectedRows.some(
-      (selectedRow) => {
-        var currentRow = this.data.filter(
-          (row: any) => row.id == selectedRow,
-        )[0];
-        if (currentRow['warehouse_id'] == null) {
-          this.showErrorMessage(
-            `Invoice ${selectedRow} is missing a warehouse! Please assign a warehouse before attempting to print.`,
-          );
-          return true;
-        }
-        if (currentRow['customer_id'] == null) {
-          this.showErrorMessage(
-            `Invoice ${selectedRow} is missing a customer! Please assign a customer before attempting to print.`,
-          );
-          return true;
-        }
-        return false;
-      },
-    );
-
-    if (hasMissingWarehouseOrCustomer) {
-      return;
-    }
-
-    this.dataService.storePrintInvoiceIds(this.selectedRows);
-    this.router.navigate(['/print/invoice']);
-  }
-
   async stockSearch(itemId: string) {
     var row = this.data.filter((row: any) => row.id == itemId)[0];
 
     if (row != null) {
-      let tableColumns = [
-        { name: 'ID', type: 'number' },
-        { name: 'Item Name', type: 'string' },
-        { name: 'Quantity', type: 'number' },
-        { name: 'Expiry Date', type: 'date' },
-        { name: 'Packing Format', type: 'string' },
-        { name: 'Barcode', type: 'string' },
-        { name: 'Warehouse', type: 'string' },
-      ];
+      let tableColumns = STOCK_COLUMNS;
 
       let tableRows = await this.dataService.processGet(
         'stocked-items',
@@ -699,19 +524,7 @@ export class ViewComponent {
   async invoiceSearch(invoiceId: string) {
     var row = this.data.filter((row: any) => row.id == invoiceId)[0];
 
-    let tableColumns = [
-      { name: 'ID', type: 'number' },
-      { name: 'Item Name', type: 'string' },
-      { name: 'Unit', type: 'string' },
-      { name: 'Picture', type: 'image' },
-      { name: 'Quantity', type: 'number' },
-      { name: 'Item Discount', type: 'percent' },
-      { name: 'Customer Discount', type: 'percent' },
-      { name: 'Price', type: 'currency' },
-      { name: 'Gross Value', type: 'currency' },
-      { name: 'Discount Value', type: 'currency' },
-      { name: 'VAT Value', type: 'currency' },
-    ];
+    let tableColumns = INVOICE_COLUMNS;
     let tableRows = await this.dataService.processGet(
       'invoiced-items',
       { filter: invoiceId },
@@ -774,14 +587,6 @@ export class ViewComponent {
     });
 
     this.formService.showWidget();
-  }
-
-  async createCreditNote() {
-    let editFormData = await this.dataService.processGet('edit-form-data', {
-      filter: 'credit_notes',
-    });
-    this.formService.processAddFormData(editFormData);
-    this.prepareAddFormService('credit_notes');
   }
 
   async creditNoteSearch(id: string) {
@@ -926,6 +731,8 @@ export class ViewComponent {
       return column != 'delete-row';
     }
 
+    console.log(column);
+
     switch (this.tableName) {
       case 'customers':
       case 'users':
@@ -965,8 +772,8 @@ export class ViewComponent {
         if (column == 'id') {
           this.icon =
             row['status'] == 'Complete'
-              ? tableIcons.faLock
-              : tableIcons.faLockOpen;
+              ? TABLE_ICONS.lock
+              : TABLE_ICONS.lockOpen;
           return true;
         }
         break;
@@ -1169,100 +976,5 @@ export class ViewComponent {
   async reloadTable() {
     this.loadPage();
     await this.loadTable(String(this.tableName));
-  }
-
-  async calculateDistance() {
-    if (this.selectedRows.length !== 1) {
-      this.showWarningMessage(
-        'Please select a single row to calculate the distance!',
-      );
-      return;
-    }
-
-    const invoice_id = this.selectedRows[0];
-    var row = this.data.filter((row: any) => row.id == invoice_id)[0];
-
-    if (!row['warehouse_id']) {
-      this.showWarningMessage(
-        "This invoice doesn't have a designated warehouse. To calculate the distance please assign a warehouse!",
-      );
-      return;
-    }
-
-    if (!row['customer_id']) {
-      this.showWarningMessage(
-        "This invoice doesn't have a designated customer. To calculate the distance please assign a customer!",
-      );
-      return;
-    }
-
-    this.distanceLoading = true;
-
-    let coordinates = await this.dataService.processGet('calculate-distance', {
-      invoice_id: invoice_id,
-      warehouse_id: row['warehouse_id'],
-    });
-
-    this.handleCoordinatesResponse(coordinates);
-    this.distanceLoading = false;
-  }
-
-  handleCoordinatesResponse(coordinates: any) {
-    if (
-      !coordinates ||
-      !coordinates['customer_coordinates'] ||
-      !coordinates['warehouse_coordinates']
-    ) {
-      this.showErrorMessage(
-        'There was an error getting the coordinates! One of the postcodes may not be in the database.',
-      );
-      return;
-    }
-
-    if (
-      !coordinates['customer_postcode'] ||
-      !coordinates['warehouse_postcode']
-    ) {
-      this.showErrorMessage(
-        "There was an error getting the postcodes! Either the warehouse or the customer doesn't have a postcode.",
-      );
-      return;
-    }
-
-    const distance = this.calculateHaversine(
-      coordinates['customer_coordinates'],
-      coordinates['warehouse_coordinates'],
-    );
-    this.formService.setMessageFormData({
-      title: 'Distance',
-      message: `The distance between the warehouse at ${coordinates['warehouse_postcode']} and the customer postcode at ${coordinates['customer_postcode']} in a straight line is ${distance}km`,
-    });
-  }
-
-  showWarningMessage(message: string) {
-    this.formService.setMessageFormData({ title: 'Warning!', message });
-  }
-
-  showErrorMessage(message: string) {
-    this.formService.setMessageFormData({ title: 'Error!', message });
-  }
-
-  calculateHaversine(coord1: any, coord2: any): string {
-    const R = 6371000; // Earth's radius in meters
-    const lat1Rad = coord1.latitude * (Math.PI / 180);
-    const lat2Rad = coord2.latitude * (Math.PI / 180);
-    const deltaLat = (coord2.latitude - coord1.latitude) * (Math.PI / 180);
-    const deltaLon = (coord2.longitude - coord1.longitude) * (Math.PI / 180);
-
-    const a =
-      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-      Math.cos(lat1Rad) *
-      Math.cos(lat2Rad) *
-      Math.sin(deltaLon / 2) *
-      Math.sin(deltaLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    const distance = (R * c) / 1000; // Distance in km
-    return distance.toFixed(2);
   }
 }
