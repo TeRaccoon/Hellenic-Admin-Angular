@@ -264,7 +264,7 @@
             [success]="invoiceCreated"
             [addMore]="formSettings.showAddMore"
             [withWidget]="shouldDisplayItemWidget()"
-            (formSubmit)="formSubmit($event)"
+            (formSubmit)="formSubmit()"
           />
         </form>
         @if (shouldDisplayItemWidget()) {

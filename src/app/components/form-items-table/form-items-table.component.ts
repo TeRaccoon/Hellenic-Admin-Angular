@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
 import { Subscription } from 'rxjs';

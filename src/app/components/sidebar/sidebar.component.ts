@@ -22,7 +22,7 @@ export class SidebarComponent {
 
   tables: any = TABLE_CATEGORIES;
 
-  constructor(private route: ActivatedRoute, private router: Router, private tableService: TableService, private authService: AuthService) {
+  constructor(route: ActivatedRoute, private router: Router, private tableService: TableService, private authService: AuthService) {
     route.queryParams.subscribe(params => {
       if (params['table'] != null) {
         this.selectedTable = params['table'];

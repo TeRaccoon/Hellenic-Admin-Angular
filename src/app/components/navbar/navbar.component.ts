@@ -5,7 +5,7 @@ import {
   Renderer2,
   ViewChild,
 } from '@angular/core';
-import { navbarIcons } from '../../common/icons/navbar-icons';
+import { NAVBAR_ICONS } from '../../common/icons/navbar-icons';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -28,7 +28,7 @@ export class NavbarComponent {
   @ViewChild('userOptions') userOptions!: ElementRef;
   @ViewChild('userIcon') userIcon!: ElementRef;
 
-  icons = navbarIcons;
+  icons = NAVBAR_ICONS;
 
   debounceSearch: (filter: string) => void = _.debounce(
     (filter: string) => this.performSearch(filter),

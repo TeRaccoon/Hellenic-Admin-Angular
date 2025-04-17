@@ -3,7 +3,6 @@ import { DataService } from '../../services/data.service';
 import {
   BalanceSheetData,
   BalanceSheetQueries,
-  Response,
 } from '../../common/types/data-service/types';
 import {
   CreditNote,
@@ -218,7 +217,7 @@ export class BalanceSheetComponent {
   }
 
   constructPDF(data: HTMLElement): Promise<Blob> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       html2canvas(data, { useCORS: true, allowTaint: true })
         .then((canvas) => {
           const imgWidth = 210.5;

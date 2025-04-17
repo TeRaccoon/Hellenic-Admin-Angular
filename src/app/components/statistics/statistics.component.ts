@@ -12,7 +12,7 @@ import {
   ReportOptions,
   SubheadingType,
 } from '../../common/types/statistics/types';
-import { chartIcons } from '../../common/icons/chart-icons';
+import { CHART_ICONS } from '../../common/icons/chart-icons';
 import _ from 'lodash';
 import { DataService } from '../../services/data.service';
 
@@ -24,7 +24,7 @@ dayjs.extend(utcPlugin);
   styleUrls: ['./statistics.component.scss'],
 })
 export class StatisticsComponent {
-  icons = chartIcons;
+  icons = CHART_ICONS;
 
   selectedItem = '';
   items = [];

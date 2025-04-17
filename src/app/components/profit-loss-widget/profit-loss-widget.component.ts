@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import {
   Cost,
-  ProfitLossData,
   ProfitLossInput,
   Totals,
 } from '../../common/types/profit-loss/types';
@@ -50,7 +49,7 @@ export class ProfitLossWidgetComponent {
 
   year = new Date().getFullYear();
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService) { }
 
   async calculateProfitLoss() {
     if (this.startDate != null && this.endDate != null) {

@@ -7,7 +7,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import _ from 'lodash';
-import { searchIcons } from '../../common/icons/search-icons';
+import { SEARCH_ICONS } from '../../common/icons/search-icons';
 
 @Component({
   selector: 'app-search-container',
@@ -21,7 +21,7 @@ export class SearchContainerComponent {
   @Output() optionSelected = new EventEmitter<string>();
   @Output() filterRemoved = new EventEmitter<any>();
 
-  icons = searchIcons;
+  icons = SEARCH_ICONS;
 
   searchInput = '';
   selectedOption = '';

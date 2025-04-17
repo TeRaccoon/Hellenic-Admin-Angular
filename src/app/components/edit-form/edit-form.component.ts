@@ -3,13 +3,13 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import _ from 'lodash';
-import { formIcons } from '../../common/icons/form-icons';
+import { FORM_ICONS } from '../../common/icons/form-icons';
 import {
-  settings,
-  data,
-  keyedData,
-  keyedAddress,
-  formState,
+  Settings,
+  Data,
+  KeyedData,
+  KeyedAddress,
+  FormState,
 } from '../../common/types/forms/types';
 import { Subscription } from 'rxjs';
 import { UrlService } from '../../services/url.service';
@@ -22,7 +22,7 @@ import { UrlService } from '../../services/url.service';
 export class EditFormComponent {
   private readonly subscriptions = new Subscription();
 
-  icons = formIcons;
+  icons = FORM_ICONS;
 
   searchWaiting = false;
 
@@ -31,10 +31,10 @@ export class EditFormComponent {
   editForm: FormGroup;
 
   mappedFormDataKeys: any;
-  mappedFormData: Map<string, data> = new Map();
-  formData: keyedData = {};
+  mappedFormData: Map<string, Data> = new Map();
+  formData: KeyedData = {};
 
-  formSettings: settings = {
+  formSettings: Settings = {
     showAddMore: false,
   };
 
@@ -66,9 +66,9 @@ export class EditFormComponent {
   invoiceDetails: any = [];
 
   addressNotListedKeys: string[] = [];
-  addresses: keyedAddress;
+  addresses: KeyedAddress;
 
-  formState!: formState;
+  formState!: FormState;
 
   debounceSearch: (
     key: string,
@@ -176,8 +176,6 @@ export class EditFormComponent {
         this.tableName,
         this.formData,
         this.replacementData,
-        this.dataService,
-        'edit'
       );
       this.formData = data.formData;
       this.filteredReplacementData = data.replacementData;

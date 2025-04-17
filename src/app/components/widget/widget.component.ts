@@ -3,7 +3,7 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { Subscription } from 'rxjs';
 import { UrlService } from '../../services/url.service';
-import { widgetIcons } from '../../common/icons/widget-icons';
+import { WIDGET_ICONS } from '../../common/icons/widget-icons';
 import { DEFAULT_WIDGET_DATA } from '../../common/types/widget/const';
 
 @Component({
@@ -14,7 +14,7 @@ import { DEFAULT_WIDGET_DATA } from '../../common/types/widget/const';
 export class WidgetComponent {
   private readonly subscriptions = new Subscription();
 
-  icons = widgetIcons;
+  icons = WIDGET_ICONS;
   imageUrlBase;
 
   visible = false;

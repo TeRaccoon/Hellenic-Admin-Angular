@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { DataService } from './data.service';
 import { formatDate } from '@angular/common';
 import {
-  settings,
-  keyedData,
-  message,
-  editableData,
+  Settings,
+  KeyedData,
+  Message,
+  EditableData,
 } from '../common/types/forms/types';
 
 @Injectable({
@@ -24,10 +24,10 @@ export class FormService {
   private isWidgetVisible = new BehaviorSubject<boolean>(false);
   private isBalanceSheetVisible = new BehaviorSubject<boolean>(false);
 
-  private editFormData: keyedData = {};
-  private addFormData: keyedData = {};
+  private editFormData: KeyedData = {};
+  private addFormData: KeyedData = {};
 
-  private formSettings: settings = {
+  private formSettings: Settings = {
     showAddMore: false,
   };
 
@@ -38,7 +38,7 @@ export class FormService {
   } = {};
 
   private deleteFormIds: number[] = [];
-  private messageFormData: message = {
+  private messageFormData: Message = {
     title: '',
     message: '',
     footer: '',
@@ -180,15 +180,15 @@ export class FormService {
     this.isWidgetVisible.next(true);
   }
 
-  getFormSettings(): settings {
+  getFormSettings(): Settings {
     return this.formSettings;
   }
 
-  setEditFormData(editFormData: keyedData) {
+  setEditFormData(editFormData: KeyedData) {
     this.editFormData = editFormData;
   }
 
-  setAddFormData(addFormData: keyedData) {
+  setAddFormData(addFormData: KeyedData) {
     this.addFormData = addFormData;
   }
 
@@ -196,7 +196,7 @@ export class FormService {
     this.deleteFormIds = deleteFormIds;
   }
 
-  setMessageFormData(messageFormData: message, display = true) {
+  setMessageFormData(messageFormData: Message, display = true) {
     this.messageFormData = messageFormData;
     display && this.isMessageFormVisible.next(true);
   }
@@ -238,15 +238,13 @@ export class FormService {
   }
 
   async replaceAmbiguousData(
-    //Replaces fields that need IDs with the text equivalent
     tableName: string,
     formData: any,
     replacementData: {
       [key: string]: {
         data: { id: Number; replacement: string }[];
       };
-    }, // complex variable. key:string indicates the key to get data from the variable. replacementData['beer']
-    dataService: DataService,
+    },
     formType?: string,
   ) {
     switch (tableName) {
@@ -502,7 +500,7 @@ export class FormService {
     return this.reloadId;
   }
 
-  processEditFormData(row: any, editableData: editableData) {
+  processEditFormData(row: any, editableData: EditableData) {
     this.editFormData = {};
     var inputDataTypes = this.dataTypeToInputType(editableData.types);
     editableData.columns.forEach((columnName, index) => {
@@ -517,9 +515,9 @@ export class FormService {
   }
 
   processAddFormData(
-    editableData: editableData,
+    editableData: EditableData,
     row?: any,
-    settings: settings = {
+    settings: Settings = {
       showAddMore: false,
     },
   ) {
@@ -648,7 +646,7 @@ export class FormService {
       imageCount = await this.dataService.processGet(query, { filter: id });
     }
 
-    if ((postUpload = true)) {
+    if (postUpload) {
       imageCount++;
     }
 
@@ -717,7 +715,7 @@ export class FormService {
   }
 
   constructFormSettings(tableName: string) {
-    let settings: settings = { showAddMore: false };
+    let settings: Settings = { showAddMore: false };
     switch (tableName) {
       case 'price_list':
         settings.showAddMore = false;

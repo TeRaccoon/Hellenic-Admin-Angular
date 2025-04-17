@@ -170,7 +170,6 @@ export class InvoiceViewComponent {
   calculateVat() {
     this.invoiceData.forEach((invoices: any, index) => {
       var vatTotal = 0;
-      var discountTotal = 0;
       this.invoiceItems[index].forEach((item: any) => {
         if (item['vat_charge'] == 'Yes') {
           item['sub_total'] = item['price'] * item['quantity'];

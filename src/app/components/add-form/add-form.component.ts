@@ -3,13 +3,13 @@ import { DataService } from '../../services/data.service';
 import { FormService } from '../../services/form.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import _ from 'lodash';
-import { formIcons } from '../../common/icons/form-icons';
+import { FORM_ICONS } from '../../common/icons/form-icons';
 import {
-  keyedData,
-  settings,
-  data,
-  keyedAddress,
-  formState,
+  KeyedData,
+  Settings,
+  Data,
+  KeyedAddress,
+  FormState,
   SaleType,
   ReplacementData,
 } from '../../common/types/forms/types';
@@ -31,7 +31,7 @@ export class AddFormComponent {
 
   SaleType = SaleType;
 
-  icons = formIcons;
+  icons = FORM_ICONS;
 
   searchWaiting = false;
   disabled = false;
@@ -43,10 +43,10 @@ export class AddFormComponent {
   addItemForm: FormGroup;
 
   mappedFormDataKeys: any;
-  mappedFormData: Map<string, data> = new Map();
-  formData: keyedData = {};
+  mappedFormData: Map<string, Data> = new Map();
+  formData: KeyedData = {};
 
-  formSettings: settings = {
+  formSettings: Settings = {
     showAddMore: false,
   };
 
@@ -78,11 +78,11 @@ export class AddFormComponent {
   invoicesDetails: invoiceDetails[] = [];
 
   addressNotListedKeys: string[] = [];
-  addresses: keyedAddress;
+  addresses: KeyedAddress;
 
   invoiceCreated = false;
 
-  formState!: formState;
+  formState!: FormState;
 
   addItemFormSubmitAttempted = false;
 
@@ -225,7 +225,6 @@ export class AddFormComponent {
       this.tableName,
       this.formData,
       this.replacementData,
-      this.dataService
     );
     this.formData = data.formData;
     this.filteredReplacementData = data.replacementData;
@@ -470,7 +469,7 @@ export class AddFormComponent {
     }
   }
 
-  async formSubmit(hideForm: boolean) {
+  async formSubmit() {
     this.formState.submissionAttempted = true;
     if (this.addForm.valid) {
       if (this.tableName != 'categories') {
@@ -479,8 +478,7 @@ export class AddFormComponent {
         if (validationResult !== false) {
           this.submissionWithImage(
             validationResult.id,
-            validationResult.name,
-            hideForm
+            validationResult.name
           );
         } else {
           this.submissionWithoutImage();
@@ -586,7 +584,7 @@ export class AddFormComponent {
     this.endSubmission(submissionResponse.success, submissionResponse.success);
   }
 
-  async submissionWithImage(id: string, name: string, hideForm: boolean) {
+  async submissionWithImage(id: string, name: string) {
     let imageFileName = await this.formService.processImageName(
       id,
       name,
@@ -1235,7 +1233,7 @@ export class AddFormComponent {
     }
 
     if (!this.invoiceCreated) {
-      await this.formSubmit(false);
+      await this.formSubmit();
     }
     this.addItemFormSubmitAttempted = true;
     if (this.addItemForm.valid) {
