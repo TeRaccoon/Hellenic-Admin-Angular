@@ -4,7 +4,7 @@ import { Document } from '../../common/types/document-upload-widget/types';
 import Quill from 'quill';
 import BlotFormatter from 'quill-blot-formatter/dist/BlotFormatter';
 import { DataService } from '../../services/data.service';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 
 Quill.register('modules/blotFormatter', BlotFormatter);
 

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 import { FilterService } from '../../services/filter.service';
 import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -13,7 +13,6 @@ import {
   viewMetadata,
   FilterData,
 } from '../../common/types/view/types';
-import { EditableData } from '../../common/types/forms/types';
 import { TABLE_ICONS } from '../../common/icons/table-icons';
 import { TableService } from '../../services/table.service';
 import { UrlService } from '../../services/url.service';
@@ -26,6 +25,7 @@ import {
 import { DEFAULT_DISABLED_WIDGET_DATA } from '../../common/types/widget/const';
 import { TableOptionsService } from '../../services/table-options.service';
 import { INVOICE_COLUMNS, STOCK_COLUMNS } from '../../common/consts/table-options';
+import { EditableData } from '../form/types';
 
 @Component({
   selector: 'app-view',

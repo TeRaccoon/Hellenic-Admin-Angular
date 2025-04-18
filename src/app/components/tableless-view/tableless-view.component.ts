@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 import { Subscription } from 'rxjs';
 
 @Component({

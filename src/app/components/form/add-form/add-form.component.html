@@ -7,7 +7,7 @@
           <fa-icon class="icons.fa-icon" [icon]="icons.minus" />
         </a>
         <a (click)="hide()">
-          <fa-icon class="icons.fa-icon" [icon]="icons.faX" />
+          <fa-icon class="icons.fa-icon" [icon]="icons.x" />
         </a>
       </div>
     </div>
@@ -47,7 +47,7 @@
                   <label
                     >{{ key }}
                     @if (mappedFormData.get(key)?.required) {
-                      <fa-icon class="asterisk" [icon]="icons.faAsterisk" />
+                      <fa-icon class="asterisk" [icon]="icons.asterisk" />
                     }
                   </label>
                   @if (shouldDisplayAddressNotListed(key)) {
@@ -88,7 +88,7 @@
                         />
                         <fa-icon
                           [ngClass]="file == null ? '' : 'success'"
-                          [icon]="icons.faCloudUpload"
+                          [icon]="icons.cloud"
                         />
                         {{ file == null ? "Upload Image" : file.name }}
                         <label class="upload-size-warning">(8mb max)</label>
@@ -272,7 +272,7 @@
             <h1>Add Items</h1>
             <div class="input-container replacement">
               <label
-                >Item Name <fa-icon class="asterisk" [icon]="icons.faAsterisk"
+                >Item Name <fa-icon class="asterisk" [icon]="icons.asterisk"
               /></label>
               <app-dropselect
                 [selectData]="selectedReplacementData['Item ID']?.selectData"
@@ -288,7 +288,7 @@
             @if (tableName == "invoices") {
               <div class="input-container number">
                 <label
-                  >Unit <fa-icon class="asterisk" [icon]="icons.faAsterisk"
+                  >Unit <fa-icon class="asterisk" [icon]="icons.asterisk"
                 /></label>
                 <select
                   [class]="itemInputHasError('unit')"
@@ -303,7 +303,7 @@
               </div>
               <div class="input-container number">
                 <label
-                  >Quantity <fa-icon class="asterisk" [icon]="icons.faAsterisk"
+                  >Quantity <fa-icon class="asterisk" [icon]="icons.asterisk"
                 /></label>
                 <input
                   [class]="itemInputHasError('quantity')"
@@ -331,7 +331,7 @@
 
             @if (shouldDisplayPriceWarning()) {
               <div class="warning-box">
-                <fa-icon [icon]="icons.faAsterisk" />
+                <fa-icon [icon]="icons.asterisk" />
                 <p>Indicates no price for this customer type</p>
               </div>
             }
@@ -349,7 +349,7 @@
         <div class="loading-container">
           <fa-icon
             class="loading-icon"
-            [icon]="icons.faSpinner"
+            [icon]="icons.loading"
             spinPulse
             [spin]="true"
           />
@@ -359,7 +359,7 @@
         <div class="loading-container">
           <fa-icon
             class="loading-icon"
-            [icon]="icons.faSpinner"
+            [icon]="icons.loading"
             spinPulse
             [spin]="true"
           />

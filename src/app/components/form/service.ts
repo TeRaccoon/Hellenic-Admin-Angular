@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { DataService } from './data.service';
+import { DataService } from '../../services/data.service';
 import { formatDate } from '@angular/common';
 import {
   Settings,
   KeyedData,
   Message,
   EditableData,
-} from '../common/types/forms/types';
+} from './types';
 
 @Injectable({
   providedIn: 'root',

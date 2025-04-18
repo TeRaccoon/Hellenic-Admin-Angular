@@ -1,18 +1,18 @@
 import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { FormService } from '../../services/form.service';
+import { DataService } from '../../../services/data.service';
+import { FormService } from '../service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import _ from 'lodash';
-import { FORM_ICONS } from '../../common/icons/form-icons';
+import { FORM_ICONS } from '../icons';
 import {
   Settings,
   Data,
   KeyedData,
   KeyedAddress,
   FormState,
-} from '../../common/types/forms/types';
+} from '../types';
 import { Subscription } from 'rxjs';
-import { UrlService } from '../../services/url.service';
+import { UrlService } from '../../../services/url.service';
 
 @Component({
   selector: 'app-edit-form',

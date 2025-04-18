@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import _ from 'lodash';
-import { ReplacementData } from '../../common/types/forms/types';
+import { ReplacementData } from '../../types';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

@@ -5,7 +5,7 @@ import {
   faAsterisk,
   faCloudUpload,
 } from '@fortawesome/free-solid-svg-icons';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 
 @Component({
   selector: 'app-settings',

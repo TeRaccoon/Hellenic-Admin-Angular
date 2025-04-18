@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormService } from './form.service';
+import { FormService } from '../components/form/service';
 import { DataService } from './data.service';
 import { CREDIT_NOTE_COLUMNS } from '../common/constants';
 import { DEFAULT_DISABLED_WIDGET_DATA } from '../common/types/widget/const';

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { invoiceDetails } from '../../common/types/documents-to-reconcile/types';
+import { InvoiceDetails } from '../../types';
 
 @Component({
   selector: 'app-documents-to-reconcile',
@@ -7,11 +7,6 @@ import { invoiceDetails } from '../../common/types/documents-to-reconcile/types'
   styleUrl: './documents-to-reconcile.component.scss'
 })
 export class DocumentsToReconcileComponent {
-  @Input() invoicesDetails!: invoiceDetails[];
+  @Input() invoicesDetails!: InvoiceDetails[];
   @Input() tableName!: string;
-
-  ngOnInit() {
-
-    console.log(this.invoicesDetails);
-  }
 }

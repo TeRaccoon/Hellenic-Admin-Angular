@@ -21,7 +21,7 @@ import {
   SUPPLIER_QUERIES,
 } from '../../common/types/data-service/const';
 import { faEnvelope, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { MailService } from '../../services/mail.service';

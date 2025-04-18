@@ -9,7 +9,7 @@ import { NAVBAR_ICONS } from '../../common/icons/navbar-icons';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 import { SearchService } from '../../services/search.service';
 import _ from 'lodash';
 import { SearchResult } from '../../common/types/table';

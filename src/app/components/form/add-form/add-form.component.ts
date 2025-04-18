@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { FormService } from '../../services/form.service';
+import { DataService } from '../../../services/data.service';
+import { FormService } from '../service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import _ from 'lodash';
-import { FORM_ICONS } from '../../common/icons/form-icons';
+import { FORM_ICONS } from '../icons';
 import {
   KeyedData,
   Settings,
@@ -12,14 +12,15 @@ import {
   FormState,
   SaleType,
   ReplacementData,
-} from '../../common/types/forms/types';
+} from '../types';
 import { Subscription } from 'rxjs';
-import { AddressUpdate } from '../invoice-address/types';
+import { AddressUpdate } from '../children/invoice-address/types';
 import {
   DISPLAY_INPUT_FIELD_TABLE_MAP_EXCLUSIONS,
   DISPLAY_PRICE_WARNING_TABLES,
-} from './consts';
-import { invoiceDetails } from '../../common/types/documents-to-reconcile/types';
+  FULLSCREEN_TABLES
+} from '../consts';
+import { InvoiceDetails } from '../types';
 
 @Component({
   selector: 'app-add-form',
@@ -75,7 +76,7 @@ export class AddFormComponent {
 
   saleType: SaleType = SaleType.Invoice;
 
-  invoicesDetails: invoiceDetails[] = [];
+  invoicesDetails: InvoiceDetails[] = [];
 
   addressNotListedKeys: string[] = [];
   addresses: KeyedAddress;
@@ -1395,8 +1396,7 @@ export class AddFormComponent {
   }
 
   fullscreen() {
-    let includedTables = ['invoices', 'supplier_invoices'];
-    return includedTables.includes(this.tableName);
+    return FULLSCREEN_TABLES.includes(this.tableName);
   }
 
   deleteRow(id: number) {

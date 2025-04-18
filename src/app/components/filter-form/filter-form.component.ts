@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 import { FilterService } from '../../services/filter.service';
 import { faSearch, faPlus, faX } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
@@ -22,10 +22,10 @@ export class FilterFormComponent {
     columns: string[];
     dataTypes: string[];
   } = {
-    columnNames: [],
-    columns: [],
-    dataTypes: [],
-  };
+      columnNames: [],
+      columns: [],
+      dataTypes: [],
+    };
 
   options: string[] = [];
   selectedOption = '';
@@ -44,7 +44,7 @@ export class FilterFormComponent {
   constructor(
     private formService: FormService,
     private filterService: FilterService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.subscriptions.add(

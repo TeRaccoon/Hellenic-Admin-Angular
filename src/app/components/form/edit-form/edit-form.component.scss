@@ -1,8 +1,8 @@
-@import '../variables';
+@import '../../variables';
 
 .container {
     position: fixed;
-    z-index: 2;
+    z-index: 10;
     left: 0;
     top: 0;
     width: 100vw;
@@ -13,24 +13,19 @@
 
     .form-footer {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         width: 100%;
+        height: 50px;
         border-radius: 0 0 15px 15px;
-        margin: 5px;
+        margin-bottom: 15px;
 
-        div {
-            margin: 10px;
-            display: flex;
-
-            p {
-                margin: 0 10px;
-            }
+        button {
+            border-radius: 10px;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 17px;
+            margin: 5px 10px 5px 5px;
         }
-    }
-
-    .content-fullscreen {
-        margin: 7% 15px 15px 16.5% !important;
-        width: auto !important;
     }
 
     .content {
@@ -49,6 +44,13 @@
             color: white;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
 
+            a {
+                display: inline-block;
+                position: relative;
+                padding: 1.5em;
+                margin: -1.5em;
+                cursor: pointer;
+            }
 
             h1 {
                 text-align: center;
@@ -71,18 +73,10 @@
         }
 
         .content-section {
-            display: flex;
-            gap: 20px;
-
-            h1 {
-                margin-left: 14px;
-            }
-
             .loading-container {
                 display: flex;
                 justify-content: center;
                 margin-top: 100px;
-                flex: 1;
 
                 .loading-icon {
                     margin: 100px 0 200px 0;
@@ -92,7 +86,6 @@
             .error-section {
                 display: flex;
                 justify-content: center;
-                width: 100%;
                 color: red;
                 margin: 20px 0 10px 0;
                 font-size: 18px;
@@ -110,14 +103,6 @@
                 position: relative;
                 cursor: pointer;
 
-                .button {
-                    border-radius: 5px;
-                    padding: 8px;
-                    margin-top: 20px;
-                    font-weight: bold;
-                    font-size: 16px;
-                }
-
                 input {
                     height: 100%;
                     width: 100%;
@@ -127,7 +112,12 @@
                 }
 
                 button {
-                    z-index: 3;
+                    z-index: 1;
+                    border-radius: 5px;
+                    padding: 5px;
+                    font-weight: bold;
+                    font-size: 17px;
+                    margin: 5px 5px 0 0;
                 }
 
                 fa-icon {
@@ -139,35 +129,35 @@
                 display: flex;
                 flex-wrap: wrap;
                 width: 100%;
-                align-content: flex-start;
-
-                h1 {
-                    width: 100%;
-                }
             }
 
             .replacement {
-                flex: 1 1 100%;
+                flex: 1 1 50%;
             }
 
             .select {
-                flex: 1 1 calc(50% - 20px);
+                flex: 1 1 45%;
             }
 
             .alternative-select {
                 flex: 1 1 100%;
             }
 
+            .file {
+                flex: 1 1 100%;
+            }
+
             .date {
-                flex: 1 1 50%;
+                flex: 1 1 45%;
             }
 
             .number {
-                flex: 1 1 calc(33% - 20px);
+                flex: 1 1 30%;
+                width: 30%;
             }
 
             .text {
-                flex: 1 1 50%;
+                flex: 1 1 45%;
             }
 
             .textarea {
@@ -215,6 +205,26 @@
                         box-sizing: border-box;
                     }
 
+                    img {
+                        cursor: pointer;
+                    }
+
+                    .delete-button {
+                        outline: none;
+                        background-image: linear-gradient(to right, rgb(255, 34, 34), rgb(206, 13, 13));
+                        border: none;
+                        color: white;
+                        font-size: 18px;
+                        border-radius: 8px;
+                        padding: 5px 10px;
+                        margin: 5px;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-image: linear-gradient(to right, rgb(217, 27, 27), rgb(141, 8, 8));
+                        }
+                    }
+
                     .image-row {
                         img {
                             width: 100%;
@@ -224,9 +234,25 @@
                 }
 
                 .select-input {
-                    cursor: pointer;
                     font-size: 16px;
                     padding: 10px;
+                    cursor: pointer;
+                    width: 100%
+                }
+
+                .image-preview-container {
+                    display: flex;
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 8px;
+
+                    img {
+                        border-radius: 10px;
+                        margin: 15px 2px 0 2px;
+                        background-color: white;
+                        max-width: 100%;
+                        width: 5vw;
+                    }
                 }
 
                 label {
@@ -244,21 +270,12 @@
                 input[type="number"],
                 input[type="password"],
                 input[type="date"] {
-                    background-color: #ffffff;
                     border-radius: 8px;
                     outline: none;
                     border: 1px solid rgb(215, 215, 215);
                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
                     font-size: 16px;
                     padding: 10px;
-                }
-
-                select:disabled,
-                input:disabled,
-                textarea:disabled {
-                    color: #999999;
-                    background-color: #f5f5f5;
-                    cursor: default;
                 }
 
                 .file-upload {
@@ -298,33 +315,66 @@
                     border: 1px solid rgb(215, 215, 215);
                     transition: max-height 0.5s ease 0.1s, opacity 0.5s ease;
                 }
-            }
 
-            .warning-box {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
+                .footer-options {
+                    margin: 5px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    gap: 10px;
 
-            .form-footer {
-                margin: 5px;
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-                gap: 10px;
-
-
-                button {
-                    border-radius: 5px;
-                    padding: 5px;
-                    font-weight: 700;
-                    font-size: 17px;
-                    margin: 5px 10px 5px 5px;
+                    div {
+                        display: flex;
+                    }
                 }
+            }
 
+            .invoice-details-container {
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border-radius: 10px;
+
+                    thead {
+                        background-color: #f5f5f5;
+                        font-weight: bold;
+
+                        th {
+                            padding: 10px;
+                            border: 1px solid #ddd;
+                            text-align: left;
+                        }
+                    }
+
+                    tbody {
+                        tr:nth-child(even) {
+                            background-color: #f9f9f9;
+                        }
+
+                        tr {
+                            &:hover {
+                                background-color: #f0f0f0;
+                            }
+
+                            td {
+                                padding: 10px;
+                                border: 1px solid #ddd;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+}
+
+button {
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 17px;
+    margin: 5px 10px 5px 5px;
 }
 
 .hidden {
@@ -333,14 +383,4 @@
 
 .success {
     color: rgb(142, 255, 142);
-}
-
-.button-success {
-    background-image: linear-gradient(to right, rgb(34, 255, 63), rgb(6, 167, 6));
-
-    &:hover {
-        background-image: linear-gradient(to right, rgb(63, 194, 81), rgb(6, 167, 6));
-    }
-
-    padding: 5px 20px !important;
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 

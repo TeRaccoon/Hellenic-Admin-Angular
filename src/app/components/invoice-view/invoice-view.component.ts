@@ -3,7 +3,7 @@ import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { faSpinner, faPrint } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../services/auth.service';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { UrlService } from '../../services/url.service';

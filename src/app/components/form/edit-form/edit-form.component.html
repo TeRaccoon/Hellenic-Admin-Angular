@@ -7,7 +7,7 @@
           <fa-icon class="icons.fa-icon" [icon]="icons.minus" />
         </a>
         <a (click)="hide()">
-          <fa-icon class="icons.fa-icon" [icon]="icons.faX" />
+          <fa-icon class="icons.fa-icon" [icon]="icons.x" />
         </a>
       </div>
     </div>
@@ -26,7 +26,7 @@
                 <label
                   >{{ key }}
                   @if (mappedFormData.get(key)?.required) {
-                    <fa-icon class="asterisk" [icon]="icons.faAsterisk" />
+                    <fa-icon class="asterisk" [icon]="icons.asterisk" />
                   }
                 </label>
                 @if (
@@ -109,14 +109,9 @@
                       />
                       <fa-icon
                         [ngClass]="file == null ? '' : 'success'"
-                        [icon]="icons.faCloudUpload"
+                        [icon]="icons.cloud"
                       />
-                      {{
-                        file == null
-                          ? "Upload
-            Image"
-                          : file.name
-                      }}
+                      {{ file == null ? "Upload Image" : file.name }}
                       <label class="upload-size-warning">(8mb max)</label>
                     </label>
                   }
@@ -204,7 +199,7 @@
                     <div class="input-container">
                       <label
                         >Line 1
-                        <fa-icon class="asterisk" [icon]="icons.faAsterisk"
+                        <fa-icon class="asterisk" [icon]="icons.asterisk"
                       /></label>
                       <input
                         class="text"
@@ -231,7 +226,7 @@
                     <div class="input-container">
                       <label
                         >Postcode
-                        <fa-icon class="asterisk" [icon]="icons.faAsterisk"
+                        <fa-icon class="asterisk" [icon]="icons.asterisk"
                       /></label>
                       <input
                         class="text"
@@ -421,7 +416,7 @@
                 (change)="primeImage($event)"
               />
               <fa-icon
-                [icon]="icons.faCloudUpload"
+                [icon]="icons.cloud"
                 [ngClass]="file == null ? '' : 'success'"
               />
               {{ file ? "" : "Drop Image Here to Upload" }}
@@ -448,7 +443,7 @@
         <div class="loading-container">
           <fa-icon
             class="loading-icon"
-            [icon]="icons.faSpinner"
+            [icon]="icons.loading"
             spinPulse
             [spin]="true"
           />
@@ -458,7 +453,7 @@
         <div class="loading-container">
           <fa-icon
             class="loading-icon"
-            [icon]="icons.faSpinner"
+            [icon]="icons.loading"
             spinPulse
             [spin]="true"
           />

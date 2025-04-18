@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { faX } from '@fortawesome/free-solid-svg-icons';
-import { DataService } from '../../services/data.service';
+import { DataService } from '../../../../services/data.service';
 import { Subscription } from 'rxjs';
-import { FormService } from '../../services/form.service';
-import { ItemsList } from '../../common/types/form-items-table/types';
+import { FormService } from '../../service';
+import { ItemsList } from '../../types';
 
 @Component({
   selector: 'app-form-items-table',
