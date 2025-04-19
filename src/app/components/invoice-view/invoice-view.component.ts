@@ -7,6 +7,8 @@ import { FormService } from '../form/service';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { UrlService } from '../../services/url.service';
+import { TableOptionsService } from '../../services/table-options.service';
+import { PDFService } from '../../services/pdf.service';
 
 @Component({
   selector: 'app-invoice-view',
@@ -35,7 +37,9 @@ export class InvoiceViewComponent {
     private router: Router,
     private dataService: DataService,
     private authService: AuthService,
-    private urlService: UrlService
+    private urlService: UrlService,
+    private optionsService: TableOptionsService,
+    private pdfService: PDFService
   ) {
     this.imageUrlBase = this.urlService.getUrl('uploads');
   }
@@ -123,7 +127,7 @@ export class InvoiceViewComponent {
       let distances = tempData.map((data, index) => {
         return {
           index: index,
-          distance: this.calculateDistance(
+          distance: this.optionsService.calculateHaversine(
             currentLocation,
             data.customer_coordinates
           ),
@@ -142,29 +146,6 @@ export class InvoiceViewComponent {
     }
 
     this.deliveryData = sortedDeliveries;
-  }
-
-  calculateDistance(startLocation: any, endLocation: any) {
-    return this.calculateHaversine(startLocation, endLocation);
-  }
-
-  calculateHaversine(coord1: any, coord2: any): string {
-    const R = 6371000; // Earth's radius in meters
-    const lat1Rad = coord1.latitude * (Math.PI / 180);
-    const lat2Rad = coord2.latitude * (Math.PI / 180);
-    const deltaLat = (coord2.latitude - coord1.latitude) * (Math.PI / 180);
-    const deltaLon = (coord2.longitude - coord1.longitude) * (Math.PI / 180);
-
-    const a =
-      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-      Math.cos(lat1Rad) *
-      Math.cos(lat2Rad) *
-      Math.sin(deltaLon / 2) *
-      Math.sin(deltaLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    const distance = (R * c) / 1000; // Distance in km
-    return isNaN(distance) ? '' : distance.toFixed(2);
   }
 
   calculateVat() {
@@ -195,35 +176,13 @@ export class InvoiceViewComponent {
     window.print();
   }
 
-  generatePDF() {
-    this.invoiceData.forEach((invoice) => {
+  async downloadPDF() {
+    for (const invoice of this.invoiceData) {
       const data = document.getElementById(invoice.invoice_id);
       if (data) {
-        html2canvas(data, { useCORS: true, allowTaint: true }).then(
-          (canvas) => {
-            const imgWidth = 208;
-            const pageHeight = 295;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            let position = 0;
-
-            const imgData = canvas.toDataURL('image/png');
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            while (heightLeft >= 0) {
-              position = heightLeft - imgHeight;
-              pdf.addPage();
-              pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-              heightLeft -= pageHeight;
-            }
-
-            pdf.save(`invoice-${invoice.invoice_id}.pdf`);
-          }
-        );
+        const pdf = await this.pdfService.generatePDF(data);
+        pdf.save(`invoice-${invoice.invoice_id}.pdf`);
       }
-    });
+    }
   }
 }

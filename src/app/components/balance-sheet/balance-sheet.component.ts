@@ -5,11 +5,10 @@ import {
   BalanceSheetQueries,
 } from '../../common/types/data-service/types';
 import {
-  CreditNote,
   InvoiceSummary,
   Order,
-  Payment,
   PaymentStatus,
+  Transaction,
   TransactionType,
 } from '../../common/types/balance-sheet/types';
 import { SelectedDate } from '../../common/types/statistics/types';
@@ -22,14 +21,11 @@ import {
 } from '../../common/types/data-service/const';
 import { faEnvelope, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FormService } from '../form/service';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { MailService } from '../../services/mail.service';
+import { DATE_RANGES } from '../../common/consts/const';
+import { PDFService } from '../../services/pdf.service';
 
 dayjs.extend(isBetween);
-
-type Transaction = Order | Payment | CreditNote;
-
 @Component({
   selector: 'app-balance-sheet',
   templateUrl: './balance-sheet.component.html',
@@ -57,25 +53,14 @@ export class BalanceSheetComponent {
 
   isLoading = false;
 
-  ranges: any = {
-    Yesterday: [dayjs().subtract(1, 'days'), dayjs().subtract(1, 'days')],
-    Today: [dayjs(), dayjs()],
-    'Last 3 Days': [dayjs().subtract(3, 'days'), dayjs()],
-    'Last 7 Days': [dayjs().subtract(6, 'days'), dayjs()],
-    'Last 30 Days': [dayjs().subtract(29, 'days'), dayjs()],
-    'This Month': [dayjs().startOf('month'), dayjs().endOf('month')],
-    'Last Month': [
-      dayjs().subtract(1, 'month').startOf('month'),
-      dayjs().subtract(1, 'month').endOf('month'),
-    ],
-    'This Year': [dayjs().startOf('year'), dayjs().endOf('year')],
-  };
+  ranges = DATE_RANGES;
 
   constructor(
     private dataService: DataService,
     private urlService: UrlService,
     private formService: FormService,
-    private mailService: MailService
+    private mailService: MailService,
+    private pdfService: PDFService
   ) {
     this.imageUrlBase = this.urlService.getUrl('uploads');
 
@@ -216,32 +201,8 @@ export class BalanceSheetComponent {
     this.isLoading = false;
   }
 
-  constructPDF(data: HTMLElement): Promise<Blob> {
-    return new Promise((resolve) => {
-      html2canvas(data, { useCORS: true, allowTaint: true })
-        .then((canvas) => {
-          const imgWidth = 210.5;
-          const pageHeight = 295;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          let heightLeft = imgHeight;
-
-          const pdf = new jsPDF('p', 'mm', 'a4');
-          let position = 0;
-
-          const imgData = canvas.toDataURL('image/png');
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-
-          while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-          }
-
-          resolve(pdf.output('blob'));
-        })
-    });
+  async constructPDF(data: HTMLElement): Promise<Blob> {
+    return (await this.pdfService.generatePDF(data)).output('blob');
   }
 
   async constructEmail(pdf: Blob) {
