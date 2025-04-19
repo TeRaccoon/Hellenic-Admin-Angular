@@ -55,3 +55,5 @@ export enum TransactionType {
   Payment = 'payment',
   CreditNote = 'credit-note',
 }
+
+export type Transaction = Order | Payment | CreditNote;

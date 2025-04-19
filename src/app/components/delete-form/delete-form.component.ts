@@ -117,12 +117,7 @@ export class DeleteFormComponent {
 
   setIdString() {
     if (this.ids.length > 1) {
-      let idString = '';
-
-      this.ids.forEach((id) => {
-        idString += id + ', ';
-      });
-      return idString.substring(0, idString.length - 2);
+      return this.ids.join(', ');
     } else {
       return String(this.ids[0]);
     }

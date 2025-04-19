@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { Document } from '../../common/types/document-upload-widget/types';
+import { Document } from './types';
 
 import Quill from 'quill';
 import BlotFormatter from 'quill-blot-formatter/dist/BlotFormatter';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../form/service';
+import { DOCUMENTS } from './consts';
 
 Quill.register('modules/blotFormatter', BlotFormatter);
 
@@ -14,28 +15,18 @@ Quill.register('modules/blotFormatter', BlotFormatter);
   styleUrl: './document-upload-widget.component.scss',
 })
 export class DocumentUploadWidgetComponent {
-  modules = {};
+  modules = {
+    blotFormatter: {},
+  };
 
-  documents: Document[];
+  documents: Document[] = DOCUMENTS;
   documentText: string = '';
-  selectedDocument: Document;
+  selectedDocument: Document = DOCUMENTS[0];
 
   constructor(
     private dataService: DataService,
-    private formService: FormService
+    private formService: FormService,
   ) {
-    this.modules = {
-      blotFormatter: {},
-    };
-
-    this.documents = [
-      { title: 'Privacy Policy', type: 'privacy-policy' },
-      { title: 'Terms & Conditions', type: 'terms-and-conditions' },
-      { title: 'Shipping Policy', type: 'shipping-policy' },
-      { title: 'Refund Policy', type: 'refund-policy' },
-      { title: 'Business Terms', type: 'business-terms' },
-    ];
-
     this.selectedDocument = this.documents[0];
   }
 
@@ -57,7 +48,7 @@ export class DocumentUploadWidgetComponent {
 
   async load() {
     let value = await this.dataService.processDocument(
-      `${this.selectedDocument.type}.html`
+      `${this.selectedDocument.type}.html`,
     );
     this.documentText = value.toString();
   }

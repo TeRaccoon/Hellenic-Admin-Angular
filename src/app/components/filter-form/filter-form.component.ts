@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormService } from '../form/service';
 import { FilterService } from '../../services/filter.service';
-import { faSearch, faPlus, faX } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
+import { ICONS } from './icons';
 
 @Component({
   selector: 'app-filter-form',
@@ -12,9 +12,7 @@ import { Subscription } from 'rxjs';
 export class FilterFormComponent {
   private readonly subscriptions = new Subscription();
 
-  faSearch = faSearch;
-  faPlus = faPlus;
-  faX = faX;
+  icons = ICONS;
 
   formVisible = 'hidden';
   tableColumns: {
@@ -39,7 +37,7 @@ export class FilterFormComponent {
   startDate: Date | null = null;
   endDate: Date | null = null;
 
-  errorMsg: string | null = null;
+  error: string | null = null;
 
   constructor(
     private formService: FormService,
@@ -51,7 +49,7 @@ export class FilterFormComponent {
       this.formService.getFilterFormVisibility().subscribe(async (visible) => {
         this.formVisible = visible ? 'visible' : 'hidden';
         this.tableColumns = this.filterService.getTableColumns();
-        this.errorMsg = null;
+        this.error = null;
       })
     );
   }
@@ -94,7 +92,7 @@ export class FilterFormComponent {
       hide && this.hide();
       this.resetForm();
     } else {
-      this.errorMsg = 'Please fill in all required fields';
+      this.error = 'Please fill in all required fields';
     }
   }
 
@@ -133,6 +131,10 @@ export class FilterFormComponent {
     this.columnType = '';
     this.startDate = null;
     this.endDate = null;
-    this.errorMsg = null;
+    this.error = null;
+  }
+
+  hasError(value: any) {
+    return (value != null || value != '') && this.error != null;
   }
 }
