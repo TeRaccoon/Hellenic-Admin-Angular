@@ -1,13 +1,16 @@
 @import '../variables';
+
 .quick-view-container {
     display: flex;
     flex: 1 1 25%;
+
     .table-container {
         border-collapse: collapse;
         border-radius: 15px;
         overflow-x: auto;
         margin: 10px;
         border-radius: 15px;
+
         table {
             border-collapse: collapse;
             border-radius: 15px;
@@ -15,40 +18,49 @@
             border-radius: 15px;
             width: 100%;
             margin-top: 10px;
+
             tr {
                 height: 56px;
             }
+
             th,
             td {
                 padding: 10px;
                 text-align: left;
                 font-size: 16px;
             }
+
             td {
                 .ng-fa-icon {
                     cursor: pointer;
                 }
             }
+
             thead {
                 background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
                 color: rgb(255, 255, 255);
+
                 tr {
                     background-color: transparent;
                 }
             }
+
             .data-row {
                 background-color: #eaeef3;
             }
+
             tr:nth-child(odd) {
                 background-color: white;
             }
         }
     }
+
     .button-container {
         display: flex;
         flex-direction: column;
         width: 33vh;
         margin-right: 20px;
+
         .button {
             border-radius: 5px;
             padding: 8px;
@@ -64,13 +76,16 @@
     display: flex;
     flex-direction: column;
     margin: 15px 15px 15px 16%;
+
     h1 {
         margin-left: 5px;
     }
+
     .widget-container {
         display: flex;
         justify-content: space-around;
         gap: 5px;
+
         .widget {
             display: flex;
             align-items: center;
@@ -80,6 +95,7 @@
             height: 150px;
             margin: 5px;
             color: white;
+
             .icon-container {
                 display: flex;
                 align-items: center;
@@ -94,17 +110,21 @@
                 min-width: 50px;
                 height: 50px;
                 background-color: #003882b7;
+
                 fa-icon {
                     font-size: 35px;
                 }
             }
+
             .information-container {
                 display: flex;
                 flex-direction: column;
+
                 h2 {
                     font-size: 20px;
                     padding: 15px;
                 }
+
                 p {
                     display: flex;
                     align-items: center;
@@ -119,8 +139,10 @@
     .container {
         width: 70%;
         margin: 15px 15px 15px 23%;
+
         .widget-container {
             flex-direction: column;
+
             .widget {
                 width: 96%;
             }
