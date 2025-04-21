@@ -3,10 +3,7 @@
   @if (button.condition()) {
     <button class="button" (click)="button.action()">
       @if (button.icon) {
-        <fa-icon
-          [icon]="getIcon(button)"
-          [spin]="button.spin ? button.spin() : false"
-        />
+        <fa-icon [icon]="getIcon(button)" [spin]="button.spin ? button.spin() : false" />
       }
       @if (button.label) {
         <span>{{ button.label }}</span>

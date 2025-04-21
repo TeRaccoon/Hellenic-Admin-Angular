@@ -2,8 +2,11 @@
   <div class="form-container">
     <h1>Upload {{ selectedDocument.title }}</h1>
     <div class="form">
-      <quill-editor [styles]="{height: '300px', backgroundColor: 'white', borderRadius: '5px'}"
-      [(ngModel)]="documentText" [modules]="modules"></quill-editor>
+      <quill-editor
+        [styles]="{ height: '300px', backgroundColor: 'white', borderRadius: '5px' }"
+        [(ngModel)]="documentText"
+        [modules]="modules"
+      ></quill-editor>
       <div class="options">
         <select [(ngModel)]="selectedDocument">
           @for (document of documents; track document) {

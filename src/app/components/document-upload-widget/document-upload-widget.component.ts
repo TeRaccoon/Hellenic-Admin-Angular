@@ -20,12 +20,12 @@ export class DocumentUploadWidgetComponent {
   };
 
   documents: Document[] = DOCUMENTS;
-  documentText: string = '';
+  documentText = '';
   selectedDocument: Document = DOCUMENTS[0];
 
   constructor(
     private dataService: DataService,
-    private formService: FormService,
+    private formService: FormService
   ) {
     this.selectedDocument = this.documents[0];
   }
@@ -39,7 +39,7 @@ export class DocumentUploadWidgetComponent {
 
     formData.append('document', file, this.selectedDocument.type + '.html');
 
-    let response = await this.dataService.uploadDocument(formData);
+    const response = await this.dataService.uploadDocument(formData);
     this.formService.setMessageFormData({
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,
@@ -47,9 +47,7 @@ export class DocumentUploadWidgetComponent {
   }
 
   async load() {
-    let value = await this.dataService.processDocument(
-      `${this.selectedDocument.type}.html`,
-    );
+    const value = await this.dataService.processDocument(`${this.selectedDocument.type}.html`);
     this.documentText = value.toString();
   }
 }

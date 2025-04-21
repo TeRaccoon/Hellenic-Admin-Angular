@@ -1,16 +1,16 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DataService } from '../../services/data.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FormService } from '../form/service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { DataService } from '../../services/data.service';
+import { FormService } from '../form/service';
 
 @Component({
   selector: 'app-tableless-view',
   templateUrl: './tableless-view.component.html',
   styleUrls: ['./tableless-view.component.scss'],
 })
-export class TablelessViewComponent {
+export class TablelessViewComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
   tableName = '';
@@ -108,7 +108,7 @@ export class TablelessViewComponent {
   }
 
   getFormControlName() {
-    let controlIndex = this.controlIndex;
+    const controlIndex = this.controlIndex;
     return Object.keys(this.vatReturnForm.controls)[controlIndex];
   }
 
@@ -120,74 +120,34 @@ export class TablelessViewComponent {
     if (row == 0) {
       return (
         Number(this.alternativeData.values[row]) +
-        Number(
-          this.vatReturnForm.controls[
-            Object.keys(this.vatReturnForm.controls)[0]
-          ]?.value
-        ) +
-        Number(
-          this.vatReturnForm.controls[
-            Object.keys(this.vatReturnForm.controls)[1]
-          ]?.value
-        ) +
-        Number(
-          this.vatReturnForm.controls[
-            Object.keys(this.vatReturnForm.controls)[2]
-          ]?.value
-        )
+        Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[0]]?.value) +
+        Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[1]]?.value) +
+        Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[2]]?.value)
       );
     }
 
     if (row == 3) {
       return (
         Number(this.alternativeData.values[row]) +
-        Number(
-          this.vatReturnForm.controls[
-            Object.keys(this.vatReturnForm.controls)[3]
-          ]?.value
-        ) +
-        Number(
-          this.vatReturnForm.controls[
-            Object.keys(this.vatReturnForm.controls)[4]
-          ]?.value
-        )
+        Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[3]]?.value) +
+        Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[4]]?.value)
       );
     }
 
     if (row == 5) {
       return (
         Number(this.alternativeData.values[row]) +
-        Number(
-          this.vatReturnForm.controls[
-            Object.keys(this.vatReturnForm.controls)[5]
-          ]?.value
-        ) +
-        Number(
-          this.vatReturnForm.controls[
-            Object.keys(this.vatReturnForm.controls)[6]
-          ]?.value
-        ) +
-        Number(
-          this.vatReturnForm.controls[
-            Object.keys(this.vatReturnForm.controls)[7]
-          ]?.value
-        )
+        Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[5]]?.value) +
+        Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[6]]?.value) +
+        Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[7]]?.value)
       );
     }
 
     if (row == 6) {
       return (
         Number(this.alternativeData.values[row]) +
-        Number(
-          this.vatReturnForm.controls[
-            Object.keys(this.vatReturnForm.controls)[8]
-          ]?.value
-        ) +
-        Number(
-          this.vatReturnForm.controls[
-            Object.keys(this.vatReturnForm.controls)[9]
-          ]?.value
-        )
+        Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[8]]?.value) +
+        Number(this.vatReturnForm.controls[Object.keys(this.vatReturnForm.controls)[9]]?.value)
       );
     }
 
@@ -197,7 +157,7 @@ export class TablelessViewComponent {
   async submitVATReturn() {
     if (this.vatReturnForm.valid) {
       this.submitAttempted = true;
-      let data = {
+      const data = {
         originalValues: this.alternativeData.values,
         previousAdjustments: [
           this.vatReturnForm.get('vat-due-previous')?.value,
@@ -235,15 +195,10 @@ export class TablelessViewComponent {
         total: Array.from({ length: 9 }, (_, row) => this.getRowTotal(row)),
       };
 
-      let period = this.alternativeData.period;
-      let date = this.alternativeData.date;
+      const period = this.alternativeData.period;
+      const date = this.alternativeData.date;
 
-      let success = await this.addReturnToDatabase(
-        data,
-        period,
-        date,
-        this.vatReturnForm.get('notes')?.value
-      );
+      const success = await this.addReturnToDatabase(data, period, date, this.vatReturnForm.get('notes')?.value);
 
       if (success) {
         this.dataService.storeData({
@@ -262,8 +217,7 @@ export class TablelessViewComponent {
       } else {
         this.formService.setMessageFormData({
           title: 'Error!',
-          message:
-            'There was an issue adding the VAT return to the database! Please try again!',
+          message: 'There was an issue adding the VAT return to the database! Please try again!',
         });
       }
     } else {
@@ -274,12 +228,7 @@ export class TablelessViewComponent {
     }
   }
 
-  async addReturnToDatabase(
-    returnData: any,
-    period: string,
-    date: string,
-    notes: string
-  ) {
+  async addReturnToDatabase(returnData: any, period: string, date: string, notes: string) {
     if ((await this.vatReturnExists(period)) && !this.submitAttempted) {
       this.formService.setMessageFormData({
         title: 'Are you sure?',
@@ -317,10 +266,7 @@ export class TablelessViewComponent {
   }
 
   async vatReturnExists(period: string) {
-    const response = await this.dataService.processGet(
-      'vat-history-by-group-id',
-      { filter: period }
-    );
+    const response = await this.dataService.processGet('vat-history-by-group-id', { filter: period });
     return response.length > 0;
   }
 }

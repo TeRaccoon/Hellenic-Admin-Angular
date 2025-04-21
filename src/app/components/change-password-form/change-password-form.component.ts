@@ -1,16 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { faX } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../form/service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-change-password-form',
   templateUrl: './change-password-form.component.html',
   styleUrls: ['./change-password-form.component.scss'],
 })
-export class ChangePasswordFormComponent {
+export class ChangePasswordFormComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
+
+  x = faX;
 
   formVisible = 'hidden';
   changePasswordForm: FormGroup;
@@ -29,15 +32,13 @@ export class ChangePasswordFormComponent {
 
   ngOnInit() {
     this.subscriptions.add(
-      this.formService
-        .getChangePasswordFormVisibility()
-        .subscribe((visible) => {
-          this.formVisible = visible ? 'visible' : 'hidden';
-          if (visible) {
-            this.resetForm();
-            this.loadForm();
-          }
-        })
+      this.formService.getChangePasswordFormVisibility().subscribe((visible) => {
+        this.formVisible = visible ? 'visible' : 'hidden';
+        if (visible) {
+          this.resetForm();
+          this.loadForm();
+        }
+      })
     );
   }
 
@@ -55,16 +56,11 @@ export class ChangePasswordFormComponent {
   }
 
   loadForm() {
-    this.changePasswordForm.addControl(
-      'action',
-      this.fb.control('change-password')
-    );
+    this.changePasswordForm.addControl('action', this.fb.control('change-password'));
   }
 
   async formSubmit() {
-    let submissionResponse = await this.dataService.submitFormData(
-      this.changePasswordForm.value
-    );
+    const submissionResponse = await this.dataService.submitFormData(this.changePasswordForm.value);
     this.formService.setMessageFormData({
       title: submissionResponse.success ? 'Success!' : 'Error!',
       message: submissionResponse.message,

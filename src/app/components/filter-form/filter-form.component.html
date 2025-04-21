@@ -14,52 +14,24 @@
     <div class="content-section">
       <div class="input-container">
         <label>Select Column</label>
-        <select
-          [class.error]="hasError(columnInput)"
-          (change)="getColumnType()"
-          [(ngModel)]="columnInput"
-        >
-          @for (
-            column of tableColumns.columnNames;
-            track column;
-            let i = $index
-          ) {
+        <select [class.error]="hasError(columnInput)" (change)="getColumnType()" [(ngModel)]="columnInput">
+          @for (column of tableColumns.columnNames; track column; let i = $index) {
             <option [value]="tableColumns.columns[i]">{{ column }}</option>
           }
         </select>
       </div>
       <div class="input-container">
         @switch (columnType) {
-          @case ("date") {
+          @case ('date') {
             <label>Start date:</label>
-            <input
-              [class.error]="hasError(startDate)"
-              required
-              type="date"
-              [(ngModel)]="startDate"
-            />
+            <input [class.error]="hasError(startDate)" required type="date" [(ngModel)]="startDate" />
             <label>End date:</label>
-            <input
-              [class.error]="hasError(endDate)"
-              required
-              type="date"
-              [(ngModel)]="endDate"
-            />
+            <input [class.error]="hasError(endDate)" required type="date" [(ngModel)]="endDate" />
           }
-          @case ("enum") {
+          @case ('enum') {
             <div class="drop-select-container">
-              <input
-                type="text"
-                (focus)="openDropdown()"
-                (blur)="closeDropdown()"
-                [(ngModel)]="searchInput"
-              />
-              <div
-                class="drop-select"
-                [ngClass]="
-                  columnIndex == open ? 'input-visible' : 'input-hidden'
-                "
-              >
+              <input type="text" (focus)="openDropdown()" (blur)="closeDropdown()" [(ngModel)]="searchInput" />
+              <div class="drop-select" [ngClass]="columnIndex === open ? 'input-visible' : 'input-hidden'">
                 @for (option of options; track option) {
                   <p (click)="selectOption(option)">{{ option }}</p>
                 }
@@ -68,7 +40,7 @@
           }
           @default {
             <input
-              [class]="searchInput == '' && error != null ? 'error' : ''"
+              [class]="searchInput === '' && error !== null ? 'error' : ''"
               [(ngModel)]="searchInput"
               required
               type="text"

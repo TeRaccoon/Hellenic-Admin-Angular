@@ -1,21 +1,21 @@
-import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { TableData, VatData } from '../../common/types/table-widget/types';
 import { VAT_RETURN } from '../../common/types/table-widget/const';
+import { TableData, VatData } from '../../common/types/table-widget/types';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-table-widget',
   templateUrl: './table-widget.component.html',
   styleUrl: './table-widget.component.scss',
 })
-export class TableWidgetComponent {
+export class TableWidgetComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
-  startDate: string = '';
-  endDate: string = '';
-  tableName: string = '';
+  startDate = '';
+  endDate = '';
+  tableName = '';
   tableData: TableData = {
     headers: [],
     query: '',
@@ -26,7 +26,7 @@ export class TableWidgetComponent {
 
   vatReturnHistory: any[] = [];
   vatHistory: string[] = [];
-  selectedVatGroup: string = '';
+  selectedVatGroup = '';
 
   constructor(
     private dataService: DataService,
@@ -65,10 +65,9 @@ export class TableWidgetComponent {
   }
 
   async loadVATReturns() {
-    this.vatReturnHistory = await this.dataService.processGet(
-      'vat-history-by-group-id',
-      { filter: this.selectedVatGroup }
-    );
+    this.vatReturnHistory = await this.dataService.processGet('vat-history-by-group-id', {
+      filter: this.selectedVatGroup,
+    });
   }
 
   async collectData() {
@@ -120,8 +119,7 @@ export class TableWidgetComponent {
 
   vatReturns(vatData: VatData[]) {
     vatData[0].liability =
-      Number(Number(vatData[0].output_vat).toFixed(2)) -
-      Number(Number(vatData[0].input_vat).toFixed(2));
+      Number(Number(vatData[0].output_vat).toFixed(2)) - Number(Number(vatData[0].input_vat).toFixed(2));
     return vatData;
   }
 }

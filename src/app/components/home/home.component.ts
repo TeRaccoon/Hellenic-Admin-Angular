@@ -1,30 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { faCircleExclamation, faReceipt, faUserGroup, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
-import {
-  faReceipt,
-  faCircleExclamation,
-  faUserGroup,
-  faUserPlus,
-} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   faReceipt = faReceipt;
   faCircleExclamation = faCircleExclamation;
   faUserGroup = faUserGroup;
   faUserPlus = faUserPlus;
 
   widgetData: any[] = [];
-  widgetHeaders = [
-    'Invoices this month',
-    'Invoices due today',
-    'Total customers',
-    'New customers',
-  ];
+  widgetHeaders = ['Invoices this month', 'Invoices due today', 'Total customers', 'New customers'];
   widgetIcons = [faReceipt, faCircleExclamation, faUserGroup, faUserPlus];
 
   invoiceDueData: any[] = [];
@@ -59,27 +49,15 @@ export class HomeComponent {
   }
 
   async getInvoicesDueToday() {
-    this.invoiceDueData = await this.dataService.processGet(
-      'invoices-due-today-basic',
-      undefined,
-      true
-    );
+    this.invoiceDueData = await this.dataService.processGet('invoices-due-today-basic', undefined, true);
   }
 
   async getLowStock() {
-    this.lowStockData = await this.dataService.processGet(
-      'low-stock',
-      undefined,
-      true
-    );
+    this.lowStockData = await this.dataService.processGet('low-stock', undefined, true);
   }
 
   async getProductsExpiring() {
-    this.productsExpiringData = await this.dataService.processGet(
-      'products-expiring-soon',
-      undefined,
-      true
-    );
+    this.productsExpiringData = await this.dataService.processGet('products-expiring-soon', undefined, true);
   }
 
   getObjectKeys(column: any) {

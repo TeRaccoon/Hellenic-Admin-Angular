@@ -1,13 +1,8 @@
+import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { DataService } from '../../services/data.service';
-import { formatDate } from '@angular/common';
-import {
-  Settings,
-  KeyedData,
-  Message,
-  EditableData,
-} from './types';
+import { EditableData, KeyedData, Message, Settings } from './types';
 
 @Injectable({
   providedIn: 'root',
@@ -31,11 +26,12 @@ export class FormService {
     showAddMore: false,
   };
 
-  private alternativeSelectData: {
-    [key: string]: {
+  private alternativeSelectData: Record<
+    string,
+    {
       data: { value: string }[];
-    };
-  } = {};
+    }
+  > = {};
 
   private deleteFormIds: number[] = [];
   private messageFormData: Message = {
@@ -44,14 +40,14 @@ export class FormService {
     footer: '',
   };
 
-  private selectedTable: string = '';
-  private selectedId: string = '';
-  private reloadType: string = '';
-  private reloadId: string = '';
+  private selectedTable = '';
+  private selectedId = '';
+  private reloadType = '';
+  private reloadId = '';
 
   private waitingToReload = new BehaviorSubject<boolean>(false);
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService) {}
 
   getReloadRequest(): Observable<boolean> {
     return this.waitingToReload.asObservable();
@@ -198,7 +194,9 @@ export class FormService {
 
   setMessageFormData(messageFormData: Message, display = true) {
     this.messageFormData = messageFormData;
-    display && this.isMessageFormVisible.next(true);
+    if (display) {
+      this.isMessageFormVisible.next(true);
+    }
   }
 
   setSelectedTable(selectedTable: string) {
@@ -240,16 +238,19 @@ export class FormService {
   async replaceAmbiguousData(
     tableName: string,
     formData: any,
-    replacementData: {
-      [key: string]: {
-        data: { id: Number; replacement: string }[];
-      };
-    },
-    formType?: string,
+    replacementData: Record<
+      string,
+      {
+        data: { id: number; replacement: string }[];
+      }
+    >,
+    formType?: string
   ) {
+    let data;
+
     switch (tableName) {
       case 'payments':
-        var data = await this.getIdReplacementData('expense_options_id');
+        data = await this.getIdReplacementData('expense_options_id');
         formData['Category'].inputType = 'replacement';
         replacementData['Category'] = { data: data };
 
@@ -259,19 +260,19 @@ export class FormService {
         break;
 
       case 'suppliers':
-        var data = await this.getIdReplacementData('supplier_id_types');
+        data = await this.getIdReplacementData('supplier_id_types');
         formData['Type'].inputType = 'replacement';
         replacementData['Type'] = { data: data };
         break;
 
       case 'price_list':
-        var data = await this.getIdReplacementData('customers_id_name_code');
+        data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
         break;
 
       case 'price_list_items':
-        var data = await this.getIdReplacementData('items_id_name_sku');
+        data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
@@ -285,7 +286,7 @@ export class FormService {
         break;
 
       case 'items':
-        var data = await this.getIdReplacementData('categories');
+        data = await this.getIdReplacementData('categories');
         formData['Category'].inputType = 'alternative-select';
         this.alternativeSelectData['Category'] = { data: data };
 
@@ -303,7 +304,7 @@ export class FormService {
         break;
 
       case 'invoiced_items':
-        var data = await this.getIdReplacementData('items_id_name_sku');
+        data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
@@ -313,29 +314,27 @@ export class FormService {
         break;
 
       case 'stocked_items':
-        var data = await this.getIdReplacementData('items_id_name_sku');
+        data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
 
-        var data = await this.getIdReplacementData('warehouse_id_name');
+        data = await this.getIdReplacementData('warehouse_id_name');
         formData['Warehouse'].inputType = 'replacement';
         replacementData['Warehouse'] = { data: data };
 
-        var data = await this.getIdReplacementData(
-          'supplier_invoice_id_reference',
-        );
+        data = await this.getIdReplacementData('supplier_invoice_id_reference');
         formData['Supplier Invoice ID'].inputType = 'replacement';
         replacementData['Supplier Invoice ID'] = { data: data };
         break;
 
       case 'sub_categories':
-        var data = await this.getIdReplacementData('category_id_name');
+        data = await this.getIdReplacementData('category_id_name');
         formData['Parent Category'].inputType = 'replacement';
         replacementData['Parent Category'] = { data: data };
         break;
 
       case 'invoices':
-        var data = await this.getIdReplacementData('customers_id_name_code');
+        data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
 
@@ -347,9 +346,7 @@ export class FormService {
         formData['Delivery Address'].inputType = 'replacement';
         replacementData['Delivery Address'] = { data: data };
 
-        data = await this.getIdReplacementData(
-          'customer_billing_address_id_full',
-        );
+        data = await this.getIdReplacementData('customer_billing_address_id_full');
         formData['Billing Address'].inputType = 'replacement';
         replacementData['Billing Address'] = { data: data };
 
@@ -362,11 +359,10 @@ export class FormService {
         replacementData['Item ID'] = { data: data };
         break;
 
-      case 'customer_payments':
-        let query =
-          formType == 'edit' ? 'invoice_id_title' : 'invoice_id_title_unpaid';
+      case 'customer_payments': {
+        const query = formType == 'edit' ? 'invoice_id_title' : 'invoice_id_title_unpaid';
 
-        var data = await this.getIdReplacementData(query);
+        data = await this.getIdReplacementData(query);
         formData['Invoice ID'].inputType = 'replacement';
         replacementData['Invoice ID'] = { data: data };
 
@@ -374,10 +370,11 @@ export class FormService {
         formData['Customer'].inputType = 'replacement';
         replacementData['Customer'] = { data: data };
         break;
+      }
 
       case 'credit_notes':
       case 'supplier_payments':
-        var data = await this.getIdReplacementData('supplier_id_name_code');
+        data = await this.getIdReplacementData('supplier_id_name_code');
         formData['Supplier'].inputType = 'replacement';
         replacementData['Supplier'] = { data: data };
 
@@ -387,13 +384,13 @@ export class FormService {
         break;
 
       case 'offers':
-        var data = await this.getIdReplacementData('customers_id_name_code');
+        data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer'].inputType = 'replacement';
         replacementData['Customer'] = { data: data };
         break;
 
       case 'credit_notes_customers':
-        var data = await this.getIdReplacementData('customers_id_name_code');
+        data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer'].inputType = 'replacement';
         replacementData['Customer'] = { data: data };
 
@@ -407,14 +404,14 @@ export class FormService {
         break;
 
       case 'customer_address':
-        var data = await this.getIdReplacementData('customers_id_name');
+        data = await this.getIdReplacementData('customers_id_name');
         formData['Customer Name'].inputType = 'replacement';
         replacementData['Customer Name'] = { data: data };
         break;
 
       case 'page_section_text':
       case 'image_locations':
-        var data = await this.getIdReplacementData('page_section_id_name');
+        data = await this.getIdReplacementData('page_section_id_name');
         formData['Page Section ID'].inputType = 'replacement';
         replacementData['Page Section ID'] = { data: data };
         break;
@@ -422,13 +419,13 @@ export class FormService {
       case 'retail_item_images':
       case 'allergen_information':
       case 'nutrition_info':
-        var data = await this.getIdReplacementData('items_id_name');
+        data = await this.getIdReplacementData('items_id_name');
         formData['Item ID'].inputType = 'replacement';
         replacementData['Item ID'] = { data: data };
         break;
 
       case 'supplier_invoices':
-        var data = await this.getIdReplacementData('supplier_id_name_code');
+        data = await this.getIdReplacementData('supplier_id_name_code');
         formData['Supplier ID'].inputType = 'replacement';
         replacementData['Supplier ID'] = { data: data };
 
@@ -473,8 +470,8 @@ export class FormService {
   }
 
   getCharacterLimit(dataType: string) {
-    if (dataType.includes('varchar')) {
-      let match = dataType.match(/\d+/g);
+    if (dataType.includes('letchar')) {
+      const match = dataType.match(/\d+/g);
       return match ? parseInt(match[0]) : null;
     }
     return null;
@@ -502,7 +499,7 @@ export class FormService {
 
   processEditFormData(row: any, editableData: EditableData) {
     this.editFormData = {};
-    var inputDataTypes = this.dataTypeToInputType(editableData.types);
+    const inputDataTypes = this.dataTypeToInputType(editableData.types);
     editableData.columns.forEach((columnName, index) => {
       this.editFormData[editableData.names[index]] = {
         value: row[columnName],
@@ -519,28 +516,24 @@ export class FormService {
     row?: any,
     settings: Settings = {
       showAddMore: false,
-    },
+    }
   ) {
     this.addFormData = {};
-    var inputDataTypes: string[] = this.dataTypeToInputType(editableData.types);
+    const inputDataTypes: string[] = this.dataTypeToInputType(editableData.types);
     editableData.columns.forEach((columnName, index) => {
       this.addFormData[editableData.names[index]] = {
         inputType: inputDataTypes[index],
         dataType: editableData.types[index],
         required: editableData.required[index],
         field: editableData.fields[index],
-        value: editableData.values
-          ? editableData.values[index]
-          : row
-            ? row[columnName]
-            : null,
+        value: editableData.values ? editableData.values[index] : row ? row[columnName] : null,
       };
     });
     this.formSettings = settings;
   }
 
-  dataTypeToInputType(dataTypes: any[]) {
-    var inputTypes: any[] = [];
+  dataTypeToInputType(dataTypes: string[]) {
+    const inputTypes: string[] = [];
     dataTypes.forEach((dataType: string) => {
       switch (dataType) {
         case 'date':
@@ -582,9 +575,9 @@ export class FormService {
     name: string,
     image: File,
     tableName: string,
-    showMessageOnlyOnError = false,
+    showMessageOnlyOnError = false
   ) {
-    let imageFileName = await this.processImageName(id, name, tableName);
+    const imageFileName = await this.processImageName(id, name, tableName);
 
     const uploadResponse = await this.uploadImage(image, imageFileName);
 
@@ -592,14 +585,11 @@ export class FormService {
     let message = 'Image uploaded successfully!';
     let success = true;
 
-    let addToDatabase = this.shouldAddToDatabase(tableName);
+    const addToDatabase = this.shouldAddToDatabase(tableName);
 
     if (uploadResponse) {
       if (addToDatabase) {
-        const recordUploadResponse = await this.addImageLocationToDatabase(
-          id,
-          imageFileName,
-        );
+        const recordUploadResponse = await this.addImageLocationToDatabase(id, imageFileName);
         if (!recordUploadResponse.success) {
           title = 'Error!';
           message =
@@ -629,18 +619,13 @@ export class FormService {
     return await this.dataService.uploadImage(formData);
   }
 
-  async processImageName(
-    id: string | null,
-    name: string,
-    tableName: string,
-    postUpload = false,
-  ) {
+  async processImageName(id: string | null, name: string, tableName: string, postUpload = false) {
     name = name.replaceAll(/[^a-zA-Z0-9_]/g, '_');
 
     let fileName = name + '.png';
     let imageCount = 0;
 
-    let query = this.getImageCountQuery(tableName);
+    const query = this.getImageCountQuery(tableName);
 
     if (id != null && query != null) {
       imageCount = await this.dataService.processGet(query, { filter: id });
@@ -679,7 +664,7 @@ export class FormService {
   }
 
   async addImageLocationToDatabase(itemId: string, imageFileName: string) {
-    let imageFormData = {
+    const imageFormData = {
       action: 'add',
       table_name: 'retail_item_images',
       item_id: itemId,
@@ -701,7 +686,7 @@ export class FormService {
       query = 'images-from-categories-id';
     }
 
-    let images = await this.dataService.processGet(query, { filter: id }, true);
+    const images = await this.dataService.processGet(query, { filter: id }, true);
 
     return images;
   }
@@ -715,7 +700,7 @@ export class FormService {
   }
 
   constructFormSettings(tableName: string) {
-    let settings: Settings = { showAddMore: false };
+    const settings: Settings = { showAddMore: false };
     switch (tableName) {
       case 'price_list':
         settings.showAddMore = false;

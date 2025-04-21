@@ -48,6 +48,7 @@ import { FormFooterComponent } from './components/form/children/form-footer/form
 import { FormItemsTableComponent } from './components/form/children/form-items-table/form-items-table.component';
 import { SupplierInvoiceItemFormControlsComponent } from './components/supplier-invoice-item-form-controls/supplier-invoice-item-form-controls.component';
 import { TableButtonsComponent } from './components/table-buttons/table-buttons.component';
+import { TableCellComponent } from './components/table-cell/table-cell.component';
 
 export function initConfig(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -90,7 +91,8 @@ export function initConfig(configService: ConfigService) {
     FormFooterComponent,
     FormItemsTableComponent,
     SupplierInvoiceItemFormControlsComponent,
-    TableButtonsComponent
+    TableButtonsComponent,
+    TableCellComponent
   ],
   imports: [
     BrowserModule,

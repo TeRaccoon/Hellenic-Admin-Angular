@@ -1,38 +1,33 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DataService } from '../../services/data.service';
-import { FormService } from '../form/service';
-import { FilterService } from '../../services/filter.service';
 import { Location } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
-import {
-  columnFilter,
-  columnDateFilter,
-  sortedColumn,
-  viewMetadata,
-  FilterData,
-} from '../../common/types/view/types';
-import { TABLE_ICONS } from '../../common/icons/table-icons';
-import { TableService } from '../../services/table.service';
-import { UrlService } from '../../services/url.service';
 import {
   ADDRESS_COLUMNS,
   CREDIT_NOTE_COLUMNS,
   PRICE_LIST_ITEM_COLUMNS,
   SUPPLIER_INVOICE_COLUMNS,
 } from '../../common/constants';
-import { DEFAULT_DISABLED_WIDGET_DATA } from '../../common/types/widget/const';
-import { TableOptionsService } from '../../services/table-options.service';
 import { INVOICE_COLUMNS, STOCK_COLUMNS } from '../../common/consts/table-options';
+import { TABLE_ICONS } from '../../common/icons/table-icons';
+import { columnDateFilter, columnFilter, FilterData, sortedColumn, viewMetadata } from '../../common/types/view/types';
+import { DEFAULT_DISABLED_WIDGET_DATA } from '../../common/types/widget/const';
+import { AuthService } from '../../services/auth.service';
+import { DataService } from '../../services/data.service';
+import { FilterService } from '../../services/filter.service';
+import { TableOptionsService } from '../../services/table-options.service';
+import { TableService } from '../../services/table.service';
+import { UrlService } from '../../services/url.service';
+import { FormService } from '../form/service';
 import { EditableData } from '../form/types';
+import { ItemImage, StockTotals } from './types';
 
 @Component({
   selector: 'app-view',
   templateUrl: './view.component.html',
   styleUrls: ['./view.component.scss'],
 })
-export class ViewComponent {
+export class ViewComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
   icons = TABLE_ICONS;
@@ -42,30 +37,30 @@ export class ViewComponent {
   apiUrlBase;
   imageUrlBase;
 
-  tableName: string = '';
-  displayName: string = '';
+  tableName = '';
+  displayName = '';
   displayColumnFilters: string[] = [];
 
   columnFilters: columnFilter[] = [];
   columnDateFilters: columnDateFilter[] = [];
 
-  data: { [key: string]: any }[] = [];
-  displayNames: { [key: string]: any }[] = [];
+  data: Record<string, any>[] = [];
+  displayNames: Record<string, any>[] = [];
   displayData: any[] = [];
   dataTypes: any[] = [];
   filteredDisplayData: any[] = [];
   editable: EditableData;
-  stockData: any = {};
+  stockData: Record<string, string> = {};
 
   selectedRows: number[] = [];
 
-  images: { [key: string]: any }[] = [];
+  images: Record<string, string> = {};
 
   distanceLoading = false;
 
   icon = TABLE_ICONS.lock;
 
-  filter: string = '';
+  filter = '';
 
   viewMetaData: viewMetadata;
 
@@ -117,32 +112,29 @@ export class ViewComponent {
         this.tableName = params['table'] || null;
         if (this.tableName != null) {
           this.resetTable();
-          this.displayName =
-            this.tableService.getTableDisplayName(this.tableName) ?? '';
+          this.displayName = this.tableService.getTableDisplayName(this.tableName) ?? '';
           this.formService.setSelectedTable(String(this.tableName));
           this.loadTable(String(this.tableName));
           this.loadPage();
           this.tabs = this.dataService.getTabs();
         }
-      }),
+      })
     );
 
     this.subscriptions.add(
-      this.formService
-        .getReloadRequest()
-        .subscribe(async (reloadRequested: boolean) => {
-          if (reloadRequested) {
-            let reloadType = this.formService.getReloadType();
-            if (reloadType == 'hard') {
-              this.selectedRows = [];
-              this.sortedColumn = { columnName: '', ascending: false };
-              await this.loadTable(String(this.tableName));
-            } else if (reloadType == 'filter') {
-              this.applyFilter();
-            }
-            this.formService.performReload();
+      this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
+        if (reloadRequested) {
+          const reloadType = this.formService.getReloadType();
+          if (reloadType == 'hard') {
+            this.selectedRows = [];
+            this.sortedColumn = { columnName: '', ascending: false };
+            await this.loadTable(String(this.tableName));
+          } else if (reloadType == 'filter') {
+            this.applyFilter();
           }
-        }),
+          this.formService.performReload();
+        }
+      })
     );
   }
 
@@ -164,42 +156,30 @@ export class ViewComponent {
     this.viewMetaData.loaded = false;
 
     if (this.tableName == 'items') {
-      let totalStockData = await this.dataService.processGet(
-        'total-stock',
-        undefined,
-        true,
-      );
+      const totalStockData: StockTotals[] = await this.dataService.processGet('total-stock', undefined, true);
 
-      totalStockData.forEach((stock: any) => {
+      totalStockData.forEach((stock) => {
         this.stockData[stock.item_id] = stock.total_quantity;
       });
     }
 
     if (this.tableName == 'stocked_items') {
-      let images = await this.dataService.processGet(
-        'stocked-item-images',
-        undefined,
-        true,
-      );
+      const images: ItemImage[] = await this.dataService.processGet('stocked-item-images', undefined, true);
 
       if (images != null) {
-        images.forEach((imageData: any) => {
+        images.forEach((imageData) => {
           this.images[imageData.item_id] = imageData.file_name;
         });
       }
     }
 
-    let tableData = await this.dataService.processGet('table', {
+    const tableData = await this.dataService.processGet('table', {
       filter: table,
     });
 
     if (tableData != null) {
-      this.data = Array.isArray(tableData.data)
-        ? tableData.data
-        : [tableData.data];
-      this.displayData = Array.isArray(tableData.display_data)
-        ? tableData.display_data
-        : [tableData.display_data];
+      this.data = Array.isArray(tableData.data) ? tableData.data : [tableData.data];
+      this.displayData = Array.isArray(tableData.display_data) ? tableData.display_data : [tableData.display_data];
       this.mapDataTypes(tableData.types);
       this.filteredDisplayData = this.displayData;
       this.displayNames = tableData.display_names;
@@ -224,7 +204,7 @@ export class ViewComponent {
     });
   }
 
-  getColumnHeaders(obj: { [key: string]: any }): string[] {
+  getColumnHeaders(obj: Record<string, any>): string[] {
     return obj ? Object.keys(obj) : [];
   }
 
@@ -257,10 +237,8 @@ export class ViewComponent {
 
   sortColumn(column: any) {
     this.filteredDisplayData = this.displayData;
-    let dataName: string =
-      this.editable.columns.filter(
-        (_, index) => this.editable.names[index] === column,
-      )[0] ?? 'id';
+    const dataName: string =
+      this.editable.columns.filter((_, index) => this.editable.names[index] === column)[0] ?? 'id';
 
     if (this.sortedColumn.columnName == column) {
       this.sortedColumn.ascending = !this.sortedColumn.ascending;
@@ -303,7 +281,7 @@ export class ViewComponent {
   }
 
   duplicate() {
-    let row = this.getRow(this.selectedRows[0]);
+    const row = this.getRow(this.selectedRows[0]);
 
     this.formService.processAddFormData(this.editable, row);
     this.optionsService.prepareAddFormService(this.tableName);
@@ -314,7 +292,7 @@ export class ViewComponent {
   }
 
   async editRow(id: any, table: string) {
-    var row = this.data.filter((row: any) => row.id == id)[0];
+    const row = this.data.filter((row: any) => row.id == id)[0];
     if (table == '') {
       if (this.tableName == 'invoices' && row['status'] == 'Complete') {
         this.formService.setMessageFormData({
@@ -332,11 +310,11 @@ export class ViewComponent {
       return;
     }
 
-    let editFormData = await this.dataService.processGet('edit-form-data', {
+    const editFormData = await this.dataService.processGet('edit-form-data', {
       filter: table,
     });
 
-    var fakeRow = JSON.parse(JSON.stringify(row));
+    let fakeRow = JSON.parse(JSON.stringify(row));
 
     let appendOrAdd;
 
@@ -357,9 +335,7 @@ export class ViewComponent {
               this.formService.processEditFormData(fakeRow, editFormData);
               this.prepareEditFormService(appendOrAdd.id, table);
             } else {
-              let values: (string | null)[] = Array(
-                editFormData.columns.length,
-              ).fill(null);
+              const values: (string | null)[] = Array(editFormData.columns.length).fill(null);
               const itemIdIndex = editFormData.names.indexOf('Item ID');
               values[itemIdIndex] = id;
               editFormData.values = values;
@@ -379,16 +355,14 @@ export class ViewComponent {
   }
 
   prepareEditFormService(id: any, table: string) {
-    this.formService.setSelectedTable(
-      table == '' ? String(this.tableName) : table,
-    );
+    this.formService.setSelectedTable(table == '' ? String(this.tableName) : table);
     this.formService.setSelectedId(id);
     this.formService.showEditForm();
     this.formService.setReloadType('hard');
   }
 
   deleteRow(id: number) {
-    let row = this.data.filter((row: any) => row.id == id)[0];
+    const row = this.data.filter((row: any) => row.id == id)[0];
 
     if (this.optionsService.canDelete(row, this.tableName)) {
       this.optionsService.performDelete([id], this.tableName);
@@ -404,9 +378,7 @@ export class ViewComponent {
 
   itemContainsFilter(item: any) {
     return (
-      this.filter != null &&
-      item != null &&
-      Object.values(item).some((value) => String(value).includes(this.filter))
+      this.filter != null && item != null && Object.values(item).some((value) => String(value).includes(this.filter))
     );
   }
 
@@ -416,9 +388,8 @@ export class ViewComponent {
   }
 
   loadPage() {
-    var start =
-      (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
-    var end = start + this.viewMetaData.entryLimit;
+    const start = (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
+    const end = start + this.viewMetaData.entryLimit;
     if (this.filterService.getFilterData().searchFilter === '') {
       this.viewMetaData.pageCount = this.calculatePageCount(true);
       this.filteredDisplayData = this.displayData.slice(start, end);
@@ -440,12 +411,9 @@ export class ViewComponent {
 
   getPageRange(): number[] {
     const range = [];
-    var start = this.viewMetaData.currentPage;
+    let start = this.viewMetaData.currentPage;
 
-    if (
-      this.viewMetaData.currentPage > this.viewMetaData.pageCount - 2 &&
-      this.viewMetaData.pageCount - 2 > 0
-    ) {
+    if (this.viewMetaData.currentPage > this.viewMetaData.pageCount - 2 && this.viewMetaData.pageCount - 2 > 0) {
       start = this.viewMetaData.pageCount - 2;
     }
     if (start == 1 && this.viewMetaData.pageCount > 1) {
@@ -453,13 +421,7 @@ export class ViewComponent {
     } else if (start == 2 && this.viewMetaData.pageCount > 1) {
       start += 1;
     }
-    for (
-      let i = start - 1;
-      i < start + 2 &&
-      i < this.viewMetaData.pageCount &&
-      this.viewMetaData.pageCount > 1;
-      i++
-    ) {
+    for (let i = start - 1; i < start + 2 && i < this.viewMetaData.pageCount && this.viewMetaData.pageCount > 1; i++) {
       range.push(i);
     }
 
@@ -472,8 +434,8 @@ export class ViewComponent {
 
   async changeCheckBox(event: Event, key: number, columnName: string) {
     const option = event.target as HTMLInputElement;
-    let checked = option.checked;
-    let data = { ...this.data.filter((d: any) => d.id == key)[0] };
+    const checked = option.checked;
+    const data = { ...this.data.filter((d: any) => d.id == key)[0] };
     data[columnName] = checked ? 'Yes' : 'No';
     data['action'] = 'append';
     data['table_name'] = String(this.tableName);
@@ -483,7 +445,7 @@ export class ViewComponent {
 
   selectRow(event: Event, rowId: number) {
     const option = event.target as HTMLInputElement;
-    let checked = option.checked;
+    const checked = option.checked;
     if (checked) {
       this.selectedRows.push(rowId);
     } else {
@@ -494,18 +456,14 @@ export class ViewComponent {
   }
 
   async stockSearch(itemId: string) {
-    var row = this.data.filter((row: any) => row.id == itemId)[0];
+    const row = this.data.filter((row: any) => row.id == itemId)[0];
 
     if (row != null) {
-      let tableColumns = STOCK_COLUMNS;
+      const tableColumns = STOCK_COLUMNS;
 
-      let tableRows = await this.dataService.processGet(
-        'stocked-items',
-        { filter: itemId },
-        true,
-      );
-      let tableName = 'stocked_items';
-      let title = `Stocked Items for ${row['item_name']}`;
+      const tableRows = await this.dataService.processGet('stocked-items', { filter: itemId }, true);
+      const tableName = 'stocked_items';
+      const title = `Stocked Items for ${row['item_name']}`;
 
       this.dataService.storeWidgetData({
         headers: tableColumns,
@@ -515,29 +473,25 @@ export class ViewComponent {
         idData: { id: itemId, columnName: 'Item ID' },
         query: 'stocked-items',
         disabled: DEFAULT_DISABLED_WIDGET_DATA,
-        extra: undefined
+        extra: undefined,
       });
       this.formService.showWidget();
     }
   }
 
   async invoiceSearch(invoiceId: string) {
-    var row = this.data.filter((row: any) => row.id == invoiceId)[0];
+    const row = this.data.filter((row: any) => row.id == invoiceId)[0];
 
-    let tableColumns = INVOICE_COLUMNS;
-    let tableRows = await this.dataService.processGet(
-      'invoiced-items',
-      { filter: invoiceId },
-      true,
-    );
-    let tableName = 'invoiced_items';
-    let title = `Invoiced Items for ${row['title']}`;
+    const tableColumns = INVOICE_COLUMNS;
+    const tableRows = await this.dataService.processGet('invoiced-items', { filter: invoiceId }, true);
+    const tableName = 'invoiced_items';
+    const title = `Invoiced Items for ${row['title']}`;
 
-    let freeDeliveryMinimum = await this.dataService.processGet('settings', {
+    const freeDeliveryMinimum = await this.dataService.processGet('settings', {
       filter: 'free_delivery_minimum',
     });
 
-    let isDelivery =
+    const isDelivery =
       (
         await this.dataService.processGet('invoice', {
           filter: invoiceId,
@@ -590,24 +544,16 @@ export class ViewComponent {
   }
 
   async creditNoteSearch(id: string) {
-    let tableColumns = CREDIT_NOTE_COLUMNS;
-    let query =
-      this.tableName == 'suppliers'
-        ? 'credit-note-search-supplier'
-        : 'credit-note-search-invoice';
+    const tableColumns = CREDIT_NOTE_COLUMNS;
+    const query = this.tableName == 'suppliers' ? 'credit-note-search-supplier' : 'credit-note-search-invoice';
 
-    let row = this.data.filter((row: any) => row.id == id)[0];
-    let reference =
-      this.tableName == 'suppliers' ? row['account_name'] : row['reference'];
-    let idColumnName = this.tableName == 'suppliers' ? 'Supplier' : 'Invoice';
+    const row = this.data.filter((row: any) => row.id == id)[0];
+    const reference = this.tableName == 'suppliers' ? row['account_name'] : row['reference'];
+    const idColumnName = this.tableName == 'suppliers' ? 'Supplier' : 'Invoice';
 
-    let tableRows = await this.dataService.processGet(
-      query,
-      { filter: id },
-      true,
-    );
-    let tableName = 'credit_notes';
-    let title = `Credit Notes from ${reference}`;
+    const tableRows = await this.dataService.processGet(query, { filter: id }, true);
+    const tableName = 'credit_notes';
+    const title = `Credit Notes from ${reference}`;
 
     this.dataService.storeWidgetData({
       headers: tableColumns,
@@ -617,21 +563,17 @@ export class ViewComponent {
       idData: { id: id, columnName: idColumnName },
       query: query,
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined
+      extra: undefined,
     });
     this.formService.showWidget();
   }
 
   async supplierInvoiceSearch(invoiceId: string) {
-    var row = this.data.filter((row: any) => row.id == invoiceId)[0];
-    let tableColumns = SUPPLIER_INVOICE_COLUMNS;
-    let tableRows = await this.dataService.processGet(
-      'stocked-items-invoice',
-      { filter: invoiceId },
-      true,
-    );
-    let tableName = 'stocked_items';
-    let title = `Stocked Items from ${row['reference']}`;
+    const row = this.data.filter((row: any) => row.id == invoiceId)[0];
+    const tableColumns = SUPPLIER_INVOICE_COLUMNS;
+    const tableRows = await this.dataService.processGet('stocked-items-invoice', { filter: invoiceId }, true);
+    const tableName = 'stocked_items';
+    const title = `Stocked Items from ${row['reference']}`;
 
     this.dataService.storeWidgetData({
       headers: tableColumns,
@@ -641,20 +583,16 @@ export class ViewComponent {
       idData: { id: invoiceId, columnName: 'Supplier Invoice ID' },
       query: 'stocked-items-invoice',
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined
+      extra: undefined,
     });
     this.formService.showWidget();
   }
 
   async addressSearch(customerId: string, accountName: string) {
-    let tableColumns = ADDRESS_COLUMNS;
-    let tableRows = await this.dataService.processGet(
-      'customer-addresses-by-id',
-      { filter: customerId },
-      true,
-    );
-    let tableName = 'customer_address';
-    let title = `Customer Addresses for ${accountName}`;
+    const tableColumns = ADDRESS_COLUMNS;
+    const tableRows = await this.dataService.processGet('customer-addresses-by-id', { filter: customerId }, true);
+    const tableName = 'customer_address';
+    const title = `Customer Addresses for ${accountName}`;
 
     this.dataService.storeWidgetData({
       headers: tableColumns,
@@ -664,22 +602,18 @@ export class ViewComponent {
       idData: { id: customerId, columnName: 'Customer Name' },
       query: 'customer-addresses-by-id',
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined
+      extra: undefined,
     });
     this.formService.showWidget();
   }
 
   async priceListItemSearch(id: string, reference: string) {
-    let tableColumns = PRICE_LIST_ITEM_COLUMNS;
-    let query = 'price-list-items-by-id';
-    let tableRows = await this.dataService.processGet(
-      query,
-      { filter: id },
-      true,
-    );
+    const tableColumns = PRICE_LIST_ITEM_COLUMNS;
+    const query = 'price-list-items-by-id';
+    const tableRows = await this.dataService.processGet(query, { filter: id }, true);
 
-    let tableName = 'price_list_items';
-    let title = `Price List Items for ${reference}`;
+    const tableName = 'price_list_items';
+    const title = `Price List Items for ${reference}`;
 
     this.dataService.storeWidgetData({
       headers: tableColumns,
@@ -689,7 +623,7 @@ export class ViewComponent {
       idData: { id: id, columnName: 'Price List ID' },
       query: query,
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined
+      extra: undefined,
     });
     this.formService.showWidget();
   }
@@ -711,11 +645,11 @@ export class ViewComponent {
   }
 
   getCurrencyCode(column: string) {
-    return (
-      (this.tableName == 'supplier_invoices' &&
-        (column == 'net_value' || column == 'VAT' || column == 'total_eur' || column == 'outstanding_balance')) ||
+    return (this.tableName == 'supplier_invoices' &&
+      (column == 'net_value' || column == 'VAT' || column == 'total_eur' || column == 'outstanding_balance')) ||
       column == 'amount_eur'
-    ) ? 'EUR' : 'GBP';
+      ? 'EUR'
+      : 'GBP';
   }
 
   back() {
@@ -730,8 +664,6 @@ export class ViewComponent {
     if (this.authService.getAccessLevel() == 'High') {
       return column != 'delete-row';
     }
-
-    console.log(column);
 
     switch (this.tableName) {
       case 'customers':
@@ -770,10 +702,7 @@ export class ViewComponent {
     switch (this.tableName) {
       case 'invoices':
         if (column == 'id') {
-          this.icon =
-            row['status'] == 'Complete'
-              ? TABLE_ICONS.lock
-              : TABLE_ICONS.lockOpen;
+          this.icon = row['status'] == 'Complete' ? TABLE_ICONS.lock : TABLE_ICONS.lockOpen;
           return true;
         }
         break;
@@ -785,14 +714,13 @@ export class ViewComponent {
     switch (this.tableName) {
       case 'invoices':
         if (column == 'id') {
-          let data = { ...this.data.filter((d: any) => d.id == row.id)[0] };
-          data['status'] =
-            data['status'] == 'Complete' ? 'Pending' : 'Complete';
+          const data = { ...this.data.filter((d: any) => d.id == row.id)[0] };
+          data['status'] = data['status'] == 'Complete' ? 'Pending' : 'Complete';
           row['status'] = data['status'];
           data['action'] = 'append';
           data['table_name'] = String(this.tableName);
 
-          let submissionResponse = await this.dataService.submitFormData(data);
+          const submissionResponse = await this.dataService.submitFormData(data);
 
           if (submissionResponse.success) {
             this.reloadTable();
@@ -811,9 +739,7 @@ export class ViewComponent {
     if (useDisplayData) {
       return Math.ceil(this.displayData.length / this.viewMetaData.entryLimit);
     } else {
-      return Math.ceil(
-        this.filteredDisplayData.length / this.viewMetaData.entryLimit,
-      );
+      return Math.ceil(this.filteredDisplayData.length / this.viewMetaData.entryLimit);
     }
   }
 
@@ -839,25 +765,19 @@ export class ViewComponent {
   }
 
   filterColumns(columnFilter: any) {
-    var isCaseSensitive = columnFilter.caseSensitive;
-    var column = columnFilter.column;
+    const isCaseSensitive = columnFilter.caseSensitive;
+    const column = columnFilter.column;
 
-    var filter = isCaseSensitive
-      ? columnFilter.filter
-      : String(columnFilter.filter).toLowerCase();
+    const filter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
     this.displayColumnFilters.push(
-      this.displayNames[Object.keys(this.data[0]).indexOf(column)] +
-      ': ' +
-      columnFilter.filter,
+      this.displayNames[Object.keys(this.data[0]).indexOf(column)] + ': ' + columnFilter.filter
     );
 
     this.displayData = this.filteredDisplayData.filter((data) => {
       if (
         filter != null &&
         data[column] != null &&
-        String(
-          isCaseSensitive ? data[column] : String(data[column]).toLowerCase(),
-        ).includes(filter)
+        String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(filter)
       ) {
         return data;
       }
@@ -866,18 +786,14 @@ export class ViewComponent {
     this.viewMetaData.pageCount = this.calculatePageCount();
   }
 
-  filterDateColumns(columnDateFilter: {
-    column: any;
-    startDate: Date;
-    endDate: Date;
-  }) {
-    var column = columnDateFilter.column;
+  filterDateColumns(columnDateFilter: { column: any; startDate: Date; endDate: Date }) {
+    const column = columnDateFilter.column;
 
     this.displayData = this.displayData.filter((data) => {
       if (columnDateFilter != null && data[column] != null) {
-        let dataDate = new Date(data[column]);
-        let startDate = new Date(columnDateFilter.startDate);
-        let endDate = new Date(columnDateFilter.endDate);
+        const dataDate = new Date(data[column]);
+        const startDate = new Date(columnDateFilter.startDate);
+        const endDate = new Date(columnDateFilter.endDate);
 
         return dataDate >= startDate && dataDate <= endDate;
       }
@@ -915,20 +831,16 @@ export class ViewComponent {
 
   removeColumnFilter(columnFilterIndex: number) {
     this.displayColumnFilters = this.displayColumnFilters.filter(
-      (filter) => filter != this.displayColumnFilters[columnFilterIndex],
+      (filter) => filter != this.displayColumnFilters[columnFilterIndex]
     );
-    this.filterService.removeColumnFilter(
-      this.columnFilters[columnFilterIndex].filter,
-    );
+    this.filterService.removeColumnFilter(this.columnFilters[columnFilterIndex].filter);
     this.columnFilters = this.filterService.getColumnFilter();
 
     this.reloadTable();
   }
 
   removeColumnDateFilter(columnFilterIndex: number) {
-    this.filterService.removeColumnDateFilter(
-      this.columnDateFilters[columnFilterIndex],
-    );
+    this.filterService.removeColumnDateFilter(this.columnDateFilters[columnFilterIndex]);
     this.columnDateFilters = this.filterService.getColumnDateFilter();
     this.reloadTable();
   }
@@ -942,18 +854,14 @@ export class ViewComponent {
   }
 
   applyTemporaryFilter() {
-    var temporaryData: any[] = [];
+    const temporaryData: any[] = [];
     if (this.filterService.getFilterData().searchFilter != '') {
       this.displayData.forEach((data) => {
         if (
           Object.values(data).some((property) =>
             String(property)
               .toUpperCase()
-              .includes(
-                String(
-                  this.filterService.getFilterData().searchFilter,
-                ).toUpperCase(),
-              ),
+              .includes(String(this.filterService.getFilterData().searchFilter).toUpperCase())
           )
         ) {
           temporaryData.push(data);
@@ -964,12 +872,8 @@ export class ViewComponent {
   }
 
   showAdvancedFilter() {
-    var columns = Object.keys(this.data[0]);
-    this.filterService.setTableColumns(
-      this.displayNames,
-      columns,
-      this.dataTypes,
-    );
+    const columns = Object.keys(this.data[0]);
+    this.filterService.setTableColumns(this.displayNames, columns, this.dataTypes);
     this.formService.showFilterForm();
   }
 

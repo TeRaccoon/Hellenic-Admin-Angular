@@ -40,36 +40,26 @@
       <h2>Transactions</h2>
       @for (transaction of filteredTransactions; track transaction) {
         <div class="transaction">
-          @if (transaction.type == "order") {
+          @if (transaction.type === 'order') {
             <div class="order">
-              <div class="transaction-date">
-                Invoice: {{ transaction.date | date: "dd/MM/yyyy" }}
-              </div>
+              <div class="transaction-date">Invoice: {{ transaction.date | date: 'dd/MM/yyyy' }}</div>
               <div
                 class="transaction-title"
-                [ngClass]="
-                  transaction.payment_status == paymentStatus.No ? 'unpaid' : ''
-                "
+                [ngClass]="transaction.payment_status === paymentStatus.No ? 'unpaid' : ''"
               >
                 {{ transaction.title }}
               </div>
-              <div class="transaction-total">
-                Total: {{ (transaction.total | currency: "EUR") ?? "N/A" }}
-              </div>
+              <div class="transaction-total">Total: {{ (transaction.total | currency: 'EUR') ?? 'N/A' }}</div>
               <div class="transaction-outstanding">
                 Outstanding Balance:
-                {{ transaction.outstanding_balance | currency: "EUR" }}
+                {{ transaction.outstanding_balance | currency: 'EUR' }}
               </div>
             </div>
           }
-          @if (transaction.type == "payment") {
+          @if (transaction.type === 'payment') {
             <div class="payment">
-              <div class="transaction-date">
-                Payment: {{ transaction.date | date: "dd/MM/yyyy" }}
-              </div>
-              <div class="transaction-amount">
-                Amount: {{ transaction.amount | currency: "EUR" }}
-              </div>
+              <div class="transaction-date">Payment: {{ transaction.date | date: 'dd/MM/yyyy' }}</div>
+              <div class="transaction-amount">Amount: {{ transaction.amount | currency: 'EUR' }}</div>
 
               <div class="transaction-reference">
                 Reference:
@@ -84,19 +74,15 @@
               <div class="transaction-type">
                 Outstanding Balance:
                 <p class="bold">
-                  {{ transaction.outstanding_balance | currency: "EUR" }}
+                  {{ transaction.outstanding_balance | currency: 'EUR' }}
                 </p>
               </div>
             </div>
           }
-          @if (transaction.type == "credit-note") {
+          @if (transaction.type === 'credit-note') {
             <div class="credit-note">
-              <div class="transaction-date">
-                Credit Note: {{ transaction.date | date: "dd/MM/yyyy" }}
-              </div>
-              <div class="transaction-amount">
-                Amount: £{{ transaction.amount.toFixed(2) }}
-              </div>
+              <div class="transaction-date">Credit Note: {{ transaction.date | date: 'dd/MM/yyyy' }}</div>
+              <div class="transaction-amount">Amount: £{{ transaction.amount.toFixed(2) }}</div>
             </div>
           }
         </div>
@@ -104,15 +90,11 @@
     </div>
     <div class="invoice-summary">
       <h2>Invoice Summary</h2>
-      <div class="summary-item">
-        Total Invoices: {{ invoiceSummary?.orders }}
-      </div>
-      <div class="summary-item">
-        Outstanding Invoices: {{ invoiceSummary?.outstanding_orders }}
-      </div>
+      <div class="summary-item">Total Invoices: {{ invoiceSummary?.orders }}</div>
+      <div class="summary-item">Outstanding Invoices: {{ invoiceSummary?.outstanding_orders }}</div>
       <div class="summary-item">
         Outstanding Balance:
-        {{ invoiceSummary?.outstanding_balance | currency: "EUR" }}
+        {{ invoiceSummary?.outstanding_balance | currency: 'EUR' }}
       </div>
     </div>
   </div>

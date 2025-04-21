@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { FormService } from '../form/service';
-import { FilterService } from '../../services/filter.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { FilterService } from '../../services/filter.service';
+import { FormService } from '../form/service';
 import { ICONS } from './icons';
 
 @Component({
@@ -9,31 +9,31 @@ import { ICONS } from './icons';
   templateUrl: './filter-form.component.html',
   styleUrls: ['./filter-form.component.scss'],
 })
-export class FilterFormComponent {
+export class FilterFormComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
   icons = ICONS;
 
   formVisible = 'hidden';
   tableColumns: {
-    columnNames: { [key: string]: any }[];
+    columnNames: Record<string, any>[];
     columns: string[];
     dataTypes: string[];
   } = {
-      columnNames: [],
-      columns: [],
-      dataTypes: [],
-    };
+    columnNames: [],
+    columns: [],
+    dataTypes: [],
+  };
 
   options: string[] = [];
   selectedOption = '';
   open = -1;
 
-  searchInput: string = '';
-  columnInput: string = '';
-  columnType: string = '';
+  searchInput = '';
+  columnInput = '';
+  columnType = '';
   columnIndex = 0;
-  caseSensitive: boolean = false;
+  caseSensitive = false;
   startDate: Date | null = null;
   endDate: Date | null = null;
 
@@ -42,7 +42,7 @@ export class FilterFormComponent {
   constructor(
     private formService: FormService,
     private filterService: FilterService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.subscriptions.add(
@@ -65,16 +65,10 @@ export class FilterFormComponent {
   search(hide: boolean) {
     if (
       this.columnInput != '' &&
-      ((this.columnType == 'date' &&
-        this.startDate != null &&
-        this.endDate != null) ||
+      ((this.columnType == 'date' && this.startDate != null && this.endDate != null) ||
         (this.columnType != 'date' && this.searchInput != ''))
     ) {
-      if (
-        this.columnType == 'date' &&
-        this.startDate != null &&
-        this.endDate != null
-      ) {
+      if (this.columnType == 'date' && this.startDate != null && this.endDate != null) {
         this.filterService.setColumnDateFilter({
           column: this.columnInput,
           startDate: this.startDate,
@@ -89,7 +83,11 @@ export class FilterFormComponent {
       }
       this.formService.setReloadType('filter');
       this.formService.requestReload();
-      hide && this.hide();
+
+      if (hide) {
+        this.hide();
+      }
+
       this.resetForm();
     } else {
       this.error = 'Please fill in all required fields';
@@ -97,7 +95,7 @@ export class FilterFormComponent {
   }
 
   getColumnType() {
-    var index = this.tableColumns.columns.indexOf(this.columnInput);
+    const index = this.tableColumns.columns.indexOf(this.columnInput);
     this.columnType = this.tableColumns.dataTypes[index];
     this.columnIndex = index;
     if (this.tableColumns.dataTypes[index].includes('enum')) {
@@ -107,10 +105,8 @@ export class FilterFormComponent {
   }
 
   deriveEnumOptions() {
-    var index = this.tableColumns.columns.indexOf(this.columnInput);
-    this.options = this.formService.deriveEnumOptions(
-      this.tableColumns.dataTypes[index]
-    );
+    const index = this.tableColumns.columns.indexOf(this.columnInput);
+    this.options = this.formService.deriveEnumOptions(this.tableColumns.dataTypes[index]);
   }
 
   openDropdown() {

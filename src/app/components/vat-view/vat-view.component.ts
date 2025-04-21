@@ -1,19 +1,22 @@
-import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { faPrint } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { faPrint } from '@fortawesome/free-solid-svg-icons';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-vat-view',
   templateUrl: './vat-view.component.html',
   styleUrl: './vat-view.component.scss',
 })
-export class VatViewComponent {
+export class VatViewComponent implements OnInit {
   vatData: any = {};
 
   faPrint = faPrint;
 
-  constructor(private dataService: DataService, private router: Router) {}
+  constructor(
+    private dataService: DataService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.vatData = this.dataService.retrieveData();

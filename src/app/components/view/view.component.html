@@ -25,32 +25,21 @@
             </p>
             <div class="filter-container">
               @if (displayColumnFilters.length > 0) {
-                @for (
-                  filter of displayColumnFilters;
-                  track filter;
-                  let i = $index
-                ) {
+                @for (filter of displayColumnFilters; track filter; let i = $index) {
                   <div class="filter" (click)="removeColumnFilter(i)">
                     <p>{{ filter }}</p>
                     <fa-icon [icon]="icons.faX" />
                   </div>
                 }
               }
-              @if (
-                getFilterData().searchFilter != "" &&
-                getFilterData().searchFilterApplied
-              ) {
+              @if (getFilterData().searchFilter !== '' && getFilterData().searchFilterApplied) {
                 <div class="filter" (click)="clearFilter('table', true)">
                   <p>{{ getFilterData().searchFilter }}</p>
                   <fa-icon [icon]="icons.faX" />
                 </div>
               }
               @if (columnDateFilters.length > 0) {
-                @for (
-                  filter of columnDateFilters;
-                  track filter;
-                  let i = $index
-                ) {
+                @for (filter of columnDateFilters; track filter; let i = $index) {
                   <div class="filter" (click)="removeColumnDateFilter(i)">
                     <p>{{ filter.startDate }}</p>
                     <fa-icon [icon]="icons.faArrowsLeftRight" />
@@ -83,10 +72,7 @@
         @if (tabs.length > 0) {
           <div class="tab-parent">
             @for (tab of tabs; track tab) {
-              <div
-                (click)="changeTab(tab.tableName)"
-                [class]="tableName == tab.tableName ? 'active-tab' : 'tab'"
-              >
+              <div (click)="changeTab(tab.tableName)" [class]="tableName === tab.tableName ? 'active-tab' : 'tab'">
                 {{ tab.displayName }}
               </div>
             }
@@ -99,55 +85,36 @@
                 @if (data[0]) {
                   <tr>
                     <th>Select</th>
-                    @for (
-                      column of displayNames;
-                      track column;
-                      let key = $index
-                    ) {
-                      @if (key == 2) {
-                        @for (
-                          header of getCustomColumnHeadersFromTable();
-                          track header
-                        ) {
+                    @for (column of displayNames; track column; let key = $index) {
+                      @if (key === 2) {
+                        @for (header of getCustomColumnHeadersFromTable(); track header) {
                           <th>{{ header }}</th>
                         }
                       }
                       @if (canDisplayColumn(column.toString())) {
                         <th (click)="sortColumn(column)">
                           {{ column }}
-                          @if (
-                            this.sortedColumn.columnName == column.toString()
-                          ) {
-                            <fa-icon
-                              [icon]="
-                                this.sortedColumn.ascending
-                                  ? icons.faArrowUp
-                                  : icons.faArrowDown
-                              "
-                            />
+                          @if (this.sortedColumn.columnName === column.toString()) {
+                            <fa-icon [icon]="this.sortedColumn.ascending ? icons.faArrowUp : icons.faArrowDown" />
                           }
                         </th>
                       }
                     }
-                    @if (tableName == "items") {
+                    @if (tableName === 'items') {
                       <th>Allergen Information</th>
                       <th>Nutrition Information</th>
                     }
-                    @if (canDisplayColumn("edit-row")) {
+                    @if (canDisplayColumn('edit-row')) {
                       <th>Edit</th>
                     }
-                    @if (canDisplayColumn("delete-row")) {
+                    @if (canDisplayColumn('delete-row')) {
                       <th>Delete</th>
                     }
                   </tr>
                 }
               </thead>
               <tbody>
-                @for (
-                  item of filteredDisplayData.slice(0, viewMetaData.entryLimit);
-                  track item;
-                  let key = $index
-                ) {
+                @for (item of filteredDisplayData.slice(0, viewMetaData.entryLimit); track item; let key = $index) {
                   <tr class="data-row">
                     @if (itemContainsFilter(item)) {
                       <td>
@@ -155,89 +122,67 @@
                           (change)="selectRow($event, item['id'])"
                           type="checkbox"
                           class="checkbox"
-                          [checked]="selectedRows.indexOf(item['id']) != -1"
+                          [checked]="selectedRows.indexOf(item['id']) !== -1"
                         />
                       </td>
-                      @for (
-                        column of getColumnHeaders(data[0]);
-                        track column;
-                        let columnIndex = $index
-                      ) {
-                        @if (columnIndex == 2) {
+                      @for (column of getColumnHeaders(data[0]); track column; let columnIndex = $index) {
+                        @if (columnIndex === 2) {
                           @switch (tableName) {
-                            @case ("items") {
+                            @case ('items') {
                               <td
                                 (click)="stockSearch(item.id)"
                                 [ngClass]="shouldColourCell(item[column])"
                                 [ngClass]="
                                   shouldColourCell(item[column]) +
-                                  (displayWithIcon(column, item)
-                                    ? ' icon-data-container'
-                                    : '')
+                                  (displayWithIcon(column, item) ? ' icon-data-container' : '')
                                 "
                               >
                                 <fa-icon [icon]="icons.faBox"></fa-icon>
                               </td>
                               <td>
-                                {{
-                                  stockData[item["id"]]
-                                    ? stockData[item["id"]]
-                                    : 0
-                                }}
+                                {{ stockData[item['id']] ? stockData[item['id']] : 0 }}
                               </td>
                             }
-                            @case ("stocked_items") {
+                            @case ('stocked_items') {
                               <td>
                                 <img
                                   [src]="
-                                    images[item['item_id']] == null
+                                    images[item['item_id']] === null
                                       ? imageUrlBase + 'placeholder.jpg'
                                       : imageUrlBase + images[item['item_id']]
                                   "
                                 />
                               </td>
                             }
-                            @case ("supplier_invoices") {
-                              @if (canDisplayColumn("invoiced-items")) {
+                            @case ('supplier_invoices') {
+                              @if (canDisplayColumn('invoiced-items')) {
                                 <td (click)="supplierInvoiceSearch(item.id)">
-                                  <fa-icon
-                                    [icon]="icons.faBasketShopping"
-                                  ></fa-icon>
+                                  <fa-icon [icon]="icons.faBasketShopping"></fa-icon>
                                 </td>
                               }
                               <td (click)="creditNoteSearch(item.id)">
                                 <fa-icon [icon]="icons.faNoteSticky"></fa-icon>
                               </td>
                             }
-                            @case ("suppliers") {
+                            @case ('suppliers') {
                               <td (click)="creditNoteSearch(item.id)">
                                 <fa-icon [icon]="icons.faNoteSticky"></fa-icon>
                               </td>
                             }
-                            @case ("invoices") {
-                              @if (canDisplayColumn("invoiced-items")) {
+                            @case ('invoices') {
+                              @if (canDisplayColumn('invoiced-items')) {
                                 <td (click)="invoiceSearch(item.id)">
-                                  <fa-icon
-                                    [icon]="icons.faBasketShopping"
-                                  ></fa-icon>
+                                  <fa-icon [icon]="icons.faBasketShopping"></fa-icon>
                                 </td>
                               }
                             }
-                            @case ("customers") {
-                              <td
-                                (click)="
-                                  addressSearch(item.id, item.account_name)
-                                "
-                              >
+                            @case ('customers') {
+                              <td (click)="addressSearch(item.id, item.account_name)">
                                 <fa-icon [icon]="icons.faAddressBook"></fa-icon>
                               </td>
                             }
-                            @case ("price_list") {
-                              <td
-                                (click)="
-                                  priceListItemSearch(item.id, item.reference)
-                                "
-                              >
+                            @case ('price_list') {
+                              <td (click)="priceListItemSearch(item.id, item.reference)">
                                 <fa-icon [icon]="icons.faBasketShopping" />
                               </td>
                             }
@@ -248,79 +193,50 @@
                             [ngClass]="shouldColourCell(item[column])"
                             [ngClass]="
                               shouldColourCell(item[column]) +
-                              (displayWithIcon(column, item)
-                                ? ' icon-data-container'
-                                : '')
+                              (displayWithIcon(column, item) ? ' icon-data-container' : '')
                             "
                           >
                             @switch (dataTypes[columnIndex]) {
-                              @case ("file") {
+                              @case ('file') {
                                 <img
                                   [src]="
-                                    item[column] == null
+                                    item[column] === null
                                       ? imageUrlBase + 'placeholder.jpg'
                                       : imageUrlBase + item[column]
                                   "
+                                  [alt]="item[column]"
                                 />
                               }
                               @case ("enum('No','Yes')") {
                                 <input
-                                  (change)="
-                                    changeCheckBox($event, item.id, column)
-                                  "
+                                  (change)="changeCheckBox($event, item.id, column)"
                                   type="checkbox"
                                   class="checkbox"
-                                  [checked]="item[column] == 'Yes'"
+                                  [checked]="item[column] === 'Yes'"
                                 />
                               }
-                              @case ("float") {
-                                {{
-                                  item[column] == null
-                                    ? "---"
-                                    : (item[column]
-                                      | currency: getCurrencyCode(column))
-                                }}
+                              @case ('float') {
+                                {{ item[column] === null ? '---' : (item[column] | currency: getCurrencyCode(column)) }}
                               }
-                              @case ("decimal(19,2)") {
-                                {{
-                                  item[column] == null
-                                    ? "---"
-                                    : (item[column]
-                                      | currency: getCurrencyCode(column))
-                                }}
+                              @case ('decimal(19,2)') {
+                                {{ item[column] === null ? '---' : (item[column] | currency: getCurrencyCode(column)) }}
                               }
-                              @case ("double") {
-                                {{
-                                  item[column] == null
-                                    ? "---"
-                                    : item[column] + "%"
-                                }}
+                              @case ('double') {
+                                {{ item[column] === null ? '---' : item[column] + '%' }}
                               }
-                              @case ("text") {
+                              @case ('text') {
                                 <div class="text-container">
-                                  {{
-                                    item[column] == null ? "---" : item[column]
-                                  }}
+                                  {{ item[column] === null ? '---' : item[column] }}
                                 </div>
                               }
-                              @case ("date") {
-                                {{
-                                  item[column] == null
-                                    ? "---"
-                                    : (item[column] | date: "dd/MM/yyyy")
-                                }}
+                              @case ('date') {
+                                {{ item[column] === null ? '---' : (item[column] | date: 'dd/MM/yyyy') }}
                               }
                               @default {
-                                {{
-                                  item[column] == null ? "---" : item[column]
-                                }}
+                                {{ item[column] === null ? '---' : item[column] }}
                                 @if (displayWithIcon(column, item)) {
                                   <ng-container class="icon-container">
-                                    <fa-icon
-                                      class="row-icon"
-                                      (click)="iconClick(column, item)"
-                                      [icon]="icon"
-                                    ></fa-icon>
+                                    <fa-icon class="row-icon" (click)="iconClick(column, item)" [icon]="icon"></fa-icon>
                                   </ng-container>
                                 }
                               }
@@ -328,7 +244,7 @@
                           </td>
                         }
                       }
-                      @if (tableName == "items") {
+                      @if (tableName === 'items') {
                         <td (click)="editRow(item.id, 'allergen_information')">
                           <fa-icon [icon]="icons.faBookMedical"></fa-icon>
                         </td>
@@ -336,14 +252,14 @@
                           <fa-icon [icon]="icons.faBookOpen"></fa-icon>
                         </td>
                       }
-                      @if (canDisplayColumn("edit-row")) {
+                      @if (canDisplayColumn('edit-row')) {
                         <td>
                           <a (click)="editRow(item.id, '')">
                             <fa-icon [icon]="icons.faPencil"></fa-icon>
                           </a>
                         </td>
                       }
-                      @if (canDisplayColumn("delete-row")) {
+                      @if (canDisplayColumn('delete-row')) {
                         <td class="bin">
                           <a (click)="deleteRow(item.id)">
                             <fa-icon [icon]="icons.faTrashCan"></fa-icon>
@@ -357,20 +273,13 @@
             </table>
           } @else {
             @if (data.length === 0 && viewMetaData.loaded) {
-              <app-no-table-data
-                (addRowEmitter)="addRow(null)"
-                [displayName]="displayName"
-              />
+              <app-no-table-data (addRowEmitter)="addRow(null)" [displayName]="displayName" />
             }
           }
         </div>
-        <app-table-footer
-          [viewMetadata]="viewMetaData"
-          [pageRange]="getPageRange()"
-          (loadPage)="pageEvent($event)"
-        />
+        <app-table-footer [viewMetadata]="viewMetaData" [pageRange]="getPageRange()" (loadPage)="pageEvent($event)" />
         @switch (tableName) {
-          @case ("general_ledger") {
+          @case ('general_ledger') {
             <app-ledger-widget></app-ledger-widget>
           }
         }
@@ -378,24 +287,14 @@
     } @else {
       @if (!viewMetaData.loaded) {
         <div class="loading-container">
-          <fa-icon
-            class="loading-icon"
-            [icon]="icons.faSpinner"
-            spinPulse
-            [spin]="true"
-          />
+          <fa-icon class="loading-icon" [icon]="icons.faSpinner" spinPulse [spin]="true" />
         </div>
       }
     }
     <ng-template #loading>
       @if (!viewMetaData.loaded) {
         <div class="loading-container">
-          <fa-icon
-            class="loading-icon"
-            [icon]="icons.faSpinner"
-            spinPulse
-            [spin]="true"
-          />
+          <fa-icon class="loading-icon" [icon]="icons.faSpinner" spinPulse [spin]="true" />
         </div>
       }
     </ng-template>

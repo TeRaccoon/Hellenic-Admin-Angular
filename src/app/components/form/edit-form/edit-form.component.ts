@@ -1,25 +1,19 @@
-import { Component } from '@angular/core';
-import { DataService } from '../../../services/data.service';
-import { FormService } from '../service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import _ from 'lodash';
-import { FORM_ICONS } from '../icons';
-import {
-  Settings,
-  Data,
-  KeyedData,
-  KeyedAddress,
-  FormState,
-} from '../types';
 import { Subscription } from 'rxjs';
+import { DataService } from '../../../services/data.service';
 import { UrlService } from '../../../services/url.service';
+import { FORM_ICONS } from '../icons';
+import { FormService } from '../service';
+import { Data, FormState, KeyedAddress, KeyedData, Settings } from '../types';
 
 @Component({
   selector: 'app-edit-form',
   templateUrl: './edit-form.component.html',
   styleUrls: ['./edit-form.component.scss'],
 })
-export class EditFormComponent {
+export class EditFormComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
   icons = FORM_ICONS;
@@ -31,37 +25,39 @@ export class EditFormComponent {
   editForm: FormGroup;
 
   mappedFormDataKeys: any;
-  mappedFormData: Map<string, Data> = new Map();
+  mappedFormData = new Map<string, Data>();
   formData: KeyedData = {};
 
   formSettings: Settings = {
     showAddMore: false,
   };
 
-  tableName: string = '';
-  id: string = '';
+  tableName = '';
+  id = '';
 
   file: File | null = null;
   fileName = '';
 
   imageReplacements: string[] = [];
-  selectedImage: string = '';
+  selectedImage = '';
 
   selectData: { key: string; data: string[] }[] = [];
 
   filteredReplacementData: any = {};
 
-  replacementData: {
-    [key: string]: {
-      data: { id: Number; replacement: string }[];
-    };
-  } = {};
+  replacementData: Record<
+    string,
+    {
+      data: { id: number; replacement: string }[];
+    }
+  > = {};
 
-  alternativeSelectData: {
-    [key: string]: {
+  alternativeSelectData: Record<
+    string,
+    {
       data: { value: string }[];
-    };
-  } = {};
+    }
+  > = {};
 
   invoiceDetails: any = [];
 
@@ -70,24 +66,16 @@ export class EditFormComponent {
 
   formState!: FormState;
 
-  debounceSearch: (
-    key: string,
-    filter: string,
-    field: string | null,
-    text: boolean | null
-  ) => void = _.debounce(
-    (key: string, filter: string, field: string | null, text = false) =>
-      this.performSearch(key, filter, field, text),
+  debounceSearch: (key: string, filter: string, field: string | null, text: boolean | null) => void = _.debounce(
+    (key: string, filter: string, field: string | null, text = false) => this.performSearch(key, filter, field, text),
     750
   );
 
-  alternativeSelectedData: { [key: string]: { selectData: string } } = {};
-  selectedReplacementData: {
-    [key: string]: { selectData: string; selectDataId: Number | null } | null;
-  } = {};
-  selectedTextReplacementData: { [key: string]: string } = {};
-  selectedReplacementFilter: { [key: string]: { selectFilter: string } } = {};
-  selectOpen: { [key: string]: { opened: boolean } } = {};
+  alternativeSelectedData: Record<string, { selectData: string }> = {};
+  selectedReplacementData: Record<string, { selectData: string; selectDataId: number | null } | null> = {};
+  selectedTextReplacementData: Record<string, string> = {};
+  selectedReplacementFilter: Record<string, { selectFilter: string }> = {};
+  selectOpen: Record<string, { opened: boolean }> = {};
 
   constructor(
     private dataService: DataService,
@@ -155,7 +143,7 @@ export class EditFormComponent {
       locked: false,
       visible: false,
       imageUploaded: false,
-      hidden: null
+      hidden: null,
     };
   }
 
@@ -172,11 +160,7 @@ export class EditFormComponent {
 
   async replaceAmbiguousData() {
     if (Object.keys(this.formData).length != 0) {
-      const data = await this.formService.replaceAmbiguousData(
-        this.tableName,
-        this.formData,
-        this.replacementData,
-      );
+      const data = await this.formService.replaceAmbiguousData(this.tableName, this.formData, this.replacementData);
       this.formData = data.formData;
       this.filteredReplacementData = data.replacementData;
       this.replacementData = data.replacementData;
@@ -189,22 +173,19 @@ export class EditFormComponent {
       });
       Object.keys(this.replacementData).forEach((key) => {
         if (!Array.isArray(this.filteredReplacementData[key].data)) {
-          this.filteredReplacementData[key].data = [
-            this.filteredReplacementData[key].data,
-          ];
+          this.filteredReplacementData[key].data = [this.filteredReplacementData[key].data];
         }
 
         if (
           this.filteredReplacementData[key].data.length > 0 &&
           this.filteredReplacementData[key].data[0]?.id != null
         ) {
-          var tempReplacement =
+          const tempReplacement =
             this.formData[key].value == null
               ? ''
               : this.filteredReplacementData[key].data.find(
-                (item: { id: number; data: string }) =>
-                  item.id === Number(this.formData[key].value)
-              )!.replacement;
+                  (item: { id: number; data: string }) => item.id === Number(this.formData[key].value)
+                )!.replacement;
           this.selectedReplacementData[key] = {
             selectData: tempReplacement,
             selectDataId: Number(this.formData[key].value),
@@ -212,9 +193,9 @@ export class EditFormComponent {
           this.selectedReplacementFilter[key] = { selectFilter: '' };
           this.selectOpen[key] = { opened: false };
 
-          this.filteredReplacementData[key].data = this.filteredReplacementData[
-            key
-          ].data.filter((item: any) => item.replacement != null);
+          this.filteredReplacementData[key].data = this.filteredReplacementData[key].data.filter(
+            (item: any) => item.replacement != null
+          );
         } else if (this.filteredReplacementData[key].data[0] != null) {
           this.selectedTextReplacementData[key] = this.formData[key].value;
           this.selectOpen[key] = { opened: false };
@@ -222,9 +203,9 @@ export class EditFormComponent {
       });
 
       if (this.tableName == 'invoices') {
-        let customerId = this.editForm.get('customer_id')?.value;
+        const customerId = this.editForm.get('customer_id')?.value;
         if (customerId != null) {
-          let addresses = await this.dataService.processGet(
+          const addresses = await this.dataService.processGet(
             'customer-addresses-by-id',
             { filter: customerId.toString() },
             true
@@ -235,7 +216,7 @@ export class EditFormComponent {
       }
 
       if (this.tableName == 'customer_payments') {
-        let invoiceId = this.editForm.get('invoice_id')?.value;
+        const invoiceId = this.editForm.get('invoice_id')?.value;
         if (invoiceId != null) {
           this.invoiceDetails = await this.dataService.processGet('invoice', {
             filter: invoiceId.toString(),
@@ -251,9 +232,7 @@ export class EditFormComponent {
     this.isLocked();
 
     let formDataArray = Object.entries(this.formData);
-    formDataArray.sort((a: any, b: any) =>
-      a[1].inputType.localeCompare(b[1].inputType)
-    );
+    formDataArray.sort((a: any, b: any) => a[1].inputType.localeCompare(b[1].inputType));
     formDataArray = this.checkForSensitiveData(formDataArray);
 
     this.mappedFormData = new Map(formDataArray);
@@ -267,7 +246,7 @@ export class EditFormComponent {
           this.selectData.push({ key: key, data: options });
         }
         if (field.inputType == 'file') {
-          let fileName = this.mappedFormData.get('Image')?.value;
+          const fileName = this.mappedFormData.get('Image')?.value;
           this.selectedImage = fileName == null ? '' : fileName;
           if (this.tableName == 'categories') {
             if (fileName === null) {
@@ -311,7 +290,7 @@ export class EditFormComponent {
         dataType: string;
         required: boolean;
         field: string;
-      }
+      },
     ][]
   ) {
     formDataArray.forEach((subArray) => {
@@ -328,7 +307,7 @@ export class EditFormComponent {
   }
 
   async deleteImage(image: any) {
-    let response = await this.dataService.processGet('delete-image', {
+    const response = await this.dataService.processGet('delete-image', {
       filter: image,
     });
     if (response) {
@@ -338,13 +317,10 @@ export class EditFormComponent {
           'Image deleted successfully. If this image was the products primary image, please select a new one and save.',
       });
 
-      let id = this.getImageDependentId();
+      const id = this.getImageDependentId();
 
       if (this.tableName != 'categories') {
-        this.imageReplacements = await this.formService.getImages(
-          id,
-          this.tableName
-        );
+        this.imageReplacements = await this.formService.getImages(id, this.tableName);
       }
 
       this.selectedImage = '';
@@ -370,16 +346,13 @@ export class EditFormComponent {
   }
 
   async handleImages() {
-    let id = this.getImageDependentId();
+    const id = this.getImageDependentId();
 
     if (id == null) {
       return;
     }
 
-    this.imageReplacements = await this.formService.getImages(
-      id,
-      this.tableName
-    );
+    this.imageReplacements = await this.formService.getImages(id, this.tableName);
     if (this.imageReplacements.length == 0) {
       return;
     }
@@ -399,11 +372,7 @@ export class EditFormComponent {
         const validationResult = this.imageSubmissionValidation();
 
         if (validationResult !== false && this.file != null) {
-          this.submissionWithImage(
-            validationResult.id,
-            validationResult.name,
-            hideForm
-          );
+          this.submissionWithImage(validationResult.id, validationResult.name, hideForm);
         } else {
           this.submissionWithoutImage(hideForm);
         }
@@ -415,10 +384,7 @@ export class EditFormComponent {
 
   async standardImageSubmission() {
     if (this.file != null) {
-      const uploadResponse = await this.formService.uploadImage(
-        this.file,
-        this.file?.name
-      );
+      const uploadResponse = await this.formService.uploadImage(this.file, this.file?.name);
       if (uploadResponse.success) {
         this.editForm.get('image_file_name')?.setValue(this.file.name);
         this.submissionWithoutImage(true);
@@ -434,16 +400,14 @@ export class EditFormComponent {
     }
 
     if (this.file == null || this.editForm.get('image_file_name') == null) {
-      this.formState.error =
-        'Please choose an image to upload before trying to upload!';
+      this.formState.error = 'Please choose an image to upload before trying to upload!';
       return false;
     }
 
-    let id = this.getImageDependentId();
-    let name = this.getImageDependentName();
+    const id = this.getImageDependentId();
+    const name = this.getImageDependentName();
     if (id == null || name == null) {
-      this.formState.error =
-        'Please fill out the relevant fields to upload an image for before trying to upload!';
+      this.formState.error = 'Please fill out the relevant fields to upload an image for before trying to upload!';
       return false;
     }
 
@@ -453,16 +417,14 @@ export class EditFormComponent {
   async submitImageOnly() {
     const validationResult = this.imageSubmissionValidation();
     if (validationResult !== false) {
-      let uploadResponse = await this.formService.handleImageSubmissions(
+      const uploadResponse = await this.formService.handleImageSubmissions(
         validationResult.id,
         validationResult.name,
         this.file as File,
         this.tableName
       );
       if (uploadResponse.success) {
-        this.editForm
-          .get('image_file_name')
-          ?.setValue(uploadResponse.imageFileName);
+        this.editForm.get('image_file_name')?.setValue(uploadResponse.imageFileName);
       }
     }
     this.formState.submitted = true;
@@ -470,9 +432,7 @@ export class EditFormComponent {
   }
 
   async submissionWithoutImage(hideForm: boolean) {
-    let submissionResponse = await this.dataService.submitFormData(
-      this.editForm.value
-    );
+    const submissionResponse = await this.dataService.submitFormData(this.editForm.value);
     this.formService.setMessageFormData({
       title: submissionResponse.success ? 'Success!' : 'Error!',
       message: submissionResponse.message,
@@ -481,30 +441,18 @@ export class EditFormComponent {
   }
 
   async submissionWithImage(id: string, name: string, hideForm: boolean) {
-    const uploadResponse = await this.formService.handleImageSubmissions(
-      id,
-      name,
-      this.file as File,
-      this.tableName
-    );
+    const uploadResponse = await this.formService.handleImageSubmissions(id, name, this.file as File, this.tableName);
 
     if (uploadResponse.success) {
-      this.editForm
-        .get('image_file_name')
-        ?.setValue(uploadResponse.imageFileName);
-      const formSubmitResponse = await this.dataService.submitFormData(
-        this.editForm.value
-      );
+      this.editForm.get('image_file_name')?.setValue(uploadResponse.imageFileName);
+      const formSubmitResponse = await this.dataService.submitFormData(this.editForm.value);
 
       this.formService.setMessageFormData({
         title: formSubmitResponse.success ? 'Success!' : 'Error!',
         message: formSubmitResponse.message,
       });
 
-      this.endSubmission(
-        formSubmitResponse.success,
-        hideForm && formSubmitResponse.success
-      );
+      this.endSubmission(formSubmitResponse.success, hideForm && formSubmitResponse.success);
     } else {
       hideForm && this.hide();
     }
@@ -537,14 +485,14 @@ export class EditFormComponent {
   }
 
   async addImageLocationToDatabase() {
-    let imageFormData = {
+    const imageFormData = {
       action: 'add',
       table_name: 'retail_item_images',
       item_id: this.formService.getSelectedId(),
       image_file_name: this.fileName,
     };
 
-    let insertResponse = await this.dataService.submitFormData(imageFormData);
+    const insertResponse = await this.dataService.submitFormData(imageFormData);
     if (insertResponse.success) {
       this.formService.setMessageFormData({
         title: 'Success!',
@@ -593,12 +541,7 @@ export class EditFormComponent {
     this.formState.hidden = this.tableName;
   }
 
-  async updateSelectedReplacementDataFromKey(
-    dataId: Number,
-    dataValue: string,
-    key: string,
-    field: string
-  ) {
+  async updateSelectedReplacementDataFromKey(dataId: number, dataValue: string, key: string, field: string) {
     this.selectedReplacementData[key] = {
       selectData: dataValue,
       selectDataId: dataId,
@@ -606,7 +549,7 @@ export class EditFormComponent {
     this.editForm.get(field)?.setValue(dataId);
 
     if (this.tableName == 'invoices' && field == 'customer_id') {
-      let addresses = await this.dataService.processGet(
+      const addresses = await this.dataService.processGet(
         'customer-addresses-by-id',
         { filter: dataId.toString() },
         true
@@ -621,18 +564,14 @@ export class EditFormComponent {
     }
   }
 
-  updateSelectedTextReplacementDataFromKey(
-    value: string,
-    key: string,
-    field: string
-  ) {
+  updateSelectedTextReplacementDataFromKey(value: string, key: string, field: string) {
     this.editForm.get(field)?.setValue(value);
     this.selectedTextReplacementData[key] = value;
     this.selectOpen[key].opened = false;
   }
 
   async updateCustomerAddresses(addressData: any, key: string) {
-    let addressReplacement = addressData.map((address: any) => {
+    const addressReplacement = addressData.map((address: any) => {
       let replacement;
       if (key == 'Delivery Address') {
         replacement = [
@@ -651,9 +590,7 @@ export class EditFormComponent {
           address.invoice_postcode,
         ];
       }
-      replacement = replacement
-        .filter((component) => component != null)
-        .join(' ');
+      replacement = replacement.filter((component) => component != null).join(' ');
 
       return {
         id: Number(address.id),
@@ -666,19 +603,15 @@ export class EditFormComponent {
   }
 
   updateAddressValues(key: string, field: string, event: any): void {
-    let value = event.target.value;
+    const value = event.target.value;
     this.addresses[key] = { ...this.addresses[key], [field]: value };
   }
 
   async addAddressToBook(key: string) {
-    let customerId =
-      this.addresses[key].save == false
-        ? null
-        : this.editForm.get('customer_id')?.value;
-    let secondaryKey =
-      key == 'Billing Address' ? 'billing_address_id' : 'address_id';
+    const customerId = this.addresses[key].save == false ? null : this.editForm.get('customer_id')?.value;
+    const secondaryKey = key == 'Billing Address' ? 'billing_address_id' : 'address_id';
 
-    let payload = {
+    const payload = {
       invoice_address_one: this.addresses['Billing Address'].line1,
       invoice_address_two: this.addresses['Billing Address'].line2,
       invoice_address_three: this.addresses['Billing Address'].line3,
@@ -692,13 +625,11 @@ export class EditFormComponent {
       table_name: 'customer_address',
     };
 
-    let response = await this.dataService.submitFormData(payload);
+    const response = await this.dataService.submitFormData(payload);
     if (response.success) {
-      let id = response.id;
+      const id = response.id;
 
-      this.addressNotListedKeys = this.addressNotListedKeys.filter(
-        (addressKey) => addressKey != key
-      );
+      this.addressNotListedKeys = this.addressNotListedKeys.filter((addressKey) => addressKey != key);
       if (this.editForm.get('customer_id')?.value != null) {
         this.selectedReplacementData[key] = {
           selectData: [
@@ -710,7 +641,7 @@ export class EditFormComponent {
           selectDataId: id,
         };
 
-        let replacement = {
+        const replacement = {
           id: id,
           replacement: [
             this.addresses[key].line1,
@@ -723,15 +654,13 @@ export class EditFormComponent {
         this.replacementData[key].data.push(replacement);
         this.editForm.get(secondaryKey)?.setValue(id);
       } else {
-        let address = await this.dataService.processGet('customer-addresses', {
+        const address = await this.dataService.processGet('customer-addresses', {
           filter: id,
         });
         await this.updateCustomerAddresses([address], key);
         await this.updateSelectedReplacementDataFromKey(
           id,
-          this.filteredReplacementData[key]!.data[
-            this.filteredReplacementData[key].data.length - 1
-          ].replacement,
+          this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement,
           key,
           key == 'Delivery Address' ? 'address_id' : 'billing_address_id'
         );
@@ -777,35 +706,22 @@ export class EditFormComponent {
     }
   }
 
-  performSearch(
-    key: string,
-    filter: string,
-    field: string | null,
-    text: boolean | null = false
-  ) {
+  performSearch(key: string, filter: string, field: string | null, text: boolean | null = false) {
     this.filteredReplacementData = _.cloneDeep(this.replacementData);
 
     if (text) {
-      this.filteredReplacementData[key].data = this.replacementData[
-        key
-      ].data.filter((data: any) => {
+      this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data: any) => {
         return data && data.toLowerCase().includes(filter.toLowerCase());
       });
     } else {
-      this.filteredReplacementData[key].data = this.replacementData[
-        key
-      ].data.filter((data: any) => {
-        return (
-          data.replacement &&
-          data.replacement.toLowerCase().includes(filter.toLowerCase())
-        );
+      this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data: any) => {
+        return data.replacement && data.replacement.toLowerCase().includes(filter.toLowerCase());
       });
     }
 
     if (this.filteredReplacementData[key].data.length == 1) {
       if (text) {
-        this.selectedTextReplacementData[key] =
-          this.filteredReplacementData[key].data[0];
+        this.selectedTextReplacementData[key] = this.filteredReplacementData[key].data[0];
       } else {
         this.selectedReplacementData[key] = {
           selectData: this.filteredReplacementData[key].data[0].replacement,
@@ -834,13 +750,11 @@ export class EditFormComponent {
   }
 
   inputHasError(field: string) {
-    return (
-      this.editForm.get(field)?.invalid && this.formState.submissionAttempted
-    );
+    return this.editForm.get(field)?.invalid && this.formState.submissionAttempted;
   }
 
   onInputFocus(key: string) {
-    for (let keys in this.selectOpen) {
+    for (const keys in this.selectOpen) {
       this.selectOpen[keys] = { opened: false };
     }
     this.selectOpen[key] = { opened: true };

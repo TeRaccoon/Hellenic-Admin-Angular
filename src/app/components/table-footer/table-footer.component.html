@@ -7,17 +7,11 @@
     @if (viewMetadata.currentPage > 1) {
       <button (click)="previousPage()">Previous</button>
     }
-    <button
-      [class]="viewMetadata.currentPage == 1 ? 'active-page' : ''"
-      (click)="changePage(1)"
-    >
+    <button [class]="viewMetadata.currentPage === 1 ? 'active-page' : ''" (click)="changePage(1)">
       {{ 1 }}
     </button>
     @for (pageNumber of pageRange; track pageNumber) {
-      <button
-        (click)="changePage(pageNumber)"
-        [class]="viewMetadata.currentPage == pageNumber ? 'active-page' : ''"
-      >
+      <button (click)="changePage(pageNumber)" [class]="viewMetadata.currentPage === pageNumber ? 'active-page' : ''">
         {{ pageNumber }}
       </button>
     }

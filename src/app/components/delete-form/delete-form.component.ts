@@ -1,20 +1,20 @@
-import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { FormService } from '../form/service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
+import { DataService } from '../../services/data.service';
+import { FormService } from '../form/service';
 
 @Component({
   selector: 'app-delete-form',
   templateUrl: './delete-form.component.html',
   styleUrls: ['./delete-form.component.scss'],
 })
-export class DeleteFormComponent {
+export class DeleteFormComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
   formVisible = 'hidden';
   ids: number[] = [];
-  tableName: string = '';
+  tableName = '';
 
   formText: string;
 
@@ -59,15 +59,15 @@ export class DeleteFormComponent {
   }
 
   async deleteRow() {
-    let idString = this.setIdString();
+    const idString = this.setIdString();
 
-    let deletionResponse = await this.dataService.submitFormData({
+    const deletionResponse = await this.dataService.submitFormData({
       action: 'delete',
       id: idString,
       table_name: this.tableName,
     });
 
-    if ((deletionResponse.error == 'FOREIGN_KEY')) {
+    if (deletionResponse.error == 'FOREIGN_KEY') {
       if (this.ids.length == 1) {
         this.confirm = true;
       }
@@ -84,9 +84,9 @@ export class DeleteFormComponent {
   }
 
   async deleteRowHard() {
-    let idString = this.setIdString();
+    const idString = this.setIdString();
 
-    let referencedColumns = await this.dataService.processPost({
+    const referencedColumns = await this.dataService.processPost({
       action: 'column-usage',
       table_name: this.tableName,
       id: idString,
@@ -100,7 +100,7 @@ export class DeleteFormComponent {
       });
     }
 
-    let deletionResponse = await this.dataService.submitFormData({
+    const deletionResponse = await this.dataService.submitFormData({
       action: 'delete',
       id: idString,
       table_name: this.tableName,

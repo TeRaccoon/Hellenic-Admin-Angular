@@ -10,10 +10,10 @@ import { CREDITOR_HEADERS, DEBTOR_CREDITOR_CONFIG, DEBTOR_HEADERS } from './cons
 export class DebtorCreditorWidgetComponent {
   config = DEBTOR_CREDITOR_CONFIG;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService) {}
 
   async submitQuery(type: string, startDay: number, endDay: number | null) {
-    let debtorCreditorData = await this.dataService.processGet(
+    const debtorCreditorData = await this.dataService.processGet(
       type,
       {
         'start-day': startDay,

@@ -1,21 +1,20 @@
-import { Component } from '@angular/core';
-import { StatisticsService } from '../../services/statistics.service';
+import { Component, OnInit } from '@angular/core';
 import dayjs from 'dayjs';
 import utcPlugin from 'dayjs/plugin/utc';
+import { DATE_RANGES } from '../../common/consts/const';
+import { CHART_ICONS } from '../../common/icons/chart-icons';
 import {
   Chart,
-  Report,
   Filter,
-  SelectedDate,
   LineChartOptions,
-  SubheadingOptions,
+  Report,
   ReportOptions,
+  SelectedDate,
+  SubheadingOptions,
   SubheadingType,
 } from '../../common/types/statistics/types';
-import { CHART_ICONS } from '../../common/icons/chart-icons';
-import _ from 'lodash';
 import { DataService } from '../../services/data.service';
-import { DATE_RANGES } from '../../common/consts/const';
+import { StatisticsService } from '../../services/statistics.service';
 
 dayjs.extend(utcPlugin);
 
@@ -24,7 +23,7 @@ dayjs.extend(utcPlugin);
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.scss'],
 })
-export class StatisticsComponent {
+export class StatisticsComponent implements OnInit {
   icons = CHART_ICONS;
 
   selectedItem = '';
@@ -60,7 +59,7 @@ export class StatisticsComponent {
   constructor(
     private statisticsService: StatisticsService,
     private dataService: DataService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.loadOptions();
@@ -68,11 +67,7 @@ export class StatisticsComponent {
 
   async loadOptions() {
     this.items = await this.dataService.processGet('item-names', {}, true);
-    this.customers = await this.dataService.processGet(
-      'customer-names',
-      {},
-      true
-    );
+    this.customers = await this.dataService.processGet('customer-names', {}, true);
   }
 
   search() {
@@ -112,12 +107,10 @@ export class StatisticsComponent {
     return dateAMonthCheck !== dateBMonthCheck;
   }
 
-  async buildCharts(
-    date: SelectedDate,
-    compareDate: SelectedDate | null
-  ) {
+  async buildCharts(date: SelectedDate, compareDate: SelectedDate | null) {
     if (compareDate && this.hasMonthYearMismatch(date, compareDate)) {
-      this.error = 'Can only compare between months or years. Please make sure the range for both is one or the other, not both';
+      this.error =
+        'Can only compare between months or years. Please make sure the range for both is one or the other, not both';
       this.loaded = true;
       return;
     }
@@ -132,7 +125,13 @@ export class StatisticsComponent {
     const lineChartConfig = this.statisticsService.getDefaultLineChartConfig(date, compareDate!);
 
     for (const config of lineChartConfig) {
-      await this.constructLineChart(config.lineChartOptions, config.subheadingOptions, config.reportOptions, config.heading, config.filter);
+      await this.constructLineChart(
+        config.lineChartOptions,
+        config.subheadingOptions,
+        config.reportOptions,
+        config.heading,
+        config.filter
+      );
     }
 
     //Top Selling Products
@@ -150,7 +149,7 @@ export class StatisticsComponent {
       'Net Sales',
       'VAT',
       'Total Sales',
-      'Customer Type'
+      'Customer Type',
     ];
     const topSellingDataTypes = [
       'text',
@@ -162,7 +161,7 @@ export class StatisticsComponent {
       'currency',
       'currency',
       'currency',
-      'text'
+      'text',
     ];
     const topSellingFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
@@ -178,21 +177,13 @@ export class StatisticsComponent {
       'net_sales',
       'vat',
       'total_sales',
-      'customer_type'
+      'customer_type',
     ];
 
-    let statisticsData = await this.statisticsService.buildChart(
-      this.initialDate,
-      topSellingQuery,
-      true
-    );
-    let barChartDataset = this.statisticsService.getBarChartData(
-      statisticsData.chart.data,
-      topSellingLabel,
-      10
-    );
+    let statisticsData = await this.statisticsService.buildChart(this.initialDate, topSellingQuery, true);
+    const barChartDataset = this.statisticsService.getBarChartData(statisticsData.chart.data, topSellingLabel, 10);
 
-    let barChartConfigData = {
+    const barChartConfigData = {
       labels: statisticsData.chart.labels,
       datasets: [barChartDataset.datasets],
     };
@@ -218,47 +209,26 @@ export class StatisticsComponent {
       formatted: false,
       filters: topSellingFilters,
       keys: topSellingKeys,
-      sort: false
+      sort: false,
     });
 
     //Store / Cart Conversion Rate
     const storeConversionHeading = 'Online Store Conversion Rate';
     const storeConversionLabel = 'Total';
     const storeConversionQuery = 'store-conversion-rate';
-    const storeConversionHeaders = [
-      'Date',
-      'Reached checkout',
-      'Added to cart',
-      'Payments made',
-      'Total sessions',
-    ];
+    const storeConversionHeaders = ['Date', 'Reached checkout', 'Added to cart', 'Payments made', 'Total sessions'];
     const storeConversionDataTypes = ['text', 'int', 'int', 'int', 'int'];
     const storeConversionFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
-    const storeConversionKeys = [
-      'dateKey',
-      'Reached checkout',
-      'Added to cart',
-      'Payments made',
-      'Total sessions',
-    ];
+    const storeConversionKeys = ['dateKey', 'Reached checkout', 'Added to cart', 'Payments made', 'Total sessions'];
 
-    statisticsData = await this.statisticsService.buildChart(
-      this.initialDate,
-      storeConversionQuery,
-      false,
-      'pie'
-    );
-    let pieChartDataset = this.statisticsService.getPieChartData(
+    statisticsData = await this.statisticsService.buildChart(this.initialDate, storeConversionQuery, false, 'pie');
+    const pieChartDataset = this.statisticsService.getPieChartData(
       statisticsData.chart.data.flat(),
       storeConversionLabel,
-      [
-        'rgba(255, 99, 132, 0.5)',
-        'rgba(54, 162, 235, 0.5)',
-        'rgba(255, 205, 86, 0.5)',
-      ],
+      ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 205, 86, 0.5)'],
       ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)']
     );
 
@@ -269,18 +239,13 @@ export class StatisticsComponent {
 
     chartOptions = this.statisticsService.getPieChartOptions(true, false);
 
-    let totalSessions = pieChartDataset.datasets.data.reduce(
-      (sum, n) => (sum += n)
-    );
+    const totalSessions = pieChartDataset.datasets.data.reduce((sum, n) => (sum += n));
 
-    const totalPaymentsMade = statisticsData.report.data.reduce(
-      (sum: number, current: any) => {
-        return sum + (current['Payments made'] || 0);
-      },
-      0
-    );
+    const totalPaymentsMade = statisticsData.report.data.reduce((sum: number, current: any) => {
+      return sum + (current['Payments made'] || 0);
+    }, 0);
 
-    let sessionPercentage =
+    const sessionPercentage =
       totalPaymentsMade == 0 && totalSessions == 0
         ? 0
         : ((totalPaymentsMade / totalSessions) * 100).toFixed(2).toString();
@@ -313,7 +278,13 @@ export class StatisticsComponent {
     heading: string,
     filter?: string
   ) {
-    let lineChartData = await this.statisticsService.constructLineChart(options, subheadingOptions, reportOptions, heading, filter)
+    const lineChartData = await this.statisticsService.constructLineChart(
+      options,
+      subheadingOptions,
+      reportOptions,
+      heading,
+      filter
+    );
 
     this.charts.push(lineChartData.chart);
     this.reports.push(lineChartData.report);
@@ -394,9 +365,7 @@ export class StatisticsComponent {
   selectHeaderToSort(event: Event) {
     const index = (event.target as HTMLSelectElement).value;
     this.headerToSort = {
-      name: this.reportChart?.report.headers
-        ? this.reportChart.report.headers[Number(index)]
-        : '',
+      name: this.reportChart?.report.headers ? this.reportChart.report.headers[Number(index)] : '',
       field: Object.keys(this.reportChart!.report.data[0])[Number(index)],
     };
   }
@@ -405,37 +374,30 @@ export class StatisticsComponent {
     this.filteredReportData =
       direction == 'down'
         ? this.filteredReportData.sort(
-          (a: any, b: any) =>
-            this.statisticsService.stripAndConvert(a[this.headerToSort.field]) -
-            this.statisticsService.stripAndConvert(b[this.headerToSort.field])
-        )
+            (a: any, b: any) =>
+              this.statisticsService.stripAndConvert(a[this.headerToSort.field]) -
+              this.statisticsService.stripAndConvert(b[this.headerToSort.field])
+          )
         : this.filteredReportData.sort(
-          (a: any, b: any) =>
-            this.statisticsService.stripAndConvert(b[this.headerToSort.field]) -
-            this.statisticsService.stripAndConvert(a[this.headerToSort.field])
-        );
+            (a: any, b: any) =>
+              this.statisticsService.stripAndConvert(b[this.headerToSort.field]) -
+              this.statisticsService.stripAndConvert(a[this.headerToSort.field])
+          );
   }
 
   async selectCustomer(customer: string) {
     this.loaded = false;
     this.reset();
 
-    let date = this.initialDate;
+    const date = this.initialDate;
     let compareDate: SelectedDate | null = null;
 
-    if (
-      this.comparison &&
-      this.comparison.startDate &&
-      this.comparison.endDate
-    ) {
+    if (this.comparison && this.comparison.startDate && this.comparison.endDate) {
       compareDate = this.comparison;
     }
 
     const dateLabel = {
-      primary:
-        date.startDate!.format('DD MMM').toString() +
-        ' to ' +
-        date.endDate!.format('DD MMM').toString(),
+      primary: date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString(),
       secondary:
         compareDate?.startDate!.format('DD MMM').toString() +
         ' to ' +
@@ -496,13 +458,9 @@ export class StatisticsComponent {
       this.selectedCustomer
     );
 
-    let barChartDataset = this.statisticsService.getBarChartData(
-      statisticsData.chart.data,
-      topPurchasedLabel,
-      10
-    );
+    const barChartDataset = this.statisticsService.getBarChartData(statisticsData.chart.data, topPurchasedLabel, 10);
 
-    let barChartConfigData = {
+    const barChartConfigData = {
       labels: statisticsData.chart.labels,
       datasets: [barChartDataset.datasets],
     };
@@ -529,44 +487,23 @@ export class StatisticsComponent {
       formatted: false,
       filters: topPurchasedFilters,
       keys: topPurchasedKeys,
-      sort: false
+      sort: false,
     });
 
     //Average Order Value
     const averageOrderHeading = 'Average Order Value';
     const averageOrderAxisLabels = { x: 'Date', y: 'Order Value (£)' };
-    const averageOrderHeaders = [
-      'Date',
-      'Gross Sales',
-      'Discounts',
-      'Orders',
-      'Average Order Value',
-    ];
-    const averageOrderDataTypes = [
-      'text',
-      'currency',
-      'currency',
-      'int',
-      'currency',
-    ];
+    const averageOrderHeaders = ['Date', 'Gross Sales', 'Discounts', 'Orders', 'Average Order Value'];
+    const averageOrderDataTypes = ['text', 'currency', 'currency', 'int', 'currency'];
     const averageOrderQuery = 'average-invoice-value-by-customer';
     const averageOrderFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
-    const averageOrderKeys = [
-      'dateKey',
-      'total',
-      'discounts',
-      'orders',
-      'average',
-    ];
+    const averageOrderKeys = ['dateKey', 'total', 'discounts', 'orders', 'average'];
     const averageOrderDateLabels = {
       primary: compareDate != null ? dateLabel.primary : 'Total Value',
-      secondary:
-        compareDate?.startDate && compareDate.endDate
-          ? dateLabel.secondary
-          : 'Total Value',
+      secondary: compareDate?.startDate && compareDate.endDate ? dateLabel.secondary : 'Total Value',
     };
 
     await this.constructLineChart(
@@ -596,25 +533,13 @@ export class StatisticsComponent {
     const storeConversionHeading = 'Online Store Conversion Rate';
     const storeConversionLabel = 'Total';
     const storeConversionQuery = 'store-conversion-rate-by-customer';
-    const storeConversionHeaders = [
-      'Date',
-      'Reached checkout',
-      'Added to cart',
-      'Payments made',
-      'Total sessions',
-    ];
+    const storeConversionHeaders = ['Date', 'Reached checkout', 'Added to cart', 'Payments made', 'Total sessions'];
     const storeConversionDataTypes = ['text', 'int', 'int', 'int', 'int'];
     const storeConversionFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
-    const storeConversionKeys = [
-      'dateKey',
-      'Reached checkout',
-      'Added to cart',
-      'Payments made',
-      'Total sessions',
-    ];
+    const storeConversionKeys = ['dateKey', 'Reached checkout', 'Added to cart', 'Payments made', 'Total sessions'];
 
     statisticsData = await this.statisticsService.buildChart(
       this.initialDate,
@@ -623,14 +548,10 @@ export class StatisticsComponent {
       'pie',
       this.selectedCustomer
     );
-    let pieChartDataset = this.statisticsService.getPieChartData(
+    const pieChartDataset = this.statisticsService.getPieChartData(
       statisticsData.chart.data.flat(),
       storeConversionLabel,
-      [
-        'rgba(255, 99, 132, 0.5)',
-        'rgba(54, 162, 235, 0.5)',
-        'rgba(255, 205, 86, 0.5)',
-      ],
+      ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 205, 86, 0.5)'],
       ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)']
     );
 
@@ -641,18 +562,13 @@ export class StatisticsComponent {
 
     chartOptions = this.statisticsService.getPieChartOptions(true, false);
 
-    let totalSessions = pieChartDataset.datasets.data.reduce(
-      (sum, n) => (sum += n)
-    );
+    const totalSessions = pieChartDataset.datasets.data.reduce((sum, n) => (sum += n));
 
-    const totalPaymentsMade = statisticsData.report.data.reduce(
-      (sum: number, current: any) => {
-        return sum + (current['Payments made'] || 0);
-      },
-      0
-    );
+    const totalPaymentsMade = statisticsData.report.data.reduce((sum: number, current: any) => {
+      return sum + (current['Payments made'] || 0);
+    }, 0);
 
-    let sessionPercentage =
+    const sessionPercentage =
       totalPaymentsMade == 0 && totalSessions == 0
         ? 0
         : ((totalPaymentsMade / totalSessions) * 100).toFixed(2).toString();
@@ -681,22 +597,15 @@ export class StatisticsComponent {
     this.loaded = false;
     this.reset();
 
-    let date = this.initialDate;
+    const date = this.initialDate;
     let compareDate: SelectedDate | null = null;
 
-    if (
-      this.comparison &&
-      this.comparison.startDate &&
-      this.comparison.endDate
-    ) {
+    if (this.comparison && this.comparison.startDate && this.comparison.endDate) {
       compareDate = this.comparison;
     }
 
     const dateLabel = {
-      primary:
-        date.startDate!.format('DD MMM').toString() +
-        ' to ' +
-        date.endDate!.format('DD MMM').toString(),
+      primary: date.startDate!.format('DD MMM').toString() + ' to ' + date.endDate!.format('DD MMM').toString(),
       secondary:
         compareDate?.startDate!.format('DD MMM').toString() +
         ' to ' +
@@ -710,25 +619,13 @@ export class StatisticsComponent {
     const popularUnitHeading = 'Most Popular Unit';
     const popularUnitLabel = 'Total';
     const popularUnitQuery = 'popular-units';
-    const popularUnitHeaders = [
-      'Date',
-      'Unit',
-      'Wholesale Box',
-      'Retail Box',
-      'Pallet',
-    ];
+    const popularUnitHeaders = ['Date', 'Unit', 'Wholesale Box', 'Retail Box', 'Pallet'];
     const popularUnitDataTypes = ['text', 'int', 'int', 'int', 'int'];
     const popularUnitFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
-    const popularUnitKeys = [
-      'dateKey',
-      'Unit',
-      'Wholesale Box',
-      'Retail Box',
-      'Pallet',
-    ];
+    const popularUnitKeys = ['dateKey', 'Unit', 'Wholesale Box', 'Retail Box', 'Pallet'];
 
     let statisticsData = await this.statisticsService.buildChart(
       this.initialDate,
@@ -737,21 +634,11 @@ export class StatisticsComponent {
       'pie',
       this.selectedItem
     );
-    let pieChartDataset = this.statisticsService.getPieChartData(
+    const pieChartDataset = this.statisticsService.getPieChartData(
       statisticsData.chart.data.flat(),
       popularUnitLabel,
-      [
-        'rgba(255, 99, 132, 0.5)',
-        'rgba(54, 162, 235, 0.5)',
-        'rgba(255, 205, 86, 0.5)',
-        'rgba(42, 205, 86, 0.5',
-      ],
-      [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 205, 86)',
-        'rgba(42, 205, 86, 0.5',
-      ]
+      ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 205, 86, 0.5)', 'rgba(42, 205, 86, 0.5'],
+      ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)', 'rgba(42, 205, 86, 0.5']
     );
 
     const pieChartConfigData = {
@@ -759,7 +646,7 @@ export class StatisticsComponent {
       labels: statisticsData.chart.labels,
     };
 
-    let chartOptions = this.statisticsService.getPieChartOptions(true, false);
+    const chartOptions = this.statisticsService.getPieChartOptions(true, false);
 
     this.charts.push({
       data: pieChartConfigData,
@@ -776,38 +663,23 @@ export class StatisticsComponent {
       dataTypes: popularUnitDataTypes,
       formatted: false,
       filters: popularUnitFilters,
-      keys: popularUnitKeys
+      keys: popularUnitKeys,
     });
 
     //Sales per period
     const salesPerPeriodHeading = 'Sales Per Period';
     const salesPerPeriodAxisLabels = { x: 'Date', y: 'Total Sales (£)' };
-    const salesPerPeriodHeaders = [
-      'Date',
-      'Unit',
-      'Amount Sold',
-    ];
-    const salesPerPeriodDataTypes = [
-      'text',
-      'text',
-      'int',
-    ];
+    const salesPerPeriodHeaders = ['Date', 'Unit', 'Amount Sold'];
+    const salesPerPeriodDataTypes = ['text', 'text', 'int'];
     const salesPerPeriodQuery = 'item-sales-per-period';
     const salesPerPeriodFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
-    const salesPerPeriodKeys = [
-      'dateKey',
-      'unit',
-      'amount_sold',
-    ];
+    const salesPerPeriodKeys = ['dateKey', 'unit', 'amount_sold'];
     const salesPerPeriodDateLabels = {
       primary: compareDate != null ? dateLabel.primary : 'Total Value',
-      secondary:
-        compareDate?.startDate && compareDate.endDate
-          ? dateLabel.secondary
-          : 'Total Value',
+      secondary: compareDate?.startDate && compareDate.endDate ? dateLabel.secondary : 'Total Value',
     };
 
     await this.constructLineChart(
@@ -838,22 +710,13 @@ export class StatisticsComponent {
     const topPurchasingLabel = 'Total Sales';
     const topPurchasingQuery = 'customers-who-ordered-item-by-name';
     const topPurchasingAxisLabels = { x: 'Customer Name', y: 'Total Sales' };
-    const topPurchasingHeaders = [
-      'Account Name',
-      'Total Purchases',
-    ];
-    const topPurchasingDataTypes = [
-      'text',
-      'int',
-    ];
+    const topPurchasingHeaders = ['Account Name', 'Total Purchases'];
+    const topPurchasingDataTypes = ['text', 'int'];
     const topPurchasingFilters = [
       { name: 'Hide Empty Rows', predicate: (value: any) => !value.empty },
       { name: 'Show Only Empty Rows', predicate: (value: any) => value.empty },
     ];
-    const topPurchasingKeys = [
-      'Account Name',
-      'Total Purchases',
-    ];
+    const topPurchasingKeys = ['Account Name', 'Total Purchases'];
 
     statisticsData = await this.statisticsService.buildChart(
       this.initialDate,
@@ -863,18 +726,14 @@ export class StatisticsComponent {
       this.selectedItem
     );
 
-    let barChartDataset = this.statisticsService.getBarChartData(
-      statisticsData.chart.data,
-      topPurchasingLabel,
-      10
-    );
+    const barChartDataset = this.statisticsService.getBarChartData(statisticsData.chart.data, topPurchasingLabel, 10);
 
-    let barChartConfigData = {
+    const barChartConfigData = {
       labels: statisticsData.chart.labels,
       datasets: [barChartDataset.datasets],
     };
 
-    let barChartOptions = this.statisticsService.getBarChartOptions(
+    const barChartOptions = this.statisticsService.getBarChartOptions(
       topPurchasingAxisLabels.y,
       topPurchasingAxisLabels.x,
       statisticsData.chart.labels
@@ -896,7 +755,7 @@ export class StatisticsComponent {
       formatted: false,
       filters: topPurchasingFilters,
       keys: topPurchasingKeys,
-      sort: false
+      sort: false,
     });
 
     this.loaded = true;
