@@ -39,10 +39,10 @@
                 color: rgb(216, 216, 216);
                 margin-left: 25px;
                 margin-right: 15px;
+                padding: 4px;
                 margin-bottom: 4px;
                 border: 1px solid rgb(126, 126, 135);
                 border-radius: 5px;
-                padding: 4px;
                 transition: color 0.3s;
                 cursor: pointer;
                 overflow: hidden;
@@ -90,13 +90,15 @@
         .visible {
             max-height: 600px;
             opacity: 1;
-            transition: max-height 3.5s 0.8s ease, opacity 0s 0.8s ease;
+            transition: max-height 1.8s 0.3s ease-out, opacity 1s 0.3s ease;
         }
 
         .hidden {
             max-height: 0px;
             opacity: 0;
-            transition: max-height 1s ease, opacity 1s ease;
+            visibility: hidden;
+            pointer-events: none;
+            transition: max-height 1s ease, opacity 1s ease, visibility 0s 1s ease;
         }
     }
 }
