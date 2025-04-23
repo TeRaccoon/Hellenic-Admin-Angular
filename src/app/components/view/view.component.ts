@@ -44,7 +44,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   columnFilters: columnFilter[] = [];
   columnDateFilters: columnDateFilter[] = [];
 
-  data: Record<string, any>[] = [];
+  data: any = [];
   displayNames: Record<string, any>[] = [];
   displayData: any[] = [];
   dataTypes: any[] = [];
@@ -202,6 +202,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       }
       return type;
     });
+    console.log(this.dataTypes);
   }
 
   getColumnHeaders(obj: Record<string, any>): string[] {
@@ -802,6 +803,10 @@ export class ViewComponent implements OnInit, OnDestroy {
     this.filteredDisplayData = this.displayData;
   }
 
+  clearFilterEmitter(event: { filter: string; reload: boolean }) {
+    this.clearFilter(event.filter, event.reload);
+  }
+
   clearFilter(filter: string, reload: boolean) {
     if (filter === 'all' || filter === 'column-date') {
       this.filterService.clearColumnDateFilter();
@@ -877,8 +882,10 @@ export class ViewComponent implements OnInit, OnDestroy {
     this.formService.showFilterForm();
   }
 
-  async reloadTable() {
+  async reloadTable(loadTable = false) {
     this.loadPage();
-    await this.loadTable(String(this.tableName));
+    if (loadTable) {
+      await this.loadTable(String(this.tableName));
+    }
   }
 }

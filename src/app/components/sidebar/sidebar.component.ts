@@ -20,7 +20,7 @@ export class SidebarComponent {
 
   isDropdownVisible: Record<string, boolean> = {};
 
-  tables = TABLE_CATEGORIES;
+  tables: any = TABLE_CATEGORIES;
 
   constructor(
     route: ActivatedRoute,

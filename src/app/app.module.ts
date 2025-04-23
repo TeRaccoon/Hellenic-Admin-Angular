@@ -1,54 +1,54 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
-import { NgChartsModule } from 'ng2-charts';
-import _ from 'lodash';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
+import { NgChartsModule } from 'ng2-charts';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { QuillModule } from 'ngx-quill';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { ViewComponent } from './components/view/view.component';
-import { AddFormComponent } from './components/form/add-form/add-form.component';
-import { EditFormComponent } from './components/form/edit-form/edit-form.component';
-import { LedgerWidgetComponent } from './components/ledger-widget/ledger-widget.component';
-import { DebtorCreditorWidgetComponent } from './components/debtor-creditor-widget/debtor-creditor-widget.component';
-import { TablelessViewComponent } from './components/tableless-view/tableless-view.component';
-import { LoginComponent } from './components/login/login.component';
-import { ProfitLossWidgetComponent } from './components/profit-loss-widget/profit-loss-widget.component';
-import { StatisticsComponent } from './components/statistics/statistics.component';
-import { PrintLayoutComponent } from './components/print-layout/print-layout.component';
-import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
-import { DeleteFormComponent } from './components/delete-form/delete-form.component';
-import { MessageFormComponent } from './components/message-form/message-form.component';
-import { FilterFormComponent } from './components/filter-form/filter-form.component';
-import { ChangePasswordFormComponent } from './components/change-password-form/change-password-form.component';
-import { SettingsComponent } from './components/settings/settings.component';
-import { WidgetComponent } from './components/widget/widget.component';
-import { TableWidgetComponent } from './components/table-widget/table-widget.component';
-import { VatViewComponent } from './components/vat-view/vat-view.component';
 import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.component';
-import { SearchContainerComponent } from './components/search-container/search-container.component';
-import { ConfigService } from './services/config.service';
-import { NoTableDataComponent } from './components/no-table-data/no-table-data.component';
-import { TableFooterComponent } from './components/table-footer/table-footer.component';
-import { InvoiceAddressComponent } from './components/form/children/invoice-address/invoice-address.component';
-import { NewsletterWidgetComponent } from './components/newsletter-widget/newsletter-widget.component';
+import { ChangePasswordFormComponent } from './components/change-password-form/change-password-form.component';
+import { DebtorCreditorWidgetComponent } from './components/debtor-creditor-widget/debtor-creditor-widget.component';
+import { DeleteFormComponent } from './components/delete-form/delete-form.component';
 import { DocumentUploadWidgetComponent } from './components/document-upload-widget/document-upload-widget.component';
-import { DropselectComponent } from "./components/form/children/dropselect/dropselect.component";
+import { FilterFormComponent } from './components/filter-form/filter-form.component';
+import { AddFormComponent } from './components/form/add-form/add-form.component';
 import { DocumentsToReconcileComponent } from './components/form/children/documents-to-reconcile/documents-to-reconcile.component';
+import { DropselectComponent } from './components/form/children/dropselect/dropselect.component';
 import { FormFooterComponent } from './components/form/children/form-footer/form-footer.component';
 import { FormItemsTableComponent } from './components/form/children/form-items-table/form-items-table.component';
+import { InvoiceAddressComponent } from './components/form/children/invoice-address/invoice-address.component';
+import { EditFormComponent } from './components/form/edit-form/edit-form.component';
+import { HomeComponent } from './components/home/home.component';
+import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
+import { LedgerWidgetComponent } from './components/ledger-widget/ledger-widget.component';
+import { LoginComponent } from './components/login/login.component';
+import { MessageFormComponent } from './components/message-form/message-form.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { NewsletterWidgetComponent } from './components/newsletter-widget/newsletter-widget.component';
+import { NoTableDataComponent } from './components/no-table-data/no-table-data.component';
+import { PrintLayoutComponent } from './components/print-layout/print-layout.component';
+import { ProfitLossWidgetComponent } from './components/profit-loss-widget/profit-loss-widget.component';
+import { SearchContainerComponent } from './components/search-container/search-container.component';
+import { SettingsComponent } from './components/settings/settings.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { StatisticsComponent } from './components/statistics/statistics.component';
 import { SupplierInvoiceItemFormControlsComponent } from './components/supplier-invoice-item-form-controls/supplier-invoice-item-form-controls.component';
 import { TableButtonsComponent } from './components/table-buttons/table-buttons.component';
 import { TableCellComponent } from './components/table-cell/table-cell.component';
+import { TableFilterComponent } from './components/table-filter/table-filter.component';
+import { TableFooterComponent } from './components/table-footer/table-footer.component';
+import { TableWidgetComponent } from './components/table-widget/table-widget.component';
+import { TablelessViewComponent } from './components/tableless-view/tableless-view.component';
+import { VatViewComponent } from './components/vat-view/vat-view.component';
+import { ViewComponent } from './components/view/view.component';
+import { WidgetComponent } from './components/widget/widget.component';
+import { ConfigService } from './services/config.service';
 
 export function initConfig(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -92,7 +92,8 @@ export function initConfig(configService: ConfigService) {
     FormItemsTableComponent,
     SupplierInvoiceItemFormControlsComponent,
     TableButtonsComponent,
-    TableCellComponent
+    TableCellComponent,
+    TableFilterComponent,
   ],
   imports: [
     BrowserModule,
@@ -118,9 +119,9 @@ export function initConfig(configService: ConfigService) {
     {
       provide: RECAPTCHA_V3_SITE_KEY,
       useFactory: (configService: ConfigService) => configService.reCAPTCHASiteKey,
-      deps: [ConfigService]
+      deps: [ConfigService],
     },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

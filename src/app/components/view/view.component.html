@@ -23,50 +23,18 @@
               </select>
               entries
             </p>
-            <div class="filter-container">
-              @if (displayColumnFilters.length > 0) {
-                @for (filter of displayColumnFilters; track filter; let i = $index) {
-                  <div class="filter" (click)="removeColumnFilter(i)">
-                    <p>{{ filter }}</p>
-                    <fa-icon [icon]="icons.faX" />
-                  </div>
-                }
-              }
-              @if (getFilterData().searchFilter !== '' && getFilterData().searchFilterApplied) {
-                <div class="filter" (click)="clearFilter('table', true)">
-                  <p>{{ getFilterData().searchFilter }}</p>
-                  <fa-icon [icon]="icons.faX" />
-                </div>
-              }
-              @if (columnDateFilters.length > 0) {
-                @for (filter of columnDateFilters; track filter; let i = $index) {
-                  <div class="filter" (click)="removeColumnDateFilter(i)">
-                    <p>{{ filter.startDate }}</p>
-                    <fa-icon [icon]="icons.faArrowsLeftRight" />
-                    <p>{{ filter.endDate }}</p>
-                    <fa-icon [icon]="icons.faX" />
-                  </div>
-                }
-              }
-              <div class="advanced-filter-container">
-                <button class="button" (click)="showAdvancedFilter()">
-                  <fa-icon [icon]="icons.faFilter" />
-                </button>
-              </div>
-              <div class="search-container">
-                <form>
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    [(ngModel)]="getFilterData().searchFilter"
-                    name="searchText"
-                  />
-                  <button type="submit" (click)="setTableFilter()">
-                    <fa-icon [icon]="icons.faSearch"></fa-icon>
-                  </button>
-                </form>
-              </div>
-            </div>
+            <app-table-filter
+              [columns]="data[0]"
+              [dataTypes]="dataTypes"
+              [filter]="{
+                displayColumn: displayColumnFilters,
+                column: columnFilters,
+                columnDate: columnDateFilters
+              }"
+              [displayNames]="displayNames"
+              (reloadTable)="reloadTable($event)"
+              (clearFilterEmitter)="clearFilterEmitter($event)"
+            />
           </div>
         </div>
         @if (tabs.length > 0) {
