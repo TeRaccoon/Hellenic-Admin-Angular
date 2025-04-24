@@ -15,26 +15,13 @@
       <fa-icon class="loading-icon" [icon]="spinner" spinPulse [spin]="true" />
     }
   </div>
-  <div
-    class="drop-select"
-    [class]="open ? 'dropdown-visible' : 'dropdown-hidden'"
-  >
-    @if (filteredData.length == 0) {
+  <div class="drop-select" [class]="open ? 'dropdown-visible' : 'dropdown-hidden'">
+    @if (filteredData.length === 0) {
       <p>Nothing to show here!</p>
     } @else {
       @for (option of filteredData; track option) {
-        @if (option.replacement != "") {
-          <p
-            (click)="
-              updateSelectedReplacementDataFromKey(
-                option.id,
-                option.replacement,
-                key,
-                field,
-                alternative
-              )
-            "
-          >
+        @if (option.replacement !== '') {
+          <p (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, key, field, alternative)">
             {{ option.replacement }}
           </p>
         }

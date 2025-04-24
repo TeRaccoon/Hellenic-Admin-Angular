@@ -98,9 +98,11 @@
             border-radius: 8px;
             border: 1px solid rgb(215, 215, 215);
             padding: 10px;
+            transition: border-radius 0.6s 1s ease;
 
             &:focus-within {
                 border-radius: 8px 8px 0 0;
+                transition: border-radius 0.5s ease;
             }
 
             button {
@@ -162,9 +164,30 @@
                 }
             }
         }
+
+        .hidden {
+            opacity: 0;
+            max-height: 0;
+            border: 1px solid transparent;
+            box-shadow: 0;
+            transition:
+                max-height 1s ease,
+                opacity 0.5s 1s ease,
+                border 0s 1s;
+        }
+
+        .visible {
+            opacity: 1;
+            max-height: 750px;
+            border: 1px solid rgb(215, 215, 215);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            transition:
+                max-height 1s ease 0.4s,
+                opacity 0.5s ease;
+        }
     }
 
-    .hidden {
+    >.hidden {
         display: none;
     }
 }

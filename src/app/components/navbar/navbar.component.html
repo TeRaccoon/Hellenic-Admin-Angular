@@ -1,81 +1,83 @@
 <div class="container">
   <div class="search-container">
     <div class="search-bar">
-      <input [(ngModel)]="searchInput" (input)="searchTables($event)" (focus)="searchDropdownVisible = true"
-        type="text" placeholder="Search..." />
-        <button>
-          @if (!searching) {
-            <fa-icon [icon]="icons.faSearch"></fa-icon>
-          }
-          @if (searching) {
-            <fa-icon [icon]="icons.faSpinner" spinPulse [spin]="true" />
-          }
-        </button>
-      </div>
-      @if (searchDropdownVisible) {
-        <div [class]="'search-dropdown-container'">
-          @if (filteredTableOptions.length > 0 || searchResults.length > 0) {
-            @for (table of filteredTableOptions; track table) {
-              <div class="search-option"
-                (click)="changeTable(table.actual)">
-                <p>{{ table.display }}</p>
-              </div>
-            }
-            @for (results of searchResults; track results) {
-              <div class="search-option"
-                (click)="goToRow(results.tableName, results.matchedValue)">
-                <div class="results-container">
-                  <p class="bold">{{ results.tableName }}: </p>
-                  <p>{{ results.displayValue }}</p>
-                </div>
-              </div>
-            }
-          } @else {
-            @if (!searching) {
-              <div class="search-option">
-                <p>There were no results
-                  <fa-icon [icon]="icons.faFileCircleXmark" />
-                </p>
-              </div>
-            }
-          }
-        </div>
-      }
+      <input
+        [(ngModel)]="searchInput"
+        (input)="searchTables($event)"
+        (focus)="searchDropdownVisible = true"
+        type="text"
+        placeholder="Search..."
+      />
+      <button>
+        @if (!searching) {
+          <fa-icon [icon]="icons.faSearch"></fa-icon>
+        }
+        @if (searching) {
+          <fa-icon [icon]="icons.faSpinner" spinPulse [spin]="true" />
+        }
+      </button>
     </div>
-    <div class="nav-options-container">
-      <p #notificationIcon>
-        <fa-icon (click)="toggleNotificationDropdown()" [icon]="icons.faBell"></fa-icon>
-      </p>
-      <p>
-        <fa-icon [icon]="icons.faEnvelope"></fa-icon>
-      </p>
-      <p #userIcon>
-        <fa-icon (click)="toggleUserOptions()" [icon]="icons.faUser"></fa-icon>
-      </p>
-      @if (notificationVisible) {
-        <div #notificationDropdown class='notification-dropdown-container'>
-          @if (notifications.length > 0) {
-            @for (notification of notifications; track notification) {
-              <div class="section">
-                <h2>{{ notification.header }}</h2>
-                @for (dataItem of notification.data; track dataItem) {
-                  <p>{{ dataItem }}</p>
-                }
-              </div>
-            }
-          } @else {
-            <div class="empty-section">
-              <p>You have no new notifications. Check back later!</p>
+    <div class="search-dropdown-container" [class]="searchDropdownVisible ? 'visible' : 'hidden'">
+      @if (filteredTableOptions.length > 0 || searchResults.length > 0) {
+        @for (table of filteredTableOptions; track table) {
+          <div class="search-option" (click)="changeTable(table.actual)">
+            <p>{{ table.display }}</p>
+          </div>
+        }
+        @for (results of searchResults; track results) {
+          <div class="search-option" (click)="goToRow(results.tableName, results.matchedValue)">
+            <div class="results-container">
+              <p class="bold">{{ results.tableName }}:</p>
+              <p>{{ results.displayValue }}</p>
             </div>
-          }
-        </div>
-      }
-      @if (userOptionsVisible) {
-        <div #userOptions class='user-dropdown-container'>
-          <h2>Options</h2>
-          <button class="button" (click)="logout()">Logout</button>
-          <button class="button" (click)="changePassword()">Change Password</button>
-        </div>
+          </div>
+        }
+      } @else {
+        @if (!searching) {
+          <div class="search-option">
+            <p>
+              There were no results
+              <fa-icon [icon]="icons.faFileCircleXmark" />
+            </p>
+          </div>
+        }
       }
     </div>
   </div>
+  <div class="nav-options-container">
+    <p #notificationIcon>
+      <fa-icon (click)="toggleNotificationDropdown()" [icon]="icons.faBell"></fa-icon>
+    </p>
+    <p>
+      <fa-icon [icon]="icons.faEnvelope"></fa-icon>
+    </p>
+    <p #userIcon>
+      <fa-icon (click)="toggleUserOptions()" [icon]="icons.faUser"></fa-icon>
+    </p>
+    @if (notificationVisible) {
+      <div #notificationDropdown class="notification-dropdown-container">
+        @if (notifications.length > 0) {
+          @for (notification of notifications; track notification) {
+            <div class="section">
+              <h2>{{ notification.header }}</h2>
+              @for (dataItem of notification.data; track dataItem) {
+                <p>{{ dataItem }}</p>
+              }
+            </div>
+          }
+        } @else {
+          <div class="empty-section">
+            <p>You have no new notifications. Check back later!</p>
+          </div>
+        }
+      </div>
+    }
+    @if (userOptionsVisible) {
+      <div #userOptions class="user-dropdown-container">
+        <h2>Options</h2>
+        <button class="button" (click)="logout()">Logout</button>
+        <button class="button" (click)="changePassword()">Change Password</button>
+      </div>
+    }
+  </div>
+</div>
