@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { EXCLUDED_TABLES } from '../../common/consts/table-options';
-import { TABLE_ICONS } from '../../common/icons/table-icons';
-import { BalanceSheetData, BalanceSheetTable } from '../../common/types/data-service/types';
-import { DataService } from '../../services/data.service';
-import { TableOptionsService } from '../../services/table-options.service';
-import { FormService } from '../form/service';
-import { EditableData } from '../form/types';
+import { EXCLUDED_TABLES } from '../../../../common/consts/table-options';
+import { TABLE_ICONS } from '../../../../common/icons/table-icons';
+import { BalanceSheetData, BalanceSheetTable } from '../../../../common/types/data-service/types';
+import { DataService } from '../../../../services/data.service';
+import { TableOptionsService } from '../../../../services/table-options.service';
+import { FormService } from '../../../form/service';
+import { EditableData } from '../../../form/types';
 
 @Component({
   selector: 'app-table-buttons',

@@ -9,7 +9,8 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 })
 export class NoTableDataComponent {
   @Input() displayName = '';
-  @Output() addRowEmitter: EventEmitter<any> = new EventEmitter();
+
+  @Output() addRowEmitter = new EventEmitter<any>();
 
   arrowLeft = faArrowLeft;
 

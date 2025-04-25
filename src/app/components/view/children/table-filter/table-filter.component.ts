@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FilterService } from '../../services/filter.service';
-import { FormService } from '../form/service';
+import { FilterService } from '../../../../services/filter.service';
+import { FormService } from '../../../form/service';
 import { TABLE_FILTER_ICONS } from './icons';
 import { ColumnFilterOptions } from './types';
 

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { viewMetadata } from '../../common/types/view/types';
+import { viewMetadata } from '../../../../common/types/view/types';
 
 @Component({
   selector: 'app-table-footer',
