@@ -1,5 +1,4 @@
 <div class="container">
-  <h1>Dashboard</h1>
   <div class="widget-container">
     @for (widget of widgetData; track widget; let i = $index) {
       <div class="widget">
@@ -16,7 +15,7 @@
   <div class="quick-view-container">
     <div class="table-container">
       <h1>Invoices Due Today</h1>
-      @if (invoiceDueData.length != 0) {
+      @if (invoiceDueData.length !== 0) {
         <table>
           <thead>
             <tr>
@@ -42,7 +41,7 @@
     </div>
     <div class="table-container">
       <h1>Products Expiring Soon</h1>
-      @if (productsExpiringData.length != 0) {
+      @if (productsExpiringData.length !== 0) {
         <table>
           <thead>
             <tr>
@@ -68,7 +67,7 @@
     </div>
     <div class="table-container">
       <h1>Low Stock</h1>
-      @if (lowStockData.length != 0) {
+      @if (lowStockData.length !== 0) {
         <table>
           <thead>
             <tr>
