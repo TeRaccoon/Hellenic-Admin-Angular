@@ -90,7 +90,7 @@
         .visible {
             max-height: 600px;
             opacity: 1;
-            transition: max-height 1.8s 0.3s ease-out, opacity 1s 0.3s ease;
+            transition: max-height 1s 0.3s ease-in, opacity 1s 0.3s ease;
         }
 
         .hidden {
