@@ -16,6 +16,7 @@
             font-size: 16px;
             padding: 10px;
             padding-right: 35px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
 
         input:disabled {
@@ -26,13 +27,11 @@
 
         .input-hidden {
             border-radius: 8px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             transition: border-radius 0.5s 1s ease;
         }
 
         .input-visible {
             border-radius: 8px 8px 0px 0px;
-            box-shadow: 0;
             transition: border-radius 0.5s ease;
         }
 
