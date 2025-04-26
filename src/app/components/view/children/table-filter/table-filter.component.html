@@ -1,0 +1,39 @@
+<div class="filter-container">
+  @if (filter.displayColumn) {
+    @for (filter of filter.displayColumn; track filter; let i = $index) {
+      <div class="filter" (click)="removeColumnFilter(i)">
+        <p>{{ filter }}</p>
+        <fa-icon [icon]="icons.x" />
+      </div>
+    }
+  }
+  @if (getFilterData().searchFilter !== '' && getFilterData().searchFilterApplied) {
+    <div class="filter" (click)="clearFilter('table', true)">
+      <p>{{ getFilterData().searchFilter }}</p>
+      <fa-icon [icon]="icons.x" />
+    </div>
+  }
+  @if (filter.columnDate.length > 0) {
+    @for (filter of filter.columnDate; track filter; let i = $index) {
+      <div class="filter" (click)="removeColumnDateFilter(i)">
+        <p>{{ filter.startDate }}</p>
+        <fa-icon [icon]="icons.arrows" />
+        <p>{{ filter.endDate }}</p>
+        <fa-icon [icon]="icons.x" />
+      </div>
+    }
+  }
+  <div class="advanced-filter-container">
+    <button class="button" (click)="showAdvancedFilter()">
+      <fa-icon [icon]="icons.filter" />
+    </button>
+  </div>
+  <div class="search-container">
+    <form>
+      <input type="text" placeholder="Search..." [(ngModel)]="searchFilter" name="searchText" />
+      <button type="submit" (click)="setTableFilter()">
+        <fa-icon [icon]="icons.search"></fa-icon>
+      </button>
+    </form>
+  </div>
+</div>

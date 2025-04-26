@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-ledger-widget',
@@ -15,7 +14,7 @@ export class LedgerWidgetComponent {
 
   balanceData: any[] = [];
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService) { }
 
   async calculateTrialBalance() {
     if (this.startDate != '' && this.endDate != '') {

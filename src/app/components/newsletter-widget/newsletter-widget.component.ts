@@ -4,7 +4,7 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
 import { MailService } from '../../services/mail.service';
 import { Response } from '../../common/types/data-service/types';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 
 import Quill from 'quill';
 import BlotFormatter from 'quill-blot-formatter/dist/BlotFormatter';

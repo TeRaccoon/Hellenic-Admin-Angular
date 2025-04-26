@@ -1,11 +1,11 @@
 import { faUserLock, faAddressBook, faBox, faLock, faLockOpen, faBasketShopping, faSpinner, faPencil, faSearch, faPrint, faTrashCan, faFilter, faX, faArrowsLeftRight, faArrowLeft, faArrowUp, faArrowDown, faBookMedical, faBookOpen, faTruckFront, faCopy, faNoteSticky, faFileInvoice } from '@fortawesome/free-solid-svg-icons';
 
-export const tableIcons = {
-  faUserLock,
+export const TABLE_ICONS = {
+  userLock: faUserLock,
   faAddressBook,
   faBox,
-  faLock,
-  faLockOpen,
+  lock: faLock,
+  lockOpen: faLockOpen,
   faBasketShopping,
   faSpinner,
   faPencil,

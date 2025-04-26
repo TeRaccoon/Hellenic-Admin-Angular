@@ -1,0 +1,93 @@
+.drop-select-container {
+    position: relative;
+    width: 100%;
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            outline: none;
+            border: 1px solid rgb(215, 215, 215);
+            font-size: 16px;
+            padding: 10px;
+            padding-right: 35px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        input:disabled {
+            color: #999999;
+            background-color: #f5f5f5;
+            cursor: default;
+        }
+
+        .input-hidden {
+            border-radius: 8px;
+            transition: border-radius 0.5s 1s ease;
+        }
+
+        .input-visible {
+            border-radius: 8px 8px 0px 0px;
+            transition: border-radius 0.5s ease;
+        }
+
+        .loading-icon {
+            position: absolute;
+            right: 10px;
+            color: #999;
+            font-size: 18px;
+        }
+    }
+
+    .drop-select {
+        background-color: white;
+        border-radius: 0 0 8px 8px;
+        overflow-y: auto;
+        width: 100%;
+        z-index: 2;
+        box-sizing: border-box;
+
+        p {
+            padding: 5px;
+            margin: 0px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #eaeef3;
+            }
+        }
+    }
+
+    .image-row {
+        img {
+            width: 100%;
+            margin: 10px;
+        }
+    }
+
+    .dropdown-hidden {
+        opacity: 0;
+        max-height: 0;
+        border: 1px solid transparent;
+        box-shadow: 0;
+        transition:
+            max-height 1s ease,
+            opacity 0.5s 1s ease,
+            border 0s 1s;
+    }
+
+    .dropdown-visible {
+        opacity: 1;
+        max-height: 500px;
+        border: 1px solid rgb(215, 215, 215);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        transition:
+            max-height 1s ease 0.4s,
+            opacity 0.5s ease;
+    }
+
+}

@@ -1,16 +1,16 @@
 <div class="container">
+  @for (label of config.labels; track label.type) {
     <div class="widget-container">
-        <h1>Debtors</h1>
-        <button class="button" (click)="submitQuery('debtor', 0, 30)">0-30 Days</button>
-        <button class="button" (click)="submitQuery('debtor', 31, 60)">31-60 Days</button>
-        <button class="button" (click)="submitQuery('debtor', 61, 90)">61-90 Days</button>
-        <button class="button" (click)="submitQuery('debtor', 90, null)">90+ Days</button>
+      <h1>{{ label.header }}</h1>
+
+      @for (range of config.ranges; track range.label) {
+        <button
+          class="button"
+          (click)="submitQuery(label.type, range.data[0]!, range.data[1])"
+        >
+          {{ range.label }}
+        </button>
+      }
     </div>
-    <div class="widget-container">
-        <h1>Creditors</h1>
-        <button class="button" (click)="submitQuery('creditor', 0, 30)">0-30 Days</button>
-        <button class="button" (click)="submitQuery('creditor', 31, 60)">31-60 Days</button>
-        <button class="button" (click)="submitQuery('creditor', 61, 90)">61-90 Days</button>
-        <button class="button" (click)="submitQuery('creditor', 90, null)">90+ Days</button>
-    </div>
+  }
 </div>

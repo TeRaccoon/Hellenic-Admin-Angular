@@ -1,5 +1,5 @@
 import { ChartConfiguration, ChartType } from 'chart.js';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 
 export interface Chart {
   data: ChartConfiguration['data'];

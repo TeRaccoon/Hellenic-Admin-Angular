@@ -6,7 +6,7 @@ import {
 } from '../common/constants';
 import { DataService } from './data.service';
 import { AuthService } from './auth.service';
-import { FormService } from './form.service';
+import { FormService } from '../components/form/service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 

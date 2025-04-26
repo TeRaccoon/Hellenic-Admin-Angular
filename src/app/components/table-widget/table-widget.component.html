@@ -3,13 +3,13 @@
     @if (tableData.displayDateRange) {
       <div class="date-container">
         <label>Start date:</label>
-        <input type="date" [(ngModel)]="startDate">
+        <input type="date" [(ngModel)]="startDate" />
         <label>End date:</label>
-        <input type="date" [(ngModel)]="endDate">
+        <input type="date" [(ngModel)]="endDate" />
         <button class="button" (click)="collectData()">Calculate</button>
       </div>
     }
-    @if (tableName == 'vat-returns') {
+    @if (tableName === 'vat-returns') {
       <div class="vat-return-options-container">
         <select [(ngModel)]="selectedVatGroup">
           @for (return of vatHistory; track return) {

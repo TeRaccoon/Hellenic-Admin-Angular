@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 
@@ -20,7 +20,7 @@ export class MessageFormComponent {
     secondaryMessage?: string | null;
   } = { title: '', message: '', secondaryMessage: null };
 
-  constructor(private formService: FormService) {}
+  constructor(private formService: FormService) { }
 
   ngOnInit() {
     this.subscriptions.add(

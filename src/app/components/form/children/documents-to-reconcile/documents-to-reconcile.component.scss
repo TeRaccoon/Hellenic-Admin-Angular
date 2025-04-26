@@ -1,0 +1,49 @@
+.container {
+    padding: 10px;
+    width: 100%;
+
+    .table-container {
+        border-radius: 5px;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+
+            thead {
+                background-color: #313131;
+                font-weight: bold;
+                color: white;
+
+                th {
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    text-align: left;
+                }
+            }
+
+            tbody {
+                tr:nth-child(even) {
+                    background-color: #eaeef3;
+                }
+
+                tr:nth-child(odd) {
+                    background-color: white;
+                }
+
+                tr {
+                    &:hover {
+                        background-color: #f0f0f0;
+                    }
+
+                    td {
+                        padding: 10px;
+                        border: 1px solid #ddd;
+                    }
+                }
+            }
+        }
+    }
+}

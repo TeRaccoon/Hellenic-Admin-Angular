@@ -1,24 +1,22 @@
-import { Component } from '@angular/core';
-import { FormService } from '../../services/form.service';
-import { FilterService } from '../../services/filter.service';
-import { faSearch, faPlus, faX } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { FilterService } from '../../services/filter.service';
+import { FormService } from '../form/service';
+import { ICONS } from './icons';
 
 @Component({
   selector: 'app-filter-form',
   templateUrl: './filter-form.component.html',
   styleUrls: ['./filter-form.component.scss'],
 })
-export class FilterFormComponent {
+export class FilterFormComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
-  faSearch = faSearch;
-  faPlus = faPlus;
-  faX = faX;
+  icons = ICONS;
 
   formVisible = 'hidden';
   tableColumns: {
-    columnNames: { [key: string]: any }[];
+    columnNames: Record<string, any>[];
     columns: string[];
     dataTypes: string[];
   } = {
@@ -31,15 +29,15 @@ export class FilterFormComponent {
   selectedOption = '';
   open = -1;
 
-  searchInput: string = '';
-  columnInput: string = '';
-  columnType: string = '';
+  searchInput = '';
+  columnInput = '';
+  columnType = '';
   columnIndex = 0;
-  caseSensitive: boolean = false;
+  caseSensitive = false;
   startDate: Date | null = null;
   endDate: Date | null = null;
 
-  errorMsg: string | null = null;
+  error: string | null = null;
 
   constructor(
     private formService: FormService,
@@ -51,7 +49,7 @@ export class FilterFormComponent {
       this.formService.getFilterFormVisibility().subscribe(async (visible) => {
         this.formVisible = visible ? 'visible' : 'hidden';
         this.tableColumns = this.filterService.getTableColumns();
-        this.errorMsg = null;
+        this.error = null;
       })
     );
   }
@@ -67,16 +65,10 @@ export class FilterFormComponent {
   search(hide: boolean) {
     if (
       this.columnInput != '' &&
-      ((this.columnType == 'date' &&
-        this.startDate != null &&
-        this.endDate != null) ||
+      ((this.columnType == 'date' && this.startDate != null && this.endDate != null) ||
         (this.columnType != 'date' && this.searchInput != ''))
     ) {
-      if (
-        this.columnType == 'date' &&
-        this.startDate != null &&
-        this.endDate != null
-      ) {
+      if (this.columnType == 'date' && this.startDate != null && this.endDate != null) {
         this.filterService.setColumnDateFilter({
           column: this.columnInput,
           startDate: this.startDate,
@@ -91,15 +83,19 @@ export class FilterFormComponent {
       }
       this.formService.setReloadType('filter');
       this.formService.requestReload();
-      hide && this.hide();
+
+      if (hide) {
+        this.hide();
+      }
+
       this.resetForm();
     } else {
-      this.errorMsg = 'Please fill in all required fields';
+      this.error = 'Please fill in all required fields';
     }
   }
 
   getColumnType() {
-    var index = this.tableColumns.columns.indexOf(this.columnInput);
+    const index = this.tableColumns.columns.indexOf(this.columnInput);
     this.columnType = this.tableColumns.dataTypes[index];
     this.columnIndex = index;
     if (this.tableColumns.dataTypes[index].includes('enum')) {
@@ -109,10 +105,8 @@ export class FilterFormComponent {
   }
 
   deriveEnumOptions() {
-    var index = this.tableColumns.columns.indexOf(this.columnInput);
-    this.options = this.formService.deriveEnumOptions(
-      this.tableColumns.dataTypes[index]
-    );
+    const index = this.tableColumns.columns.indexOf(this.columnInput);
+    this.options = this.formService.deriveEnumOptions(this.tableColumns.dataTypes[index]);
   }
 
   openDropdown() {
@@ -133,6 +127,10 @@ export class FilterFormComponent {
     this.columnType = '';
     this.startDate = null;
     this.endDate = null;
-    this.errorMsg = null;
+    this.error = null;
+  }
+
+  hasError(value: any) {
+    return (value != null || value != '') && this.error != null;
   }
 }

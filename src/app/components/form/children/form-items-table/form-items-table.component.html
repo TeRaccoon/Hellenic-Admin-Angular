@@ -1,0 +1,67 @@
+<div class="table-container">
+  <table>
+    <thead>
+      <th>Item Name</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      @if (tableName == "invoices") {
+        <th>Unit</th>
+        <th>Discount</th>
+        <th>VAT</th>
+        <th>Total</th>
+      }
+      @if (tableName == "supplier_invoices") {
+        <th>Purchase Date</th>
+        <th>Expiry Date</th>
+        <th>Packing Format</th>
+        <th>Barcode</th>
+      }
+    </thead>
+    @if (itemsList.length > 0 && itemsList[0] != null) {
+      <tbody>
+        @for (item of itemsList; track item; let index = $index) {
+          <tr>
+            <td>{{ item.name ?? item.item_name }}</td>
+            <td>{{ item.quantity }}</td>
+            @if (tableName == "invoices") {
+              <td>
+                {{ item.price ?? 0 | currency: "GBP" }}
+                {{ item.price == null || item.price == 0 ? "*" : "" }}
+              </td>
+              <td>
+                {{ item.unit == "Unit" ? "Individual" : item.unit }}
+              </td>
+              <td>{{ item.discount }}%</td>
+              <td>{{ item.vat }}</td>
+              <td>
+                {{ item.net * ((100 - item.discount) / 100) | currency: "GBP" }}
+              </td>
+            }
+            @if (tableName == "supplier_invoices") {
+              <td>{{ item.purchase_price }}</td>
+              <td>{{ item.purchase_date }}</td>
+              <td>{{ item.expiry_date }}</td>
+              <td>{{ item.packing_format }}</td>
+              <td>{{ item.barcode }}</td>
+            }
+            <td (click)="deleteRow(itemsList[index].id)">
+              <fa-icon [icon]="x" />
+            </td>
+          </tr>
+        }
+        @if (tableName == "invoices") {
+          <tr>
+            <td colspan="5">Total (inc. delivery)</td>
+            <td>{{ invoiceTotal | currency: "GBP" }}</td>
+          </tr>
+        }
+        @if (tableName == "supplier_invoices") {
+          <tr>
+            <td colspan="6">Total</td>
+            <td>{{ invoiceTotal | currency: "EUR" }}</td>
+          </tr>
+        }
+      </tbody>
+    }
+  </table>
+</div>
