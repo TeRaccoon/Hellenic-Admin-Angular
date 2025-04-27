@@ -99,12 +99,7 @@
                           [ngClass]="file == null ? '' : 'success'"
                           [icon]="icons.faCloudUpload"
                         />
-                        {{
-                          file == null
-                            ? "Upload
-            Image"
-                            : file.name
-                        }}
+                        {{ file == null ? "Upload Image" : file.name }}
                         <label class="upload-size-warning">(8mb max)</label>
                       </label>
                     }
@@ -203,6 +198,7 @@
                             (focus)="onInputFocus(key)"
                             (blur)="onInputBlur(key)"
                             [value]="selectedReplacementData[key]?.selectData"
+                            (change)="dropdownChanged(key, $event, true)"
                           />
                           <div
                             class="drop-select"
