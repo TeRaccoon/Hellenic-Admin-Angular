@@ -1,33 +1,33 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataService } from '../../services/data.service';
-import { FormService } from '../../services/form.service';
-import { FilterService } from '../../services/filter.service';
-import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
-import {
-  columnFilter,
-  columnDateFilter,
-  sortedColumn,
-  viewMetadata,
-  FilterData,
-} from '../../common/types/view/types';
-import { editableData } from '../../common/types/forms/types';
-import { tableIcons } from '../../common/icons/table-icons';
-import { TableService } from '../../services/table.service';
-import {
-  BalanceSheetData,
-  BalanceSheetTable,
-} from '../../common/types/data-service/types';
-import { UrlService } from '../../services/url.service';
 import {
   ADDRESS_COLUMNS,
   CREDIT_NOTE_COLUMNS,
   PRICE_LIST_ITEM_COLUMNS,
   SUPPLIER_INVOICE_COLUMNS,
 } from '../../common/constants';
+import { tableIcons } from '../../common/icons/table-icons';
+import {
+  BalanceSheetData,
+  BalanceSheetTable,
+} from '../../common/types/data-service/types';
+import { editableData } from '../../common/types/forms/types';
+import {
+  columnDateFilter,
+  columnFilter,
+  FilterData,
+  sortedColumn,
+  viewMetadata,
+} from '../../common/types/view/types';
 import { DEFAULT_DISABLED_WIDGET_DATA } from '../../common/types/widget/const';
+import { AuthService } from '../../services/auth.service';
+import { DataService } from '../../services/data.service';
+import { FilterService } from '../../services/filter.service';
+import { FormService } from '../../services/form.service';
+import { TableService } from '../../services/table.service';
+import { UrlService } from '../../services/url.service';
 
 @Component({
   selector: 'app-view',
@@ -356,7 +356,7 @@ export class ViewComponent {
       title: balanceSheetTitle,
       customerId: id,
       table: this.tableName as BalanceSheetTable,
-      email: row['email']
+      email: row['email'],
     };
 
     this.dataService.storeBalanceSheetData(balanceSheetData);
@@ -547,11 +547,24 @@ export class ViewComponent {
     if (this.filterService.getFilterData().searchFilter === '') {
       this.viewMetaData.pageCount = this.calculatePageCount(true);
       this.filteredDisplayData = this.displayData.slice(start, end);
+      this.filteredDisplayData = this.checkForObsolete(
+        this.filteredDisplayData,
+        this.displayNames,
+      );
     } else {
       this.filteredDisplayData = this.applyTemporaryFilter();
       this.viewMetaData.pageCount = this.calculatePageCount();
       this.filteredDisplayData = this.filteredDisplayData.slice(start, end);
     }
+  }
+
+  checkForObsolete(data: any[], columns: any[]) {
+    if (!columns.includes('Obsolete')) {
+      return data;
+    }
+    return data.filter((row) => {
+      return row['obsolete'] != 'Yes';
+    });
   }
 
   resetTable() {
@@ -690,7 +703,7 @@ export class ViewComponent {
         idData: { id: itemId, columnName: 'Item ID' },
         query: 'stocked-items',
         disabled: DEFAULT_DISABLED_WIDGET_DATA,
-        extra: undefined
+        extra: undefined,
       });
       this.formService.showWidget();
     }
@@ -812,7 +825,7 @@ export class ViewComponent {
       idData: { id: id, columnName: idColumnName },
       query: query,
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined
+      extra: undefined,
     });
     this.formService.showWidget();
   }
@@ -836,7 +849,7 @@ export class ViewComponent {
       idData: { id: invoiceId, columnName: 'Supplier Invoice ID' },
       query: 'stocked-items-invoice',
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined
+      extra: undefined,
     });
     this.formService.showWidget();
   }
@@ -859,7 +872,7 @@ export class ViewComponent {
       idData: { id: customerId, columnName: 'Customer Name' },
       query: 'customer-addresses-by-id',
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined
+      extra: undefined,
     });
     this.formService.showWidget();
   }
@@ -884,7 +897,7 @@ export class ViewComponent {
       idData: { id: id, columnName: 'Price List ID' },
       query: query,
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined
+      extra: undefined,
     });
     this.formService.showWidget();
   }
@@ -906,11 +919,14 @@ export class ViewComponent {
   }
 
   getCurrencyCode(column: string) {
-    return (
-      (this.tableName == 'supplier_invoices' &&
-        (column == 'net_value' || column == 'VAT' || column == 'total_eur' || column == 'outstanding_balance')) ||
+    return (this.tableName == 'supplier_invoices' &&
+      (column == 'net_value' ||
+        column == 'VAT' ||
+        column == 'total_eur' ||
+        column == 'outstanding_balance')) ||
       column == 'amount_eur'
-    ) ? 'EUR' : 'GBP';
+      ? 'EUR'
+      : 'GBP';
   }
 
   back() {
@@ -1040,8 +1056,8 @@ export class ViewComponent {
       : String(columnFilter.filter).toLowerCase();
     this.displayColumnFilters.push(
       this.displayNames[Object.keys(this.data[0]).indexOf(column)] +
-      ': ' +
-      columnFilter.filter,
+        ': ' +
+        columnFilter.filter,
     );
 
     this.displayData = this.filteredDisplayData.filter((data) => {
@@ -1257,9 +1273,9 @@ export class ViewComponent {
     const a =
       Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
       Math.cos(lat1Rad) *
-      Math.cos(lat2Rad) *
-      Math.sin(deltaLon / 2) *
-      Math.sin(deltaLon / 2);
+        Math.cos(lat2Rad) *
+        Math.sin(deltaLon / 2) *
+        Math.sin(deltaLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     const distance = (R * c) / 1000; // Distance in km
