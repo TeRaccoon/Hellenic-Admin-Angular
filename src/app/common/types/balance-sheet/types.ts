@@ -1,11 +1,17 @@
-export interface Order {
-  type: 'order';
+interface BaseOrder {
   date: Date;
   title: string;
   status: OrderStatus;
   total: number;
   payment_status: PaymentStatus;
   outstanding_balance: number;
+}
+
+export interface OrderData extends BaseOrder {
+  VAT: number;
+}
+export interface Order extends BaseOrder {
+  type: 'order';
 }
 
 export enum OrderStatus {
@@ -25,19 +31,38 @@ export interface InvoiceSummary {
   outstanding_balance: number;
 }
 
-export interface Payment {
-  type: 'payment';
+interface BasePayment {
   date: Date;
   amount: number;
   payment_type: PaymentType;
   reference: string;
+}
+
+export interface PaymentData extends BasePayment {
+  id: number;
+  customer_id: number;
+  invoice_id: number;
+  linked_payment_id: null | number;
+  currency: Currency;
+}
+
+export interface Payment extends BasePayment {
+  type: 'payment';
   outstanding_balance: number;
 }
 
-export interface CreditNote {
-  type: 'credit-note';
+export interface CreditNoteData {
   date: Date;
   amount: number;
+}
+
+export interface CreditNote extends CreditNoteData {
+  type: 'credit-note';
+}
+
+enum Currency {
+  GBP = 'GBP',
+  EUR = 'EUR',
 }
 
 export enum PaymentType {
@@ -57,3 +82,4 @@ export enum TransactionType {
 }
 
 export type Transaction = Order | Payment | CreditNote;
+export type TransactionData = OrderData | PaymentData | CreditNoteData;

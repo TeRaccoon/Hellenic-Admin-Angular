@@ -2,8 +2,9 @@
 
 .quick-view-container {
     display: flex;
-    flex: 1 1 25%;
+    flex-wrap: wrap;
     gap: 15px;
+    width: calc(100% - 115px);
 
     .table-container {
         border-collapse: collapse;
@@ -13,6 +14,8 @@
         width: 100%;
         background: white;
         padding: 20px;
+        flex: 0 0 calc(50% - 8px);
+        box-sizing: border-box;
 
         table {
             border-collapse: collapse;
@@ -78,7 +81,6 @@
 
 .container {
     display: flex;
-    flex-direction: column;
     margin: 15px 15px 15px 16%;
     gap: 15px;
 
@@ -88,7 +90,7 @@
 
     .widget-container {
         display: flex;
-        justify-content: space-around;
+        flex-direction: column;
         gap: 15px;
 
         .widget {
@@ -103,6 +105,7 @@
             border: 0 solid rgba(0, 0, 0, .125);
             border-radius: 0.75rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+            max-width: 300px;
 
             .icon-container {
                 display: flex;
@@ -118,6 +121,7 @@
                 min-width: 50px;
                 height: 50px;
                 background: linear-gradient(to bottom, black, rgb(8, 8, 8), rgb(66, 66, 66) 95%, rgb(80, 80, 80));
+                box-shadow: 4px 4px 5px -2px rgba(0, 0, 0, 0.2);
 
                 fa-icon {
                     color: white;
@@ -133,12 +137,15 @@
                 gap: 8px;
 
                 h2 {
-                    font-size: 20px;
+                    font-size: 18px;
                     margin: 0;
+                    font-weight: 100;
                 }
 
                 p {
                     margin: 0;
+                    font-size: 20px;
+                    font-weight: bold;
                 }
             }
         }

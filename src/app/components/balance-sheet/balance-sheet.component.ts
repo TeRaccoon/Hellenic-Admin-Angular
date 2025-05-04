@@ -4,10 +4,13 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { DATE_RANGES } from '../../common/consts/const';
 import {
+  CreditNote,
   InvoiceSummary,
   Order,
+  Payment,
   PaymentStatus,
   Transaction,
+  TransactionData,
   TransactionType,
 } from '../../common/types/balance-sheet/types';
 import { CUSTOMER_QUERIES, SUPPLIER_QUERIES } from '../../common/types/data-service/const';
@@ -112,11 +115,9 @@ export class BalanceSheetComponent implements OnInit {
 
   async processData(query: string, type: TransactionType) {
     const data = await this.dataService.processGet(query, { filter: this.inputData.customerId }, true);
-
     if (data != null) {
-      data.forEach((dataItem: any) => {
-        const transaction: Transaction = { ...dataItem, type: type };
-        this.transactions.push(transaction);
+      data.forEach((dataItem: TransactionData) => {
+        this.transactions.push(this.toTransaction(dataItem, type));
       });
     }
 
@@ -144,6 +145,17 @@ export class BalanceSheetComponent implements OnInit {
         (transaction.type == 'payment' &&
           (transaction.type == value || value == 'Both' || (value != 'Cash' && transaction.payment_type != 'Cash')))
     );
+  }
+
+  toTransaction(dataItem: TransactionData, type: TransactionType): Transaction {
+    switch (type) {
+      case TransactionType.Order:
+        return { ...dataItem, type: 'order' } as Order;
+      case TransactionType.Payment:
+        return { ...dataItem, type: 'payment' } as Payment;
+      case TransactionType.CreditNote:
+        return { ...dataItem, type: 'credit-note' } as CreditNote;
+    }
   }
 
   async emailSupplier() {
