@@ -546,9 +546,8 @@ export class ViewComponent {
     var end = start + this.viewMetaData.entryLimit;
     if (this.filterService.getFilterData().searchFilter === '') {
       this.viewMetaData.pageCount = this.calculatePageCount(true);
-      this.filteredDisplayData = this.displayData.slice(start, end);
       this.filteredDisplayData = this.checkForObsolete(
-        this.filteredDisplayData,
+        this.displayData.slice(start, end),
         this.displayNames,
       );
     } else {
@@ -1034,12 +1033,17 @@ export class ViewComponent {
 
   applyFilter() {
     this.columnFilters = this.filterService.getColumnFilter();
+    this.columnDateFilters = this.filterService.getColumnDateFilter();
     this.displayColumnFilters = [];
+
+    if (this.columnFilters.length + this.columnDateFilters.length == 1) {
+      this.filteredDisplayData = this.displayData;
+    }
+
     this.columnFilters.forEach((filter: any) => {
       this.filterColumns(filter);
     });
 
-    this.columnDateFilters = this.filterService.getColumnDateFilter();
     this.columnDateFilters.forEach((filter: any) => {
       this.filterDateColumns(filter);
     });
