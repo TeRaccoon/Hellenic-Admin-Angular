@@ -115,6 +115,8 @@ export class AddFormComponent {
   invoiceTotal: number = 0;
   itemsList: any[] = [];
 
+  isExpense = false;
+
   constructor(
     private dataService: DataService,
     private formService: FormService,
@@ -213,6 +215,7 @@ export class AddFormComponent {
       hidden: null,
     };
     this.addItemFormSubmitAttempted = false;
+    this.isExpense = false;
   }
 
   async loadForm() {
@@ -439,6 +442,7 @@ export class AddFormComponent {
         quantity: ['', [Validators.required]],
         discount: [''],
         unit: ['', [Validators.required]],
+        type: ['Product', [Validators.required]],
       });
     }
   }
@@ -853,6 +857,8 @@ export class AddFormComponent {
       field === 'invoiced_item_id'
     ) {
       await this.handleCreditNotesCustomersInvoicedItems(dataId);
+    } else if (this.tableName === 'invoices' && field === 'item_id') {
+      await this.handleInvoiceItem(dataId);
     }
 
     if (this.isBarcodeGenerationRequired(field)) {
@@ -876,6 +882,21 @@ export class AddFormComponent {
   private setFormValue(field: string, dataId: number, alt: boolean) {
     const form = alt ? this.addItemForm : this.addForm;
     form.get(field)?.setValue(dataId);
+  }
+
+  private async handleInvoiceItem(dataId: number) {
+    let itemData = await this.dataService.processGet('items', {
+      filter: dataId.toString(),
+    });
+
+    this.isExpense = itemData.type === 'Expense';
+
+    this.addItemForm.get('type')?.setValue(itemData.type);
+
+    if (this.isExpense) {
+      this.addItemForm.get('quantity')?.setValue('1');
+      this.addItemForm.get('unit')?.setValue('Unit');
+    }
   }
 
   private async handleInvoiceCustomer(dataId: number) {
