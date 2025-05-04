@@ -604,7 +604,6 @@
                     <th>Total</th>
                   }
                   @if (tableName == "supplier_invoices") {
-                    <th>Purchase Date</th>
                     <th>Expiry Date</th>
                     <th>Packing Format</th>
                     <th>Barcode</th>
@@ -637,7 +636,6 @@
                         }
                         @if (tableName == "supplier_invoices") {
                           <td>{{ item.purchase_price }}</td>
-                          <td>{{ item.purchase_date }}</td>
                           <td>{{ item.expiry_date }}</td>
                           <td>{{ item.packing_format }}</td>
                           <td>{{ item.barcode }}</td>
