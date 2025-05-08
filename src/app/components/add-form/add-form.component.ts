@@ -425,6 +425,9 @@ export class AddFormComponent {
           [Validators.required],
         ],
         item_id: ['', [Validators.required]],
+        price: [''],
+        discount: [''],
+        discount_type: ['Number'],
         purchase_price: ['', [Validators.required]],
         quantity: ['', [Validators.required]],
 
@@ -1448,6 +1451,25 @@ export class AddFormComponent {
         selectData: '',
         selectDataId: 0,
       };
+    }
+  }
+
+  updateSupplierInvoiceFinalPrice() {
+    const price = this.addItemForm.get('price')?.value;
+    if (price != '' || price != null) {
+      const discount = this.addItemForm.get('discount')?.value;
+      if (discount != '' || discount != null) {
+        const type = this.addItemForm.get('discount_type')?.value;
+        if (type == 'Number') {
+          this.addItemForm.get('purchase_price')?.setValue(price - discount);
+        } else {
+          this.addItemForm
+            .get('purchase_price')
+            ?.setValue(price * (1 - discount / 100));
+        }
+      } else {
+        this.addItemForm.get('purchase_price')?.setValue(price);
+      }
     }
   }
 

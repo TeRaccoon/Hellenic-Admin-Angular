@@ -436,12 +436,45 @@
             </div>
             @if (tableName == "supplier_invoices") {
               <div class="input-container number">
+                <label>Purchase Price</label>
+                <input
+                  [class]="itemInputHasError('price') ? 'error-input' : ''"
+                  class="number"
+                  type="number"
+                  formControlName="price"
+                  (blur)="updateSupplierInvoiceFinalPrice()"
+                />
+              </div>
+              <div class="input-container number">
+                <label>Discount</label>
+                <input
+                  [class]="itemInputHasError('discount') ? 'error-input' : ''"
+                  class="number"
+                  type="number"
+                  formControlName="discount"
+                  (blur)="updateSupplierInvoiceFinalPrice()"
+                />
+              </div>
+              <div class="input-container select">
+                <label>Discount Type</label>
+                <select
+                  class="select-input"
+                  formControlName="discount_type"
+                  (blur)="updateSupplierInvoiceFinalPrice()"
+                >
+                  <option selected value="Number">Number</option>
+                  <option value="Percentage">Percentage</option>
+                </select>
+              </div>
+              <div class="input-container number">
                 <label
-                  >Purchase Price
+                  >Final Price
                   <fa-icon class="asterisk" [icon]="icons.faAsterisk"
                 /></label>
                 <input
-                  [class]="itemInputHasError('quantity') ? 'error-input' : ''"
+                  [class]="
+                    itemInputHasError('purchase_price') ? 'error-input' : ''
+                  "
                   class="number"
                   type="number"
                   formControlName="purchase_price"
