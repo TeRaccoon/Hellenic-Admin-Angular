@@ -863,7 +863,6 @@ export class AddFormComponent {
     } else if (this.tableName === 'invoices' && field === 'item_id') {
       await this.handleInvoiceItem(dataId);
     }
-
     if (this.isBarcodeGenerationRequired(field)) {
       await this.generateBarcode(alt);
     }
@@ -991,6 +990,12 @@ export class AddFormComponent {
     if (lastPurchasePrice.length > 0 && lastPurchasePrice[0] != null) {
       this.addItemForm.get('purchase_price')?.setValue(lastPurchasePrice[0]);
     }
+
+    let itemData = await this.dataService.processGet('items', {
+      filter: dataId.toString(),
+    });
+
+    this.isExpense = itemData.type === 'Expense';
   }
 
   inputChanged(field: string) {

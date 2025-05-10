@@ -502,88 +502,91 @@
                   formControlName="purchase_date"
                 />
               </div>
-              <div class="input-container date">
-                <label
-                  >Expiry Date
-                  <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <input
-                  class="date"
-                  type="date"
-                  formControlName="expiry_date"
-                  (change)="generateBarcode(true)"
-                />
-              </div>
-              <div class="input-container text">
-                <label
-                  >Barcode <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <input class="text" type="text" formControlName="barcode" />
-              </div>
-              <div class="input-container replacement">
-                <label
-                  >Warehouse
-                  <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <div class="drop-select-container">
+              @if (!isExpense) {
+                <div class="input-container date">
+                  <label
+                    >Expiry Date
+                    <fa-icon class="asterisk" [icon]="icons.faAsterisk"
+                  /></label>
                   <input
-                    (input)="
-                      filterDropSelect(
-                        'Warehouse ID',
-                        $event,
-                        false,
-                        'warehouse_id',
-                        true
-                      )
-                    "
-                    type="text"
-                    (focus)="onInputFocus('Warehouse ID')"
-                    (blur)="onInputBlur('Warehouse ID')"
-                    [value]="
-                      selectedReplacementData['Warehouse ID']?.selectData
-                    "
+                    class="date"
+                    type="date"
+                    formControlName="expiry_date"
+                    (change)="generateBarcode(true)"
                   />
-                  <div
-                    class="drop-select"
-                    [ngClass]="
-                      selectOpen['Warehouse ID']?.opened
-                        ? 'input-visible'
-                        : 'input-hidden'
-                    "
-                    required
-                  >
-                    @for (
-                      option of filteredReplacementData["Warehouse ID"].data;
-                      track option
-                    ) {
-                      <p
-                        (click)="
-                          updateSelectedReplacementDataFromKey(
-                            option.id,
-                            option.replacement,
-                            'Warehouse ID',
-                            'warehouse_id',
-                            true
-                          )
-                        "
-                      >
-                        {{ option.replacement }}
-                      </p>
-                    }
+                </div>
+                <div class="input-container text">
+                  <label
+                    >Barcode
+                    <fa-icon class="asterisk" [icon]="icons.faAsterisk"
+                  /></label>
+                  <input class="text" type="text" formControlName="barcode" />
+                </div>
+                <div class="input-container replacement">
+                  <label
+                    >Warehouse
+                    <fa-icon class="asterisk" [icon]="icons.faAsterisk"
+                  /></label>
+                  <div class="drop-select-container">
+                    <input
+                      (input)="
+                        filterDropSelect(
+                          'Warehouse ID',
+                          $event,
+                          false,
+                          'warehouse_id',
+                          true
+                        )
+                      "
+                      type="text"
+                      (focus)="onInputFocus('Warehouse ID')"
+                      (blur)="onInputBlur('Warehouse ID')"
+                      [value]="
+                        selectedReplacementData['Warehouse ID']?.selectData
+                      "
+                    />
+                    <div
+                      class="drop-select"
+                      [ngClass]="
+                        selectOpen['Warehouse ID']?.opened
+                          ? 'input-visible'
+                          : 'input-hidden'
+                      "
+                      required
+                    >
+                      @for (
+                        option of filteredReplacementData["Warehouse ID"].data;
+                        track option
+                      ) {
+                        <p
+                          (click)="
+                            updateSelectedReplacementDataFromKey(
+                              option.id,
+                              option.replacement,
+                              'Warehouse ID',
+                              'warehouse_id',
+                              true
+                            )
+                          "
+                        >
+                          {{ option.replacement }}
+                        </p>
+                      }
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="input-container select">
-                <label
-                  >Packing Format
-                  <fa-icon class="asterisk" [icon]="icons.faAsterisk"
-                /></label>
-                <select class="select-input" formControlName="packing_format">
-                  <option selected value="Individual">Individual</option>
-                  <option value="Box">Box</option>
-                  <option value="Pallet">Pallet</option>
-                </select>
-              </div>
+                <div class="input-container select">
+                  <label
+                    >Packing Format
+                    <fa-icon class="asterisk" [icon]="icons.faAsterisk"
+                  /></label>
+                  <select class="select-input" formControlName="packing_format">
+                    <option selected value="Individual">Individual</option>
+                    <option value="Box">Box</option>
+                    <option value="Pallet">Pallet</option>
+                  </select>
+                </div>
+              }
             }
             @if (tableName == "invoices" && !isExpense) {
               <div class="input-container number">
