@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import _ from 'lodash';
-import { Subscription } from 'rxjs';
 import { DataService } from '../../../services/data.service';
 import { UrlService } from '../../../services/url.service';
 import { FORM_ICONS } from '../icons';
@@ -13,9 +12,7 @@ import { Data, FormState, KeyedAddress, KeyedData, Settings } from '../types';
   templateUrl: './edit-form.component.html',
   styleUrls: ['./edit-form.component.scss'],
 })
-export class EditFormComponent implements OnInit, OnDestroy {
-  private readonly subscriptions = new Subscription();
-
+export class EditFormComponent {
   icons = FORM_ICONS;
 
   searchWaiting = false;
@@ -106,18 +103,11 @@ export class EditFormComponent implements OnInit, OnDestroy {
     this.resetFormState();
 
     this.debounceSearch = _.debounce(this.performSearch.bind(this), 1000);
-  }
 
-  ngOnInit() {
-    this.subscriptions.add(
-      this.formService.getEditFormVisibility().subscribe((visible) => {
-        this.changeVisibility(visible);
-      })
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    effect(() => {
+      const visible = this.formService.getEditFormVisibility()();
+      this.changeVisibility(visible);
+    });
   }
 
   changeVisibility(visible: boolean) {

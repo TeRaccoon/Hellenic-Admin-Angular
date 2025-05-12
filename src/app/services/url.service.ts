@@ -16,7 +16,7 @@ const DOCUMENT_UPLOAD_PATH = API_EXTENSION + 'document_upload.php';
 export class UrlService {
   HOST_NAME = 'http://localhost/';
   UPLOAD_EXTENSION = 'uploads/';
-  API_EXTENSION = 'API/'
+  API_EXTENSION = 'API/';
 
   constructor(private config: ConfigService) {
     this.loadConfig();
@@ -28,7 +28,7 @@ export class UrlService {
   }
 
   getUrl(extension = 'api', full = true) {
-    var url = full ? this.HOST_NAME : '';
+    let url = full ? this.HOST_NAME : '';
     switch (extension) {
       case 'uploads':
         return (url += UPLOAD_EXTENSION);

@@ -1,44 +1,33 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, effect } from '@angular/core';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../../../services/data.service';
-import { Subscription } from 'rxjs';
 import { FormService } from '../../service';
 import { ItemsList } from '../../types';
 
 @Component({
   selector: 'app-form-items-table',
   templateUrl: './form-items-table.component.html',
-  styleUrl: './form-items-table.component.scss'
+  styleUrl: './form-items-table.component.scss',
 })
 export class FormItemsTableComponent {
   @Input() tableName!: string;
   @Input() invoiceId!: number;
 
-  private readonly subscriptions = new Subscription();
-
-  invoiceTotal: number = 0;
+  invoiceTotal = 0;
   itemsList: ItemsList[] = [];
 
   x = faX;
 
-  constructor(private dataService: DataService, private formService: FormService) {
-    this.loadItemsList()
-  }
+  constructor(
+    private dataService: DataService,
+    private formService: FormService
+  ) {
+    this.loadItemsList();
 
-  ngOnInit() {
-    this.subscriptions.add(
-      this.formService
-        .getReloadRequest()
-        .subscribe(async (reloadRequested: boolean) => {
-          if (reloadRequested) {
-            await this.loadItemsList();
-          }
-        })
-    );
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    effect(() => {
+      const reloadRequested = this.formService.getReloadRequestSignal()();
+      if (reloadRequested) this.loadItemsList();
+    });
   }
 
   async loadItemsList() {
@@ -73,7 +62,7 @@ export class FormItemsTableComponent {
   }
 
   deleteRow(id: number) {
-    let table = this.tableName == 'supplier_invoices' ? 'stocked_items' : 'invoiced_items';
+    const table = this.tableName == 'supplier_invoices' ? 'stocked_items' : 'invoiced_items';
 
     this.formService.setSelectedTable(table);
     this.formService.setDeleteFormIds([id]);

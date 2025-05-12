@@ -1,5 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, effect } from '@angular/core';
 import { FilterService } from '../../services/filter.service';
 import { FormService } from '../form/service';
 import { ICONS } from './icons';
@@ -9,9 +8,7 @@ import { ICONS } from './icons';
   templateUrl: './filter-form.component.html',
   styleUrls: ['./filter-form.component.scss'],
 })
-export class FilterFormComponent implements OnInit, OnDestroy {
-  private readonly subscriptions = new Subscription();
-
+export class FilterFormComponent {
   icons = ICONS;
 
   formVisible = 'hidden';
@@ -42,20 +39,13 @@ export class FilterFormComponent implements OnInit, OnDestroy {
   constructor(
     private formService: FormService,
     private filterService: FilterService
-  ) {}
-
-  ngOnInit() {
-    this.subscriptions.add(
-      this.formService.getFilterFormVisibility().subscribe(async (visible) => {
-        this.formVisible = visible ? 'visible' : 'hidden';
-        this.tableColumns = this.filterService.getTableColumns();
-        this.error = null;
-      })
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+  ) {
+    effect(() => {
+      const visible = this.formService.getFilterFormVisibility()();
+      this.formVisible = visible ? 'visible' : 'hidden';
+      this.tableColumns = this.filterService.getTableColumns();
+      this.error = null;
+    });
   }
 
   hide() {

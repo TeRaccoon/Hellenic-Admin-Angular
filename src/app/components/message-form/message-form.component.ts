@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
-import { FormService } from '../form/service';
+import { Component, effect } from '@angular/core';
 import { faX } from '@fortawesome/free-solid-svg-icons';
-import { Subscription } from 'rxjs';
+import { FormService } from '../form/service';
 
 @Component({
   selector: 'app-message-form',
@@ -9,8 +8,6 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./message-form.component.scss'],
 })
 export class MessageFormComponent {
-  private readonly subscriptions = new Subscription();
-
   faX = faX;
 
   formVisible = 'hidden';
@@ -20,19 +17,11 @@ export class MessageFormComponent {
     secondaryMessage?: string | null;
   } = { title: '', message: '', secondaryMessage: null };
 
-  constructor(private formService: FormService) { }
-
-  ngOnInit() {
-    this.subscriptions.add(
-      this.formService.getMessageFormVisibility().subscribe((visible) => {
-        this.formVisible = visible ? 'visible' : 'hidden';
-        this.formData = this.formService.getMessageFormData();
-      })
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+  constructor(private formService: FormService) {
+    effect(() => {
+      this.formVisible = this.formService.getMessageFormVisibility()() ? 'visible' : 'hidden';
+      this.formData = this.formService.getMessageFormData();
+    });
   }
 
   hide() {

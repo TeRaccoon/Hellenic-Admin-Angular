@@ -61,7 +61,7 @@ export class BalanceSheetComponent implements OnInit {
   ) {
     this.imageUrlBase = this.urlService.getUrl('uploads');
 
-    this.inputData = this.dataService.retrieveBalanceSheetData();
+    this.inputData = this.dataService.getBalanceSheetData();
     this.queries = this.inputData.table == 'customers' ? CUSTOMER_QUERIES : SUPPLIER_QUERIES;
   }
 

@@ -19,7 +19,7 @@ export class VatViewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.vatData = this.dataService.retrieveData();
+    this.vatData = this.dataService.getData();
     if (this.vatData.labels.length == 0) {
       this.router.navigate(['/home']);
     }

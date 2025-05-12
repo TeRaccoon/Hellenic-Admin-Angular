@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import {
@@ -102,6 +102,23 @@ export class ViewComponent implements OnInit, OnDestroy {
     };
   }
 
+  private reloadEffect = effect(() => {
+    const reloadRequested = this.formService.getReloadRequestSignal()();
+    if (!reloadRequested) return;
+
+    const reloadType = this.formService.getReloadType();
+
+    if (reloadType == 'hard') {
+      this.selectedRows = [];
+      this.sortedColumn = { columnName: '', ascending: false };
+      this.loadTable(this.tableName);
+    } else if (reloadType == 'filter') {
+      this.applyFilter();
+    }
+
+    this.formService.performReload();
+  });
+
   ngOnInit() {
     this.subscriptionHandler();
   }
@@ -114,25 +131,9 @@ export class ViewComponent implements OnInit, OnDestroy {
           this.resetTable();
           this.displayName = this.tableService.getTableDisplayName(this.tableName) ?? '';
           this.formService.setSelectedTable(String(this.tableName));
-          this.loadTable(String(this.tableName));
+          this.loadTable(this.tableName);
           this.loadPage();
           this.tabs = this.dataService.getTabs();
-        }
-      })
-    );
-
-    this.subscriptions.add(
-      this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
-        if (reloadRequested) {
-          const reloadType = this.formService.getReloadType();
-          if (reloadType == 'hard') {
-            this.selectedRows = [];
-            this.sortedColumn = { columnName: '', ascending: false };
-            await this.loadTable(String(this.tableName));
-          } else if (reloadType == 'filter') {
-            this.applyFilter();
-          }
-          this.formService.performReload();
         }
       })
     );
@@ -140,6 +141,7 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    this.reloadEffect.destroy();
   }
 
   changeTab(tableName: string) {
@@ -202,7 +204,6 @@ export class ViewComponent implements OnInit, OnDestroy {
       }
       return type;
     });
-    console.log(this.dataTypes);
   }
 
   getColumnHeaders(obj: Record<string, any>): string[] {

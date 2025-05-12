@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { FormService } from '../form/service';
-import { Subscription } from 'rxjs';
-import { UrlService } from '../../services/url.service';
+import { Component, effect } from '@angular/core';
 import { WIDGET_ICONS } from '../../common/icons/widget-icons';
 import { DEFAULT_WIDGET_DATA } from '../../common/types/widget/const';
+import { DataService } from '../../services/data.service';
+import { UrlService } from '../../services/url.service';
+import { FormService } from '../form/service';
 
 @Component({
   selector: 'app-widget',
@@ -12,8 +11,6 @@ import { DEFAULT_WIDGET_DATA } from '../../common/types/widget/const';
   styleUrls: ['./widget.component.scss'],
 })
 export class WidgetComponent {
-  private readonly subscriptions = new Subscription();
-
   icons = WIDGET_ICONS;
   imageUrlBase;
 
@@ -22,7 +19,7 @@ export class WidgetComponent {
   tableData = DEFAULT_WIDGET_DATA;
   formName = '';
 
-  totalStock: number = 0;
+  totalStock = 0;
   freeDeliveryMinimum: null | number = null;
 
   constructor(
@@ -31,51 +28,38 @@ export class WidgetComponent {
     private urlService: UrlService
   ) {
     this.imageUrlBase = this.urlService.getUrl('uploads');
-  }
 
-  ngOnInit() {
-    this.subscriptionHandler();
-  }
+    effect(() => {
+      const reloadRequested = this.formService.getReloadRequestSignal()();
+      if (reloadRequested && this.visible) {
+        this.reload();
+      }
+    });
 
-  subscriptionHandler() {
-    this.subscriptions.add(
-      this.formService.getWidgetVisibility().subscribe((visible: boolean) => {
-        this.visible = visible;
-      })
-    );
+    effect(() => {
+      const widgetData = this.dataService.getWidgetData()();
+      if (widgetData) {
+        this.tableData = widgetData;
 
-    this.subscriptions.add(
-      this.dataService.retrieveWidgetData().subscribe((tableData: any) => {
-        this.tableData = tableData;
-
-        if (this.tableData.tableName == 'stocked_items') {
+        if (widgetData.tableName == 'stocked_items') {
           this.getStockedItemTotal();
         }
 
-        if (this.tableData.tableName == 'invoiced_items' && this.freeDeliveryMinimum == null) {
+        if (widgetData.tableName == 'invoiced_items' && this.freeDeliveryMinimum == null) {
           this.fetchFreeDeliveryMinimum();
         }
-      })
-    );
+      }
+    });
 
-    this.subscriptions.add(
-      this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
-        if (reloadRequested && this.visible) {
-          await this.reload();
-        }
-      })
-    );
+    effect(() => {
+      this.visible = this.formService.getWidgetVisibility()();
+    });
   }
 
   private async fetchFreeDeliveryMinimum() {
     this.freeDeliveryMinimum = await this.dataService.processGet('settings', {
       filter: 'free_delivery_minimum',
     });
-  }
-
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
   }
 
   async reload() {
@@ -85,7 +69,7 @@ export class WidgetComponent {
       true
     );
 
-    let isDelivery =
+    const isDelivery =
       (
         await this.dataService.processGet('invoice', {
           filter: this.tableData.idData.id,
@@ -140,11 +124,11 @@ export class WidgetComponent {
   }
 
   async editRow(id: number) {
-    let editFormData = await this.dataService.processGet('edit-form-data', {
+    const editFormData = await this.dataService.processGet('edit-form-data', {
       filter: this.tableData.tableName,
     });
 
-    let appendOrAdd = await this.dataService.processGet('append-or-add', {
+    const appendOrAdd = await this.dataService.processGet('append-or-add', {
       table: this.tableData.tableName,
       id: id,
       column: 'id',
@@ -157,19 +141,15 @@ export class WidgetComponent {
   }
 
   async addRow() {
-    let addFormData = await this.dataService.processGet('table', {
+    const addFormData = await this.dataService.processGet('table', {
       filter: this.tableData.tableName,
     });
 
     if (addFormData != null) {
-      let formData = addFormData.editable;
+      const formData = addFormData.editable;
 
-      let values: (string | null)[] = Array(
-        addFormData.editable.columns.length
-      ).fill(null);
-      const idIndex = addFormData.editable.names.indexOf(
-        this.tableData.idData.columnName
-      );
+      const values: (string | null)[] = Array(addFormData.editable.columns.length).fill(null);
+      const idIndex = addFormData.editable.names.indexOf(this.tableData.idData.columnName);
       values[idIndex] = this.tableData.idData.id;
       formData.values = values;
 

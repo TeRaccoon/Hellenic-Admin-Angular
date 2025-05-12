@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable, signal } from '@angular/core';
 import { Observable, Subject, lastValueFrom } from 'rxjs';
-import { UrlService } from './url.service';
-import { BalanceSheetData, Response } from '../common/types/data-service/types';
 import { DEFAULT_BALANCE_SHEET } from '../common/types/data-service/const';
+import { BalanceSheetData, Response } from '../common/types/data-service/types';
 import { WidgetData } from '../common/types/widget/types';
+import { UrlService } from './url.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,22 +12,22 @@ import { WidgetData } from '../common/types/widget/types';
 export class DataService {
   private dataSubject = new Subject<any[]>();
   tableData: any = null;
-  private widgetData = new Subject<WidgetData>();
   private tableWidgetData: any = {};
   private balanceSheetData: BalanceSheetData;
   altTableData: any = {};
   invoiceIds: any[] = [];
   tabs: { displayName: string; tableName: string }[] = [];
 
-  constructor(private http: HttpClient, private urlService: UrlService) {
+  private widgetData = signal<WidgetData | null>(null);
+
+  constructor(
+    private http: HttpClient,
+    private urlService: UrlService
+  ) {
     this.balanceSheetData = DEFAULT_BALANCE_SHEET;
   }
 
-  async processGet(
-    query: string,
-    filter: Record<string, any> = {},
-    makeArray = false
-  ): Promise<any> {
+  async processGet(query: string, filter: Record<string, any> = {}, makeArray = false): Promise<any> {
     let url = new URL(this.urlService.getUrl('admin'));
     url.searchParams.append('query', query);
     url = this.parseParams(url, filter);
@@ -39,10 +39,7 @@ export class DataService {
     return response;
   }
 
-  async processPost(
-    body: Record<string, any>,
-    makeArray = false
-  ): Promise<any> {
+  async processPost(body: Record<string, any>, makeArray = false): Promise<any> {
     const url = this.urlService.getUrl('admin');
     let response = await lastValueFrom(this.http.post(url, { body }));
 
@@ -53,7 +50,7 @@ export class DataService {
 
   async processDocument(location: string) {
     const url = this.urlService.getUrl('admin');
-    let value = await lastValueFrom(
+    const value = await lastValueFrom(
       this.http.post(url, {
         body: {
           action: 'document',
@@ -67,10 +64,15 @@ export class DataService {
   async submitFormData(data: any) {
     const url = this.urlService.getUrl('data');
 
-    let submissionResponse = await lastValueFrom<any>(
-      this.http.post(url, data, { withCredentials: true })
-    );
-    return submissionResponse;
+    try {
+      const submissionResponse = await lastValueFrom<any>(this.http.post(url, data, { withCredentials: true }));
+      return submissionResponse;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.error.text,
+      };
+    }
   }
 
   async uploadImage(formData: FormData): Promise<Response> {
@@ -97,15 +99,15 @@ export class DataService {
     this.dataSubject.next(data);
   }
 
-  retrieveData() {
+  getData() {
     return this.tableData;
   }
 
   storeWidgetData(data: WidgetData) {
-    this.widgetData.next(data);
+    this.widgetData.set(data);
   }
 
-  retrieveWidgetData() {
+  getWidgetData() {
     return this.widgetData;
   }
 
@@ -113,7 +115,7 @@ export class DataService {
     this.balanceSheetData = data;
   }
 
-  retrieveBalanceSheetData() {
+  getBalanceSheetData() {
     return this.balanceSheetData;
   }
 
@@ -121,7 +123,7 @@ export class DataService {
     this.tableWidgetData = data;
   }
 
-  retrieveTableWidgetData() {
+  getTableWidgetData() {
     return this.tableWidgetData;
   }
 
@@ -132,7 +134,7 @@ export class DataService {
   storePrintInvoiceIds(data: any) {
     this.invoiceIds = data;
   }
-  retrievePrintInvoiceIds() {
+  getPrintInvoiceIds() {
     return this.invoiceIds;
   }
 

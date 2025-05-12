@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
-import { TABLE_CATEGORIES } from '../../common/constants';
 import { AuthService } from '../../services/auth.service';
 import { TableService } from '../../services/table.service';
+import { TABLE_CATEGORIES } from './consts';
+import { TableCategories } from './types';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,7 +21,7 @@ export class SidebarComponent {
 
   isDropdownVisible: Record<string, boolean> = {};
 
-  tables: any = TABLE_CATEGORIES;
+  tables: TableCategories = TABLE_CATEGORIES;
 
   constructor(
     route: ActivatedRoute,
@@ -34,9 +35,7 @@ export class SidebarComponent {
       }
     });
 
-    tableService.getSelectedTable().subscribe((table: string) => {
-      this.selectedTable = table;
-    });
+    this.selectedTable = tableService.getSelectedTable();
   }
 
   canDisplayTable(tableName: string) {
@@ -47,8 +46,8 @@ export class SidebarComponent {
     this.tableService.changeTable(tableName);
   }
 
-  getTableCategories(obj: Record<string, any>): string[] {
-    return obj ? Object.keys(obj) : [];
+  getTableCategories(obj: TableCategories): (keyof TableCategories)[] {
+    return obj ? (Object.keys(obj) as (keyof TableCategories)[]) : [];
   }
 
   toggleDropdown(category: string): void {

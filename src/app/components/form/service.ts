@@ -1,6 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { EditableData, KeyedData, Message, Settings } from './types';
 
@@ -8,16 +7,16 @@ import { EditableData, KeyedData, Message, Settings } from './types';
   providedIn: 'root',
 })
 export class FormService {
-  private isLoginVisible = new BehaviorSubject<boolean>(false);
-  private isEditFormVisible = new BehaviorSubject<boolean>(false);
-  private isAddFormVisible = new BehaviorSubject<boolean>(false);
-  private isDeleteFormVisible = new BehaviorSubject<boolean>(false);
-  private isMessageFormVisible = new BehaviorSubject<boolean>(false);
-  private isFilterFormVisible = new BehaviorSubject<boolean>(false);
-  private isChangePasswordFormVisible = new BehaviorSubject<boolean>(false);
-  private isInvoicedItemsFormVisible = new BehaviorSubject<boolean>(false);
-  private isWidgetVisible = new BehaviorSubject<boolean>(false);
-  private isBalanceSheetVisible = new BehaviorSubject<boolean>(false);
+  private isLoginVisible = signal<boolean>(false);
+  private isEditFormVisible = signal<boolean>(false);
+  private isAddFormVisible = signal<boolean>(false);
+  private isDeleteFormVisible = signal<boolean>(false);
+  private isMessageFormVisible = signal<boolean>(false);
+  private isFilterFormVisible = signal<boolean>(false);
+  private isChangePasswordFormVisible = signal<boolean>(false);
+  private isInvoicedItemsFormVisible = signal<boolean>(false);
+  private isWidgetVisible = signal<boolean>(false);
+  private isBalanceSheetVisible = signal<boolean>(false);
 
   private editFormData: KeyedData = {};
   private addFormData: KeyedData = {};
@@ -42,138 +41,148 @@ export class FormService {
 
   private selectedTable = '';
   private selectedId = '';
-  private reloadType = '';
   private reloadId = '';
 
-  private waitingToReload = new BehaviorSubject<boolean>(false);
+  reloadRequested = signal<boolean>(false);
+  reloadType: string | null = null;
 
   constructor(private dataService: DataService) {}
 
-  getReloadRequest(): Observable<boolean> {
-    return this.waitingToReload.asObservable();
+  getReloadRequestSignal() {
+    return this.reloadRequested;
+  }
+
+  getReloadType() {
+    return this.reloadType;
+  }
+
+  setReloadType(reloadType: string) {
+    this.reloadType = reloadType;
   }
 
   performReload() {
-    this.waitingToReload.next(false);
+    this.reloadRequested.set(false);
   }
 
   requestReload(reloadType: string | null = null) {
-    reloadType != null && this.setReloadType(reloadType);
-    this.waitingToReload.next(true);
+    if (reloadType != null) {
+      this.reloadType = reloadType;
+    }
+    this.reloadRequested.set(true);
   }
 
   showLoginForm() {
-    this.isLoginVisible.next(true);
+    this.isLoginVisible.set(true);
   }
 
   hideLoginForm() {
-    this.isLoginVisible.next(false);
+    this.isLoginVisible.set(false);
   }
 
-  getLoginFormVisibility(): Observable<boolean> {
-    return this.isLoginVisible.asObservable();
+  getLoginFormVisibility() {
+    return this.isLoginVisible;
   }
 
   showEditForm() {
-    this.isEditFormVisible.next(true);
+    this.isEditFormVisible.set(true);
   }
   hideEditForm() {
-    this.isEditFormVisible.next(false);
+    this.isEditFormVisible.set(false);
   }
 
   showAddForm() {
-    this.isAddFormVisible.next(true);
+    this.isAddFormVisible.set(true);
   }
   hideAddForm() {
-    this.isAddFormVisible.next(false);
+    this.isAddFormVisible.set(false);
   }
 
   showDeleteForm() {
-    this.isDeleteFormVisible.next(true);
+    this.isDeleteFormVisible.set(true);
   }
   hideDeleteForm() {
-    this.isDeleteFormVisible.next(false);
+    this.isDeleteFormVisible.set(false);
   }
 
   showMessageForm() {
-    this.isMessageFormVisible.next(true);
+    this.isMessageFormVisible.set(true);
   }
 
   hideMessageForm() {
-    this.isMessageFormVisible.next(false);
+    this.isMessageFormVisible.set(false);
   }
 
   showFilterForm() {
-    this.isFilterFormVisible.next(true);
+    this.isFilterFormVisible.set(true);
   }
   hideFilterForm() {
-    this.isFilterFormVisible.next(false);
+    this.isFilterFormVisible.set(false);
   }
 
   showChangePasswordForm() {
-    this.isChangePasswordFormVisible.next(true);
+    this.isChangePasswordFormVisible.set(true);
   }
   hideChangePasswordForm() {
-    this.isChangePasswordFormVisible.next(false);
+    this.isChangePasswordFormVisible.set(false);
   }
 
   showInvoicedItemForm() {
-    this.isInvoicedItemsFormVisible.next(true);
+    this.isInvoicedItemsFormVisible.set(true);
   }
   hideInvoicedItemForm() {
-    this.isInvoicedItemsFormVisible.next(false);
+    this.isInvoicedItemsFormVisible.set(false);
   }
 
-  getEditFormVisibility(): Observable<boolean> {
-    return this.isEditFormVisible.asObservable();
+  getEditFormVisibility() {
+    return this.isEditFormVisible;
   }
 
-  getAddFormVisibility(): Observable<boolean> {
-    return this.isAddFormVisible.asObservable();
+  getAddFormVisibility() {
+    return this.isAddFormVisible;
   }
 
-  getDeleteFormVisibility(): Observable<boolean> {
-    return this.isDeleteFormVisible.asObservable();
+  getDeleteFormVisibility() {
+    return this.isDeleteFormVisible;
   }
 
-  getMessageFormVisibility(): Observable<boolean> {
-    return this.isMessageFormVisible.asObservable();
+  getMessageFormVisibility() {
+    return this.isMessageFormVisible;
   }
 
-  getFilterFormVisibility(): Observable<boolean> {
-    return this.isFilterFormVisible.asObservable();
+  getFilterFormVisibility() {
+    return this.isFilterFormVisible;
   }
 
-  getChangePasswordFormVisibility(): Observable<boolean> {
-    return this.isChangePasswordFormVisible.asObservable();
+  getChangePasswordFormVisibility() {
+    return this.isChangePasswordFormVisible;
   }
 
-  getInvoicedItemsFormVisibility(): Observable<boolean> {
-    return this.isInvoicedItemsFormVisible.asObservable();
+  getInvoicedItemsFormVisibility() {
+    return this.isInvoicedItemsFormVisible;
   }
 
-  getWidgetVisibility(): Observable<boolean> {
-    return this.isWidgetVisible.asObservable();
+  getWidgetVisibility() {
+    return this.isWidgetVisible;
   }
 
-  getBalanceSheetVisibility(): Observable<boolean> {
-    return this.isBalanceSheetVisible.asObservable();
+  getBalanceSheetVisibility() {
+    return this.isBalanceSheetVisible;
   }
 
   hideBalanceSheet() {
-    this.isBalanceSheetVisible.next(false);
+    this.isBalanceSheetVisible.set(false);
   }
 
   showBalanceSheet() {
-    this.isBalanceSheetVisible.next(true);
+    this.isBalanceSheetVisible.set(true);
   }
 
   hideWidget() {
-    this.isWidgetVisible.next(false);
+    this.isWidgetVisible.set(false);
   }
 
   showWidget() {
-    this.isWidgetVisible.next(true);
+    this.isWidgetVisible.set(true);
   }
 
   getFormSettings(): Settings {
@@ -195,7 +204,7 @@ export class FormService {
   setMessageFormData(messageFormData: Message, display = true) {
     this.messageFormData = messageFormData;
     if (display) {
-      this.isMessageFormVisible.next(true);
+      this.isMessageFormVisible.set(true);
     }
   }
 
@@ -479,14 +488,6 @@ export class FormService {
 
   async getIdReplacementData(query: string): Promise<any> {
     return await this.dataService.processGet(query, {}, true);
-  }
-
-  setReloadType(reloadType: string) {
-    this.reloadType = reloadType;
-  }
-
-  getReloadType() {
-    return this.reloadType;
   }
 
   setReloadId(reloadId: string) {

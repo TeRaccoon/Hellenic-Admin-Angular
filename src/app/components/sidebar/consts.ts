@@ -1,0 +1,47 @@
+export const TABLE_CATEGORIES = {
+  Customers: [
+    { tableName: 'customers', displayName: 'Overview' },
+    { tableName: 'customer_payments', displayName: 'Payments' },
+    { tableName: 'invoices', displayName: 'Invoices' },
+    { tableName: 'price_list', displayName: 'Price List' },
+    { tableName: 'credit_notes_customers', displayName: 'Credit Notes' },
+  ],
+  Products: [
+    { tableName: 'items', displayName: 'Products' },
+    { tableName: 'stocked_items', displayName: 'Stocked Items' },
+    { tableName: 'invoiced_items', displayName: 'Invoiced Items' },
+  ],
+  Supply: [
+    { tableName: 'stocked_items', displayName: 'Stock' },
+    { tableName: 'expired_items', displayName: 'Expired Items' },
+    { tableName: 'supplier_invoices', displayName: 'Invoices' },
+    { tableName: 'credit_notes', displayName: 'Credit Notes' },
+    { tableName: 'suppliers', displayName: 'Suppliers' },
+    { tableName: 'supplier_types', displayName: 'Supplier Types' },
+    { tableName: 'warehouse', displayName: 'Warehouses' },
+  ],
+  Finance: [
+    { tableName: 'invoices', displayName: 'Customer Invoices' },
+    { tableName: 'supplier_invoices', displayName: 'Supplier Invoices' },
+    { tableName: 'general_ledger', displayName: 'General Ledger' },
+    { tableName: 'payments', displayName: 'All Payments' },
+    { tableName: 'profit-loss', displayName: 'Profit / Loss' },
+    { tableName: 'customer_payments', displayName: 'Customer Payments' },
+    { tableName: 'supplier_payments', displayName: 'Supplier Payments' },
+    { tableName: 'debtor_creditor', displayName: 'Aged Debtor / Creditors' },
+    { tableName: 'vat-returns', displayName: 'VAT Returns' },
+    { tableName: 'expense_options', displayName: 'Expense Options' },
+  ],
+  Website: [
+    { tableName: 'offers', displayName: 'Offers' },
+    { tableName: 'categories', displayName: 'Categories' },
+    { tableName: 'sub_categories', displayName: 'Sub-categories' },
+    { tableName: 'statistics', displayName: 'Statistics' },
+    { tableName: 'page_section_text', displayName: 'Website Text' },
+    { tableName: 'image_locations', displayName: 'Website Images' },
+  ],
+  Admin: [
+    { tableName: 'settings', displayName: 'Settings' },
+    { tableName: 'users', displayName: 'Users' },
+  ],
+};

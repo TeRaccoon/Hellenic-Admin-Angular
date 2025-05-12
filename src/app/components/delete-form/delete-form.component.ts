@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { faX } from '@fortawesome/free-solid-svg-icons';
-import { Subscription } from 'rxjs';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../form/service';
 
@@ -9,9 +8,7 @@ import { FormService } from '../form/service';
   templateUrl: './delete-form.component.html',
   styleUrls: ['./delete-form.component.scss'],
 })
-export class DeleteFormComponent implements OnInit, OnDestroy {
-  private readonly subscriptions = new Subscription();
-
+export class DeleteFormComponent {
   formVisible = 'hidden';
   ids: number[] = [];
   tableName = '';
@@ -27,15 +24,12 @@ export class DeleteFormComponent implements OnInit, OnDestroy {
     private formService: FormService
   ) {
     this.formText = 'Are you sure you want to delete this row?';
-  }
 
-  ngOnInit() {
-    this.subscriptions.add(
-      this.formService.getDeleteFormVisibility().subscribe((visible) => {
-        this.formVisible = visible ? 'visible' : 'hidden';
-        this.load();
-      })
-    );
+    effect(() => {
+      const visible = this.formService.getDeleteFormVisibility()();
+      this.formVisible = visible ? 'visible' : 'hidden';
+      this.load();
+    });
   }
 
   load() {
@@ -47,10 +41,6 @@ export class DeleteFormComponent implements OnInit, OnDestroy {
     if (this.ids.length > 1) {
       this.formText = 'Are you sure you want to delete these rows?';
     }
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
   }
 
   hide() {
