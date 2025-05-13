@@ -13,7 +13,7 @@ import { FormType } from '../form/types';
 export class ChangePasswordFormComponent {
   x = faX;
 
-  visible = 'hidden';
+  visible = false;
   changePasswordForm: FormGroup;
 
   constructor(
@@ -29,7 +29,7 @@ export class ChangePasswordFormComponent {
 
     effect(() => {
       const visible = this.formService.getFormVisibilitySignal(FormType.ChangePassword)();
-      this.visible = visible ? 'visible' : 'hidden';
+      this.visible = visible;
       if (visible) {
         this.resetForm();
         this.loadForm();

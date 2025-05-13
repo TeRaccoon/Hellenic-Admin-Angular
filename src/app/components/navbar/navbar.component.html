@@ -17,7 +17,11 @@
         }
       </button>
     </div>
-    <div class="search-dropdown-container" [class]="searchDropdownVisible ? 'visible' : 'hidden'">
+    <div
+      class="search-dropdown-container"
+      [class.visible]="searchDropdownVisible"
+      [class.hidden]="!searchDropdownVisible"
+    >
       @if (filteredTableOptions.length > 0 || searchResults.length > 0) {
         @for (table of filteredTableOptions; track table) {
           <div class="search-option" (click)="changeTable(table.actual)">

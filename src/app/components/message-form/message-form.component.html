@@ -1,14 +1,18 @@
-<div class="container" [class]="formVisible">
+@if (visible) {
+  <div class="container">
     <div class="content">
-        <div class="header-section">
-            <h1>{{ formData.title }}</h1>
-            <a (click)="hide()">
-                <fa-icon [icon]="faX" />
-            </a>
-        </div>
-        <div class="content-section">
-            <p class="primary-text">{{ formData.message }}</p>
-            <p [ngClass]="formData.secondaryMessage == undefined ? 'hidden' : ''" class="secondary-text">{{ formData.secondaryMessage }}</p>
-        </div>
+      <div class="header-section">
+        <h1>{{ formData.title }}</h1>
+        <a (click)="hide()">
+          <fa-icon [icon]="faX" />
+        </a>
+      </div>
+      <div class="content-section">
+        <p class="primary-text">{{ formData.message }}</p>
+        <p [ngClass]="formData.secondaryMessage === undefined ? 'hidden' : ''" class="secondary-text">
+          {{ formData.secondaryMessage }}
+        </p>
+      </div>
     </div>
-</div>
+  </div>
+}

@@ -12,7 +12,7 @@ import { ICONS } from './icons';
 export class FilterFormComponent {
   icons = ICONS;
 
-  formVisible = 'hidden';
+  visible = false;
   tableColumns: {
     columnNames: Record<string, any>[];
     columns: string[];
@@ -43,7 +43,7 @@ export class FilterFormComponent {
   ) {
     effect(() => {
       const visible = this.formService.getFormVisibilitySignal(FormType.Filter)();
-      this.formVisible = visible ? 'visible' : 'hidden';
+      this.visible = visible;
       this.tableColumns = this.filterService.getTableColumns();
       this.error = null;
     });

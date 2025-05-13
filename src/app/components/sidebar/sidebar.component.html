@@ -9,7 +9,11 @@
           {{ category }}
           <fa-icon [class.open]="isDropdownVisible[category]" [icon]="faCaretRight"></fa-icon>
         </button>
-        <div class="dropdown-container" [class]="isDropdownVisible[category] ? 'visible' : 'hidden'">
+        <div
+          class="dropdown-container"
+          [class.visible]="isDropdownVisible[category]"
+          [class.hidden]="!isDropdownVisible[category]"
+        >
           @for (table of tables[category]; track table) {
             @if (canDisplayTable(table.tableName)) {
               <a

@@ -11,7 +11,7 @@ import { FormType } from '../form/types';
 export class MessageFormComponent {
   faX = faX;
 
-  formVisible = 'hidden';
+  visible = false;
   formData: {
     title: string;
     message: string;
@@ -20,7 +20,7 @@ export class MessageFormComponent {
 
   constructor(private formService: FormService) {
     effect(() => {
-      this.formVisible = this.formService.getFormVisibilitySignal(FormType.Message)() ? 'visible' : 'hidden';
+      this.visible = this.formService.getFormVisibilitySignal(FormType.Message)();
       this.formData = this.formService.getMessageFormData();
     });
   }

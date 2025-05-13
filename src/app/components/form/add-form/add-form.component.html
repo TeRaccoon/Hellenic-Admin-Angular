@@ -1,4 +1,4 @@
-<div class="container" [class]="formState.visible ? 'visible' : 'hidden'">
+<div class="container" [class.hidden]="!formState.visible">
   <div [class]="fullscreen() ? 'content-fullscreen content' : 'content'">
     <div class="header-section">
       <h1>Adding...</h1>

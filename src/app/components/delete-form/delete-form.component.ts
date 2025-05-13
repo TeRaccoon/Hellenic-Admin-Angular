@@ -10,7 +10,7 @@ import { FormType } from '../form/types';
   styleUrls: ['./delete-form.component.scss'],
 })
 export class DeleteFormComponent {
-  formVisible = 'hidden';
+  visible = false;
   ids: number[] = [];
   tableName = '';
 
@@ -28,7 +28,7 @@ export class DeleteFormComponent {
 
     effect(() => {
       const visible = this.formService.getFormVisibilitySignal(FormType.Delete)();
-      this.formVisible = visible ? 'visible' : 'hidden';
+      this.visible = visible;
       this.load();
     });
   }
