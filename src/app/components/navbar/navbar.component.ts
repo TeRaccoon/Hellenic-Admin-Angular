@@ -1,27 +1,22 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  Renderer2,
-  ViewChild,
-} from '@angular/core';
-import { NAVBAR_ICONS } from '../../common/icons/navbar-icons';
-import { DataService } from '../../services/data.service';
+import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { FormService } from '../form/service';
-import { SearchService } from '../../services/search.service';
 import _ from 'lodash';
+import { NAVBAR_ICONS } from '../../common/icons/navbar-icons';
 import { SearchResult } from '../../common/types/table';
+import { AuthService } from '../../services/auth.service';
+import { DataService } from '../../services/data.service';
 import { FilterService } from '../../services/filter.service';
+import { SearchService } from '../../services/search.service';
 import { TableService } from '../../services/table.service';
+import { FormService } from '../form/service';
+import { FormType } from '../form/types';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   @ViewChild('notificationDropdown') notificationDropdown!: ElementRef;
   @ViewChild('notificationIcon') notificationIcon!: ElementRef;
 
@@ -30,10 +25,7 @@ export class NavbarComponent {
 
   icons = NAVBAR_ICONS;
 
-  debounceSearch: (filter: string) => void = _.debounce(
-    (filter: string) => this.performSearch(filter),
-    750
-  );
+  debounceSearch: (filter: string) => void = _.debounce((filter: string) => this.performSearch(filter), 750);
 
   tablelessOptions: string[] = [];
   tableOptions = [
@@ -66,7 +58,7 @@ export class NavbarComponent {
 
   searching = false;
 
-  searchInput: string = '';
+  searchInput = '';
 
   notificationVisible = false;
   userOptionsVisible = false;
@@ -86,23 +78,18 @@ export class NavbarComponent {
     private renderer: Renderer2
   ) {
     this.renderer.listen('window', 'click', (e: Event) => {
-      const notificationClicked =
-        this.notificationDropdown?.nativeElement.contains(e.target);
+      const notificationClicked = this.notificationDropdown?.nativeElement.contains(e.target);
 
       const bellClicked =
         this.notificationIcon.nativeElement.contains(e.target) ||
         (this.notificationIcon.nativeElement.querySelector('svg') &&
-          this.notificationIcon.nativeElement
-            .querySelector('svg')
-            .contains(e.target));
+          this.notificationIcon.nativeElement.querySelector('svg').contains(e.target));
 
       if (!notificationClicked && !bellClicked) {
         this.notificationVisible = false;
       }
 
-      const userOptionsClicked = this.userOptions?.nativeElement.contains(
-        e.target
-      );
+      const userOptionsClicked = this.userOptions?.nativeElement.contains(e.target);
 
       const userClicked =
         this.userIcon.nativeElement.contains(e.target) ||
@@ -130,14 +117,10 @@ export class NavbarComponent {
   }
 
   async getNotifications() {
-    let invoicesDue = await this.dataService.processGet(
-      'invoices-due',
-      { filter: '1' },
-      true
-    );
+    const invoicesDue = await this.dataService.processGet('invoices-due', { filter: '1' }, true);
 
     if (invoicesDue.length != 0) {
-      var invoiceDataArray: any[] = [];
+      const invoiceDataArray: any[] = [];
       invoicesDue.forEach((invoiceData: any) => {
         invoiceDataArray.push(`Invoice: ${invoiceData.title}`);
       });
@@ -153,9 +136,7 @@ export class NavbarComponent {
     this.searching = true;
     const filter = String((event.target as HTMLInputElement).value);
     this.filteredTableOptions = this.tableOptions.filter(
-      (option) =>
-        option.display &&
-        option.display.toUpperCase().includes(filter.toUpperCase())
+      (option) => option.display && option.display.toUpperCase().includes(filter.toUpperCase())
     );
     this.debounceSearch(filter);
   }
@@ -206,7 +187,7 @@ export class NavbarComponent {
 
   changePassword() {
     this.userOptionsVisible = false;
-    this.formService.showChangePasswordForm();
+    this.formService.setFormVisibility(FormType.ChangePassword, true);
   }
 
   @HostListener('document:click', ['$event'])

@@ -7,6 +7,7 @@ import { PDFService } from '../../services/pdf.service';
 import { TableOptionsService } from '../../services/table-options.service';
 import { UrlService } from '../../services/url.service';
 import { FormService } from '../form/service';
+import { FormType } from '../form/types';
 
 @Component({
   selector: 'app-invoice-view',
@@ -104,7 +105,7 @@ export class InvoiceViewComponent implements OnInit {
     this.sortDistance();
     this.calculateVat();
 
-    if (error) this.formService.showMessageForm();
+    if (error) this.formService.setFormVisibility(FormType.Message, true);
 
     this.loaded = true;
   }

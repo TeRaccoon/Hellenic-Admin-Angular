@@ -4,6 +4,7 @@ import { DEFAULT_WIDGET_DATA } from '../../common/types/widget/const';
 import { DataService } from '../../services/data.service';
 import { UrlService } from '../../services/url.service';
 import { FormService } from '../form/service';
+import { FormType } from '../form/types';
 
 @Component({
   selector: 'app-widget',
@@ -52,7 +53,7 @@ export class WidgetComponent {
     });
 
     effect(() => {
-      this.visible = this.formService.getWidgetVisibility()();
+      this.visible = this.formService.getFormVisibilitySignal(FormType.Widget)();
     });
   }
 
@@ -113,13 +114,13 @@ export class WidgetComponent {
   }
 
   hide() {
-    this.formService.hideWidget();
+    this.formService.setFormVisibility(FormType.Widget, false);
   }
 
   deleteRow(id: number) {
     this.formService.setSelectedTable(this.tableData?.tableName);
     this.formService.setDeleteFormIds([id]);
-    this.formService.showDeleteForm();
+    this.formService.setFormVisibility(FormType.Delete, true);
     this.formService.setReloadType('widget');
   }
 
@@ -159,7 +160,7 @@ export class WidgetComponent {
         this.formService.constructFormSettings(this.tableData.tableName)
       );
       this.formService.setSelectedTable(this.tableData.tableName);
-      this.formService.showAddForm();
+      this.formService.setFormVisibility(FormType.Add, true);
       this.formService.setReloadType('widget');
       this.formService.requestReload();
     }
@@ -168,7 +169,7 @@ export class WidgetComponent {
   prepareEditFormService(id: any, table: string) {
     this.formService.setSelectedTable(table);
     this.formService.setSelectedId(id);
-    this.formService.showEditForm();
+    this.formService.setFormVisibility(FormType.Edit, true);
     this.formService.setReloadType('widget');
   }
 

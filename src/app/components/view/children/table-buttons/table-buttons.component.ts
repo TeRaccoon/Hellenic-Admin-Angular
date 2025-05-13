@@ -7,7 +7,7 @@ import { BalanceSheetData, BalanceSheetTable } from '../../../../common/types/da
 import { DataService } from '../../../../services/data.service';
 import { TableOptionsService } from '../../../../services/table-options.service';
 import { FormService } from '../../../form/service';
-import { EditableData } from '../../../form/types';
+import { EditableData, FormType } from '../../../form/types';
 
 @Component({
   selector: 'app-table-buttons',
@@ -118,7 +118,7 @@ export class TableButtonsComponent {
 
   prepareAddFormService(table: string) {
     this.formService.setSelectedTable(table);
-    this.formService.showAddForm();
+    this.formService.setFormVisibility(FormType.Add, true);
     this.formService.setReloadType('hard');
     this.optionsService.prepareAddFormService(table);
   }

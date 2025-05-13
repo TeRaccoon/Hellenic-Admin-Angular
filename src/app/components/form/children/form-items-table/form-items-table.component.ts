@@ -2,7 +2,7 @@ import { Component, Input, effect } from '@angular/core';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../../../services/data.service';
 import { FormService } from '../../service';
-import { ItemsList } from '../../types';
+import { FormType, ItemsList } from '../../types';
 
 @Component({
   selector: 'app-form-items-table',
@@ -66,6 +66,6 @@ export class FormItemsTableComponent {
 
     this.formService.setSelectedTable(table);
     this.formService.setDeleteFormIds([id]);
-    this.formService.showDeleteForm();
+    this.formService.setFormVisibility(FormType.Delete, true);
   }
 }

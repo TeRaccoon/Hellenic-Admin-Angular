@@ -2,6 +2,7 @@ import { Component, effect } from '@angular/core';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../form/service';
+import { FormType } from '../form/types';
 
 @Component({
   selector: 'app-delete-form',
@@ -26,7 +27,7 @@ export class DeleteFormComponent {
     this.formText = 'Are you sure you want to delete this row?';
 
     effect(() => {
-      const visible = this.formService.getDeleteFormVisibility()();
+      const visible = this.formService.getFormVisibilitySignal(FormType.Delete)();
       this.formVisible = visible ? 'visible' : 'hidden';
       this.load();
     });
@@ -45,7 +46,7 @@ export class DeleteFormComponent {
 
   hide() {
     this.confirm = false;
-    this.formService.hideDeleteForm();
+    this.formService.setFormVisibility(FormType.Delete, false);
   }
 
   async deleteRow() {

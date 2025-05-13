@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../form/service';
+import { FormType } from '../form/types';
 
 @Component({
   selector: 'app-change-password-form',
@@ -27,7 +28,7 @@ export class ChangePasswordFormComponent {
     });
 
     effect(() => {
-      const visible = this.formService.getChangePasswordFormVisibility()();
+      const visible = this.formService.getFormVisibilitySignal(FormType.ChangePassword)();
       this.visible = visible ? 'visible' : 'hidden';
       if (visible) {
         this.resetForm();
@@ -60,6 +61,6 @@ export class ChangePasswordFormComponent {
   }
 
   hide() {
-    this.formService.hideChangePasswordForm();
+    this.formService.setFormVisibility(FormType.ChangePassword, false);
   }
 }

@@ -1,22 +1,24 @@
 import { formatDate } from '@angular/common';
 import { Injectable, signal } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { EditableData, KeyedData, Message, Settings } from './types';
+import { EditableData, FormType, FormVisible, KeyedData, Message, Settings } from './types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormService {
-  private isLoginVisible = signal<boolean>(false);
-  private isEditFormVisible = signal<boolean>(false);
-  private isAddFormVisible = signal<boolean>(false);
-  private isDeleteFormVisible = signal<boolean>(false);
-  private isMessageFormVisible = signal<boolean>(false);
-  private isFilterFormVisible = signal<boolean>(false);
-  private isChangePasswordFormVisible = signal<boolean>(false);
-  private isInvoicedItemsFormVisible = signal<boolean>(false);
-  private isWidgetVisible = signal<boolean>(false);
-  private isBalanceSheetVisible = signal<boolean>(false);
+  private formVisibility: FormVisible = {
+    Login: signal(false),
+    Add: signal(false),
+    Edit: signal(false),
+    Delete: signal(false),
+    Message: signal(false),
+    Filter: signal(false),
+    ChangePassword: signal(false),
+    InvoicedItem: signal(false),
+    Widget: signal(false),
+    BalanceSheet: signal(false),
+  };
 
   private editFormData: KeyedData = {};
   private addFormData: KeyedData = {};
@@ -71,118 +73,12 @@ export class FormService {
     this.reloadRequested.set(true);
   }
 
-  showLoginForm() {
-    this.isLoginVisible.set(true);
+  setFormVisibility(form: FormType, visible: boolean) {
+    this.formVisibility[form].set(visible);
   }
 
-  hideLoginForm() {
-    this.isLoginVisible.set(false);
-  }
-
-  getLoginFormVisibility() {
-    return this.isLoginVisible;
-  }
-
-  showEditForm() {
-    this.isEditFormVisible.set(true);
-  }
-  hideEditForm() {
-    this.isEditFormVisible.set(false);
-  }
-
-  showAddForm() {
-    this.isAddFormVisible.set(true);
-  }
-  hideAddForm() {
-    this.isAddFormVisible.set(false);
-  }
-
-  showDeleteForm() {
-    this.isDeleteFormVisible.set(true);
-  }
-  hideDeleteForm() {
-    this.isDeleteFormVisible.set(false);
-  }
-
-  showMessageForm() {
-    this.isMessageFormVisible.set(true);
-  }
-
-  hideMessageForm() {
-    this.isMessageFormVisible.set(false);
-  }
-
-  showFilterForm() {
-    this.isFilterFormVisible.set(true);
-  }
-  hideFilterForm() {
-    this.isFilterFormVisible.set(false);
-  }
-
-  showChangePasswordForm() {
-    this.isChangePasswordFormVisible.set(true);
-  }
-  hideChangePasswordForm() {
-    this.isChangePasswordFormVisible.set(false);
-  }
-
-  showInvoicedItemForm() {
-    this.isInvoicedItemsFormVisible.set(true);
-  }
-  hideInvoicedItemForm() {
-    this.isInvoicedItemsFormVisible.set(false);
-  }
-
-  getEditFormVisibility() {
-    return this.isEditFormVisible;
-  }
-
-  getAddFormVisibility() {
-    return this.isAddFormVisible;
-  }
-
-  getDeleteFormVisibility() {
-    return this.isDeleteFormVisible;
-  }
-
-  getMessageFormVisibility() {
-    return this.isMessageFormVisible;
-  }
-
-  getFilterFormVisibility() {
-    return this.isFilterFormVisible;
-  }
-
-  getChangePasswordFormVisibility() {
-    return this.isChangePasswordFormVisible;
-  }
-
-  getInvoicedItemsFormVisibility() {
-    return this.isInvoicedItemsFormVisible;
-  }
-
-  getWidgetVisibility() {
-    return this.isWidgetVisible;
-  }
-
-  getBalanceSheetVisibility() {
-    return this.isBalanceSheetVisible;
-  }
-
-  hideBalanceSheet() {
-    this.isBalanceSheetVisible.set(false);
-  }
-
-  showBalanceSheet() {
-    this.isBalanceSheetVisible.set(true);
-  }
-
-  hideWidget() {
-    this.isWidgetVisible.set(false);
-  }
-
-  showWidget() {
-    this.isWidgetVisible.set(true);
+  getFormVisibilitySignal(form: FormType) {
+    return this.formVisibility[form];
   }
 
   getFormSettings(): Settings {
@@ -204,7 +100,7 @@ export class FormService {
   setMessageFormData(messageFormData: Message, display = true) {
     this.messageFormData = messageFormData;
     if (display) {
-      this.isMessageFormVisible.set(true);
+      this.formVisibility[FormType.Message].set(true);
     }
   }
 
@@ -607,7 +503,7 @@ export class FormService {
 
     if ((showMessageOnlyOnError && !success) || !showMessageOnlyOnError) {
       this.setMessageFormData({ title: title, message: message });
-      this.showMessageForm();
+      this.setFormVisibility(FormType.Message, true);
     }
 
     return { success: success, imageFileName: imageFileName };

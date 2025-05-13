@@ -9,6 +9,7 @@ import { FormService } from '../service';
 import {
   Data,
   FormState,
+  FormType,
   InvoiceDetails,
   KeyedAddress,
   KeyedData,
@@ -126,7 +127,7 @@ export class AddFormComponent implements OnInit {
     this.resetFormState();
 
     effect(() => {
-      const visible = this.formService.getAddFormVisibility()();
+      const visible = this.formService.getFormVisibilitySignal(FormType.Add)();
       this.changeVisibility(visible);
     });
   }
@@ -548,7 +549,7 @@ export class AddFormComponent implements OnInit {
       this.disableControls();
     } else {
       if (!reset) {
-        this.formService.showMessageForm();
+        this.formService.setFormVisibility(FormType.Message, true);
       }
 
       if (hideForm) {
@@ -674,7 +675,7 @@ export class AddFormComponent implements OnInit {
 
   hide() {
     this.formState.visible = false;
-    this.formService.hideAddForm();
+    this.formService.setFormVisibility(FormType.Add, false);
   }
 
   minimize() {
@@ -1242,7 +1243,7 @@ export class AddFormComponent implements OnInit {
     }
     this.formService.setSelectedTable(table);
     this.formService.setDeleteFormIds([id]);
-    this.formService.showDeleteForm();
+    this.formService.setFormVisibility(FormType.Delete, true);
   }
 
   shouldDisplayItemWidget() {

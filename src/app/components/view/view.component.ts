@@ -19,7 +19,7 @@ import { TableOptionsService } from '../../services/table-options.service';
 import { TableService } from '../../services/table.service';
 import { UrlService } from '../../services/url.service';
 import { FormService } from '../form/service';
-import { EditableData } from '../form/types';
+import { EditableData, FormType } from '../form/types';
 import { ItemImage, StockTotals } from './types';
 
 @Component({
@@ -359,7 +359,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   prepareEditFormService(id: any, table: string) {
     this.formService.setSelectedTable(table == '' ? String(this.tableName) : table);
     this.formService.setSelectedId(id);
-    this.formService.showEditForm();
+    this.formService.setFormVisibility(FormType.Edit, true);
     this.formService.setReloadType('hard');
   }
 
@@ -477,7 +477,7 @@ export class ViewComponent implements OnInit, OnDestroy {
         disabled: DEFAULT_DISABLED_WIDGET_DATA,
         extra: undefined,
       });
-      this.formService.showWidget();
+      this.formService.setFormVisibility(FormType.Widget, true);
     }
   }
 
@@ -542,7 +542,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.formService.showWidget();
+    this.formService.setFormVisibility(FormType.Widget, true);
   }
 
   async creditNoteSearch(id: string) {
@@ -567,7 +567,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
       extra: undefined,
     });
-    this.formService.showWidget();
+    this.formService.setFormVisibility(FormType.Widget, true);
   }
 
   async supplierInvoiceSearch(invoiceId: string) {
@@ -587,7 +587,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
       extra: undefined,
     });
-    this.formService.showWidget();
+    this.formService.setFormVisibility(FormType.Widget, true);
   }
 
   async addressSearch(customerId: string, accountName: string) {
@@ -606,7 +606,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
       extra: undefined,
     });
-    this.formService.showWidget();
+    this.formService.setFormVisibility(FormType.Widget, true);
   }
 
   async priceListItemSearch(id: string, reference: string) {
@@ -627,7 +627,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       disabled: DEFAULT_DISABLED_WIDGET_DATA,
       extra: undefined,
     });
-    this.formService.showWidget();
+    this.formService.setFormVisibility(FormType.Widget, true);
   }
 
   shouldColourCell(data: any) {
@@ -880,7 +880,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   showAdvancedFilter() {
     const columns = Object.keys(this.data[0]);
     this.filterService.setTableColumns(this.displayNames, columns, this.dataTypes);
-    this.formService.showFilterForm();
+    this.formService.setFormVisibility(FormType.Filter, true);
   }
 
   async reloadTable(loadTable = false) {

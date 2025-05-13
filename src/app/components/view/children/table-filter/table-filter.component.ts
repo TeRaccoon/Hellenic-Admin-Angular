@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FilterService } from '../../../../services/filter.service';
 import { FormService } from '../../../form/service';
+import { FormType } from '../../../form/types';
 import { TABLE_FILTER_ICONS } from './icons';
 import { ColumnFilterOptions } from './types';
 
@@ -45,7 +46,7 @@ export class TableFilterComponent {
 
   showAdvancedFilter() {
     this.filterService.setTableColumns(this.displayNames, this.columns, this.dataTypes);
-    this.formService.showFilterForm();
+    this.formService.setFormVisibility(FormType.Filter, true);
   }
 
   getFilterData() {

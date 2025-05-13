@@ -5,7 +5,7 @@ import { DataService } from '../../../services/data.service';
 import { UrlService } from '../../../services/url.service';
 import { FORM_ICONS } from '../icons';
 import { FormService } from '../service';
-import { Data, FormState, KeyedAddress, KeyedData, Settings } from '../types';
+import { Data, FormState, FormType, KeyedAddress, KeyedData, Settings } from '../types';
 
 @Component({
   selector: 'app-edit-form',
@@ -105,7 +105,7 @@ export class EditFormComponent {
     this.debounceSearch = _.debounce(this.performSearch.bind(this), 1000);
 
     effect(() => {
-      const visible = this.formService.getEditFormVisibility()();
+      const visible = this.formService.getFormVisibilitySignal(FormType.Edit)();
       this.changeVisibility(visible);
     });
   }
@@ -228,7 +228,7 @@ export class EditFormComponent {
     this.mappedFormData = new Map(formDataArray);
     this.mappedFormDataKeys = Array.from(this.mappedFormData.keys());
     for (const key in this.formData) {
-      if (this.formData.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
         const field = this.formData[key];
 
         if (field.inputType == 'select' && field.dataType.startsWith('enum')) {
@@ -314,7 +314,7 @@ export class EditFormComponent {
       }
 
       this.selectedImage = '';
-      this.formService.showMessageForm();
+      this.formService.setFormVisibility(FormType.Message, true);
     } else {
       this.formService.setMessageFormData({
         title: 'Error!',
@@ -444,7 +444,7 @@ export class EditFormComponent {
 
       this.endSubmission(formSubmitResponse.success, hideForm && formSubmitResponse.success);
     } else {
-      hideForm && this.hide();
+      if (hideForm) this.hide();
     }
   }
 
@@ -497,8 +497,10 @@ export class EditFormComponent {
   }
 
   endSubmission(reset: boolean, hideForm: boolean) {
-    hideForm && this.formService.showMessageForm();
-    hideForm && this.hide();
+    if (hideForm) {
+      this.formService.setFormVisibility(FormType.Message, true);
+      this.hide();
+    }
     if (reset) {
       this.formService.requestReload('hard');
       this.editForm.reset();
@@ -523,7 +525,7 @@ export class EditFormComponent {
   }
 
   hide() {
-    this.formService.hideEditForm();
+    this.formService.setFormVisibility(FormType.Edit, false);
   }
 
   minimize() {

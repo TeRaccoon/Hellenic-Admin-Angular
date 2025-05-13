@@ -1,6 +1,7 @@
 import { Component, effect } from '@angular/core';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { FormService } from '../form/service';
+import { FormType } from '../form/types';
 
 @Component({
   selector: 'app-message-form',
@@ -19,12 +20,12 @@ export class MessageFormComponent {
 
   constructor(private formService: FormService) {
     effect(() => {
-      this.formVisible = this.formService.getMessageFormVisibility()() ? 'visible' : 'hidden';
+      this.formVisible = this.formService.getFormVisibilitySignal(FormType.Message)() ? 'visible' : 'hidden';
       this.formData = this.formService.getMessageFormData();
     });
   }
 
   hide() {
-    this.formService.hideMessageForm();
+    this.formService.setFormVisibility(FormType.Message, false);
   }
 }

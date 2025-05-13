@@ -1,6 +1,7 @@
 import { Component, effect } from '@angular/core';
 import { FilterService } from '../../services/filter.service';
 import { FormService } from '../form/service';
+import { FormType } from '../form/types';
 import { ICONS } from './icons';
 
 @Component({
@@ -41,7 +42,7 @@ export class FilterFormComponent {
     private filterService: FilterService
   ) {
     effect(() => {
-      const visible = this.formService.getFilterFormVisibility()();
+      const visible = this.formService.getFormVisibilitySignal(FormType.Filter)();
       this.formVisible = visible ? 'visible' : 'hidden';
       this.tableColumns = this.filterService.getTableColumns();
       this.error = null;
@@ -49,7 +50,7 @@ export class FilterFormComponent {
   }
 
   hide() {
-    this.formService.hideFilterForm();
+    this.formService.setFormVisibility(FormType.Filter, false);
   }
 
   search(hide: boolean) {
