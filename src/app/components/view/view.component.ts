@@ -2,16 +2,8 @@ import { Location } from '@angular/common';
 import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import {
-  ADDRESS_COLUMNS,
-  CREDIT_NOTE_COLUMNS,
-  PRICE_LIST_ITEM_COLUMNS,
-  SUPPLIER_INVOICE_COLUMNS,
-} from '../../common/constants';
-import { INVOICE_COLUMNS, STOCK_COLUMNS } from '../../common/consts/table-options';
 import { TABLE_ICONS } from '../../common/icons/table-icons';
 import { columnDateFilter, columnFilter, FilterData, sortedColumn, viewMetadata } from '../../common/types/view/types';
-import { DEFAULT_DISABLED_WIDGET_DATA } from '../../common/types/widget/const';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
 import { FilterService } from '../../services/filter.service';
@@ -20,6 +12,7 @@ import { TableService } from '../../services/table.service';
 import { UrlService } from '../../services/url.service';
 import { FormService } from '../form/service';
 import { EditableData, FormType } from '../form/types';
+import { ViewService } from './service';
 import { ItemImage, StockTotals } from './types';
 
 @Component({
@@ -78,7 +71,8 @@ export class ViewComponent implements OnInit, OnDestroy {
     private dataService: DataService,
     private _location: Location,
     private urlService: UrlService,
-    private optionsService: TableOptionsService
+    private optionsService: TableOptionsService,
+    private viewService: ViewService
   ) {
     this.apiUrlBase = this.urlService.getUrl();
     this.imageUrlBase = this.urlService.getUrl('uploads');
@@ -182,7 +176,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     if (tableData != null) {
       this.data = Array.isArray(tableData.data) ? tableData.data : [tableData.data];
       this.displayData = Array.isArray(tableData.display_data) ? tableData.display_data : [tableData.display_data];
-      this.mapDataTypes(tableData.types);
+      this.dataTypes = this.viewService.mapDataTypes(tableData.types);
       this.filteredDisplayData = this.displayData;
       this.displayNames = tableData.display_names;
       this.editable = tableData.editable;
@@ -197,44 +191,12 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  mapDataTypes(types: any[]) {
-    this.dataTypes = types.map((type: any) => {
-      if (type === "enum('Yes','No')") {
-        return "enum('No','Yes')";
-      }
-      return type;
-    });
-  }
-
   getColumnHeaders(obj: Record<string, any>): string[] {
     return obj ? Object.keys(obj) : [];
   }
 
   getCustomColumnHeadersFromTable() {
-    switch (this.tableName) {
-      case 'items':
-        return ['Stock', 'Total Stock'];
-
-      case 'stocked_items':
-        return ['Image'];
-
-      case 'suppliers':
-        return ['Credit Notes'];
-
-      case 'supplier_invoices':
-        return ['Items', 'Credit Notes'];
-
-      case 'invoices':
-        return this.canDisplayColumn('invoiced-items') ? ['Items'] : [];
-
-      case 'customers':
-        return ['Addresses'];
-
-      case 'price_list':
-        return ['Items'];
-    }
-
-    return [];
+    return this.viewService.getCustomColumnHeadersFromTable(this.tableName);
   }
 
   sortColumn(column: any) {
@@ -249,28 +211,12 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
 
     if (this.sortedColumn.ascending) {
-      this.sortAscending(dataName);
+      this.filteredDisplayData = this.viewService.sortAscending(dataName, this.filteredDisplayData);
     } else {
-      this.sortDescending(dataName);
+      this.filteredDisplayData = this.viewService.sortDescending(dataName, this.filteredDisplayData);
     }
 
     this.changePage(1);
-  }
-
-  sortDescending(dataName: string) {
-    this.filteredDisplayData.sort((a: any, b: any) => {
-      if (a[dataName] === b[dataName]) return 0;
-
-      return a[dataName] > b[dataName] ? 1 : -1;
-    });
-  }
-
-  sortAscending(dataName: string) {
-    this.filteredDisplayData.sort((a: any, b: any) => {
-      if (a[dataName] === b[dataName]) return 0;
-
-      return a[dataName] > b[dataName] ? -1 : 1;
-    });
   }
 
   changePage(page: number) {
@@ -295,72 +241,8 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   async editRow(id: any, table: string) {
     const row = this.data.filter((row: any) => row.id == id)[0];
-    if (table == '') {
-      if (this.tableName == 'invoices' && row['status'] == 'Complete') {
-        this.formService.setMessageFormData({
-          title: 'Warning!',
-          message:
-            'This invoice is locked! Changing the data could have undesired effects. To continue, click the padlock on the invoice you want to edit!',
-        });
 
-        return;
-      }
-
-      this.formService.processEditFormData(row, this.editable);
-      this.prepareEditFormService(id, table);
-
-      return;
-    }
-
-    const editFormData = await this.dataService.processGet('edit-form-data', {
-      filter: table,
-    });
-
-    let fakeRow = JSON.parse(JSON.stringify(row));
-
-    let appendOrAdd;
-
-    switch (table) {
-      case 'allergen_information':
-      case 'nutrition_info':
-        switch (this.tableName) {
-          case 'items':
-            appendOrAdd = await this.dataService.processGet('append-or-add', {
-              table: table,
-              id: id,
-              column: 'item_id',
-            });
-
-            fakeRow['item_id'] = id;
-            if (appendOrAdd.id) {
-              fakeRow = appendOrAdd;
-              this.formService.processEditFormData(fakeRow, editFormData);
-              this.prepareEditFormService(appendOrAdd.id, table);
-            } else {
-              const values: (string | null)[] = Array(editFormData.columns.length).fill(null);
-              const itemIdIndex = editFormData.names.indexOf('Item ID');
-              values[itemIdIndex] = id;
-              editFormData.values = values;
-
-              this.formService.processAddFormData(editFormData);
-              this.optionsService.prepareAddFormService(table);
-            }
-            break;
-        }
-        break;
-
-      default:
-        this.formService.processEditFormData(fakeRow, editFormData);
-        this.prepareEditFormService(id, table);
-        break;
-    }
-  }
-
-  prepareEditFormService(id: any, table: string) {
-    this.formService.setSelectedTable(table == '' ? String(this.tableName) : table);
-    this.formService.setSelectedId(id);
-    this.formService.setFormVisibility(FormType.Edit, true);
-    this.formService.setReloadType('hard');
+    this.viewService.editRow(row, id, table, this.tableName, this.editable);
   }
 
   deleteRow(id: number) {
@@ -458,176 +340,27 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   async stockSearch(itemId: string) {
-    const row = this.data.filter((row: any) => row.id == itemId)[0];
-
-    if (row != null) {
-      const tableColumns = STOCK_COLUMNS;
-
-      const tableRows = await this.dataService.processGet('stocked-items', { filter: itemId }, true);
-      const tableName = 'stocked_items';
-      const title = `Stocked Items for ${row['item_name']}`;
-
-      this.dataService.storeWidgetData({
-        headers: tableColumns,
-        rows: tableRows,
-        tableName: tableName,
-        title: title,
-        idData: { id: itemId, columnName: 'Item ID' },
-        query: 'stocked-items',
-        disabled: DEFAULT_DISABLED_WIDGET_DATA,
-        extra: undefined,
-      });
-      this.formService.setFormVisibility(FormType.Widget, true);
-    }
+    this.viewService.stockSearch(this.data, itemId);
   }
 
   async invoiceSearch(invoiceId: string) {
-    const row = this.data.filter((row: any) => row.id == invoiceId)[0];
-
-    const tableColumns = INVOICE_COLUMNS;
-    const tableRows = await this.dataService.processGet('invoiced-items', { filter: invoiceId }, true);
-    const tableName = 'invoiced_items';
-    const title = `Invoiced Items for ${row['title']}`;
-
-    const freeDeliveryMinimum = await this.dataService.processGet('settings', {
-      filter: 'free_delivery_minimum',
-    });
-
-    const isDelivery =
-      (
-        await this.dataService.processGet('invoice', {
-          filter: invoiceId,
-        })
-      ).delivery_type == 'Delivery';
-
-    let totalGross = 0;
-    let totalNet = 0;
-    let totalVAT = 0;
-    let delivery = 0;
-
-    tableRows.forEach((row: any) => {
-      const gross = row.gross || 0;
-      const vat = row.vat || 0;
-      const net = row.net || 0;
-
-      totalGross += gross;
-      totalVAT += vat;
-      totalNet += net;
-    });
-
-    if (totalNet < freeDeliveryMinimum && isDelivery) {
-      totalNet += 7.5;
-      delivery = 7.5;
-    }
-
-    this.dataService.storeWidgetData({
-      headers: tableColumns,
-      rows: tableRows,
-      tableName: tableName,
-      title: title,
-      idData: {
-        id: invoiceId,
-        columnName: 'Invoice ID',
-      },
-      query: 'invoiced-items',
-      disabled: {
-        value: row['status'] == 'Complete',
-        message: 'This invoice is locked and cannot be modified!',
-      },
-      extra: {
-        totalGross: totalGross,
-        totalVAT: totalVAT,
-        delivery: delivery,
-        totalNet: totalNet,
-      },
-    });
-
-    this.formService.setFormVisibility(FormType.Widget, true);
+    this.viewService.invoiceSearch(this.data, invoiceId);
   }
 
   async creditNoteSearch(id: string) {
-    const tableColumns = CREDIT_NOTE_COLUMNS;
-    const query = this.tableName == 'suppliers' ? 'credit-note-search-supplier' : 'credit-note-search-invoice';
-
-    const row = this.data.filter((row: any) => row.id == id)[0];
-    const reference = this.tableName == 'suppliers' ? row['account_name'] : row['reference'];
-    const idColumnName = this.tableName == 'suppliers' ? 'Supplier' : 'Invoice';
-
-    const tableRows = await this.dataService.processGet(query, { filter: id }, true);
-    const tableName = 'credit_notes';
-    const title = `Credit Notes from ${reference}`;
-
-    this.dataService.storeWidgetData({
-      headers: tableColumns,
-      rows: tableRows,
-      tableName: tableName,
-      title: title,
-      idData: { id: id, columnName: idColumnName },
-      query: query,
-      disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined,
-    });
-    this.formService.setFormVisibility(FormType.Widget, true);
+    this.viewService.creditNoteSearch(this.data, id, this.tableName);
   }
 
   async supplierInvoiceSearch(invoiceId: string) {
-    const row = this.data.filter((row: any) => row.id == invoiceId)[0];
-    const tableColumns = SUPPLIER_INVOICE_COLUMNS;
-    const tableRows = await this.dataService.processGet('stocked-items-invoice', { filter: invoiceId }, true);
-    const tableName = 'stocked_items';
-    const title = `Stocked Items from ${row['reference']}`;
-
-    this.dataService.storeWidgetData({
-      headers: tableColumns,
-      rows: tableRows,
-      tableName: tableName,
-      title: title,
-      idData: { id: invoiceId, columnName: 'Supplier Invoice ID' },
-      query: 'stocked-items-invoice',
-      disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined,
-    });
-    this.formService.setFormVisibility(FormType.Widget, true);
+    this.viewService.supplierInvoiceSearch(this.data, invoiceId);
   }
 
   async addressSearch(customerId: string, accountName: string) {
-    const tableColumns = ADDRESS_COLUMNS;
-    const tableRows = await this.dataService.processGet('customer-addresses-by-id', { filter: customerId }, true);
-    const tableName = 'customer_address';
-    const title = `Customer Addresses for ${accountName}`;
-
-    this.dataService.storeWidgetData({
-      headers: tableColumns,
-      rows: tableRows,
-      tableName: tableName,
-      title: title,
-      idData: { id: customerId, columnName: 'Customer Name' },
-      query: 'customer-addresses-by-id',
-      disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined,
-    });
-    this.formService.setFormVisibility(FormType.Widget, true);
+    this.viewService.addressSearch(customerId, accountName);
   }
 
   async priceListItemSearch(id: string, reference: string) {
-    const tableColumns = PRICE_LIST_ITEM_COLUMNS;
-    const query = 'price-list-items-by-id';
-    const tableRows = await this.dataService.processGet(query, { filter: id }, true);
-
-    const tableName = 'price_list_items';
-    const title = `Price List Items for ${reference}`;
-
-    this.dataService.storeWidgetData({
-      headers: tableColumns,
-      rows: tableRows,
-      tableName: tableName,
-      title: title,
-      idData: { id: id, columnName: 'Price List ID' },
-      query: query,
-      disabled: DEFAULT_DISABLED_WIDGET_DATA,
-      extra: undefined,
-    });
-    this.formService.setFormVisibility(FormType.Widget, true);
+    this.viewService.priceListSearch(id, reference);
   }
 
   shouldColourCell(data: any) {
@@ -659,45 +392,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   canDisplayColumn(column: string) {
-    if (this.authService.getAccessLevel() == 'Low') {
-      return !(column == 'edit-row' || column == 'delete-row');
-    }
-
-    if (this.authService.getAccessLevel() == 'High') {
-      return column != 'delete-row';
-    }
-
-    switch (this.tableName) {
-      case 'customers':
-      case 'users':
-        return !(column == 'password' || column == 'Password');
-
-      case 'invoices':
-        if (this.authService.getAccessLevel() == 'Driver') {
-          switch (column) {
-            case 'gross_value':
-            case 'discount_value':
-            case 'VAT':
-            case 'total':
-            case 'outstanding_balance':
-            case 'payment_status':
-            case 'Gross Value':
-            case 'Total':
-            case 'Outstanding Balance':
-            case 'Paid':
-            case 'edit-row':
-            case 'delete-row':
-            case 'invoiced-items':
-            case 'ID':
-            case 'id':
-            case 'Printed':
-            case 'printed':
-              return false;
-          }
-        }
-        return true;
-    }
-    return true;
+    return this.viewService.canDisplayColumn(column, this.tableName);
   }
 
   displayWithIcon(column: string, row: any) {
