@@ -3,9 +3,21 @@
     <h2>Login</h2>
     <ng-container>
       <form [formGroup]="loginForm" (ngSubmit)="formSubmit()">
-        <input [class]="error ? 'input-error' : ''" type="text" formControlName="username" placeholder="Username" required>
-        <input [class]="error ? 'input-error' : ''" type="password" formControlName="password" placeholder="Password" required>
-        @if (error != null) {
+        <input
+          [class]="error ? 'input-error' : ''"
+          type="text"
+          formControlName="username"
+          placeholder="Username"
+          required
+        />
+        <input
+          [class]="error ? 'input-error' : ''"
+          type="password"
+          formControlName="password"
+          placeholder="Password"
+          required
+        />
+        @if (error !== null) {
           <p class="error">{{ error }}</p>
         }
         <button class="button" name="action" value="login" type="submit">Login</button>
