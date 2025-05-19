@@ -732,21 +732,9 @@ export class ViewComponent {
     let tableName = 'invoiced_items';
     let title = `Invoiced Items for ${row['title']}`;
 
-    let freeDeliveryMinimum = await this.dataService.processGet('settings', {
-      filter: 'free_delivery_minimum',
-    });
-
-    let isDelivery =
-      (
-        await this.dataService.processGet('invoice', {
-          filter: invoiceId,
-        })
-      ).delivery_type == 'Delivery';
-
     let totalGross = 0;
     let totalNet = 0;
     let totalVAT = 0;
-    let delivery = 0;
 
     tableRows.forEach((row: any) => {
       const gross = row.gross || 0;
@@ -757,11 +745,6 @@ export class ViewComponent {
       totalVAT += vat;
       totalNet += net;
     });
-
-    if (totalNet < freeDeliveryMinimum && isDelivery) {
-      totalNet += 7.5;
-      delivery = 7.5;
-    }
 
     this.dataService.storeWidgetData({
       headers: tableColumns,
@@ -780,7 +763,6 @@ export class ViewComponent {
       extra: {
         totalGross: totalGross,
         totalVAT: totalVAT,
-        delivery: delivery,
         totalNet: totalNet,
       },
     });

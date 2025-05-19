@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { FormService } from '../../services/form.service';
 import { Subscription } from 'rxjs';
-import { UrlService } from '../../services/url.service';
 import { widgetIcons } from '../../common/icons/widget-icons';
 import { DEFAULT_WIDGET_DATA } from '../../common/types/widget/const';
+import { DataService } from '../../services/data.service';
+import { FormService } from '../../services/form.service';
+import { UrlService } from '../../services/url.service';
 
 @Component({
   selector: 'app-widget',
@@ -28,7 +28,7 @@ export class WidgetComponent {
   constructor(
     private dataService: DataService,
     private formService: FormService,
-    private urlService: UrlService
+    private urlService: UrlService,
   ) {
     this.imageUrlBase = this.urlService.getUrl('uploads');
   }
@@ -41,7 +41,7 @@ export class WidgetComponent {
     this.subscriptions.add(
       this.formService.getWidgetVisibility().subscribe((visible: boolean) => {
         this.visible = visible;
-      })
+      }),
     );
 
     this.subscriptions.add(
@@ -52,18 +52,23 @@ export class WidgetComponent {
           this.getStockedItemTotal();
         }
 
-        if (this.tableData.tableName == 'invoiced_items' && this.freeDeliveryMinimum == null) {
+        if (
+          this.tableData.tableName == 'invoiced_items' &&
+          this.freeDeliveryMinimum == null
+        ) {
           this.fetchFreeDeliveryMinimum();
         }
-      })
+      }),
     );
 
     this.subscriptions.add(
-      this.formService.getReloadRequest().subscribe(async (reloadRequested: boolean) => {
-        if (reloadRequested && this.visible) {
-          await this.reload();
-        }
-      })
+      this.formService
+        .getReloadRequest()
+        .subscribe(async (reloadRequested: boolean) => {
+          if (reloadRequested && this.visible) {
+            await this.reload();
+          }
+        }),
     );
   }
 
@@ -73,7 +78,6 @@ export class WidgetComponent {
     });
   }
 
-
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
@@ -82,7 +86,7 @@ export class WidgetComponent {
     this.tableData.rows = await this.dataService.processGet(
       this.tableData.query,
       { filter: this.tableData.idData.id },
-      true
+      true,
     );
 
     let isDelivery =
@@ -112,7 +116,11 @@ export class WidgetComponent {
         totalNet += net;
       });
 
-      if (this.freeDeliveryMinimum && totalNet < this.freeDeliveryMinimum && isDelivery) {
+      if (
+        this.freeDeliveryMinimum &&
+        totalNet < this.freeDeliveryMinimum &&
+        isDelivery
+      ) {
         totalNet += 7.5;
         delivery = 7.5;
       }
@@ -120,7 +128,6 @@ export class WidgetComponent {
       this.tableData.extra = {
         totalGross: totalGross,
         totalVAT: totalVAT,
-        delivery: delivery,
         totalNet: totalNet,
       };
     }
@@ -165,10 +172,10 @@ export class WidgetComponent {
       let formData = addFormData.editable;
 
       let values: (string | null)[] = Array(
-        addFormData.editable.columns.length
+        addFormData.editable.columns.length,
       ).fill(null);
       const idIndex = addFormData.editable.names.indexOf(
-        this.tableData.idData.columnName
+        this.tableData.idData.columnName,
       );
       values[idIndex] = this.tableData.idData.id;
       formData.values = values;
@@ -176,7 +183,7 @@ export class WidgetComponent {
       this.formService.processAddFormData(
         formData,
         null,
-        this.formService.constructFormSettings(this.tableData.tableName)
+        this.formService.constructFormSettings(this.tableData.tableName),
       );
       this.formService.setSelectedTable(this.tableData.tableName);
       this.formService.showAddForm();
