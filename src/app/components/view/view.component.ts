@@ -3,7 +3,8 @@ import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TABLE_ICONS } from '../../common/icons/table-icons';
-import { columnDateFilter, columnFilter, FilterData, sortedColumn, viewMetadata } from '../../common/types/view/types';
+import { TableName, TableNameEnum, TableTypeMap } from '../../common/types/tables';
+import { columnDateFilter, columnFilter, FilterData, viewMetadata } from '../../common/types/view/types';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
 import { FilterService } from '../../services/filter.service';
@@ -30,14 +31,14 @@ export class ViewComponent implements OnInit, OnDestroy {
   apiUrlBase;
   imageUrlBase;
 
-  tableName = '';
+  tableName: TableName;
   displayName = '';
   displayColumnFilters: string[] = [];
 
   columnFilters: columnFilter[] = [];
   columnDateFilters: columnDateFilter[] = [];
 
-  data: any = [];
+  data: TableTypeMap[TableName][] = [];
   displayNames: Record<string, any>[] = [];
   displayData: any[] = [];
   dataTypes: any[] = [];
@@ -59,7 +60,7 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   tabs: { displayName: string; tableName: string }[] = [];
 
-  sortedColumn: sortedColumn = { columnName: '', ascending: false };
+  sortedColumn: any = { columnName: '', ascending: false };
 
   constructor(
     private tableService: TableService,
@@ -94,6 +95,8 @@ export class ViewComponent implements OnInit, OnDestroy {
       fields: [],
       values: [],
     };
+
+    this.tableName = (this.route.snapshot.queryParamMap.get('table') as TableName) ?? TableNameEnum.Invoices;
   }
 
   private reloadEffect = effect(() => {
@@ -174,12 +177,14 @@ export class ViewComponent implements OnInit, OnDestroy {
     });
 
     if (tableData != null) {
-      this.data = Array.isArray(tableData.data) ? tableData.data : [tableData.data];
+      this.data = Array.isArray(tableData.data) ? tableData.data : ([tableData.data] as TableTypeMap[]);
       this.displayData = Array.isArray(tableData.display_data) ? tableData.display_data : [tableData.display_data];
       this.dataTypes = this.viewService.mapDataTypes(tableData.types);
       this.filteredDisplayData = this.displayData;
       this.displayNames = tableData.display_names;
       this.editable = tableData.editable;
+
+      console.log(this.data);
 
       this.applyFilter();
 
@@ -191,8 +196,8 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  getColumnHeaders(obj: Record<string, any>): string[] {
-    return obj ? Object.keys(obj) : [];
+  getColumnHeaders<T extends keyof TableTypeMap>(obj: TableTypeMap[T]): (keyof TableTypeMap[T])[] {
+    return obj ? (Object.keys(obj) as (keyof TableTypeMap[T])[]) : [];
   }
 
   getCustomColumnHeadersFromTable() {
@@ -316,17 +321,6 @@ export class ViewComponent implements OnInit, OnDestroy {
     return range;
   }
 
-  async changeCheckBox(event: Event, key: number, columnName: string) {
-    const option = event.target as HTMLInputElement;
-    const checked = option.checked;
-    const data = { ...this.data.filter((d: any) => d.id == key)[0] };
-    data[columnName] = checked ? 'Yes' : 'No';
-    data['action'] = 'append';
-    data['table_name'] = String(this.tableName);
-    await this.dataService.submitFormData(data);
-    this.reloadTable();
-  }
-
   selectRow(event: Event, rowId: number) {
     const option = event.target as HTMLInputElement;
     const checked = option.checked;
@@ -363,28 +357,8 @@ export class ViewComponent implements OnInit, OnDestroy {
     this.viewService.priceListSearch(id, reference);
   }
 
-  shouldColourCell(data: any) {
-    switch (this.tableName) {
-      case 'invoices':
-        switch (data) {
-          case 'Overdue':
-            return 'red';
-          case 'Complete':
-            return 'green';
-          case 'Pending':
-            return 'orange';
-        }
-        break;
-    }
-    return '';
-  }
-
-  getCurrencyCode(column: string) {
-    return (this.tableName == 'supplier_invoices' &&
-      (column == 'net_value' || column == 'VAT' || column == 'total_eur' || column == 'outstanding_balance')) ||
-      column == 'amount_eur'
-      ? 'EUR'
-      : 'GBP';
+  shouldColourCell(data: string) {
+    return this.viewService.shouldColourCell(data, this.tableName);
   }
 
   back() {
@@ -405,31 +379,6 @@ export class ViewComponent implements OnInit, OnDestroy {
         break;
     }
     return false;
-  }
-
-  async iconClick(column: string, row: any) {
-    switch (this.tableName) {
-      case 'invoices':
-        if (column == 'id') {
-          const data = { ...this.data.filter((d: any) => d.id == row.id)[0] };
-          data['status'] = data['status'] == 'Complete' ? 'Pending' : 'Complete';
-          row['status'] = data['status'];
-          data['action'] = 'append';
-          data['table_name'] = String(this.tableName);
-
-          const submissionResponse = await this.dataService.submitFormData(data);
-
-          if (submissionResponse.success) {
-            this.reloadTable();
-          } else {
-            this.formService.setMessageFormData({
-              title: 'Error!',
-              message: 'There was an error trying to unlock the booking!',
-            });
-          }
-        }
-        break;
-    }
   }
 
   calculatePageCount(useDisplayData = false) {

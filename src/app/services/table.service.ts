@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { REVERSE_TABLE_NAME_MAP, TABLE_CATEGORIES, TABLE_NAME_MAP } from '../common/constants';
+import { TableTypeMap } from '../common/types/tables';
 import { FormService } from '../components/form/service';
 import { AuthService } from './auth.service';
 import { DataService } from './data.service';
@@ -110,5 +111,10 @@ export class TableService {
     } else {
       this.router.navigate(['/page'], { queryParams: { table: table } });
     }
+  }
+
+  getTableData<T extends keyof TableTypeMap>(tableName: T, data: unknown) {
+    // `data` will have the type associated with the tableName
+    return data as TableTypeMap[T];
   }
 }

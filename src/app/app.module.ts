@@ -44,6 +44,7 @@ import { TablelessViewComponent } from './components/tableless-view/tableless-vi
 import { VatViewComponent } from './components/vat-view/vat-view.component';
 import { NoTableDataComponent } from './components/view/children/no-table-data/no-table-data.component';
 import { TableButtonsComponent } from './components/view/children/table-buttons/table-buttons.component';
+import { TableDataComponent } from './components/view/children/table-data/table-data.component';
 import { TableFilterComponent } from './components/view/children/table-filter/table-filter.component';
 import { TableFooterComponent } from './components/view/children/table-footer/table-footer.component';
 import { ViewComponent } from './components/view/view.component';
@@ -94,6 +95,7 @@ export function initConfig(configService: ConfigService) {
     TableButtonsComponent,
     TableCellComponent,
     TableFilterComponent,
+    TableDataComponent,
   ],
   imports: [
     BrowserModule,

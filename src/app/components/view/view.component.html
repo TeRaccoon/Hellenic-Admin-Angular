@@ -157,59 +157,16 @@
                           }
                         }
                         @if (canDisplayColumn(column)) {
-                          <td
-                            [ngClass]="shouldColourCell(item[column])"
-                            [ngClass]="
-                              shouldColourCell(item[column]) +
-                              (displayWithIcon(column, item) ? ' icon-data-container' : '')
-                            "
-                          >
-                            @switch (dataTypes[columnIndex]) {
-                              @case ('file') {
-                                <img
-                                  [src]="
-                                    item[column] === null
-                                      ? imageUrlBase + 'placeholder.jpg'
-                                      : imageUrlBase + item[column]
-                                  "
-                                  [alt]="item[column]"
-                                />
-                              }
-                              @case ("enum('No','Yes')") {
-                                <input
-                                  (change)="changeCheckBox($event, item.id, column)"
-                                  type="checkbox"
-                                  class="checkbox"
-                                  [checked]="item[column] === 'Yes'"
-                                />
-                              }
-                              @case ('float') {
-                                {{ item[column] === null ? '---' : (item[column] | currency: getCurrencyCode(column)) }}
-                              }
-                              @case ('decimal(19,2)') {
-                                {{ item[column] === null ? '---' : (item[column] | currency: getCurrencyCode(column)) }}
-                              }
-                              @case ('double') {
-                                {{ item[column] === null ? '---' : item[column] + '%' }}
-                              }
-                              @case ('text') {
-                                <div class="text-container">
-                                  {{ item[column] === null ? '---' : item[column] }}
-                                </div>
-                              }
-                              @case ('date') {
-                                {{ item[column] === null ? '---' : (item[column] | date: 'dd/MM/yyyy') }}
-                              }
-                              @default {
-                                {{ item[column] === null ? '---' : item[column] }}
-                                @if (displayWithIcon(column, item)) {
-                                  <ng-container class="icon-container">
-                                    <fa-icon class="row-icon" (click)="iconClick(column, item)" [icon]="icon"></fa-icon>
-                                  </ng-container>
-                                }
-                              }
-                            }
-                          </td>
+                          <app-table-data
+                            [column]="column"
+                            [data]="data"
+                            [tableName]="tableName"
+                            [item]="item"
+                            [dataTypes]="dataTypes"
+                            [imageUrlBase]="imageUrlBase"
+                            [columnIndex]="columnIndex"
+                            (reloadEvent)="reloadTable($event)"
+                          />
                         }
                       }
                       @if (tableName === 'items') {

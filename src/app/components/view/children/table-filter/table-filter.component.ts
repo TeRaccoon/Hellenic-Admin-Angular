@@ -11,7 +11,7 @@ import { ColumnFilterOptions } from './types';
   styleUrl: './table-filter.component.scss',
 })
 export class TableFilterComponent {
-  @Input() columns!: string[];
+  @Input() columns!: any;
   @Input() dataTypes!: string[];
   @Input() filter!: ColumnFilterOptions;
   @Input() displayNames!: Record<string, any>[];
