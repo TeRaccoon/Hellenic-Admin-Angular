@@ -742,7 +742,7 @@ export class EditFormComponent {
   }
 
   inputHasError(field: string) {
-    return this.editForm.get(field)?.invalid && this.formState.submissionAttempted;
+    return this.editForm.get(field)?.invalid && this.formState.submissionAttempted ? 'error-input' : '';
   }
 
   onInputFocus(key: string) {

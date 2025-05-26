@@ -184,8 +184,6 @@ export class ViewComponent implements OnInit, OnDestroy {
       this.displayNames = tableData.display_names;
       this.editable = tableData.editable;
 
-      console.log(this.data);
-
       this.applyFilter();
 
       this.viewMetaData.pageCount = this.calculatePageCount();

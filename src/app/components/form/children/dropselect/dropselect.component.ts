@@ -1,16 +1,16 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 import { ReplacementData } from '../../types';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-dropselect',
   templateUrl: './dropselect.component.html',
-  styleUrls: ['./dropselect.component.scss']
+  styleUrls: ['./dropselect.component.scss'],
 })
 export class DropselectComponent implements OnInit {
   @Input() selectData: any;
-  @Input() replacementData!: { id: Number; replacement: string }[];
+  @Input() replacementData!: { id: number; replacement: string }[];
   @Input() disabled!: boolean;
   @Input() class!: string;
   @Input() field!: string;
@@ -27,9 +27,7 @@ export class DropselectComponent implements OnInit {
 
   filteredData: any;
   selectedData: { data: any; id: number } | undefined = undefined;
-  selectedText: string = '';
-
-  constructor() { }
+  selectedText = '';
 
   ngOnInit() {
     this.filteredData = _.cloneDeep(this.replacementData);
@@ -83,13 +81,7 @@ export class DropselectComponent implements OnInit {
     this.loading = false;
   }
 
-  updateSelectedReplacementDataFromKey(
-    dataId: number,
-    dataValue: string,
-    key: string,
-    field: string,
-    alt: boolean
-  ) {
+  updateSelectedReplacementDataFromKey(dataId: number, dataValue: string, key: string, field: string, alt: boolean) {
     this.update.emit({ dataId, dataValue, key, field, alt });
   }
 }

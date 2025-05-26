@@ -54,35 +54,33 @@ export class FilterFormComponent {
   }
 
   search(hide: boolean) {
-    if (
-      this.columnInput != '' &&
-      ((this.columnType == 'date' && this.startDate != null && this.endDate != null) ||
-        (this.columnType != 'date' && this.searchInput != ''))
-    ) {
-      if (this.columnType == 'date' && this.startDate != null && this.endDate != null) {
-        this.filterService.setColumnDateFilter({
-          column: this.columnInput,
-          startDate: this.startDate,
-          endDate: this.endDate,
-        });
-      } else {
-        this.filterService.setColumnFilter({
-          column: this.columnInput,
-          filter: this.searchInput,
-          caseSensitive: this.caseSensitive,
-        });
-      }
-      this.formService.setReloadType('filter');
-      this.formService.requestReload();
-
-      if (hide) {
-        this.hide();
-      }
-
-      this.resetForm();
-    } else {
+    if (this.columnInput == '') {
       this.error = 'Please fill in all required fields';
+      return;
     }
+
+    if (this.isDateSearch()) {
+      this.filterService.setColumnDateFilter({
+        column: this.columnInput,
+        startDate: this.startDate!,
+        endDate: this.endDate!,
+      });
+    } else {
+      this.filterService.setColumnFilter({
+        column: this.columnInput,
+        filter: this.searchInput,
+        caseSensitive: this.caseSensitive,
+      });
+    }
+
+    this.formService.setReloadType('filter');
+    this.formService.requestReload();
+
+    if (hide) {
+      this.hide();
+    }
+
+    this.resetForm();
   }
 
   getColumnType() {
@@ -123,5 +121,9 @@ export class FilterFormComponent {
 
   hasError(value: any) {
     return (value != null || value != '') && this.error != null;
+  }
+
+  isDateSearch() {
+    return this.columnType == 'date' && this.startDate != null && this.endDate != null;
   }
 }

@@ -65,18 +65,12 @@
                       </div>
                     </div>
                   } @else {
-                    <label class="file-upload">
-                      <input
-                        [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
-                        [attr.required]="mappedFormData.get(key)!.required ? true : null"
-                        accept="image/*"
-                        [type]="mappedFormData.get(key)!.inputType"
-                        (change)="primeImage($event)"
-                      />
-                      <fa-icon [ngClass]="file == null ? '' : 'success'" [icon]="icons.cloud" />
-                      {{ file == null ? 'Upload Image' : file.name }}
-                      <label class="upload-size-warning">(8mb max)</label>
-                    </label>
+                    <app-file-upload
+                      [class]="inputHasError(mappedFormData.get(key)!.field)"
+                      [file]="file"
+                      [required]="mappedFormData.get(key)!.required ? true : false"
+                      (primeImageEmitter)="primeImage($event)"
+                    />
                   }
                 }
                 @case ('alternative-select') {

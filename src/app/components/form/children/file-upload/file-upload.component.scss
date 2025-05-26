@@ -1,0 +1,75 @@
+.file-upload {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #FFF;
+    display: inline-block;
+    padding: 10px !important;
+    font-weight: normal;
+    font-size: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+    width: 100%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+
+    input {
+        display: none;
+    }
+
+    .upload-size-warning {
+        font-size: small;
+        color: red;
+        margin: 5px 1px -3px 1px;
+        padding: 0px;
+    }
+
+    .success {
+        color: rgb(142, 255, 142);
+    }
+
+    transition: box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+        transform: translateY(-1px);
+    }
+
+    fa-icon {
+        transition: color 0.2s ease;
+
+        &.success {
+            animation: pop 0.3s ease;
+            color: rgb(142, 255, 142);
+        }
+    }
+
+    .upload-size-warning {
+        animation: fadeInUp 0.3s ease;
+    }
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

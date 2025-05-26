@@ -20,6 +20,7 @@ import { FilterFormComponent } from './components/filter-form/filter-form.compon
 import { AddFormComponent } from './components/form/add-form/add-form.component';
 import { DocumentsToReconcileComponent } from './components/form/children/documents-to-reconcile/documents-to-reconcile.component';
 import { DropselectComponent } from './components/form/children/dropselect/dropselect.component';
+import { FileUploadComponent } from './components/form/children/file-upload/file-upload.component';
 import { FormFooterComponent } from './components/form/children/form-footer/form-footer.component';
 import { FormItemsTableComponent } from './components/form/children/form-items-table/form-items-table.component';
 import { InvoiceAddressComponent } from './components/form/children/invoice-address/invoice-address.component';
@@ -96,6 +97,7 @@ export function initConfig(configService: ConfigService) {
     TableCellComponent,
     TableFilterComponent,
     TableDataComponent,
+    FileUploadComponent,
   ],
   imports: [
     BrowserModule,
