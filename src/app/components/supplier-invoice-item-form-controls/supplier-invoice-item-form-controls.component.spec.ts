@@ -8,10 +8,9 @@ describe('SupplierInvoiceItemFormControlsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SupplierInvoiceItemFormControlsComponent]
-    })
-    .compileComponents();
-    
+      declarations: [SupplierInvoiceItemFormControlsComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(SupplierInvoiceItemFormControlsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

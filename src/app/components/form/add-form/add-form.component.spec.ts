@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AddFormComponent } from './add-form.component';
 
 describe('AddFormComponent', () => {
@@ -8,10 +10,10 @@ describe('AddFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddFormComponent]
-    })
-    .compileComponents();
-    
+      declarations: [AddFormComponent],
+      imports: [HttpClientTestingModule, FontAwesomeModule],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(AddFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

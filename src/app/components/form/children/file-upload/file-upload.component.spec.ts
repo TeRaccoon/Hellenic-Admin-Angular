@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FileUploadComponent } from './file-upload.component';
 
 describe('FileUploadComponent', () => {
@@ -8,12 +9,17 @@ describe('FileUploadComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileUploadComponent]
-    })
-    .compileComponents();
-    
+      declarations: [FileUploadComponent],
+      imports: [FontAwesomeModule],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(FileUploadComponent);
     component = fixture.componentInstance;
+
+    component.file = new File(['file content'], 'test-file.txt', {
+      type: 'text/plain',
+    });
+
     fixture.detectChanges();
   });
 

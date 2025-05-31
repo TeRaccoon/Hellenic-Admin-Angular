@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NoTableDataComponent } from './no-table-data.component';
 
 describe('NoTableDataComponent', () => {
@@ -8,10 +9,10 @@ describe('NoTableDataComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NoTableDataComponent]
-    })
-    .compileComponents();
-    
+      declarations: [NoTableDataComponent],
+      imports: [FontAwesomeModule],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(NoTableDataComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

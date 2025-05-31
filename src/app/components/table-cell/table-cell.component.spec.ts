@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 import { TableCellComponent } from './table-cell.component';
 
 describe('TableCellComponent', () => {
@@ -8,10 +11,18 @@ describe('TableCellComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TableCellComponent]
-    })
-    .compileComponents();
-    
+      declarations: [TableCellComponent],
+      imports: [HttpClientTestingModule],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of([{ id: 1 }]),
+          },
+        },
+      ],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(TableCellComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

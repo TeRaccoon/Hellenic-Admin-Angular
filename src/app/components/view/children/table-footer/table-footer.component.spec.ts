@@ -8,12 +8,19 @@ describe('TableFooterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TableFooterComponent]
-    })
-    .compileComponents();
-    
+      declarations: [TableFooterComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(TableFooterComponent);
     component = fixture.componentInstance;
+
+    component.viewMetadata = {
+      loaded: false,
+      entryLimit: 1,
+      pageCount: 1,
+      currentPage: 1,
+    };
+
     fixture.detectChanges();
   });
 

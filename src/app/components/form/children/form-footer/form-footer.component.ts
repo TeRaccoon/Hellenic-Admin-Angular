@@ -4,12 +4,12 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-form-footer',
   templateUrl: './form-footer.component.html',
-  styleUrl: './form-footer.component.scss'
+  styleUrl: './form-footer.component.scss',
 })
 export class FormFooterComponent {
-  @Input() success: boolean = false;
-  @Input() addMore: boolean = false;
-  @Input() withWidget: boolean = false;
+  @Input() success = false;
+  @Input() addMore = false;
+  @Input() withWidget = false;
 
   @Output() formSubmit = new EventEmitter<boolean>();
 

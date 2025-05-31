@@ -1,7 +1,4 @@
-<td
-  [ngClass]="shouldColourCell(item[column])"
-  [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(item) ? ' icon-data-container' : '')"
->
+<td [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(item) ? ' icon-data-container' : '')">
   <div class="container" [class.icon]="displayWithIcon(item)">
     @switch (dataTypes[columnIndex]) {
       @case ('file') {

@@ -8,10 +8,9 @@ describe('InvoiceAddressComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InvoiceAddressComponent]
-    })
-    .compileComponents();
-    
+      declarations: [InvoiceAddressComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(InvoiceAddressComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

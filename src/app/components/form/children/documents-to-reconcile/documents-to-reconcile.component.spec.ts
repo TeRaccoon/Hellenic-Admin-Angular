@@ -8,10 +8,9 @@ describe('DocumentsToReconcileComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DocumentsToReconcileComponent]
-    })
-    .compileComponents();
-    
+      declarations: [DocumentsToReconcileComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(DocumentsToReconcileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

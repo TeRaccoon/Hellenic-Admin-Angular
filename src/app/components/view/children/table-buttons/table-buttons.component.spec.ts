@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TableButtonsComponent } from './table-buttons.component';
 
 describe('TableButtonsComponent', () => {
@@ -8,12 +10,15 @@ describe('TableButtonsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TableButtonsComponent]
-    })
-    .compileComponents();
-    
+      declarations: [TableButtonsComponent],
+      imports: [HttpClientTestingModule, FontAwesomeModule],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(TableButtonsComponent);
     component = fixture.componentInstance;
+
+    component.selectedRows = [];
+
     fixture.detectChanges();
   });
 
