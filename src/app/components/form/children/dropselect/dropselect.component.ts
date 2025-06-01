@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
-import { ReplacementData } from '../../types';
+import { ReplacementData, ReplacementTextData } from '../../types';
 
 @Component({
   selector: 'app-dropselect',
@@ -9,23 +9,24 @@ import { ReplacementData } from '../../types';
   styleUrls: ['./dropselect.component.scss'],
 })
 export class DropselectComponent implements OnInit {
-  @Input() selectData: any;
-  @Input() replacementData!: { id: number; replacement: string }[];
+  @Input() selectData!: string;
+  @Input() replacementData!: any[];
   @Input() disabled!: boolean;
   @Input() class!: string;
   @Input() field!: string;
-  @Input() alternative!: boolean;
-  @Input() key: any;
+  @Input() alternative = false;
+  @Input() key!: string;
   @Input() text = false;
 
   @Output() update = new EventEmitter<ReplacementData>();
+  @Output() updateText = new EventEmitter<ReplacementTextData>();
 
   spinner = faSpinner;
 
   open = false;
   loading = false;
 
-  filteredData: any;
+  filteredData!: any[];
   selectedData: { data: any; id: number } | undefined = undefined;
   selectedText = '';
 
@@ -67,6 +68,7 @@ export class DropselectComponent implements OnInit {
     if (this.filteredData.length === 1) {
       if (text) {
         this.selectedText = this.filteredData[0];
+        this.updateSelectedTextReplacementDataFromKey(this.selectedText, this.key, this.field);
       } else if (this.field) {
         this.updateSelectedReplacementDataFromKey(
           this.filteredData[0].id,
@@ -83,5 +85,9 @@ export class DropselectComponent implements OnInit {
 
   updateSelectedReplacementDataFromKey(dataId: number, dataValue: string, key: string, field: string, alt: boolean) {
     this.update.emit({ dataId, dataValue, key, field, alt });
+  }
+
+  updateSelectedTextReplacementDataFromKey(dataValue: string, key: string, field: string) {
+    this.updateText.emit({ dataValue, key, field });
   }
 }

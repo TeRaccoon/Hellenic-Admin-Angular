@@ -18,11 +18,19 @@
   <div class="drop-select" [class]="open ? 'dropdown-visible' : 'dropdown-hidden'">
     @if (filteredData.length === 0) {
       <p>Nothing to show here!</p>
-    } @else {
+    } @else if (!text) {
       @for (option of filteredData; track option) {
         @if (option.replacement !== '') {
           <p (click)="updateSelectedReplacementDataFromKey(option.id, option.replacement, key, field, alternative)">
             {{ option.replacement }}
+          </p>
+        }
+      }
+    } @else {
+      @for (option of filteredData; track option) {
+        @if (option !== '') {
+          <p (click)="updateSelectedTextReplacementDataFromKey(option, key, field)">
+            {{ option }}
           </p>
         }
       }

@@ -25,6 +25,12 @@ export interface ReplacementData {
   alt: boolean;
 }
 
+export interface ReplacementTextData {
+  dataValue: string;
+  key: string;
+  field: string;
+}
+
 export interface Settings {
   showAddMore: boolean;
 }

@@ -7,7 +7,7 @@ import { FORM_ICONS } from '../../icons';
   styleUrl: './file-upload.component.scss',
 })
 export class FileUploadComponent {
-  @Input() file!: File;
+  @Input() file!: File | null;
   @Input() class!: string;
   @Input() required = false;
 

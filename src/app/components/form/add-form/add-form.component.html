@@ -67,24 +67,17 @@
                       />
                     }
                     @case ('alternative-select') {
-                      <input
-                        autocomplete="off"
-                        [class]="inputHasError(mappedFormData.get(key)!.field)"
+                      <app-dropselect
+                        [selectData]="alternativeSelectedData[key].selectData"
+                        [replacementData]="alternativeSelectData[key].data"
                         [disabled]="disabled"
-                        (input)="filterDropSelect(key, $event, true)"
-                        type="text"
-                        [id]="key"
-                        (focus)="onInputFocus(key)"
-                        (blur)="onInputBlur(key)"
-                        [value]="alternativeSelectedData[key].selectData"
+                        [class]="inputHasError(mappedFormData.get(key)!.field)"
+                        [field]="mappedFormData.get(key)!.field"
+                        [alternative]="true"
+                        [text]="true"
+                        [key]="key"
+                        (updateText)="updateAlternativeSelectDataFromKeyEvent($event)"
                       />
-                      <div class="drop-select">
-                        @for (option of alternativeSelectData[key].data; track option) {
-                          <p (click)="updateAlternativeSelectData(mappedFormData.get(key)!.field, option, key)">
-                            {{ option }}
-                          </p>
-                        }
-                      </div>
                     }
                     @case ('select') {
                       <select
@@ -112,7 +105,7 @@
                         />
                       } @else {
                         <app-dropselect
-                          [selectData]="selectedReplacementData[key]?.selectData"
+                          [selectData]="selectedReplacementData[key]?.selectData ?? ''"
                           [replacementData]="replacementData[key].data"
                           [disabled]="disabled"
                           [class]="inputHasError(mappedFormData.get(key)!.field)"
@@ -124,30 +117,16 @@
                       }
                     }
                     @case ('replacement-text') {
-                      <div class="drop-select-container">
-                        <input
-                          autocomplete="off"
-                          [class]="inputHasError(mappedFormData.get(key)!.field)"
-                          (input)="filterTextDropSelect(key, $event, mappedFormData.get(key)!.field)"
-                          type="text"
-                          (focus)="onInputFocus(key)"
-                          (blur)="onInputBlur(key)"
-                          [value]="selectedTextReplacementData[key]"
-                        />
-                        <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? 'input-visible' : 'input-hidden'">
-                          @for (option of filteredReplacementData[key].data; track option) {
-                            @if (option !== '') {
-                              <p
-                                (click)="
-                                  updateSelectedTextReplacementDataFromKey(option, key, mappedFormData.get(key)!.field)
-                                "
-                              >
-                                {{ option }}
-                              </p>
-                            }
-                          }
-                        </div>
-                      </div>
+                      <app-dropselect
+                        [selectData]="selectedTextReplacementData[key]"
+                        [replacementData]="replacementData[key].data"
+                        [disabled]="disabled"
+                        [class]="inputHasError(mappedFormData.get(key)!.field)"
+                        [field]="mappedFormData.get(key)!.field"
+                        [key]="key"
+                        [text]="true"
+                        (updateText)="updateSelectedTextReplacementDataFromKeyEvent($event)"
+                      />
                     }
                     @case ('textarea') {
                       <quill-editor
@@ -189,7 +168,7 @@
             <div class="input-container replacement">
               <label>Item Name <fa-icon class="asterisk" [icon]="icons.asterisk" /></label>
               <app-dropselect
-                [selectData]="selectedReplacementData['Item ID']?.selectData"
+                [selectData]="selectedReplacementData['Item ID']?.selectData ?? ''"
                 [replacementData]="replacementData['Item ID'].data"
                 [class]="itemInputHasError('item_id')"
                 [field]="'item_id'"

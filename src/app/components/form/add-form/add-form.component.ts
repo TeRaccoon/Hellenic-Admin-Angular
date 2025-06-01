@@ -14,6 +14,7 @@ import {
   KeyedAddress,
   KeyedData,
   ReplacementData,
+  ReplacementTextData,
   SaleType,
   Settings,
 } from '../types';
@@ -688,6 +689,16 @@ export class AddFormComponent implements OnInit {
     await this.updateSelectedReplacementDataFromKey(dataId, dataValue, key, field, alt);
   }
 
+  updateSelectedTextReplacementDataFromKeyEvent(eventData: ReplacementTextData) {
+    const { dataValue, key, field } = eventData;
+    this.updateSelectedTextReplacementDataFromKey(dataValue, key, field);
+  }
+
+  updateAlternativeSelectDataFromKeyEvent(eventData: ReplacementTextData) {
+    const { dataValue, key, field } = eventData;
+    this.updateAlternativeSelectData(dataValue, key, field);
+  }
+
   async updateSelectedReplacementDataFromKey(
     dataId: number,
     dataValue: string,
@@ -1020,10 +1031,9 @@ export class AddFormComponent implements OnInit {
     };
   }
 
-  updateAlternativeSelectData(field: string, data: any, key: string) {
+  updateAlternativeSelectData(data: any, key: string, field: string) {
     this.alternativeSelectedData[key] = { selectData: data };
     this.addForm.get(field)?.setValue(data);
-    this.selectOpen[key].opened = false;
   }
 
   filterDropSelect(key: string, event: any, includeField: boolean, field: string | null = null, alt = false) {
