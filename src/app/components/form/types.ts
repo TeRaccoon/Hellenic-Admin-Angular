@@ -89,7 +89,26 @@ export interface InvoiceDetails {
   outstanding_balance: number;
 }
 
+export interface CustomerAddress {
+  delivery_address_one?: string | null;
+  delivery_address_two?: string | null;
+  delivery_address_three?: string | null;
+  delivery_address_four?: string | null;
+  delivery_postcode?: string | null;
+  id: number;
+  invoice_address_one?: string | null;
+  invoice_address_two?: string | null;
+  invoice_address_three?: string | null;
+  invoice_address_four?: string | null;
+  invoice_postcode?: string | null;
+}
+
 export type FormVisible = Record<FormType, WritableSignal<boolean>>;
+
+export interface SelectReplacementData {
+  id: number;
+  replacement: string;
+}
 
 export enum SaleType {
   Invoice = 'Invoice',

@@ -1,11 +1,20 @@
 import { Component, effect } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import _ from 'lodash';
 import { DataService } from '../../../services/data.service';
 import { UrlService } from '../../../services/url.service';
 import { FORM_ICONS } from '../icons';
 import { FormService } from '../service';
-import { Data, FormState, FormType, KeyedAddress, KeyedData, Settings } from '../types';
+import {
+  Data,
+  FormState,
+  FormType,
+  KeyedAddress,
+  KeyedData,
+  ReplacementData,
+  ReplacementTextData,
+  SelectReplacementData,
+  Settings,
+} from '../types';
 
 @Component({
   selector: 'app-edit-form',
@@ -40,19 +49,14 @@ export class EditFormComponent {
 
   selectData: { key: string; data: string[] }[] = [];
 
-  filteredReplacementData: any = {};
+  filteredReplacementData: Record<string, SelectReplacementData[]> = {};
 
-  replacementData: Record<
-    string,
-    {
-      data: { id: number; replacement: string }[];
-    }
-  > = {};
+  replacementData: Record<string, SelectReplacementData[]> = {};
 
   alternativeSelectData: Record<
     string,
     {
-      data: { value: string }[];
+      data: string[];
     }
   > = {};
 
@@ -62,11 +66,6 @@ export class EditFormComponent {
   addresses: KeyedAddress;
 
   formState!: FormState;
-
-  debounceSearch: (key: string, filter: string, field: string | null, text: boolean | null) => void = _.debounce(
-    (key: string, filter: string, field: string | null, text = false) => this.performSearch(key, filter, field, text),
-    750
-  );
 
   alternativeSelectedData: Record<string, { selectData: string }> = {};
   selectedReplacementData: Record<string, { selectData: string; selectDataId: number | null } | null> = {};
@@ -101,8 +100,6 @@ export class EditFormComponent {
     };
 
     this.resetFormState();
-
-    this.debounceSearch = _.debounce(this.performSearch.bind(this), 1000);
 
     effect(() => {
       const visible = this.formService.getFormVisibilitySignal(FormType.Edit)();
@@ -162,19 +159,12 @@ export class EditFormComponent {
         this.selectOpen[key] = { opened: false };
       });
       Object.keys(this.replacementData).forEach((key) => {
-        if (!Array.isArray(this.filteredReplacementData[key].data)) {
-          this.filteredReplacementData[key].data = [this.filteredReplacementData[key].data];
-        }
-
-        if (
-          this.filteredReplacementData[key].data.length > 0 &&
-          this.filteredReplacementData[key].data[0]?.id != null
-        ) {
+        if (this.filteredReplacementData[key].length > 0 && this.filteredReplacementData[key][0]?.id != null) {
           const tempReplacement =
             this.formData[key].value == null
               ? ''
-              : this.filteredReplacementData[key].data.find(
-                  (item: { id: number; data: string }) => item.id === Number(this.formData[key].value)
+              : this.filteredReplacementData[key].find(
+                  (item: SelectReplacementData) => item.id === Number(this.formData[key].value)
                 )!.replacement;
           this.selectedReplacementData[key] = {
             selectData: tempReplacement,
@@ -183,10 +173,10 @@ export class EditFormComponent {
           this.selectedReplacementFilter[key] = { selectFilter: '' };
           this.selectOpen[key] = { opened: false };
 
-          this.filteredReplacementData[key].data = this.filteredReplacementData[key].data.filter(
+          this.filteredReplacementData[key] = this.filteredReplacementData[key].filter(
             (item: any) => item.replacement != null
           );
-        } else if (this.filteredReplacementData[key].data[0] != null) {
+        } else if (this.filteredReplacementData[key][0] != null) {
           this.selectedTextReplacementData[key] = this.formData[key].value;
           this.selectOpen[key] = { opened: false };
         }
@@ -556,6 +546,11 @@ export class EditFormComponent {
     }
   }
 
+  updateAlternativeSelectDataFromKeyEvent(eventData: ReplacementTextData) {
+    const { dataValue, key, field } = eventData;
+    this.updateAlternativeSelectData(dataValue, key, field);
+  }
+
   updateSelectedTextReplacementDataFromKey(value: string, key: string, field: string) {
     this.editForm.get(field)?.setValue(value);
     this.selectedTextReplacementData[key] = value;
@@ -590,8 +585,8 @@ export class EditFormComponent {
       };
     });
 
-    this.replacementData[key].data = addressReplacement;
-    this.filteredReplacementData[key].data = addressReplacement;
+    this.replacementData[key] = addressReplacement;
+    this.filteredReplacementData[key] = addressReplacement;
   }
 
   updateAddressValues(key: string, field: string, event: any): void {
@@ -643,7 +638,7 @@ export class EditFormComponent {
           ].join(' '),
         };
 
-        this.replacementData[key].data.push(replacement);
+        this.replacementData[key].push(replacement);
         this.editForm.get(secondaryKey)?.setValue(id);
       } else {
         const address = await this.dataService.processGet('customer-addresses', {
@@ -652,7 +647,7 @@ export class EditFormComponent {
         await this.updateCustomerAddresses([address], key);
         await this.updateSelectedReplacementDataFromKey(
           id,
-          this.filteredReplacementData[key]!.data[this.filteredReplacementData[key].data.length - 1].replacement,
+          this.filteredReplacementData[key]![this.filteredReplacementData[key].length - 1].replacement,
           key,
           key == 'Delivery Address' ? 'address_id' : 'billing_address_id'
         );
@@ -675,63 +670,19 @@ export class EditFormComponent {
     }
   }
 
-  filterDropSelect(key: string, event: any, field: string | null) {
-    const filter = event.target.value || '';
-    if (this.selectedReplacementData[key]?.selectData != null) {
-      this.selectedReplacementData[key]!.selectData = filter;
-
-      if (this.replacementData[key]?.data.length > 0) {
-        this.debounceSearch(key, filter, field, false);
-      }
-    }
+  async updateSelectedReplacementDataFromKeyEvent(eventData: ReplacementData) {
+    const { dataId, dataValue, key, field } = eventData;
+    await this.updateSelectedReplacementDataFromKey(dataId, dataValue, key, field);
   }
 
-  filterTextDropSelect(key: string, event: any, field: string) {
-    const filter = event.target.value || '';
-    this.editForm.get(field)?.setValue(filter);
-    if (this.selectedTextReplacementData[key] != null) {
-      this.selectedTextReplacementData[key] = filter;
-
-      if (this.replacementData[key]?.data.length > 0) {
-        this.debounceSearch(key, filter, null, true);
-      }
-    }
+  updateSelectedTextReplacementDataFromKeyEvent(eventData: ReplacementTextData) {
+    const { dataValue, key, field } = eventData;
+    this.updateSelectedTextReplacementDataFromKey(dataValue, key, field);
   }
 
-  performSearch(key: string, filter: string, field: string | null, text: boolean | null = false) {
-    this.filteredReplacementData = _.cloneDeep(this.replacementData);
-
-    if (text) {
-      this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data: any) => {
-        return data && data.toLowerCase().includes(filter.toLowerCase());
-      });
-    } else {
-      this.filteredReplacementData[key].data = this.replacementData[key].data.filter((data: any) => {
-        return data.replacement && data.replacement.toLowerCase().includes(filter.toLowerCase());
-      });
-    }
-
-    if (this.filteredReplacementData[key].data.length == 1) {
-      if (text) {
-        this.selectedTextReplacementData[key] = this.filteredReplacementData[key].data[0];
-      } else {
-        this.selectedReplacementData[key] = {
-          selectData: this.filteredReplacementData[key].data[0].replacement,
-          selectDataId: this.filteredReplacementData[key].data[0].id,
-        };
-      }
-      this.selectOpen[key].opened = false;
-    }
-
-    if (field) {
-      this.editForm.get(field)?.setValue(filter);
-    }
-  }
-
-  updateAlternativeSelectData(field: string, data: any, key: string) {
+  updateAlternativeSelectData(data: string, key: string, field: string) {
     this.alternativeSelectedData[key] = { selectData: data };
     this.editForm.get(field)?.setValue(data);
-    this.selectOpen[key].opened = false;
   }
 
   isLocked() {

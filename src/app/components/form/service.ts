@@ -1,7 +1,16 @@
 import { formatDate } from '@angular/common';
 import { Injectable, signal } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { EditableData, FormType, FormVisible, KeyedData, Message, Settings } from './types';
+import {
+  EditableData,
+  FormType,
+  FormVisible,
+  KeyedAddress,
+  KeyedData,
+  Message,
+  SelectReplacementData,
+  Settings,
+} from './types';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +39,7 @@ export class FormService {
   private alternativeSelectData: Record<
     string,
     {
-      data: { value: string }[];
+      data: string[];
     }
   > = {};
 
@@ -143,12 +152,7 @@ export class FormService {
   async replaceAmbiguousData(
     tableName: string,
     formData: any,
-    replacementData: Record<
-      string,
-      {
-        data: { id: number; replacement: string }[];
-      }
-    >,
+    replacementData: Record<string, SelectReplacementData[]>,
     formType?: string
   ) {
     let data;
@@ -157,33 +161,33 @@ export class FormService {
       case 'payments':
         data = await this.getIdReplacementData('expense_options_id');
         formData['Category'].inputType = 'replacement';
-        replacementData['Category'] = { data: data };
+        replacementData['Category'] = data;
 
         data = await this.getIdReplacementData('supplier_id_name_code');
         formData['Supplier ID'].inputType = 'replacement';
-        replacementData['Supplier ID'] = { data: data };
+        replacementData['Supplier ID'] = data;
         break;
 
       case 'suppliers':
         data = await this.getIdReplacementData('supplier_id_types');
         formData['Type'].inputType = 'replacement';
-        replacementData['Type'] = { data: data };
+        replacementData['Type'] = data;
         break;
 
       case 'price_list':
         data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer Name'].inputType = 'replacement';
-        replacementData['Customer Name'] = { data: data };
+        replacementData['Customer Name'] = data;
         break;
 
       case 'price_list_items':
         data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'].inputType = 'replacement';
-        replacementData['Item ID'] = { data: data };
+        replacementData['Item ID'] = data;
 
         data = await this.getIdReplacementData('price_list_id_reference');
         formData['Price List ID'].inputType = 'replacement';
-        replacementData['Price List ID'] = { data: data };
+        replacementData['Price List ID'] = data;
         break;
 
       case 'customers':
@@ -201,59 +205,59 @@ export class FormService {
 
         data = await this.getIdReplacementData('offer_id_name');
         formData['Offer ID'].inputType = 'replacement';
-        replacementData['Offer ID'] = { data: data };
+        replacementData['Offer ID'] = data;
 
         data = await this.getIdReplacementData('brands');
         formData['Brand'].inputType = 'replacement-text';
-        replacementData['Brand'] = { data: data };
+        replacementData['Brand'] = data;
         break;
 
       case 'invoiced_items':
         data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'].inputType = 'replacement';
-        replacementData['Item ID'] = { data: data };
+        replacementData['Item ID'] = data;
 
         data = await this.getIdReplacementData('invoice_id_title');
         formData['Invoice ID'].inputType = 'replacement';
-        replacementData['Invoice ID'] = { data: data };
+        replacementData['Invoice ID'] = data;
         break;
 
       case 'stocked_items':
         data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'].inputType = 'replacement';
-        replacementData['Item ID'] = { data: data };
+        replacementData['Item ID'] = data;
 
         data = await this.getIdReplacementData('warehouse_id_name');
         formData['Warehouse'].inputType = 'replacement';
-        replacementData['Warehouse'] = { data: data };
+        replacementData['Warehouse'] = data;
 
         data = await this.getIdReplacementData('supplier_invoice_id_reference');
         formData['Supplier Invoice ID'].inputType = 'replacement';
-        replacementData['Supplier Invoice ID'] = { data: data };
+        replacementData['Supplier Invoice ID'] = data;
         break;
 
       case 'sub_categories':
         data = await this.getIdReplacementData('category_id_name');
         formData['Parent Category'].inputType = 'replacement';
-        replacementData['Parent Category'] = { data: data };
+        replacementData['Parent Category'] = data;
         break;
 
       case 'invoices':
         data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer Name'].inputType = 'replacement';
-        replacementData['Customer Name'] = { data: data };
+        replacementData['Customer Name'] = data;
 
         data = await this.getIdReplacementData('warehouse_id_name');
         formData['Warehouse ID'].inputType = 'replacement';
-        replacementData['Warehouse ID'] = { data: data };
+        replacementData['Warehouse ID'] = data;
 
         data = await this.getIdReplacementData('customer_address_id_full');
         formData['Delivery Address'].inputType = 'replacement';
-        replacementData['Delivery Address'] = { data: data };
+        replacementData['Delivery Address'] = data;
 
         data = await this.getIdReplacementData('customer_billing_address_id_full');
         formData['Billing Address'].inputType = 'replacement';
-        replacementData['Billing Address'] = { data: data };
+        replacementData['Billing Address'] = data;
 
         data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'] = {
@@ -261,7 +265,7 @@ export class FormService {
           value: null,
           fields: 'item_id',
         };
-        replacementData['Item ID'] = { data: data };
+        replacementData['Item ID'] = data;
         break;
 
       case 'customer_payments': {
@@ -269,11 +273,11 @@ export class FormService {
 
         data = await this.getIdReplacementData(query);
         formData['Invoice ID'].inputType = 'replacement';
-        replacementData['Invoice ID'] = { data: data };
+        replacementData['Invoice ID'] = data;
 
         data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer'].inputType = 'replacement';
-        replacementData['Customer'] = { data: data };
+        replacementData['Customer'] = data;
         break;
       }
 
@@ -281,44 +285,44 @@ export class FormService {
       case 'supplier_payments':
         data = await this.getIdReplacementData('supplier_id_name_code');
         formData['Supplier'].inputType = 'replacement';
-        replacementData['Supplier'] = { data: data };
+        replacementData['Supplier'] = data;
 
         data = await this.getIdReplacementData('supplier_invoice_id_reference');
         formData['Invoice'].inputType = 'replacement';
-        replacementData['Invoice'] = { data: data };
+        replacementData['Invoice'] = data;
         break;
 
       case 'offers':
         data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer'].inputType = 'replacement';
-        replacementData['Customer'] = { data: data };
+        replacementData['Customer'] = data;
         break;
 
       case 'credit_notes_customers':
         data = await this.getIdReplacementData('customers_id_name_code');
         formData['Customer'].inputType = 'replacement';
-        replacementData['Customer'] = { data: data };
+        replacementData['Customer'] = data;
 
         data = await this.getIdReplacementData('invoice_id_title');
         formData['Invoice'].inputType = 'replacement';
-        replacementData['Invoice'] = { data: data };
+        replacementData['Invoice'] = data;
 
         data = await this.getIdReplacementData('invoiced_item_id_name');
         formData['Invoiced Item ID'].inputType = 'replacement';
-        replacementData['Invoiced Item ID'] = { data: data };
+        replacementData['Invoiced Item ID'] = data;
         break;
 
       case 'customer_address':
         data = await this.getIdReplacementData('customers_id_name');
         formData['Customer Name'].inputType = 'replacement';
-        replacementData['Customer Name'] = { data: data };
+        replacementData['Customer Name'] = data;
         break;
 
       case 'page_section_text':
       case 'image_locations':
         data = await this.getIdReplacementData('page_section_id_name');
         formData['Page Section ID'].inputType = 'replacement';
-        replacementData['Page Section ID'] = { data: data };
+        replacementData['Page Section ID'] = data;
         break;
 
       case 'retail_item_images':
@@ -326,13 +330,13 @@ export class FormService {
       case 'nutrition_info':
         data = await this.getIdReplacementData('items_id_name');
         formData['Item ID'].inputType = 'replacement';
-        replacementData['Item ID'] = { data: data };
+        replacementData['Item ID'] = data;
         break;
 
       case 'supplier_invoices':
         data = await this.getIdReplacementData('supplier_id_name_code');
         formData['Supplier ID'].inputType = 'replacement';
-        replacementData['Supplier ID'] = { data: data };
+        replacementData['Supplier ID'] = data;
 
         data = await this.getIdReplacementData('items_id_name_sku');
         formData['Item ID'] = {
@@ -340,7 +344,7 @@ export class FormService {
           value: null,
           fields: 'item_id',
         };
-        replacementData['Item ID'] = { data: data };
+        replacementData['Item ID'] = data;
 
         data = await this.getIdReplacementData('warehouse_id_name');
         formData['Warehouse ID'] = {
@@ -348,7 +352,7 @@ export class FormService {
           value: null,
           fields: 'warehouse_id',
         };
-        replacementData['Warehouse ID'] = { data: data };
+        replacementData['Warehouse ID'] = data;
 
         break;
     }
@@ -604,5 +608,36 @@ export class FormService {
         break;
     }
     return settings;
+  }
+
+  getAddressSecondaryKeyAndPayload(addresses: KeyedAddress, customerId: string, key: string) {
+    let payload;
+    let secondaryKey;
+
+    if (key == 'Billing Address') {
+      secondaryKey = 'billing_address_id';
+      payload = {
+        invoice_address_one: addresses['Billing Address'].line1,
+        invoice_address_two: addresses['Billing Address'].line2,
+        invoice_address_three: addresses['Billing Address'].line3,
+        invoice_postcode: addresses['Billing Address'].postcode,
+        customer_id: customerId,
+        action: 'add',
+        table_name: 'customer_address',
+      };
+    } else {
+      secondaryKey = 'address_id';
+      payload = {
+        delivery_address_one: addresses['Delivery Address'].line1,
+        delivery_address_two: addresses['Delivery Address'].line2,
+        delivery_address_three: addresses['Delivery Address'].line3,
+        delivery_postcode: addresses['Delivery Address'].postcode,
+        customer_id: customerId,
+        action: 'add',
+        table_name: 'customer_address',
+      };
+    }
+
+    return { payload: payload, secondaryKey: secondaryKey };
   }
 }

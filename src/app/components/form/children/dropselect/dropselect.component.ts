@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
-import { ReplacementData, ReplacementTextData } from '../../types';
+import { ReplacementData, ReplacementTextData, SelectReplacementData } from '../../types';
+import { SelectData } from './types';
 
 @Component({
   selector: 'app-dropselect',
@@ -10,7 +11,7 @@ import { ReplacementData, ReplacementTextData } from '../../types';
 })
 export class DropselectComponent implements OnInit {
   @Input() selectData!: string;
-  @Input() replacementData!: any[];
+  @Input() replacementData!: SelectData;
   @Input() disabled!: boolean;
   @Input() class!: string;
   @Input() field!: string;
@@ -26,8 +27,19 @@ export class DropselectComponent implements OnInit {
   open = false;
   loading = false;
 
-  filteredData!: any[];
-  selectedData: { data: any; id: number } | undefined = undefined;
+  filteredData!: SelectData;
+
+  debounceSearch = _.debounce((filter: string, text = false) => {
+    this.performSearch(filter, text);
+  }, 750);
+
+  get filteredTextData(): string[] {
+    return this.text ? (this.filteredData as string[]) : [];
+  }
+
+  get filteredReplacementData(): SelectReplacementData[] {
+    return !this.text ? (this.filteredData as SelectReplacementData[]) : [];
+  }
 
   ngOnInit() {
     this.filteredData = _.cloneDeep(this.replacementData);
@@ -41,9 +53,8 @@ export class DropselectComponent implements OnInit {
     this.open = false;
   }
 
-  filterDropSelect(event: any) {
-    const filter = event.target.value || '';
-    this.selectedData = filter;
+  filterDropSelect(event: Event) {
+    const filter = (event.target as HTMLInputElement).value || '';
 
     if (this.replacementData?.length > 0) {
       this.loading = true;
@@ -51,34 +62,39 @@ export class DropselectComponent implements OnInit {
     }
   }
 
-  debounceSearch = _.debounce((filter: string, text = false) => {
-    this.performSearch(filter, text);
-  }, 750);
-
   performSearch(filter: string, text: boolean | null = false) {
     if (!this.replacementData) return;
 
-    this.filteredData = _.cloneDeep(this.replacementData).filter((data: any) =>
-      text
-        ? data?.toLowerCase().includes(filter.toLowerCase())
-        : data.replacement?.toLowerCase().includes(filter.toLowerCase())
-    );
+    if (text) {
+      this.filter(filter);
+    } else {
+      this.textFilter(filter);
+    }
+
+    this.loading = false;
+  }
+
+  filter(filter: string) {
+    const data = _.cloneDeep(this.replacementData) as string[];
+
+    this.filteredData = data.filter((item) => item.toLowerCase().includes(filter.toLowerCase()));
 
     if (this.filteredData.length === 1) {
-      if (text) {
-        this.updateSelectedTextReplacementDataFromKey(this.filteredData[0], this.key, this.field);
-      } else if (this.field) {
-        this.updateSelectedReplacementDataFromKey(
-          this.filteredData[0].id,
-          this.filteredData[0].replacement,
-          this.key,
-          this.field,
-          this.alternative
-        );
-      }
+      this.updateSelectedTextReplacementDataFromKey(this.filteredData[0], this.key, this.field);
       this.open = false;
     }
-    this.loading = false;
+  }
+
+  textFilter(filter: string) {
+    const data = _.cloneDeep(this.replacementData) as SelectReplacementData[];
+
+    this.filteredData = data.filter((item) => item.replacement.toLowerCase().includes(filter.toLowerCase()));
+
+    if (this.filteredData.length === 1 && this.field) {
+      const match = this.filteredData[0] as SelectReplacementData;
+      this.updateSelectedReplacementDataFromKey(match.id, match.replacement, this.key, this.field, this.alternative);
+      this.open = false;
+    }
   }
 
   updateSelectedReplacementDataFromKey(dataId: number, dataValue: string, key: string, field: string, alt: boolean) {

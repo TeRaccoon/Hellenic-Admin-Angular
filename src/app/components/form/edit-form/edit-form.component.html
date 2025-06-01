@@ -74,28 +74,17 @@
                   }
                 }
                 @case ('alternative-select') {
-                  <div class="drop-select-container">
-                    <input
-                      [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
-                      type="text"
-                      [disabled]="formState.locked"
-                      (input)="filterDropSelect(key, $event, mappedFormData.get(key)!.field)"
-                      (focus)="onInputFocus(key)"
-                      (blur)="onInputBlur(key)"
-                      [value]="alternativeSelectedData[key].selectData"
-                    />
-                    <div
-                      class="drop-select"
-                      [ngClass]="selectOpen[key].opened ? 'input-visible' : 'input-hidden'"
-                      [attr.required]="mappedFormData.get(key)?.required ? true : null"
-                    >
-                      @for (option of alternativeSelectData[key].data; track option) {
-                        <p (click)="updateAlternativeSelectData(mappedFormData.get(key)!.field, option, key)">
-                          {{ option }}
-                        </p>
-                      }
-                    </div>
-                  </div>
+                  <app-dropselect
+                    [selectData]="alternativeSelectedData[key].selectData"
+                    [replacementData]="alternativeSelectData[key].data"
+                    [disabled]="formState.locked"
+                    [class]="inputHasError(mappedFormData.get(key)!.field)"
+                    [field]="mappedFormData.get(key)!.field"
+                    [alternative]="true"
+                    [text]="true"
+                    [key]="key"
+                    (updateText)="updateAlternativeSelectDataFromKeyEvent($event)"
+                  />
                 }
                 @case ('select') {
                   <select
@@ -140,35 +129,16 @@
                       <button class="button" type="button" (click)="addAddressToBook(key)">Add</button>
                     </div>
                   } @else {
-                    <div class="drop-select-container">
-                      <input
-                        autocomplete="off"
-                        [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
-                        (input)="filterDropSelect(key, $event, null)"
-                        type="text"
-                        (focus)="onInputFocus(key)"
-                        (blur)="onInputBlur(key)"
-                        [value]="selectedReplacementData[key]?.selectData"
-                      />
-                      <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? 'input-visible' : 'input-hidden'">
-                        @for (option of filteredReplacementData[key].data; track option) {
-                          @if (option.replacement !== '') {
-                            <p
-                              (click)="
-                                updateSelectedReplacementDataFromKey(
-                                  option.id,
-                                  option.replacement,
-                                  key,
-                                  mappedFormData.get(key)!.field
-                                )
-                              "
-                            >
-                              {{ option.replacement }}
-                            </p>
-                          }
-                        }
-                      </div>
-                    </div>
+                    <app-dropselect
+                      [selectData]="selectedReplacementData[key]?.selectData ?? ''"
+                      [replacementData]="replacementData[key]"
+                      [disabled]="formState.locked"
+                      [class]="inputHasError(mappedFormData.get(key)!.field)"
+                      [field]="mappedFormData.get(key)!.field"
+                      [alternative]="false"
+                      [key]="key"
+                      (update)="updateSelectedReplacementDataFromKeyEvent($event)"
+                    />
                   }
                   @if (key === 'Invoice ID' && tableName === 'customer_payments') {
                     <div class="invoice-details-container">
@@ -196,30 +166,16 @@
                   }
                 }
                 @case ('replacement-text') {
-                  <div class="drop-select-container">
-                    <input
-                      autocomplete="off"
-                      [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
-                      (input)="filterTextDropSelect(key, $event, mappedFormData.get(key)!.field)"
-                      type="text"
-                      (focus)="onInputFocus(key)"
-                      (blur)="onInputBlur(key)"
-                      [value]="selectedTextReplacementData[key]"
-                    />
-                    <div class="drop-select" [ngClass]="selectOpen[key]?.opened ? 'input-visible' : 'input-hidden'">
-                      @for (option of filteredReplacementData[key].data; track option) {
-                        @if (option !== '') {
-                          <p
-                            (click)="
-                              updateSelectedTextReplacementDataFromKey(option, key, mappedFormData.get(key)!.field)
-                            "
-                          >
-                            {{ option }}
-                          </p>
-                        }
-                      }
-                    </div>
-                  </div>
+                  <app-dropselect
+                    [selectData]="selectedTextReplacementData[key]"
+                    [replacementData]="replacementData[key]"
+                    [disabled]="formState.locked"
+                    [class]="inputHasError(mappedFormData.get(key)!.field)"
+                    [field]="mappedFormData.get(key)!.field"
+                    [key]="key"
+                    [text]="true"
+                    (updateText)="updateSelectedTextReplacementDataFromKeyEvent($event)"
+                  />
                 }
                 @case ('textarea') {
                   <quill-editor
