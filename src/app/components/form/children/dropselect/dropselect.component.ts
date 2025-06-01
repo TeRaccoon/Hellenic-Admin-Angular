@@ -28,7 +28,6 @@ export class DropselectComponent implements OnInit {
 
   filteredData!: any[];
   selectedData: { data: any; id: number } | undefined = undefined;
-  selectedText = '';
 
   ngOnInit() {
     this.filteredData = _.cloneDeep(this.replacementData);
@@ -67,8 +66,7 @@ export class DropselectComponent implements OnInit {
 
     if (this.filteredData.length === 1) {
       if (text) {
-        this.selectedText = this.filteredData[0];
-        this.updateSelectedTextReplacementDataFromKey(this.selectedText, this.key, this.field);
+        this.updateSelectedTextReplacementDataFromKey(this.filteredData[0], this.key, this.field);
       } else if (this.field) {
         this.updateSelectedReplacementDataFromKey(
           this.filteredData[0].id,
