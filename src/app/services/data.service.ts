@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Observable, Subject, lastValueFrom } from 'rxjs';
 import { DEFAULT_BALANCE_SHEET } from '../common/types/data-service/const';
-import { BalanceSheetData, Response } from '../common/types/data-service/types';
+import { BalanceSheetData, FormSubmission, Response } from '../common/types/data-service/types';
 import { WidgetData } from '../common/types/widget/types';
 import { UrlService } from './url.service';
 
@@ -61,16 +61,18 @@ export class DataService {
     return value;
   }
 
-  async submitFormData(data: any) {
+  async submitFormData(data: FormSubmission): Promise<Response> {
     const url = this.urlService.getUrl('data');
 
     try {
-      const submissionResponse = await lastValueFrom<any>(this.http.post(url, data, { withCredentials: true }));
+      const submissionResponse = (await lastValueFrom(
+        this.http.post(url, data, { withCredentials: true })
+      )) as Response;
       return submissionResponse;
     } catch (error: any) {
       return {
         success: false,
-        message: error.error.text,
+        message: error.error.text as string,
       };
     }
   }
