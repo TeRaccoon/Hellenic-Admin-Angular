@@ -18,6 +18,25 @@ import { FormType } from '../form/types';
   providedIn: 'root',
 })
 export class ViewService {
+  private _displayData: any[] = [];
+  private _filteredDisplayData: Record<string, any>[] = [];
+
+  get displayData(): any[] {
+    return this._displayData;
+  }
+
+  set displayData(value: any[]) {
+    this._displayData = value;
+  }
+
+  get filteredDisplayData(): Record<string, any>[] {
+    return this._filteredDisplayData;
+  }
+
+  set filteredDisplayData(value: Record<string, any>[]) {
+    this._filteredDisplayData = value;
+  }
+
   constructor(
     private authService: AuthService,
     private dataService: DataService,
@@ -386,5 +405,13 @@ export class ViewService {
         break;
     }
     return '';
+  }
+
+  calculatePageCount(useDisplayData = false, entryLimit: number) {
+    if (useDisplayData) {
+      return Math.ceil(this.displayData.length / entryLimit);
+    } else {
+      return Math.ceil(this.filteredDisplayData.length / entryLimit);
+    }
   }
 }

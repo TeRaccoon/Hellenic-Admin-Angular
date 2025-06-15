@@ -95,66 +95,14 @@
                       </td>
                       @for (column of getColumnHeaders(data[0]); track column; let columnIndex = $index) {
                         @if (columnIndex === 2) {
-                          @switch (tableName) {
-                            @case ('items') {
-                              <td
-                                (click)="stockSearch(item.id)"
-                                [ngClass]="shouldColourCell(item[column])"
-                                [ngClass]="
-                                  shouldColourCell(item[column]) +
-                                  (displayWithIcon(column, item) ? ' icon-data-container' : '')
-                                "
-                              >
-                                <fa-icon [icon]="icons.faBox"></fa-icon>
-                              </td>
-                              <td>
-                                {{ stockData[item['id']] ? stockData[item['id']] : 0 }}
-                              </td>
-                            }
-                            @case ('stocked_items') {
-                              <td>
-                                <img
-                                  [src]="
-                                    images[item['item_id']] === null
-                                      ? imageUrlBase + 'placeholder.jpg'
-                                      : imageUrlBase + images[item['item_id']]
-                                  "
-                                />
-                              </td>
-                            }
-                            @case ('supplier_invoices') {
-                              @if (canDisplayColumn('invoiced-items')) {
-                                <td (click)="supplierInvoiceSearch(item.id)">
-                                  <fa-icon [icon]="icons.faBasketShopping"></fa-icon>
-                                </td>
-                              }
-                              <td (click)="creditNoteSearch(item.id)">
-                                <fa-icon [icon]="icons.faNoteSticky"></fa-icon>
-                              </td>
-                            }
-                            @case ('suppliers') {
-                              <td (click)="creditNoteSearch(item.id)">
-                                <fa-icon [icon]="icons.faNoteSticky"></fa-icon>
-                              </td>
-                            }
-                            @case ('invoices') {
-                              @if (canDisplayColumn('invoiced-items')) {
-                                <td (click)="invoiceSearch(item.id)">
-                                  <fa-icon [icon]="icons.faBasketShopping"></fa-icon>
-                                </td>
-                              }
-                            }
-                            @case ('customers') {
-                              <td (click)="addressSearch(item.id, item.account_name)">
-                                <fa-icon [icon]="icons.faAddressBook"></fa-icon>
-                              </td>
-                            }
-                            @case ('price_list') {
-                              <td (click)="priceListItemSearch(item.id, item.reference)">
-                                <fa-icon [icon]="icons.faBasketShopping" />
-                              </td>
-                            }
-                          }
+                          <app-extra-column
+                            [tableName]="tableName"
+                            [data]="data"
+                            [stockData]="stockData"
+                            [images]="images"
+                            [item]="item"
+                            [column]="column"
+                          />
                         }
                         @if (canDisplayColumn(column)) {
                           <app-table-data
@@ -170,23 +118,23 @@
                         }
                       }
                       @if (tableName === 'items') {
-                        <td (click)="editRow(item.id, 'allergen_information')">
+                        <td (click)="editRow(item['id'], 'allergen_information')">
                           <fa-icon [icon]="icons.faBookMedical"></fa-icon>
                         </td>
-                        <td (click)="editRow(item.id, 'nutrition_info')">
+                        <td (click)="editRow(item['id'], 'nutrition_info')">
                           <fa-icon [icon]="icons.faBookOpen"></fa-icon>
                         </td>
                       }
                       @if (canDisplayColumn('edit-row')) {
                         <td>
-                          <a (click)="editRow(item.id, '')">
+                          <a (click)="editRow(item['id'], '')">
                             <fa-icon [icon]="icons.faPencil"></fa-icon>
                           </a>
                         </td>
                       }
                       @if (canDisplayColumn('delete-row')) {
                         <td class="bin">
-                          <a (click)="deleteRow(item.id)">
+                          <a (click)="deleteRow(item['id'])">
                             <fa-icon [icon]="icons.faTrashCan"></fa-icon>
                           </a>
                         </td>

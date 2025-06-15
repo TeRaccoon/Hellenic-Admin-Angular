@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -40,9 +39,7 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   data: TableTypeMap[TableName][] = [];
   displayNames: Record<string, any>[] = [];
-  displayData: any[] = [];
   dataTypes: any[] = [];
-  filteredDisplayData: any[] = [];
   editable: EditableData;
   stockData: Record<string, string> = {};
 
@@ -52,8 +49,6 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   distanceLoading = false;
 
-  icon = TABLE_ICONS.lock;
-
   filter = '';
 
   viewMetaData: viewMetadata;
@@ -61,6 +56,10 @@ export class ViewComponent implements OnInit, OnDestroy {
   tabs: { displayName: string; tableName: string }[] = [];
 
   sortedColumn: any = { columnName: '', ascending: false };
+
+  get filteredDisplayData() {
+    return this.viewService.filteredDisplayData;
+  }
 
   constructor(
     private tableService: TableService,
@@ -70,7 +69,6 @@ export class ViewComponent implements OnInit, OnDestroy {
     private formService: FormService,
     private route: ActivatedRoute,
     private dataService: DataService,
-    private _location: Location,
     private urlService: UrlService,
     private optionsService: TableOptionsService,
     private viewService: ViewService
@@ -178,15 +176,19 @@ export class ViewComponent implements OnInit, OnDestroy {
 
     if (tableData != null) {
       this.data = Array.isArray(tableData.data) ? tableData.data : ([tableData.data] as TableTypeMap[]);
-      this.displayData = Array.isArray(tableData.display_data) ? tableData.display_data : [tableData.display_data];
+
+      this.viewService.displayData = Array.isArray(tableData.display_data)
+        ? tableData.display_data
+        : [tableData.display_data];
+      this.viewService.filteredDisplayData = this.viewService.displayData;
+
       this.dataTypes = this.viewService.mapDataTypes(tableData.types);
-      this.filteredDisplayData = this.displayData;
       this.displayNames = tableData.display_names;
       this.editable = tableData.editable;
 
       this.applyFilter();
 
-      this.viewMetaData.pageCount = this.calculatePageCount();
+      this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
 
       this.changePage(this.viewMetaData.currentPage);
 
@@ -194,7 +196,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  getColumnHeaders<T extends keyof TableTypeMap>(obj: TableTypeMap[T]): (keyof TableTypeMap[T])[] {
+  getColumnHeaders<T extends TableName>(obj: TableTypeMap[T]): (keyof TableTypeMap[T])[] {
     return obj ? (Object.keys(obj) as (keyof TableTypeMap[T])[]) : [];
   }
 
@@ -203,7 +205,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   sortColumn(column: any) {
-    this.filteredDisplayData = this.displayData;
+    this.viewService.filteredDisplayData = this.viewService.displayData;
     const dataName: string =
       this.editable.columns.filter((_, index) => this.editable.names[index] === column)[0] ?? 'id';
 
@@ -214,9 +216,15 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
 
     if (this.sortedColumn.ascending) {
-      this.filteredDisplayData = this.viewService.sortAscending(dataName, this.filteredDisplayData);
+      this.viewService.filteredDisplayData = this.viewService.sortAscending(
+        dataName,
+        this.viewService.filteredDisplayData
+      );
     } else {
-      this.filteredDisplayData = this.viewService.sortDescending(dataName, this.filteredDisplayData);
+      this.viewService.filteredDisplayData = this.viewService.sortDescending(
+        dataName,
+        this.viewService.filteredDisplayData
+      );
     }
 
     this.changePage(1);
@@ -278,12 +286,12 @@ export class ViewComponent implements OnInit, OnDestroy {
     const start = (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
     const end = start + this.viewMetaData.entryLimit;
     if (this.filterService.getFilterData().searchFilter === '') {
-      this.viewMetaData.pageCount = this.calculatePageCount(true);
-      this.filteredDisplayData = this.displayData.slice(start, end);
+      this.viewMetaData.pageCount = this.viewService.calculatePageCount(true, this.viewMetaData.entryLimit);
+      this.viewService.filteredDisplayData = this.viewService.displayData.slice(start, end);
     } else {
-      this.filteredDisplayData = this.applyTemporaryFilter();
-      this.viewMetaData.pageCount = this.calculatePageCount();
-      this.filteredDisplayData = this.filteredDisplayData.slice(start, end);
+      this.viewService.filteredDisplayData = this.applyTemporaryFilter();
+      this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
+      this.viewService.filteredDisplayData = this.viewService.filteredDisplayData.slice(start, end);
     }
   }
 
@@ -331,60 +339,8 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  async stockSearch(itemId: string) {
-    this.viewService.stockSearch(this.data, itemId);
-  }
-
-  async invoiceSearch(invoiceId: string) {
-    this.viewService.invoiceSearch(this.data, invoiceId);
-  }
-
-  async creditNoteSearch(id: string) {
-    this.viewService.creditNoteSearch(this.data, id, this.tableName);
-  }
-
-  async supplierInvoiceSearch(invoiceId: string) {
-    this.viewService.supplierInvoiceSearch(this.data, invoiceId);
-  }
-
-  async addressSearch(customerId: string, accountName: string) {
-    this.viewService.addressSearch(customerId, accountName);
-  }
-
-  async priceListItemSearch(id: string, reference: string) {
-    this.viewService.priceListSearch(id, reference);
-  }
-
-  shouldColourCell(data: string) {
-    return this.viewService.shouldColourCell(data, this.tableName);
-  }
-
-  back() {
-    this._location.back();
-  }
-
   canDisplayColumn(column: string) {
     return this.viewService.canDisplayColumn(column, this.tableName);
-  }
-
-  displayWithIcon(column: string, row: any) {
-    switch (this.tableName) {
-      case 'invoices':
-        if (column == 'id') {
-          this.icon = row['status'] == 'Complete' ? TABLE_ICONS.lock : TABLE_ICONS.lockOpen;
-          return true;
-        }
-        break;
-    }
-    return false;
-  }
-
-  calculatePageCount(useDisplayData = false) {
-    if (useDisplayData) {
-      return Math.ceil(this.displayData.length / this.viewMetaData.entryLimit);
-    } else {
-      return Math.ceil(this.filteredDisplayData.length / this.viewMetaData.entryLimit);
-    }
   }
 
   //Filter
@@ -405,7 +361,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       this.filterDateColumns(filter);
     });
 
-    this.viewMetaData.pageCount = this.calculatePageCount();
+    this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
   }
 
   filterColumns(columnFilter: any) {
@@ -417,7 +373,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       this.displayNames[Object.keys(this.data[0]).indexOf(column)] + ': ' + columnFilter.filter
     );
 
-    this.displayData = this.filteredDisplayData.filter((data) => {
+    this.viewService.displayData = this.viewService.filteredDisplayData.filter((data) => {
       if (
         filter != null &&
         data[column] != null &&
@@ -425,15 +381,16 @@ export class ViewComponent implements OnInit, OnDestroy {
       ) {
         return data;
       }
+      return [];
     });
-    this.filteredDisplayData = this.displayData;
-    this.viewMetaData.pageCount = this.calculatePageCount();
+    this.viewService.filteredDisplayData = this.viewService.displayData;
+    this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
   }
 
   filterDateColumns(columnDateFilter: { column: any; startDate: Date; endDate: Date }) {
     const column = columnDateFilter.column;
 
-    this.displayData = this.displayData.filter((data) => {
+    this.viewService.displayData = this.viewService.displayData.filter((data) => {
       if (columnDateFilter != null && data[column] != null) {
         const dataDate = new Date(data[column]);
         const startDate = new Date(columnDateFilter.startDate);
@@ -443,7 +400,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       }
       return false;
     });
-    this.filteredDisplayData = this.displayData;
+    this.viewService.filteredDisplayData = this.viewService.displayData;
   }
 
   clearFilterEmitter(event: { filter: string; reload: boolean }) {
@@ -502,9 +459,9 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   applyTemporaryFilter() {
-    const temporaryData: any[] = [];
+    const temporaryData: Record<string, unknown>[] = [];
     if (this.filterService.getFilterData().searchFilter != '') {
-      this.displayData.forEach((data) => {
+      this.viewService.displayData.forEach((data) => {
         if (
           Object.values(data).some((property) =>
             String(property)
