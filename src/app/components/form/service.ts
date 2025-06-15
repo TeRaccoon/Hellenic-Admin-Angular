@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { Injectable, signal } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import {
+  Data,
   EditableData,
   FormType,
   FormVisible,
@@ -639,5 +640,86 @@ export class FormService {
     }
 
     return { payload: payload, secondaryKey: secondaryKey };
+  }
+
+  generateRandomString(length: number): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters[randomIndex];
+    }
+
+    return result;
+  }
+
+  sortFormDataArray(formDataArray: [string, Data][]) {
+    return [...formDataArray].sort((a: [string, { inputType: string }], b: [string, { inputType: string }]) => {
+      const aType = a[1].inputType;
+      const bType = b[1].inputType;
+
+      const isAText = aType === 'text' || aType === 'textarea';
+      const isBText = bType === 'text' || bType === 'textarea';
+
+      if (isAText && !isBText) return 1;
+      if (!isAText && isBText) return -1;
+
+      if (aType === 'text' && bType === 'textarea') return -1;
+      if (aType === 'textarea' && bType === 'text') return 1;
+
+      return aType.localeCompare(bType);
+    });
+  }
+
+  async addDamagesPayment(invoicedItemID: string) {
+    const damage = await this.dataService.processPost({
+      action: 'calculate-damage-from-invoiced-item-id',
+      id: invoicedItemID,
+    });
+
+    const response = await this.dataService.submitFormData({
+      table_name: 'payments',
+      action: 'add',
+      amount: damage,
+      payment_type: 'Other',
+      category: 1,
+      description: `Damages payment for returned product. Invoiced item ID: ${invoicedItemID}`,
+      reference: `DMG-${invoicedItemID}`,
+    });
+
+    this.setMessageFormData({
+      title: response.success ? 'Success!' : 'Error!',
+      message: response.message,
+    });
+  }
+
+  async restockInvoicedItem(invoicedItemID: string) {
+    const invoicedItem = await this.dataService.processPost({
+      action: 'invoiced-item',
+      id: invoicedItemID,
+    });
+
+    if (invoicedItem.restocked == 'Yes') {
+      this.setMessageFormData({
+        title: 'Warning',
+        message: 'Item has already been restocked. No action will be taken!',
+      });
+
+      return;
+    }
+
+    invoicedItem.restocked = 'Yes';
+
+    const response = await this.dataService.submitFormData({
+      table_name: 'invoiced_items',
+      action: 'append',
+      ...invoicedItem,
+    });
+
+    this.setMessageFormData({
+      title: response.success ? 'Success!' : 'Error!',
+      message: response.message,
+    });
   }
 }

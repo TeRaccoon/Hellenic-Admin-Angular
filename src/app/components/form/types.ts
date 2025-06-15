@@ -103,6 +103,12 @@ export interface CustomerAddress {
   invoice_postcode?: string | null;
 }
 
+export interface SelectData {
+  alternative: Record<string, { selectData: string }>;
+  selected: Record<string, { selectData: string; selectDataId: number | null } | null>;
+  selectedText: Record<string, string>;
+}
+
 export type FormVisible = Record<FormType, WritableSignal<boolean>>;
 
 export interface SelectReplacementData {
