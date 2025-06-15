@@ -1,0 +1,47 @@
+@switch (tableName) {
+  @case ('items') {
+    <td (click)="stockSearch()" [ngClass]="shouldColourCell() + (displayWithIcon() ? ' icon-data-container' : '')">
+      <fa-icon [icon]="icons.faBox"></fa-icon>
+    </td>
+    <td>
+      {{ stockData[item['id']] ? stockData[item['id']] : 0 }}
+    </td>
+  }
+  @case ('stocked_items') {
+    <td>
+      <img [src]="image" />
+    </td>
+  }
+  @case ('supplier_invoices') {
+    @if (canDisplayColumn('invoiced-items')) {
+      <td (click)="supplierInvoiceSearch()">
+        <fa-icon [icon]="icons.faBasketShopping"></fa-icon>
+      </td>
+    }
+    <td (click)="creditNoteSearch()">
+      <fa-icon [icon]="icons.faNoteSticky"></fa-icon>
+    </td>
+  }
+  @case ('suppliers') {
+    <td (click)="creditNoteSearch()">
+      <fa-icon [icon]="icons.faNoteSticky"></fa-icon>
+    </td>
+  }
+  @case ('invoices') {
+    @if (canDisplayColumn('invoiced-items')) {
+      <td (click)="invoiceSearch()">
+        <fa-icon [icon]="icons.faBasketShopping"></fa-icon>
+      </td>
+    }
+  }
+  @case ('customers') {
+    <td (click)="addressSearch()">
+      <fa-icon [icon]="icons.faAddressBook"></fa-icon>
+    </td>
+  }
+  @case ('price_list') {
+    <td (click)="priceListItemSearch()">
+      <fa-icon [icon]="icons.faBasketShopping" />
+    </td>
+  }
+}

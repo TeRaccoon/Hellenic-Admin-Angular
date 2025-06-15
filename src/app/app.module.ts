@@ -43,6 +43,7 @@ import { TableCellComponent } from './components/table-cell/table-cell.component
 import { TableWidgetComponent } from './components/table-widget/table-widget.component';
 import { TablelessViewComponent } from './components/tableless-view/tableless-view.component';
 import { VatViewComponent } from './components/vat-view/vat-view.component';
+import { ExtraColumnComponent } from './components/view/children/extra-column/extra-column.component';
 import { NoTableDataComponent } from './components/view/children/no-table-data/no-table-data.component';
 import { TableButtonsComponent } from './components/view/children/table-buttons/table-buttons.component';
 import { TableDataComponent } from './components/view/children/table-data/table-data.component';
@@ -98,6 +99,7 @@ export function initConfig(configService: ConfigService) {
     TableFilterComponent,
     TableDataComponent,
     FileUploadComponent,
+    ExtraColumnComponent,
   ],
   imports: [
     BrowserModule,
