@@ -25,9 +25,9 @@
   <div (click)="emailSupplier()">
     <p>Email supplier</p>
     @if (isLoading) {
-      <fa-icon class="loading-icon" [icon]="loading" spinPulse [spin]="true" />
+      <fa-icon class="loading-icon" [icon]="icons.loading" spinPulse [spin]="true" />
     } @else {
-      <fa-icon [icon]="email" />
+      <fa-icon [icon]="icons.email" />
     }
   </div>
 </div>

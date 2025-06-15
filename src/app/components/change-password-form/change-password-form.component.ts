@@ -1,9 +1,9 @@
 import { Component, effect } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faX } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
 import { FormService } from '../form/service';
 import { FormType } from '../form/types';
+import { ICONS } from './icons';
 
 @Component({
   selector: 'app-change-password-form',
@@ -11,7 +11,7 @@ import { FormType } from '../form/types';
   styleUrls: ['./change-password-form.component.scss'],
 })
 export class ChangePasswordFormComponent {
-  x = faX;
+  icons = ICONS;
 
   visible = false;
   changePasswordForm: FormGroup;

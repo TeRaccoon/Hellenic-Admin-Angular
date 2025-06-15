@@ -50,7 +50,7 @@ export class DeleteFormComponent {
   }
 
   async deleteRow() {
-    const idString = this.setIdString();
+    const idString = this.getIdString();
 
     const deletionResponse = await this.dataService.submitFormData({
       action: 'delete',
@@ -75,7 +75,7 @@ export class DeleteFormComponent {
   }
 
   async deleteRowHard() {
-    const idString = this.setIdString();
+    const idString = this.getIdString();
 
     const referencedColumns = await this.dataService.processPost({
       action: 'column-usage',
@@ -106,7 +106,7 @@ export class DeleteFormComponent {
     this.formService.requestReload('hard');
   }
 
-  setIdString() {
+  getIdString() {
     if (this.ids.length > 1) {
       return this.ids.join(', ');
     } else {

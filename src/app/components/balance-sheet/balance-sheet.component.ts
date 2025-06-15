@@ -1,8 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { faEnvelope, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { DATE_RANGES } from '../../common/consts/const';
+import { CUSTOMER_QUERIES, SUPPLIER_QUERIES } from '../../common/types/data-service/const';
+import { BalanceSheetData, BalanceSheetQueries } from '../../common/types/data-service/types';
+import { SelectedDate } from '../../common/types/statistics/types';
+import { DataService } from '../../services/data.service';
+import { MailService } from '../../services/mail.service';
+import { PDFService } from '../../services/pdf.service';
+import { UrlService } from '../../services/url.service';
+import { FormService } from '../form/service';
+import { ICONS } from './icons';
 import {
   CreditNote,
   InvoiceSummary,
@@ -12,15 +20,7 @@ import {
   Transaction,
   TransactionData,
   TransactionType,
-} from '../../common/types/balance-sheet/types';
-import { CUSTOMER_QUERIES, SUPPLIER_QUERIES } from '../../common/types/data-service/const';
-import { BalanceSheetData, BalanceSheetQueries } from '../../common/types/data-service/types';
-import { SelectedDate } from '../../common/types/statistics/types';
-import { DataService } from '../../services/data.service';
-import { MailService } from '../../services/mail.service';
-import { PDFService } from '../../services/pdf.service';
-import { UrlService } from '../../services/url.service';
-import { FormService } from '../form/service';
+} from './types';
 
 dayjs.extend(isBetween);
 @Component({
@@ -41,16 +41,13 @@ export class BalanceSheetComponent implements OnInit {
   imageUrlBase;
 
   invoiceSummary: InvoiceSummary | null = null;
-
   transactions: Transaction[] = [];
   filteredTransactions: Transaction[] = [];
 
-  email = faEnvelope;
-  loading = faSpinner;
+  icons = ICONS;
+  ranges = DATE_RANGES;
 
   isLoading = false;
-
-  ranges = DATE_RANGES;
 
   constructor(
     private dataService: DataService,

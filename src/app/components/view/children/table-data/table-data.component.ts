@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TABLE_ICONS } from '../../../../common/icons/table-icons';
+import { FormSubmission } from '../../../../common/types/data-service/types';
 import { SubmissionData, TableName, TableNameEnum, TableTypeMap } from '../../../../common/types/tables';
 import { DataService } from '../../../../services/data.service';
 import { FormService } from '../../../form/service';
@@ -47,7 +48,7 @@ export class TableDataComponent<T extends keyof TableTypeMap> {
     data.action = 'append';
     data.table_name = String(this.tableName);
 
-    await this.dataService.submitFormData(data);
+    await this.dataService.submitFormData(data as FormSubmission);
     this.reloadEvent.emit(true);
   }
 
@@ -92,7 +93,7 @@ export class TableDataComponent<T extends keyof TableTypeMap> {
           invoicesRow.status = data.status;
         }
 
-        const submissionResponse = await this.dataService.submitFormData(data);
+        const submissionResponse = await this.dataService.submitFormData(data as FormSubmission);
         if (submissionResponse.success) {
           this.reloadEvent.emit(false);
         } else {

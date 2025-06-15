@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { CREDITOR_HEADERS, DEBTOR_CREDITOR_CONFIG, DEBTOR_HEADERS } from './consts';
+import { COLUMN_TYPES, CONFIG, CREDITOR_HEADERS, DEBTOR_HEADERS } from './consts';
 
 @Component({
   selector: 'app-debtor-creditor-widget',
@@ -8,7 +8,7 @@ import { CREDITOR_HEADERS, DEBTOR_CREDITOR_CONFIG, DEBTOR_HEADERS } from './cons
   styleUrls: ['./debtor-creditor-widget.component.scss'],
 })
 export class DebtorCreditorWidgetComponent {
-  config = DEBTOR_CREDITOR_CONFIG;
+  config = CONFIG;
 
   constructor(private dataService: DataService) {}
 
@@ -25,7 +25,7 @@ export class DebtorCreditorWidgetComponent {
     this.dataService.storeData({
       Data: debtorCreditorData,
       headers: type === 'debtor' ? DEBTOR_HEADERS : CREDITOR_HEADERS,
-      columnTypes: ['string', 'string', 'currency', 'date'],
+      columnTypes: COLUMN_TYPES,
     });
   }
 }

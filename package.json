@@ -54,6 +54,7 @@
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^16.0.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",

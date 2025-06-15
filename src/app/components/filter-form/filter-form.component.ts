@@ -3,6 +3,7 @@ import { FilterService } from '../../services/filter.service';
 import { FormService } from '../form/service';
 import { FormType } from '../form/types';
 import { ICONS } from './icons';
+import { TableColumns } from './types';
 
 @Component({
   selector: 'app-filter-form',
@@ -13,11 +14,7 @@ export class FilterFormComponent {
   icons = ICONS;
 
   visible = false;
-  tableColumns: {
-    columnNames: Record<string, any>[];
-    columns: string[];
-    dataTypes: string[];
-  } = {
+  tableColumns: TableColumns = {
     columnNames: [],
     columns: [],
     dataTypes: [],
