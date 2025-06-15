@@ -68,7 +68,7 @@
                     }
                     @case ('alternative-select') {
                       <app-dropselect
-                        [selectData]="alternativeSelectedData[key].selectData"
+                        [selectData]="dropSelectData.alternative[key].selectData"
                         [replacementData]="alternativeSelectData[key].data"
                         [disabled]="disabled"
                         [class]="inputHasError(mappedFormData.get(key)!.field)"
@@ -105,7 +105,7 @@
                         />
                       } @else {
                         <app-dropselect
-                          [selectData]="selectedReplacementData[key]?.selectData ?? ''"
+                          [selectData]="dropSelectData.selected[key]?.selectData ?? ''"
                           [replacementData]="replacementData[key]"
                           [disabled]="disabled"
                           [class]="inputHasError(mappedFormData.get(key)!.field)"
@@ -118,7 +118,7 @@
                     }
                     @case ('replacement-text') {
                       <app-dropselect
-                        [selectData]="selectedTextReplacementData[key]"
+                        [selectData]="dropSelectData.selectedText[key]"
                         [replacementData]="replacementData[key]"
                         [disabled]="disabled"
                         [class]="inputHasError(mappedFormData.get(key)!.field)"
@@ -168,7 +168,7 @@
             <div class="input-container replacement">
               <label>Item Name <fa-icon class="asterisk" [icon]="icons.asterisk" /></label>
               <app-dropselect
-                [selectData]="selectedReplacementData['Item ID']?.selectData ?? ''"
+                [selectData]="dropSelectData.selected['Item ID']?.selectData ?? ''"
                 [replacementData]="replacementData['Item ID']"
                 [class]="itemInputHasError('item_id')"
                 [field]="'item_id'"

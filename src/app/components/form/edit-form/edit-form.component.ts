@@ -24,8 +24,6 @@ import {
 export class EditFormComponent {
   icons = FORM_ICONS;
 
-  searchWaiting = false;
-
   imageUrlBase;
 
   editForm: FormGroup;
@@ -614,7 +612,7 @@ export class EditFormComponent {
 
     const response = await this.dataService.submitFormData(payload);
     if (response.success) {
-      const id = response.id;
+      const id = response.id!;
 
       this.addressNotListedKeys = this.addressNotListedKeys.filter((addressKey) => addressKey != key);
       if (this.editForm.get('customer_id')?.value != null) {
