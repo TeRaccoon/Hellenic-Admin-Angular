@@ -78,9 +78,14 @@
     }
     @if (userOptionsVisible) {
       <div #userOptions class="user-dropdown-container">
-        <h2>Options</h2>
-        <button class="button" (click)="logout()">Logout</button>
-        <button class="button" (click)="changePassword()">Change Password</button>
+        <a (click)="logout()">
+          Logout
+          <fa-icon [icon]="icons.faRightFromBracket" />
+        </a>
+        <a (click)="changePassword()">
+          Change Password
+          <fa-icon [icon]="icons.faKey" />
+        </a>
       </div>
     }
   </div>

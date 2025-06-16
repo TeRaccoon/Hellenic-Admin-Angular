@@ -1,10 +1,21 @@
-import { faBell, faEnvelope, faUser, faSearch, faFileCircleXmark, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBell,
+  faEnvelope,
+  faFileCircleXmark,
+  faKey,
+  faRightFromBracket,
+  faSearch,
+  faSpinner,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
 
 export const NAVBAR_ICONS = {
-    faBell,
-    faEnvelope,
-    faUser,
-    faSearch,
-    faFileCircleXmark,
-    faSpinner,
+  faBell,
+  faEnvelope,
+  faUser,
+  faSearch,
+  faFileCircleXmark,
+  faSpinner,
+  faKey,
+  faRightFromBracket,
 };
