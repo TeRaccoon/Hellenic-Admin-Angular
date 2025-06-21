@@ -1,4 +1,4 @@
-@import '../variables';
+@import "../variables";
 
 *,
 *::before,
@@ -14,10 +14,13 @@
     align-items: center;
     justify-content: space-between;
     height: 50px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow:
+        0 4px 8px 0 rgba(0, 0, 0, 0.2),
+        0 6px 20px 0 rgba(0, 0, 0, 0.19);
     background-color: #fff;
     border-radius: 10px;
     padding: 10px;
+    transition: border-radius 0.5s ease 1s;
 
     .nav-options-container {
         display: flex;
@@ -30,19 +33,35 @@
             }
         }
 
+        .notification-indicator {
+            background-color: orangered;
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            border-radius: 50%;
+            right: 115px;
+        }
+
         .user-dropdown-container {
             position: absolute;
-            top: 85px;
+            top: 80px;
             right: 15px;
             background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 15px;
+            border-top: 2px solid #ccc;
+            border-radius: 0 0 15px 15px;
             padding: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow:
+                0 6px 8px -4px rgba(0, 0, 0, 0.2),
+                0 12px 20px -6px rgba(0, 0, 0, 0.19);
             flex-direction: column;
             align-items: center;
             display: flex;
             width: 7%;
+            height: 102px;
+            transition:
+                height 1s ease 0.2s,
+                opacity 0s ease 0.2s,
+                padding 1s ease 0.2s;
 
             h2 {
                 margin: 5px 10px 10px 10px;
@@ -58,44 +77,150 @@
                 font-size: 18px;
                 width: 100%;
                 cursor: pointer;
+                pointer-events: none;
                 color: black;
-                transition: color 0.3s;
+                transition:
+                    color 0.3s,
+                    opacity 0.5s ease 1s;
 
                 &:hover {
                     color: $hellenicblue;
                     transition: color 0.3s;
                 }
             }
+
+            &.interactive {
+                a {
+                    pointer-events: auto;
+                }
+            }
         }
 
-        p {
+        .user-options-hidden {
+            height: 0px;
+            padding: 0px;
+            opacity: 0;
+            pointer-events: none;
+            transition:
+                opacity 0.5s ease 1s,
+                padding 0.5s ease 0.5s,
+                height 0.5s ease 0.5s;
+
+            a {
+                opacity: 0;
+                transition: opacity 0.5s ease;
+            }
+        }
+
+        >p {
             margin: 10px;
             font-size: 22px;
             cursor: pointer;
         }
 
         .notification-dropdown-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
             position: absolute;
-            top: 85px;
-            right: 25px;
+            top: 80px;
+            right: 15px;
             background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 15px;
+            border-top: 2px solid #ccc;
+            border-radius: 0 0 15px 15px;
             padding: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             z-index: 3;
             width: 25%;
+            pointer-events: none;
+            max-height: 300px;
+            transition:
+                max-height 1s ease 0.2s,
+                opacity 0s ease 0.2s,
+                padding 1s ease 0s;
+
+            &.interactive {
+                pointer-events: auto;
+            }
+
+            .empty-section {
+                p {
+                    font-size: 18px;
+                }
+            }
 
             .section {
-                p {
-                    border: 2px solid #207df8;
+                border: 2px solid #ccc;
+                border-radius: 10px;
+                padding: 10px;
+
+                transition: border-color 0.5s ease 1s;
+
+                h2 {
+                    font-size: 18px;
+                    text-decoration: underline;
+                }
+
+                .notification-container {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
                     border-radius: 5px;
-                    padding: 10px;
+                    padding: 2px;
+                    margin: 5px;
+                    transition: background-color 0.5s ease;
+
+                    p {
+                        padding: 4px;
+                        font-size: 16px;
+                    }
 
                     &:hover {
-                        background-color: #eaeef3;
+                        background-color: #f8f8f8;
+                        transition: background-color 0.5s ease;
+
+                        fa-icon {
+                            color: red;
+                        }
                     }
                 }
+
+
+            }
+
+            fa-icon {
+                cursor: pointer;
+                transition: color 0.5s ease;
+                margin-right: 5px;
+            }
+
+            p,
+            h2,
+            fa-icon {
+                transition: opacity 0.5s ease 1s;
+            }
+        }
+
+        .notifications-hidden {
+            max-height: 0;
+            padding: 0px;
+            opacity: 0;
+            pointer-events: none;
+            transition:
+                opacity 0.5s ease 1.5s,
+                padding 0.5s ease 0.8s,
+                max-height 0.5s ease 0.5s;
+
+            p,
+            h2,
+            fa-icon {
+                opacity: 0;
+                transition: opacity 0.5s ease;
+            }
+
+            .section {
+                border-color: transparent;
+                transition: border-color 0.5s ease;
             }
         }
 
@@ -205,6 +330,11 @@
     >.hidden {
         display: none;
     }
+}
+
+.user-options-visible {
+    border-radius: 10px 10px 0px 10px;
+    transition: border-radius 0.2s ease;
 }
 
 @media screen and (min-width: 768px) and (max-width: 1024px) {

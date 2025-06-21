@@ -7,6 +7,7 @@ import {
   faSearch,
   faSpinner,
   faUser,
+  faX,
 } from '@fortawesome/free-solid-svg-icons';
 
 export const NAVBAR_ICONS = {
@@ -18,4 +19,5 @@ export const NAVBAR_ICONS = {
   faSpinner,
   faKey,
   faRightFromBracket,
+  x: faX,
 };

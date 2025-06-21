@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" [class.user-options-visible]="userOptionsVisible || notificationVisible">
   <div class="search-container">
     <div class="search-bar">
       <input
@@ -49,8 +49,11 @@
     </div>
   </div>
   <div class="nav-options-container">
-    <p #notificationIcon>
-      <fa-icon (click)="toggleNotificationDropdown()" [icon]="icons.faBell"></fa-icon>
+    <p #notificationIcon (click)="toggleNotificationDropdown()">
+      @if (this.notificationKeys().length > 0) {
+        <span class="notification-indicator"></span>
+      }
+      <fa-icon [icon]="icons.faBell"></fa-icon>
     </p>
     <p>
       <fa-icon [icon]="icons.faEnvelope"></fa-icon>
@@ -58,35 +61,45 @@
     <p #userIcon>
       <fa-icon (click)="toggleUserOptions()" [icon]="icons.faUser"></fa-icon>
     </p>
-    @if (notificationVisible) {
-      <div #notificationDropdown class="notification-dropdown-container">
-        @if (notifications.length > 0) {
-          @for (notification of notifications; track notification) {
-            <div class="section">
-              <h2>{{ notification.header }}</h2>
-              @for (dataItem of notification.data; track dataItem) {
-                <p>{{ dataItem }}</p>
-              }
-            </div>
-          }
-        } @else {
-          <div class="empty-section">
-            <p>You have no new notifications. Check back later!</p>
+    <div
+      #notificationDropdown
+      class="notification-dropdown-container"
+      [class.notifications-hidden]="!notificationVisible"
+      [class.interactive]="interactive"
+      (click)="stopEvent($event)"
+    >
+      @if (this.notificationKeys().length > 0) {
+        @for (key of this.notificationKeys(); track key) {
+          <div class="section">
+            <h2>{{ key }}</h2>
+            @for (notification of notifications[key]; track notification) {
+              <div class="notification-container">
+                <p>{{ notification }}</p>
+                <fa-icon (click)="removeNotification(key, notification)" [icon]="icons.x" />
+              </div>
+            }
           </div>
         }
-      </div>
-    }
-    @if (userOptionsVisible) {
-      <div #userOptions class="user-dropdown-container">
-        <a (click)="logout()">
-          Logout
-          <fa-icon [icon]="icons.faRightFromBracket" />
-        </a>
-        <a (click)="changePassword()">
-          Change Password
-          <fa-icon [icon]="icons.faKey" />
-        </a>
-      </div>
-    }
+      } @else {
+        <div class="empty-section">
+          <p>You have no new notifications. Check back later!</p>
+        </div>
+      }
+    </div>
+    <div
+      #userOptions
+      class="user-dropdown-container"
+      [class.user-options-hidden]="!userOptionsVisible"
+      [class.interactive]="interactive"
+    >
+      <a (click)="logout()">
+        Logout
+        <fa-icon [icon]="icons.faRightFromBracket" />
+      </a>
+      <a (click)="changePassword()">
+        Change Password
+        <fa-icon [icon]="icons.faKey" />
+      </a>
+    </div>
   </div>
 </div>

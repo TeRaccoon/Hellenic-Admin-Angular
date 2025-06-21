@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import _ from 'lodash';
 import { NAVBAR_ICONS } from '../../common/icons/navbar-icons';
 import { SearchResult } from '../../common/types/table';
+import { Customers, Invoices } from '../../common/types/tables';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
 import { FilterService } from '../../services/filter.service';
@@ -10,6 +11,7 @@ import { SearchService } from '../../services/search.service';
 import { TableService } from '../../services/table.service';
 import { FormService } from '../form/service';
 import { FormType } from '../form/types';
+import { Notifications } from './types';
 
 @Component({
   selector: 'app-navbar',
@@ -64,8 +66,9 @@ export class NavbarComponent implements OnInit {
   userOptionsVisible = false;
   searchDropdownVisible = false;
   searchDropdownFocus = false;
+  interactive = false;
 
-  notifications: { header: string; data: any[] }[] = [];
+  notifications: Notifications = {};
 
   constructor(
     private tableService: TableService,
@@ -78,58 +81,90 @@ export class NavbarComponent implements OnInit {
     private renderer: Renderer2
   ) {
     this.renderer.listen('window', 'click', (e: Event) => {
-      const notificationClicked = this.notificationDropdown?.nativeElement.contains(e.target);
+      const target = e.target as Node;
 
-      const bellClicked =
-        this.notificationIcon.nativeElement.contains(e.target) ||
-        (this.notificationIcon.nativeElement.querySelector('svg') &&
-          this.notificationIcon.nativeElement.querySelector('svg').contains(e.target));
+      const clickedInsideNotification =
+        this.notificationDropdown?.nativeElement.contains(target) ||
+        this.notificationIcon?.nativeElement.contains(target);
 
-      if (!notificationClicked && !bellClicked) {
+      if (!clickedInsideNotification) {
         this.notificationVisible = false;
       }
 
-      const userOptionsClicked = this.userOptions?.nativeElement.contains(e.target);
+      const clickedInsideUser =
+        this.userOptions?.nativeElement.contains(target) || this.userIcon?.nativeElement.contains(target);
 
-      const userClicked =
-        this.userIcon.nativeElement.contains(e.target) ||
-        (this.userIcon.nativeElement.querySelector('svg') &&
-          this.userIcon.nativeElement.querySelector('svg').contains(e.target));
-
-      if (!userOptionsClicked && !userClicked) {
+      if (!clickedInsideUser) {
         this.userOptionsVisible = false;
+        this.interactive = false;
       }
     });
   }
 
   ngOnInit() {
     this.debounceSearch = _.debounce(this.performSearch.bind(this), 750);
+    this.getNotifications();
+  }
+
+  stopEvent(event: Event) {
+    event.stopPropagation();
   }
 
   toggleNotificationDropdown() {
     this.userOptionsVisible = false;
     this.notificationVisible = !this.notificationVisible;
+    if (this.notificationVisible) {
+      setTimeout(() => {
+        this.interactive = this.notificationVisible;
+      }, 1000);
+    } else {
+      this.interactive = false;
+    }
   }
 
   toggleUserOptions() {
     this.notificationVisible = false;
     this.userOptionsVisible = !this.userOptionsVisible;
+    if (this.userOptionsVisible) {
+      setTimeout(() => {
+        this.interactive = this.userOptionsVisible;
+      }, 1000);
+    } else {
+      this.interactive = false;
+    }
   }
 
   async getNotifications() {
-    const invoicesDue = await this.dataService.processGet('invoices-due', { filter: '1' }, true);
+    await this.getPendingCustomers();
+    await this.getNewInvoices();
+  }
 
-    if (invoicesDue.length != 0) {
-      const invoiceDataArray: any[] = [];
-      invoicesDue.forEach((invoiceData: any) => {
-        invoiceDataArray.push(`Invoice: ${invoiceData.title}`);
-      });
+  private async getPendingCustomers() {
+    const pendingCustomers = ((await this.dataService.processGet('pending-customers', {}, true)) as Customers[]).map(
+      (c) => `${c.id} - ${c.account_name}`
+    );
 
-      this.notifications.push({
-        header: 'Invoices Due Today',
-        data: invoiceDataArray,
-      });
+    if (pendingCustomers.length > 0) {
+      this.notifications['Customers pending approval'] = pendingCustomers;
     }
+  }
+
+  private async getNewInvoices() {
+    const invoices = ((await this.dataService.processGet('all-invoices', {}, true)) as Invoices[])
+      .filter((i) => i.created_at && this.isToday(i.created_at))
+      .map((i) => `${i.id} - ${i.title}`);
+    if (invoices.length > 0) {
+      this.notifications['New invoices'] = invoices;
+    }
+  }
+
+  isToday(date: Date): boolean {
+    const d = new Date(date);
+    const today = new Date();
+
+    return (
+      d.getFullYear() === today.getFullYear() && d.getMonth() === today.getMonth() && d.getDate() === today.getDate()
+    );
   }
 
   searchTables(event: Event) {
@@ -207,5 +242,17 @@ export class NavbarComponent implements OnInit {
       currentElement = currentElement?.parentElement;
     }
     return false;
+  }
+
+  removeNotification(key: string, notification: string) {
+    this.notifications[key] = this.notifications[key].filter((n) => n != notification);
+
+    if (this.notifications[key].length == 0) {
+      delete this.notifications[key];
+    }
+  }
+
+  notificationKeys() {
+    return Object.keys(this.notifications);
   }
 }
