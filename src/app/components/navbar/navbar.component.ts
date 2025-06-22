@@ -1,16 +1,12 @@
 import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import _ from 'lodash';
 import { NAVBAR_ICONS } from '../../common/icons/navbar-icons';
 import { SearchResult } from '../../common/types/table';
-import { Customers, Invoices } from '../../common/types/tables';
-import { AuthService } from '../../services/auth.service';
-import { DataService } from '../../services/data.service';
-import { FilterService } from '../../services/filter.service';
 import { SearchService } from '../../services/search.service';
 import { TableService } from '../../services/table.service';
 import { FormService } from '../form/service';
 import { FormType } from '../form/types';
+import { NavbarService } from './service';
 import { Notifications } from './types';
 
 @Component({
@@ -72,13 +68,10 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private tableService: TableService,
-    private filterService: FilterService,
     private searchService: SearchService,
-    private dataService: DataService,
-    private router: Router,
-    private authService: AuthService,
     private formService: FormService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private service: NavbarService
   ) {
     this.renderer.listen('window', 'click', (e: Event) => {
       const target = e.target as Node;
@@ -140,31 +133,17 @@ export class NavbarComponent implements OnInit {
   }
 
   private async getPendingCustomers() {
-    const pendingCustomers = ((await this.dataService.processGet('pending-customers', {}, true)) as Customers[]).map(
-      (c) => `${c.id} - ${c.account_name}`
-    );
-
+    const pendingCustomers = await this.service.getPendingCustomers();
     if (pendingCustomers.length > 0) {
       this.notifications['Customers pending approval'] = pendingCustomers;
     }
   }
 
   private async getNewInvoices() {
-    const invoices = ((await this.dataService.processGet('all-invoices', {}, true)) as Invoices[])
-      .filter((i) => i.created_at && this.isToday(i.created_at))
-      .map((i) => `${i.id} - ${i.title}`);
+    const invoices = await this.service.getNewInvoices();
     if (invoices.length > 0) {
       this.notifications['New invoices'] = invoices;
     }
-  }
-
-  isToday(date: Date): boolean {
-    const d = new Date(date);
-    const today = new Date();
-
-    return (
-      d.getFullYear() === today.getFullYear() && d.getMonth() === today.getMonth() && d.getDate() === today.getDate()
-    );
   }
 
   searchTables(event: Event) {
@@ -194,30 +173,14 @@ export class NavbarComponent implements OnInit {
   }
 
   goToRow(table: string, matchedValue: string) {
-    this.filterService.setFilterData({
-      searchFilter: matchedValue,
-      searchFilterApplied: true,
-    });
-
-    this.filterService.setFilterProtection(true);
-    this.tableService.changeTable(this.tableService.getTableName(table) ?? '');
-
+    this.service.goToRow(table, matchedValue);
     this.searchDropdownVisible = false;
   }
 
   async logout() {
     this.userOptionsVisible = false;
 
-    const logoutResponse = await this.authService.logout();
-    if (logoutResponse) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    this.formService.setMessageFormData({
-      title: 'Whoops!',
-      message: 'Something went wrong! Please try again',
-    });
+    await this.logout();
   }
 
   changePassword() {
@@ -228,20 +191,9 @@ export class NavbarComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   clickOutside(event: MouseEvent) {
     const clickedElement = event.target as HTMLElement;
-    if (!this.isDescendantOfSearchContainer(clickedElement)) {
+    if (!this.service.isDescendantOfSearchContainer(clickedElement)) {
       this.searchDropdownVisible = false;
     }
-  }
-
-  private isDescendantOfSearchContainer(element: HTMLElement): boolean {
-    let currentElement: HTMLElement | null = element;
-    while (currentElement) {
-      if (currentElement.classList.contains('search-container')) {
-        return true;
-      }
-      currentElement = currentElement?.parentElement;
-    }
-    return false;
   }
 
   removeNotification(key: string, notification: string) {

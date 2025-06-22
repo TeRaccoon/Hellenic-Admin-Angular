@@ -49,14 +49,11 @@
     </div>
   </div>
   <div class="nav-options-container">
-    <p #notificationIcon (click)="toggleNotificationDropdown()">
+    <p #notificationIcon (click)="toggleNotificationDropdown()" class="notification-wrapper">
       @if (this.notificationKeys().length > 0) {
         <span class="notification-indicator"></span>
       }
       <fa-icon [icon]="icons.faBell"></fa-icon>
-    </p>
-    <p>
-      <fa-icon [icon]="icons.faEnvelope"></fa-icon>
     </p>
     <p #userIcon>
       <fa-icon (click)="toggleUserOptions()" [icon]="icons.faUser"></fa-icon>

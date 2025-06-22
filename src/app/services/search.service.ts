@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TABLE_NAMES } from '../common/constants';
-import { DataService } from './data.service';
 import { EXCLUDED_COLUMNS, SearchResult } from '../common/types/table';
+import { DataService } from './data.service';
 import { TableService } from './table.service';
 
 @Injectable({
@@ -14,12 +14,12 @@ export class SearchService {
   ) {}
 
   async search(filter: string): Promise<SearchResult[]> {
-    let filteredData: SearchResult[] = [];
+    const filteredData: SearchResult[] = [];
 
-    let tableData = await this.getAllTableData();
+    const tableData = await this.getAllTableData();
 
     tableData.forEach((table: any[], tableIndex: number) => {
-      let results = this.searchTable(table, filter, TABLE_NAMES[tableIndex]);
+      const results = this.searchTable(table, filter, TABLE_NAMES[tableIndex]);
       if (results.length > 0) {
         filteredData.push(...results);
       }
@@ -29,25 +29,22 @@ export class SearchService {
   }
 
   searchTable(table: any[], filter: string, tableName: string) {
-    let filteredData: any[] = [];
-
-    table.forEach((row: any) => {
-      let found = this.searchRow(row, filter, tableName);
+    for (const row of table) {
+      const found = this.searchRow(row, filter, tableName);
       if (found) {
-        filteredData.push(...found);
+        return found;
       }
-    });
+    }
 
-    return filteredData;
+    return [];
   }
 
   searchRow(row: any, filter: string, tableName: string) {
-    let matchedData: SearchResult[] = [];
+    const matchedData: SearchResult[] = [];
     Object.entries(row).forEach(([key, value]: [string, any]) => {
       if (typeof value === 'string' && value.includes(filter)) {
-        let tableDisplayName =
-          this.tableService.getTableDisplayName(tableName) ?? '';
-        let displayValue = this.processDisplayValue(tableName, value, key, row);
+        const tableDisplayName = this.tableService.getTableDisplayName(tableName) ?? '';
+        const displayValue = this.processDisplayValue(tableName, value, key, row);
 
         if (this.shouldDisplayMatch(tableName, key)) {
           matchedData.push({
@@ -65,19 +62,11 @@ export class SearchService {
 
   shouldDisplayMatch(tableName: string, key: string) {
     return (
-      !(
-        tableName in EXCLUDED_COLUMNS &&
-        EXCLUDED_COLUMNS[tableName].includes(key)
-      ) || !(tableName in EXCLUDED_COLUMNS)
+      !(tableName in EXCLUDED_COLUMNS && EXCLUDED_COLUMNS[tableName].includes(key)) || !(tableName in EXCLUDED_COLUMNS)
     );
   }
 
-  processDisplayValue(
-    tableName: string,
-    matchedValue: string,
-    key: string,
-    row: any
-  ) {
+  processDisplayValue(tableName: string, matchedValue: string, key: string, row: any) {
     switch (tableName) {
       case 'customers':
         if (key == 'account_number') {
@@ -90,14 +79,10 @@ export class SearchService {
   }
 
   async getAllTableData() {
-    let tableData: any[] = [];
+    const tableData: any[] = [];
 
     for (const table of TABLE_NAMES) {
-      let data = await this.dataService.processGet(
-        'display-data',
-        { filter: table },
-        true
-      );
+      const data = await this.dataService.processGet('display-data', { filter: table }, true);
       tableData.push(data);
     }
     return tableData;
