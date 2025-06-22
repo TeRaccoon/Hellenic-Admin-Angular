@@ -94,7 +94,7 @@
                         />
                       </td>
                       @for (column of getColumnHeaders(data[0]); track column; let columnIndex = $index) {
-                        @if (columnIndex === 2) {
+                        @if (columnIndex === 2 && needsExtraColumn(tableName)) {
                           <app-extra-column
                             [tableName]="tableName"
                             [data]="data"

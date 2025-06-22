@@ -1,6 +1,7 @@
 import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { EXTRA_COLUMN_TABLES } from '../../common/constants';
 import { TABLE_ICONS } from '../../common/icons/table-icons';
 import { TableName, TableNameEnum, TableTypeMap } from '../../common/types/tables';
 import { columnDateFilter, columnFilter, FilterData, viewMetadata } from '../../common/types/view/types';
@@ -487,5 +488,9 @@ export class ViewComponent implements OnInit, OnDestroy {
     if (loadTable) {
       await this.loadTable(String(this.tableName));
     }
+  }
+
+  needsExtraColumn(table: string) {
+    return EXTRA_COLUMN_TABLES.includes(table);
   }
 }

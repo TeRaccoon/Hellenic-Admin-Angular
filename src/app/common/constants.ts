@@ -163,5 +163,15 @@ export const PRICE_LIST_ITEM_COLUMNS = [
   { name: 'ID', type: 'number' },
   { name: 'Item', type: 'string' },
   { name: 'Price', type: 'currency' },
-  { name: 'Date Added', type: 'date' }
+  { name: 'Date Added', type: 'date' },
+];
+
+export const EXTRA_COLUMN_TABLES = [
+  'items',
+  'stocked_items',
+  'supplier_invoices',
+  'suppliers',
+  'invoices',
+  'customers',
+  'price_list',
 ];
