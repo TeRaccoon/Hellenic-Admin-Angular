@@ -30,6 +30,8 @@ import { InvoiceViewComponent } from './components/invoice-view/invoice-view.com
 import { LedgerWidgetComponent } from './components/ledger-widget/ledger-widget.component';
 import { LoginComponent } from './components/login/login.component';
 import { MessageFormComponent } from './components/message-form/message-form.component';
+import { NotificationTabComponent } from './components/navbar/children/notification-tab/notification-tab.component';
+import { SearchDropdownComponent } from './components/navbar/children/search-dropdown/search-dropdown.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { NewsletterWidgetComponent } from './components/newsletter-widget/newsletter-widget.component';
 import { PrintLayoutComponent } from './components/print-layout/print-layout.component';
@@ -100,6 +102,8 @@ export function initConfig(configService: ConfigService) {
     TableDataComponent,
     FileUploadComponent,
     ExtraColumnComponent,
+    SearchDropdownComponent,
+    NotificationTabComponent,
   ],
   imports: [
     BrowserModule,
