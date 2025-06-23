@@ -94,6 +94,7 @@
     padding: 0px;
     opacity: 0;
     pointer-events: none;
+    z-index: 0;
     transition:
         opacity 0.5s ease 1.5s,
         padding 0.5s ease 0.8s,
