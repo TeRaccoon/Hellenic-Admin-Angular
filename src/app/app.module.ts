@@ -28,6 +28,7 @@ import { EditFormComponent } from './components/form/edit-form/edit-form.compone
 import { HomeComponent } from './components/home/home.component';
 import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
 import { LedgerWidgetComponent } from './components/ledger-widget/ledger-widget.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { LoginComponent } from './components/login/login.component';
 import { MessageFormComponent } from './components/message-form/message-form.component';
 import { NotificationTabComponent } from './components/navbar/children/notification-tab/notification-tab.component';
@@ -104,6 +105,7 @@ export function initConfig(configService: ConfigService) {
     ExtraColumnComponent,
     SearchDropdownComponent,
     NotificationTabComponent,
+    LoadingSpinnerComponent,
   ],
   imports: [
     BrowserModule,
