@@ -10,9 +10,11 @@ $hellenicblue: rgb(0, 140, 255);
     background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
     width: 90%;
     text-align: left;
+    transition: background-image 0.5s ease;
 
     &:hover {
         background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
+        transition: background-image 0.5s ease;
     }
 }
 
@@ -20,7 +22,7 @@ $hellenicblue: rgb(0, 140, 255);
     border-radius: 8px;
     outline: none;
     border: 1px solid rgb(215, 215, 215);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     font-size: 16px;
     padding: 8px;
     background-color: white;
