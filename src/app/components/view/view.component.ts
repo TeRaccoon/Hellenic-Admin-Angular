@@ -49,6 +49,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   images: Record<string, string> = {};
 
   distanceLoading = false;
+  editLoading = false;
 
   filter = '';
 
@@ -96,6 +97,10 @@ export class ViewComponent implements OnInit, OnDestroy {
     };
 
     this.tableName = (this.route.snapshot.queryParamMap.get('table') as TableName) ?? TableNameEnum.Invoices;
+
+    effect(() => {
+      this.editLoading = this.formService.getFormLoadingSignal;
+    });
   }
 
   private reloadEffect = effect(() => {

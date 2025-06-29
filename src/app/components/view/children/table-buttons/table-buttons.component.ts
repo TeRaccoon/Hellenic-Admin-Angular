@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, effect, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { EXCLUDED_TABLES } from '../../../../common/consts/table-options';
@@ -22,6 +22,7 @@ export class TableButtonsComponent {
 
   icons = TABLE_ICONS;
   distanceLoading = false;
+  addLoading = false;
 
   buttonConfigs = [
     {
@@ -63,7 +64,11 @@ export class TableButtonsComponent {
     private router: Router,
     private dataService: DataService,
     private optionsService: TableOptionsService
-  ) {}
+  ) {
+    effect(() => {
+      this.addLoading = this.formService.getFormLoadingSignal()();
+    });
+  }
 
   getCurrentRow() {
     return this.data.filter((row: any) => row.id == this.selectedRows[0])[0];
@@ -113,6 +118,7 @@ export class TableButtonsComponent {
   }
 
   addRow(values: any) {
+    this.addLoading = true;
     this.optionsService.addRow(this.editable, values, this.tableName);
   }
 

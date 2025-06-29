@@ -1,7 +1,7 @@
 <div class="container" [class.hidden]="!formState.visible">
   <div [class]="fullscreen() ? 'content-fullscreen content' : 'content'">
     <div class="header-section">
-      <h1>Adding...</h1>
+      <h1>Create New {{ displayTableName }}</h1>
       <div class="popup-options">
         <a (click)="minimize()">
           <fa-icon class="icons.fa-icon" [icon]="icons.minus" />
@@ -14,9 +14,6 @@
     <div class="content-section">
       @if (formData && formState.loaded) {
         <form [formGroup]="addForm" class="form-container">
-          @if (fullscreen()) {
-            <h1>{{ 'Adding Invoices' }}</h1>
-          }
           @if (formState.error && formState.submitted) {
             <div class="error-section">{{ formState.error }}</div>
           }
@@ -163,8 +160,7 @@
           />
         </form>
         @if (shouldDisplayItemWidget()) {
-          <form class="form-container" [formGroup]="addItemForm">
-            <h1>Add Items</h1>
+          <form class="form-container left-form" [formGroup]="addItemForm">
             <div class="input-container replacement">
               <label>Item Name <fa-icon class="asterisk" [icon]="icons.asterisk" /></label>
               <app-dropselect
@@ -225,16 +221,7 @@
             </div>
           </form>
         }
-      } @else {
-        <div class="loading-container">
-          <fa-icon class="loading-icon" [icon]="icons.loading" spinPulse [spin]="true" />
-        </div>
       }
-      <ng-template #loading>
-        <div class="loading-container">
-          <fa-icon class="loading-icon" [icon]="icons.loading" spinPulse [spin]="true" />
-        </div>
-      </ng-template>
     </div>
   </div>
 </div>

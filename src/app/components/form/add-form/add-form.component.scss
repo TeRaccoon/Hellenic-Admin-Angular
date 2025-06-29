@@ -41,7 +41,7 @@
         margin: 5vw auto 0 auto;
 
         .header-section {
-            height: 50px;
+            height: 75px;
             border-radius: 15px 15px 0 0;
             display: flex;
             justify-content: space-between;
@@ -49,11 +49,9 @@
             color: white;
             background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
 
-
             h1 {
-                text-align: center;
                 width: 100%;
-                font-size: 25px;
+                font-size: 26px;
                 margin: auto;
             }
 
@@ -146,6 +144,11 @@
                 }
             }
 
+            .left-form {
+                border-left: 2px solid #9e9e9e;
+                padding-left: 15px;
+            }
+
             .replacement {
                 flex: 1 1 100%;
             }
@@ -187,6 +190,12 @@
                     .label-link {
                         font-size: 14px;
                         cursor: pointer;
+                        transition: color 0.5s ease;
+
+                        &:hover {
+                            color: $hellenicblue;
+                            transition: color 0.5s ease;
+                        }
                     }
                 }
 
@@ -248,7 +257,7 @@
                     border-radius: 8px;
                     outline: none;
                     border: 1px solid rgb(215, 215, 215);
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
                     font-size: 16px;
                     padding: 10px;
                 }
@@ -272,7 +281,7 @@
                     cursor: pointer;
                     box-sizing: border-box;
                     width: 100%;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 
                     input {
                         display: none;
@@ -304,6 +313,7 @@
                 display: flex;
                 align-items: center;
                 gap: 5px;
+                margin-left: 15px;
             }
 
             .form-footer {
@@ -329,6 +339,7 @@
 
 .hidden {
     display: none;
+    overflow-y: hidden;
 }
 
 .success {

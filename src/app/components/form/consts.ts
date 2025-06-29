@@ -77,3 +77,14 @@ export const DEFAULT_SUPPLIER_INVOICE = {
 };
 
 export const STANDARD_IMAGE_SUBMISSION_TABLES = ['categories'];
+
+export const DEFAULT_FORM_STATE = {
+  loaded: false,
+  submissionAttempted: false,
+  submitted: false,
+  error: null,
+  locked: false,
+  visible: false,
+  imageUploaded: false,
+  hidden: null,
+};

@@ -3,10 +3,14 @@
 }
 
 button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     align-self: flex-start;
     border-radius: 5px;
     padding: 8px;
     margin-top: 20px;
     font-weight: bold;
     font-size: 17px;
+    max-width: 112px;
 }

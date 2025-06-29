@@ -1,5 +1,6 @@
 import { Component, effect } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TABLE_NAME_MAP } from '../../../common/constants';
 import { DataService } from '../../../services/data.service';
 import { UrlService } from '../../../services/url.service';
 import { FORM_ICONS } from '../icons';
@@ -71,6 +72,10 @@ export class EditFormComponent {
   selectedReplacementFilter: Record<string, { selectFilter: string }> = {};
   selectOpen: Record<string, { opened: boolean }> = {};
 
+  public get displayTableName() {
+    return TABLE_NAME_MAP.get(this.tableName) ?? '';
+  }
+
   constructor(
     private dataService: DataService,
     private formService: FormService,
@@ -99,10 +104,15 @@ export class EditFormComponent {
 
     this.resetFormState();
 
-    effect(() => {
-      const visible = this.formService.getFormVisibilitySignal(FormType.Edit)();
-      this.changeVisibility(visible);
-    });
+    effect(
+      () => {
+        const visible = this.formService.getFormVisibilitySignal(FormType.Edit)();
+        this.changeVisibility(visible);
+      },
+      {
+        allowSignalWrites: true,
+      }
+    );
   }
 
   changeVisibility(visible: boolean) {
@@ -133,6 +143,8 @@ export class EditFormComponent {
   }
 
   async loadForm() {
+    this.formService.setFormLoading(true);
+
     if (this.formService.getSelectedId() != '') {
       this.formData = this.formService.getEditFormData();
       this.tableName = this.formService.getSelectedTable();
@@ -140,7 +152,9 @@ export class EditFormComponent {
       this.buildForm();
       await this.handleImages();
       await this.replaceAmbiguousData();
+      this.formState.loaded = true;
     }
+    this.formService.setFormLoading(false);
   }
 
   async replaceAmbiguousData() {
