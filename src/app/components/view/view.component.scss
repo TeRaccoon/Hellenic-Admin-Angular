@@ -1,5 +1,9 @@
 @import "../variables";
 
+:host {
+    overflow-y: hidden;
+}
+
 .checkbox {
     cursor: pointer;
 }
@@ -24,7 +28,7 @@
         margin: 10px;
         border-radius: 15px;
         overflow-x: auto;
-        overflow-y: scroll;
+        overflow-y: hidden;
 
         .options-container {
             display: flex;
