@@ -66,7 +66,7 @@ export class TableButtonsComponent {
     private optionsService: TableOptionsService
   ) {
     effect(() => {
-      this.addLoading = this.formService.getFormLoadingSignal()();
+      this.addLoading = this.formService.getAddFormLoadingSignal()();
     });
   }
 

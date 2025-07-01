@@ -49,7 +49,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   images: Record<string, string> = {};
 
   distanceLoading = false;
-  editLoading = false;
+  editLoading = { id: '', loading: false };
 
   filter = '';
 
@@ -99,7 +99,9 @@ export class ViewComponent implements OnInit, OnDestroy {
     this.tableName = (this.route.snapshot.queryParamMap.get('table') as TableName) ?? TableNameEnum.Invoices;
 
     effect(() => {
-      this.editLoading = this.formService.getFormLoadingSignal;
+      const loading = this.formService.getEditFormLoading();
+      this.editLoading = { id: loading.id.toString(), loading: loading.signal() };
+      console.log(this.editLoading);
     });
   }
 
@@ -497,5 +499,9 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   needsExtraColumn(table: string) {
     return EXTRA_COLUMN_TABLES.includes(table);
+  }
+
+  isEditLoading(id: string) {
+    return this.editLoading.id === id.toString() && this.editLoading.loading;
   }
 }

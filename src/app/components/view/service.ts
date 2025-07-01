@@ -325,6 +325,8 @@ export class ViewService {
         return;
       }
 
+      this.formService.setEditFormLoading(true, id);
+      this.formService.setFormVisibility(FormType.Edit, true);
       this.formService.processEditFormData(row, editable);
       this.prepareEditFormService(id, table, activeTable);
 

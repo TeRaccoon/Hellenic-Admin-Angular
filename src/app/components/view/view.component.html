@@ -128,7 +128,11 @@
                       @if (canDisplayColumn('edit-row')) {
                         <td>
                           <a (click)="editRow(item['id'], '')">
-                            <fa-icon [icon]="icons.faPencil"></fa-icon>
+                            @if (isEditLoading(item['id'])) {
+                              <app-loading-spinner />
+                            } @else {
+                              <fa-icon [icon]="icons.faPencil"></fa-icon>
+                            }
                           </a>
                         </td>
                       }

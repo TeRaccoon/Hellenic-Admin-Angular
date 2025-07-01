@@ -1,8 +1,10 @@
 import { Component, effect } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import _ from 'lodash';
 import { TABLE_NAME_MAP } from '../../../common/constants';
 import { DataService } from '../../../services/data.service';
 import { UrlService } from '../../../services/url.service';
+import { DEFAULT_FORM_STATE } from '../consts';
 import { FORM_ICONS } from '../icons';
 import { FormService } from '../service';
 import {
@@ -108,6 +110,7 @@ export class EditFormComponent {
       () => {
         const visible = this.formService.getFormVisibilitySignal(FormType.Edit)();
         this.changeVisibility(visible);
+        console.log(visible);
       },
       {
         allowSignalWrites: true,
@@ -120,8 +123,6 @@ export class EditFormComponent {
       this.clearForm();
     }
 
-    this.formState.visible = visible;
-
     if (visible && this.formState.hidden != this.tableName) {
       this.loadForm();
     }
@@ -130,22 +131,12 @@ export class EditFormComponent {
   }
 
   resetFormState(): void {
-    this.formState = {
-      loaded: false,
-      submissionAttempted: false,
-      submitted: false,
-      error: null,
-      locked: false,
-      visible: false,
-      imageUploaded: false,
-      hidden: null,
-    };
+    this.formState = _.cloneDeep(DEFAULT_FORM_STATE);
   }
 
   async loadForm() {
-    this.formService.setFormLoading(true);
-
     if (this.formService.getSelectedId() != '') {
+      this.formService.setEditFormLoading(true);
       this.formData = this.formService.getEditFormData();
       this.tableName = this.formService.getSelectedTable();
       this.id = this.formService.getSelectedId();
@@ -153,8 +144,9 @@ export class EditFormComponent {
       await this.handleImages();
       await this.replaceAmbiguousData();
       this.formState.loaded = true;
+      this.formState.visible = true;
+      this.formService.setEditFormLoading(false);
     }
-    this.formService.setFormLoading(false);
   }
 
   async replaceAmbiguousData() {

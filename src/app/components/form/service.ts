@@ -30,8 +30,8 @@ export class FormService {
     BalanceSheet: signal(false),
   };
 
-  private formLoading = signal(false);
-  private editLoading = signal(false);
+  private addLoading = signal(false);
+  private editLoading = { id: '', signal: signal(false) };
 
   private editFormData: KeyedData = {};
   private addFormData: KeyedData = {};
@@ -94,12 +94,22 @@ export class FormService {
     return this.formVisibility[form];
   }
 
-  setFormLoading(loaded: boolean) {
-    this.formLoading.set(loaded);
+  setAddFormLoading(loading: boolean) {
+    this.addLoading.set(loading);
   }
 
-  getFormLoadingSignal() {
-    return this.formLoading;
+  getAddFormLoadingSignal() {
+    return this.addLoading;
+  }
+
+  setEditFormLoading(loading: boolean, id?: string) {
+    const targetId = id ?? this.editLoading.id;
+    this.editLoading.id = targetId;
+    this.editLoading.signal.set(loading);
+  }
+
+  getEditFormLoading() {
+    return this.editLoading;
   }
 
   getFormSettings(): Settings {
