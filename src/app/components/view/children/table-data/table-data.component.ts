@@ -95,7 +95,7 @@ export class TableDataComponent<T extends keyof TableTypeMap> {
 
         const submissionResponse = await this.dataService.submitFormData(data as FormSubmission);
         if (submissionResponse.success) {
-          this.reloadEvent.emit(false);
+          this.reloadEvent.emit(true);
         } else {
           this.formService.setMessageFormData({
             title: 'Error!',

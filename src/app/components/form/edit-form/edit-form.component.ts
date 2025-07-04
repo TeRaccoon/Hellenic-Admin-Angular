@@ -110,7 +110,6 @@ export class EditFormComponent {
       () => {
         const visible = this.formService.getFormVisibilitySignal(FormType.Edit)();
         this.changeVisibility(visible);
-        console.log(visible);
       },
       {
         allowSignalWrites: true,

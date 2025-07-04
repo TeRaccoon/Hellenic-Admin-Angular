@@ -101,26 +101,30 @@ export class ViewComponent implements OnInit, OnDestroy {
     effect(() => {
       const loading = this.formService.getEditFormLoading();
       this.editLoading = { id: loading.id.toString(), loading: loading.signal() };
-      console.log(this.editLoading);
     });
   }
 
-  private reloadEffect = effect(() => {
-    const reloadRequested = this.formService.getReloadRequestSignal()();
-    if (!reloadRequested) return;
+  private reloadEffect = effect(
+    () => {
+      const reloadRequested = this.formService.getReloadRequestSignal()();
+      if (!reloadRequested) return;
 
-    const reloadType = this.formService.getReloadType();
+      const reloadType = this.formService.getReloadType();
 
-    if (reloadType == 'hard') {
-      this.selectedRows = [];
-      this.sortedColumn = { columnName: '', ascending: false };
-      this.loadTable(this.tableName);
-    } else if (reloadType == 'filter') {
-      this.applyFilter();
+      if (reloadType == 'hard') {
+        this.selectedRows = [];
+        this.sortedColumn = { columnName: '', ascending: false };
+        this.loadTable(this.tableName);
+      } else if (reloadType == 'filter') {
+        this.applyFilter();
+      }
+
+      this.formService.performReload();
+    },
+    {
+      allowSignalWrites: true,
     }
-
-    this.formService.performReload();
-  });
+  );
 
   ngOnInit() {
     this.subscriptionHandler();
@@ -184,7 +188,6 @@ export class ViewComponent implements OnInit, OnDestroy {
 
     if (tableData != null) {
       this.data = Array.isArray(tableData.data) ? tableData.data : ([tableData.data] as TableTypeMap[]);
-
       this.viewService.displayData = Array.isArray(tableData.display_data)
         ? tableData.display_data
         : [tableData.display_data];
