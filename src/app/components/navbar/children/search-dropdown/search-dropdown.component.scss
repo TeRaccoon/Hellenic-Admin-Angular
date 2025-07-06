@@ -1,108 +1,55 @@
-.search-container {
-    width: 15vw;
+button {
+    background-color: transparent;
+    color: #7b7b7b;
+    border: none;
+    background: none;
+    outline: none;
+    cursor: pointer;
+}
 
-    .search-bar {
+input {
+    border: none;
+    font-size: 16px;
+    width: 100%;
+
+    &:active,
+    &:focus-visible {
+        outline: none;
+    }
+
+    &::placeholder {
+        font-size: 16px;
+    }
+}
+
+.search-option {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+
+    p {
+        margin: 5px;
+    }
+
+    .results-container {
         display: flex;
         justify-content: space-between;
-        border-radius: 8px;
-        border: 1px solid rgb(215, 215, 215);
-        padding: 12px;
-        transition: border-radius 0.6s 1s ease;
 
-        &:focus-within {
-            border-radius: 8px 8px 0 0;
-            transition: border-radius 0.5s ease;
+        p {
+            text-align: right;
         }
 
-        button {
-            background-color: transparent;
-            color: #7b7b7b;
-            border: none;
-            background: none;
-            outline: none;
-            cursor: pointer;
+        .bold {
+            text-align: left;
+            font-weight: bold;
         }
 
-        input {
-            border: none;
-            font-size: 16px;
-            width: 100%;
-
-            &:active,
-            &:focus-visible {
-                outline: none;
-            }
-
-            &::placeholder {
-                font-size: 16px;
-            }
+        .display-value {
+            line-break: anywhere;
         }
     }
 
-    .search-dropdown-container {
-        z-index: 3;
-        position: absolute;
-        border-radius: 0 0 8px 8px;
-        border: 1px solid rgb(215, 215, 215);
-        border-top: none;
-        width: 15vw;
-        background-color: white;
-        box-sizing: border-box;
-        max-height: 75vh;
-        overflow-y: auto;
-        overflow-x: hidden;
-
-        .search-option {
-            padding: 8px;
-            cursor: pointer;
-            border-bottom: 1px solid #ccc;
-
-            p {
-                margin: 5px;
-            }
-
-            .results-container {
-                display: flex;
-                justify-content: space-between;
-
-                p {
-                    text-align: right;
-                }
-
-                .bold {
-                    text-align: left;
-                    font-weight: bold;
-                }
-
-                .display-value {
-                    line-break: anywhere;
-                }
-            }
-
-            &:hover {
-                background-color: #eaeef3;
-            }
-        }
-    }
-
-    .hidden {
-        opacity: 0;
-        max-height: 0;
-        border: 1px solid transparent;
-        box-shadow: 0;
-        transition:
-            max-height 1s ease,
-            opacity 0.5s 1s ease,
-            border 0s 1s;
-    }
-
-    .visible {
-        opacity: 1;
-        max-height: 750px;
-        border: 1px solid rgb(215, 215, 215);
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        transition:
-            max-height 1s ease 0.4s,
-            opacity 0.5s ease;
+    &:hover {
+        background-color: #eaeef3;
     }
 }

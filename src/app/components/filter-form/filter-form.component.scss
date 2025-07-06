@@ -45,7 +45,6 @@
             }
 
             h1 {
-                text-align: center;
                 width: 100%;
                 font-size: 25px;
                 margin: auto;
@@ -86,12 +85,12 @@
 
                     button {
                         margin: 10px 2px 2px 10px;
-                        border-radius: 12px;
-                        padding: 10px;
-                        font-size: 20px;
+                        border-radius: 10px;
+                        padding: 7px 10px;
+                        font-size: 18px;
 
                         .fa-icon {
-                            font-size: 17px;
+                            font-size: 18px;
                         }
                     }
                 }

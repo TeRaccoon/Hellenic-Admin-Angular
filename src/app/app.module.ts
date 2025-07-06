@@ -25,6 +25,7 @@ import { FormFooterComponent } from './components/form/children/form-footer/form
 import { FormItemsTableComponent } from './components/form/children/form-items-table/form-items-table.component';
 import { InvoiceAddressComponent } from './components/form/children/invoice-address/invoice-address.component';
 import { EditFormComponent } from './components/form/edit-form/edit-form.component';
+import { GenericSearcherComponent } from './components/generic-searcher/generic-searcher.component';
 import { HomeComponent } from './components/home/home.component';
 import { InvoiceViewComponent } from './components/invoice-view/invoice-view.component';
 import { LedgerWidgetComponent } from './components/ledger-widget/ledger-widget.component';
@@ -106,6 +107,7 @@ export function initConfig(configService: ConfigService) {
     SearchDropdownComponent,
     NotificationTabComponent,
     LoadingSpinnerComponent,
+    GenericSearcherComponent,
   ],
   imports: [
     BrowserModule,

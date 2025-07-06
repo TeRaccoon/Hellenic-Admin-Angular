@@ -1,8 +1,9 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import _ from 'lodash';
 import { SearchResult } from '../../../../common/types/table';
 import { SearchService } from '../../../../services/search.service';
 import { TableService } from '../../../../services/table.service';
+import { GenericSearcherComponent } from '../../../generic-searcher/generic-searcher.component';
 import { TABLE_OPTIONS } from '../../consts';
 import { ICONS } from '../../icons';
 import { NavbarService } from '../../service';
@@ -13,8 +14,8 @@ import { NavbarService } from '../../service';
   styleUrl: './search-dropdown.component.scss',
 })
 export class SearchDropdownComponent implements OnInit {
-  public searchDropdownVisible = false;
-  public searching = false;
+  @ViewChild('searchComponent', { static: false }) searchComponent!: GenericSearcherComponent;
+
   public searchInput = '';
 
   public icons = ICONS;
@@ -32,20 +33,12 @@ export class SearchDropdownComponent implements OnInit {
     private tableService: TableService
   ) {}
 
-  @HostListener('document:click', ['$event'])
-  clickOutside(event: MouseEvent) {
-    const clickedElement = event.target as HTMLElement;
-    if (!this.service.isDescendantOfSearchContainer(clickedElement)) {
-      this.searchDropdownVisible = false;
-    }
-  }
-
   ngOnInit() {
     this.debounceSearch = _.debounce(this.performSearch.bind(this), 750);
   }
 
   searchTables(event: Event) {
-    this.searching = true;
+    this.searchComponent.search();
     const filter = String((event.target as HTMLInputElement).value);
     this.filteredTableOptions = this.tableOptions.filter(
       (option) => option.display && option.display.toUpperCase().includes(filter.toUpperCase())
@@ -60,17 +53,17 @@ export class SearchDropdownComponent implements OnInit {
       this.searchResults = [];
     }
 
-    this.searchDropdownVisible = true;
-    this.searching = false;
+    this.searchComponent.open();
+    this.searchComponent.stopSearch();
   }
 
   changeTable(table: string) {
-    this.searchDropdownVisible = false;
     this.tableService.changeTable(table);
+    this.searchComponent.searchDropdownVisible = false;
   }
 
   goToRow(table: string, matchedValue: string) {
     this.service.goToRow(table, matchedValue);
-    this.searchDropdownVisible = false;
+    this.searchComponent.close();
   }
 }

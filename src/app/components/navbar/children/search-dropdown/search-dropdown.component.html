@@ -1,26 +1,14 @@
-<div class="search-container">
-  <div class="search-bar">
+<app-generic-searcher #searchComponent>
+  <ng-container class="search-input">
     <input
       [(ngModel)]="searchInput"
       (input)="searchTables($event)"
-      (focus)="searchDropdownVisible = true"
+      (focus)="searchComponent.searchDropdownVisible = true"
       type="text"
       placeholder="Search..."
     />
-    <button (click)="searchDropdownVisible = true">
-      @if (!searching) {
-        <fa-icon [icon]="icons.search"></fa-icon>
-      }
-      @if (searching) {
-        <fa-icon [icon]="icons.loading" spinPulse [spin]="true" />
-      }
-    </button>
-  </div>
-  <div
-    class="search-dropdown-container"
-    [class.visible]="searchDropdownVisible"
-    [class.hidden]="!searchDropdownVisible"
-  >
+  </ng-container>
+  <ng-container class="search-options">
     @if (filteredTableOptions.length > 0 || searchResults.length > 0) {
       @for (table of filteredTableOptions; track table) {
         <div class="search-option" (click)="changeTable(table.actual)">
@@ -36,7 +24,7 @@
         </div>
       }
     } @else {
-      @if (!searching) {
+      @if (!searchComponent.searching) {
         <div class="search-option">
           <p>
             There were no results
@@ -45,5 +33,5 @@
         </div>
       }
     }
-  </div>
-</div>
+  </ng-container>
+</app-generic-searcher>
