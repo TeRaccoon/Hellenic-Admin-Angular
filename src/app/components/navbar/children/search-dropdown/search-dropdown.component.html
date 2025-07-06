@@ -3,8 +3,7 @@
     <input
       [(ngModel)]="searchInput"
       (input)="searchTables($event)"
-      (focus)="searchComponent.searchDropdownVisible = true"
-      type="text"
+      (focus)="searchComponent.open()"
       placeholder="Search..."
     />
   </ng-container>

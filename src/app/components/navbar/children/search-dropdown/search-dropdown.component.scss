@@ -1,12 +1,3 @@
-button {
-    background-color: transparent;
-    color: #7b7b7b;
-    border: none;
-    background: none;
-    outline: none;
-    cursor: pointer;
-}
-
 input {
     border: none;
     font-size: 16px;
@@ -52,4 +43,9 @@ input {
     &:hover {
         background-color: #eaeef3;
     }
+}
+
+app-generic-searcher {
+    display: block;
+    width: 15vw;
 }

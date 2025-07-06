@@ -1,5 +1,5 @@
 <div class="search-container">
-  <div class="search-bar">
+  <div class="search-bar" [class.visible]="searchDropdownVisible">
     <ng-content select=".search-input"></ng-content>
     <button (click)="searchDropdownVisible = true">
       @if (!searching) {
