@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { TableName, TableTypeMap } from '../../../../common/types/tables';
 import { FilterService } from '../../../../services/filter.service';
 import { FormService } from '../../../form/service';
 import { FormType } from '../../../form/types';
@@ -11,10 +12,10 @@ import { ColumnFilterOptions } from './types';
   styleUrl: './table-filter.component.scss',
 })
 export class TableFilterComponent {
-  @Input() columns!: any;
+  @Input() columns!: TableTypeMap[TableName];
   @Input() dataTypes!: string[];
   @Input() filter!: ColumnFilterOptions;
-  @Input() displayNames!: Record<string, any>[];
+  @Input() displayNames!: string[];
 
   @Output() reloadTable = new EventEmitter<boolean>();
   @Output() clearFilterEmitter = new EventEmitter<{ filter: string; reload: boolean }>();
@@ -45,6 +46,7 @@ export class TableFilterComponent {
   }
 
   showAdvancedFilter() {
+    console.log(this.columns);
     this.filterService.setTableColumns(this.displayNames, this.columns, this.dataTypes);
     this.formService.setFormVisibility(FormType.Filter, true);
   }

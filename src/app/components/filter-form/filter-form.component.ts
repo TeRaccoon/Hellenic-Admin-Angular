@@ -1,7 +1,8 @@
-import { Component, effect } from '@angular/core';
+import { Component, effect, ViewChild } from '@angular/core';
 import { FilterService } from '../../services/filter.service';
 import { FormService } from '../form/service';
 import { FormType } from '../form/types';
+import { GenericSearcherComponent } from '../generic-searcher/generic-searcher.component';
 import { ICONS } from './icons';
 import { TableColumns } from './types';
 
@@ -11,12 +12,14 @@ import { TableColumns } from './types';
   styleUrls: ['./filter-form.component.scss'],
 })
 export class FilterFormComponent {
+  @ViewChild('searchComponent') searchComponent!: GenericSearcherComponent;
+
   icons = ICONS;
 
   visible = false;
   tableColumns: TableColumns = {
     columnNames: [],
-    columns: [],
+    columns: undefined,
     dataTypes: [],
   };
 
@@ -50,8 +53,18 @@ export class FilterFormComponent {
     this.formService.setFormVisibility(FormType.Filter, false);
   }
 
+  isValid() {
+    switch (this.columnType) {
+      case 'date':
+        return this.startDate != null || this.startDate != undefined;
+
+      default:
+        return this.searchInput != null && this.searchInput != undefined && this.searchInput != '';
+    }
+  }
+
   search(hide: boolean) {
-    if (this.columnInput == '') {
+    if (!this.isValid()) {
       this.error = 'Please fill in all required fields';
       return;
     }
@@ -81,7 +94,9 @@ export class FilterFormComponent {
   }
 
   getColumnType() {
-    const index = this.tableColumns.columns.indexOf(this.columnInput);
+    const index = this.tableColumns.columnNames.indexOf(this.columnInput);
+    console.log(this.tableColumns);
+    console.log(this.columnInput);
     this.columnType = this.tableColumns.dataTypes[index];
     this.columnIndex = index;
     if (this.tableColumns.dataTypes[index].includes('enum')) {
@@ -91,7 +106,7 @@ export class FilterFormComponent {
   }
 
   deriveEnumOptions() {
-    const index = this.tableColumns.columns.indexOf(this.columnInput);
+    const index = this.tableColumns.columnNames.indexOf(this.columnInput);
     this.options = this.formService.deriveEnumOptions(this.tableColumns.dataTypes[index]);
   }
 
@@ -122,5 +137,11 @@ export class FilterFormComponent {
 
   isDateSearch() {
     return this.columnType == 'date' && this.startDate != null && this.endDate != null;
+  }
+
+  setColumnInput(index: number) {
+    this.columnInput = this.tableColumns.columnNames[index];
+    this.getColumnType();
+    this.searchComponent.close();
   }
 }

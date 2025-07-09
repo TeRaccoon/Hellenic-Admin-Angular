@@ -15,11 +15,22 @@
       <div class="content-section">
         <div class="input-container">
           <label>Select Column</label>
-          <select [class.error]="hasError(columnInput)" (change)="getColumnType()" [(ngModel)]="columnInput">
-            @for (column of tableColumns.columnNames; track column; let i = $index) {
-              <option [value]="tableColumns.columns[i]">{{ column }}</option>
-            }
-          </select>
+          <app-generic-searcher #searchComponent [dropdownWidth]="'calc(30% - 66px)'">
+            <ng-container class="search-input">
+              <div class="input">
+                @if (columnInput === '' || columnInput === undefined) {
+                  Select column...
+                } @else {
+                  {{ columnInput }}
+                }
+              </div>
+            </ng-container>
+            <ng-container class="search-options">
+              @for (column of tableColumns.columnNames; track column; let i = $index) {
+                <div class="search-option" (click)="setColumnInput(i)">{{ column }}</div>
+              }
+            </ng-container>
+          </app-generic-searcher>
         </div>
         <div class="input-container">
           @switch (columnType) {

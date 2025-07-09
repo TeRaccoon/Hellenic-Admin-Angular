@@ -1,5 +1,7 @@
+import { TableName, TableTypeMap } from '../../common/types/tables';
+
 export interface TableColumns {
-  columnNames: Record<string, any>[];
-  columns: string[];
+  columnNames: string[];
+  columns?: TableTypeMap[TableName];
   dataTypes: string[];
 }

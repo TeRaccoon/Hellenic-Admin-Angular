@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { NavbarService } from '../navbar/service';
 import { SEARCHER_ICONS } from './icons';
 
@@ -8,6 +8,8 @@ import { SEARCHER_ICONS } from './icons';
   styleUrl: './generic-searcher.component.scss',
 })
 export class GenericSearcherComponent {
+  @Input() dropdownWidth = '15vw';
+
   public searchDropdownVisible = false;
   public searching = false;
   public searchInput = '';

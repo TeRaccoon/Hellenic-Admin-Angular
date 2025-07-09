@@ -12,7 +12,7 @@ import { TableOptionsService } from '../../services/table-options.service';
 import { TableService } from '../../services/table.service';
 import { UrlService } from '../../services/url.service';
 import { FormService } from '../form/service';
-import { EditableData, FormType } from '../form/types';
+import { EditableData } from '../form/types';
 import { ViewService } from './service';
 import { ItemImage, StockTotals } from './types';
 
@@ -39,7 +39,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   columnDateFilters: columnDateFilter[] = [];
 
   data: TableTypeMap[TableName][] = [];
-  displayNames: Record<string, any>[] = [];
+  displayNames: string[] = [];
   dataTypes: any[] = [];
   editable: EditableData;
   stockData: Record<string, string> = {};
@@ -485,12 +485,6 @@ export class ViewComponent implements OnInit, OnDestroy {
       });
     }
     return temporaryData;
-  }
-
-  showAdvancedFilter() {
-    const columns = Object.keys(this.data[0]);
-    this.filterService.setTableColumns(this.displayNames, columns, this.dataTypes);
-    this.formService.setFormVisibility(FormType.Filter, true);
   }
 
   async reloadTable(loadTable = false) {

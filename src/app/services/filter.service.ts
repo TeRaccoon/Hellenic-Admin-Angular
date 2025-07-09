@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { TableName, TableTypeMap } from '../common/types/tables';
 import { FilterData } from '../common/types/view/types';
+import { TableColumns } from '../components/filter-form/types';
 
 @Injectable({
   providedIn: 'root',
@@ -11,18 +13,16 @@ export class FilterService {
     filter: string;
     caseSensitive: boolean;
   }[] = [];
+
   private columnDateFilter: {
     column: string;
     startDate: Date;
     endDate: Date;
   }[] = [];
-  private tableColumns: {
-    columnNames: Record<string, any>[];
-    columns: string[];
-    dataTypes: string[];
-  } = {
+
+  private tableColumns: TableColumns = {
     columnNames: [],
-    columns: [],
+    columns: undefined,
     dataTypes: [],
   };
 
@@ -107,11 +107,11 @@ export class FilterService {
     this.columnDateFilter = [];
   }
 
-  setTableColumns(columnNames: Record<string, any>[], columns: string[], dataTypes: string[]) {
+  setTableColumns(columnNames: string[], columns: TableTypeMap[TableName], dataTypes: string[]) {
     this.tableColumns = { columnNames, columns, dataTypes };
   }
 
-  getTableColumns() {
+  getTableColumns(): TableColumns {
     return this.tableColumns;
   }
 }
