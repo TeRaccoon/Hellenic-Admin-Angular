@@ -95,8 +95,6 @@ export class FilterFormComponent {
 
   getColumnType() {
     const index = this.tableColumns.columnNames.indexOf(this.columnInput);
-    console.log(this.tableColumns);
-    console.log(this.columnInput);
     this.columnType = this.tableColumns.dataTypes[index];
     this.columnIndex = index;
     if (this.tableColumns.dataTypes[index].includes('enum')) {

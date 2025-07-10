@@ -46,7 +46,6 @@ export class TableFilterComponent {
   }
 
   showAdvancedFilter() {
-    console.log(this.columns);
     this.filterService.setTableColumns(this.displayNames, this.columns, this.dataTypes);
     this.formService.setFormVisibility(FormType.Filter, true);
   }

@@ -380,9 +380,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     const column = columnFilter.column;
 
     const filter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
-    this.displayColumnFilters.push(
-      this.displayNames[Object.keys(this.data[0]).indexOf(column)] + ': ' + columnFilter.filter
-    );
+    this.displayColumnFilters.push(column + ': ' + columnFilter.filter);
 
     this.viewService.displayData = this.viewService.filteredDisplayData.filter((data) => {
       if (
@@ -394,6 +392,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       }
       return [];
     });
+
     this.viewService.filteredDisplayData = this.viewService.displayData;
     this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
   }

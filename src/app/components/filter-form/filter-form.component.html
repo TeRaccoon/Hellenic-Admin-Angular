@@ -58,21 +58,25 @@
                 type="text"
                 placeholder="Search..."
               />
+            }
+          }
+          <div class="button-container">
+            <div>
               <div class="case-option-container">
                 <label>Case Sensitive?</label>
                 <input [(ngModel)]="caseSensitive" type="checkbox" />
               </div>
-            }
-          }
-          <div class="button-container">
-            <button class="button" (click)="search(false)">
-              <fa-icon class="icon" [icon]="icons.plus" />
-              Add
-            </button>
-            <button class="button" (click)="search(true)">
-              <fa-icon class="icon" [icon]="icons.search" />
-              Search
-            </button>
+            </div>
+            <div>
+              <button class="button" (click)="search(false)">
+                <fa-icon class="icon" [icon]="icons.plus" />
+                Add
+              </button>
+              <button class="button" (click)="search(true)">
+                <fa-icon class="icon" [icon]="icons.search" />
+                Search
+              </button>
+            </div>
           </div>
         </div>
       </div>

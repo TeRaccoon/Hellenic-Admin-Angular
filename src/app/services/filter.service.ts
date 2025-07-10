@@ -37,6 +37,7 @@ export class FilterService {
   }
 
   setFilterData(filterData: FilterData) {
+    console.log(filterData);
     if (!this.protectFilterData) {
       this.filterData = filterData;
     } else {
