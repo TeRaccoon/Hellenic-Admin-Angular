@@ -19,7 +19,7 @@ export class FilterFormComponent {
   visible = false;
   tableColumns: TableColumns = {
     columnNames: [],
-    columns: undefined,
+    columns: null,
     dataTypes: [],
   };
 
@@ -71,13 +71,13 @@ export class FilterFormComponent {
 
     if (this.isDateSearch()) {
       this.filterService.setColumnDateFilter({
-        column: this.columnInput,
+        column: Object.keys(this.tableColumns.columns!)[this.columnIndex],
         startDate: this.startDate!,
         endDate: this.endDate!,
       });
     } else {
       this.filterService.setColumnFilter({
-        column: this.columnInput,
+        column: Object.keys(this.tableColumns.columns!)[this.columnIndex],
         filter: this.searchInput,
         caseSensitive: this.caseSensitive,
       });
@@ -139,6 +139,7 @@ export class FilterFormComponent {
 
   setColumnInput(index: number) {
     this.columnInput = this.tableColumns.columnNames[index];
+    this.columnIndex = index;
     this.getColumnType();
     this.searchComponent.close();
   }

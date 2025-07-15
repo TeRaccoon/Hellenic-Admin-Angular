@@ -296,6 +296,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   loadPage() {
     const start = (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
     const end = start + this.viewMetaData.entryLimit;
+    console.log(this.filterService.getFilterData());
     if (this.filterService.getFilterData().searchFilter === '') {
       this.viewMetaData.pageCount = this.viewService.calculatePageCount(true, this.viewMetaData.entryLimit);
       this.viewService.filteredDisplayData = this.viewService.displayData.slice(start, end);
@@ -378,19 +379,18 @@ export class ViewComponent implements OnInit, OnDestroy {
   filterColumns(columnFilter: any) {
     const isCaseSensitive = columnFilter.caseSensitive;
     const column = columnFilter.column;
-
     const filter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
     this.displayColumnFilters.push(column + ': ' + columnFilter.filter);
 
-    this.viewService.displayData = this.viewService.filteredDisplayData.filter((data) => {
+    this.viewService.displayData = this.viewService.displayData.filter((data) => {
       if (
         filter != null &&
         data[column] != null &&
         String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(filter)
       ) {
-        return data;
+        return true;
       }
-      return [];
+      return false;
     });
 
     this.viewService.filteredDisplayData = this.viewService.displayData;
