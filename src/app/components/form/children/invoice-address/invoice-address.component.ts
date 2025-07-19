@@ -19,7 +19,7 @@ export class InvoiceAddressComponent {
     line1: new FormControl<string | null>(null, Validators.required),
     line2: new FormControl<string | null>(null),
     line3: new FormControl<string | null>(null),
-    postcode: new FormControl<string>('', Validators.required),
+    postcode: new FormControl<string>('', [Validators.required, Validators.minLength(6), Validators.maxLength(8)]),
     save: new FormControl<boolean>(false, Validators.required),
   });
   submissionAttempted = false;
