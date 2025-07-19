@@ -24,6 +24,7 @@ export const TABLE_NAMES = [
   'expired_items',
   'invoiced_items',
   'expense_options',
+  'allergen_information',
 ];
 
 export const TABLE_NAME_PAIRS = [
@@ -52,6 +53,7 @@ export const TABLE_NAME_PAIRS = [
   { expired_items: 'Expired Items' },
   { invoiced_items: 'Invoiced Items' },
   { expense_options: 'Expense Options' },
+  { allergen_information: 'Allergen Information' },
 ];
 
 export const TABLE_CATEGORIES = {
