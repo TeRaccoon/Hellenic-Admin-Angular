@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AddressUpdate } from './types';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { Address } from '../../types';
 
 @Component({
   selector: 'app-invoice-address',
@@ -10,19 +12,36 @@ export class InvoiceAddressComponent {
   @Input() disabled!: boolean;
   @Input() key!: string;
 
-  @Output() addAddressToBookEmitter = new EventEmitter<string>();
-  @Output() updateAddressValuesEmitter = new EventEmitter<AddressUpdate>();
+  @Output() addAddressToBookEmitter = new EventEmitter<void>();
+  @Output() updateAddressValuesEmitter = new EventEmitter<Address>();
 
-  updateAddressValues(key: string, field: string, event: Event) {
-    let value = (event.target as HTMLInputElement).value;
-    this.updateAddressValuesEmitter.emit({
-      key: key,
-      field: field,
-      value: value,
-    });
+  addressForm: FormGroup = new FormGroup({
+    line1: new FormControl<string | null>(null, Validators.required),
+    line2: new FormControl<string | null>(null),
+    line3: new FormControl<string | null>(null),
+    postcode: new FormControl<string>('', Validators.required),
+    save: new FormControl<boolean>(false, Validators.required),
+  });
+  submissionAttempted = false;
+  success = false;
+
+  tick = faCheck;
+
+  updateAddressValues() {
+    this.submissionAttempted = true;
+
+    if (!this.addressForm.valid) {
+      return;
+    }
+
+    this.success = true;
+    this.updateAddressValuesEmitter.emit(this.addressForm.value);
+    if (this.addressForm.get('save')?.value) {
+      this.addAddressToBookEmitter.emit();
+    }
   }
 
-  addAddressToBook(key: string) {
-    this.addAddressToBookEmitter.emit(key);
+  inputHasError(controlName: string) {
+    return this.addressForm.get(controlName)?.invalid && this.submissionAttempted ? 'error' : '';
   }
 }

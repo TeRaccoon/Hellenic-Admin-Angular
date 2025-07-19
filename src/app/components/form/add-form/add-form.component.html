@@ -97,8 +97,8 @@
                         <app-invoice-address
                           [disabled]="disabled"
                           [key]="key"
-                          (addAddressToBookEmitter)="addAddressToBook($event)"
-                          (updateAddressValuesEmitter)="updateAddressValues($event)"
+                          (addAddressToBookEmitter)="addAddressToBook(key)"
+                          (updateAddressValuesEmitter)="updateAddressValues(key, $event)"
                         />
                       } @else {
                         <app-dropselect

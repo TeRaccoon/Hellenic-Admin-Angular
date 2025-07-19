@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import _ from 'lodash';
 import { TABLE_NAME_MAP } from '../../../common/constants';
 import { DataService } from '../../../services/data.service';
-import { AddressUpdate } from '../children/invoice-address/types';
 import {
   DEFAULT_ADDRESS,
   DEFAULT_FORM_STATE,
@@ -20,6 +19,7 @@ import {
 import { FORM_ICONS } from '../icons';
 import { FormService } from '../service';
 import {
+  Address,
   CustomerAddress,
   Data,
   FormState,
@@ -827,11 +827,8 @@ export class AddFormComponent {
     this.filteredReplacementData[key] = addressReplacement;
   }
 
-  updateAddressValues(addressUpdate: AddressUpdate): void {
-    this.addresses[addressUpdate.key] = {
-      ...this.addresses[addressUpdate.key],
-      [addressUpdate.field]: addressUpdate.value,
-    };
+  updateAddressValues(key: string, address: Address): void {
+    this.addresses[key] = address;
   }
 
   async addAddressToBook(key: string) {

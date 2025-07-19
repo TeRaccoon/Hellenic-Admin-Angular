@@ -1,23 +1,37 @@
-<div class="input-container">
+<ng-container [formGroup]="addressForm">
+  <div class="input-container">
     <label>Line 1</label>
-    <input [disabled]="disabled" class="text" type="text" (input)="updateAddressValues(key, 'line1', $event)">
-</div>
-<div class="input-container">
+    <input [disabled]="disabled" [class]="inputHasError('line1')" class="text" type="text" formControlName="line1" />
+  </div>
+  <div class="input-container">
     <label>Line 2</label>
-    <input [disabled]="disabled" class="text" type="text" (input)="updateAddressValues(key, 'line2', $event)">
-</div>
-<div class="input-container">
+    <input [disabled]="disabled" class="text" type="text" formControlName="line2" />
+  </div>
+  <div class="input-container">
     <label>Line 3</label>
-    <input [disabled]="disabled" class="text" type="text" (input)="updateAddressValues(key, 'line3', $event)">
-</div>
-<div class="input-container">
+    <input [disabled]="disabled" class="text" type="text" formControlName="line3" />
+  </div>
+  <div class="input-container">
     <label>Postcode</label>
-    <input [disabled]="disabled" class="text" type="text" (input)="updateAddressValues(key, 'postcode', $event)">
-</div>
-<div class="footer-options">
+    <input
+      [disabled]="disabled"
+      [class]="inputHasError('postcode')"
+      class="text"
+      type="text"
+      formControlName="postcode"
+    />
+  </div>
+  <div class="footer-options">
     <div>
-        <label>Save address?</label>
-        <input [disabled]="disabled" type="checkbox" (input)="updateAddressValues(key, 'save', $event)">
+      <label>Save address?</label>
+      <input [disabled]="disabled" type="checkbox" />
     </div>
-    <button [disabled]="disabled" class="button" type="button" (click)="addAddressToBook(key)">Add</button>
-</div>
+    @if (success) {
+      <button [disabled]="disabled" class="button success" type="button" (click)="updateAddressValues()">
+        <fa-icon [icon]="tick" />
+      </button>
+    } @else {
+      <button [disabled]="disabled" class="button" type="button" (click)="updateAddressValues()">Add</button>
+    }
+  </div>
+</ng-container>

@@ -1,5 +1,7 @@
 export interface AddressUpdate {
   key: string;
-  field: string;
-  value: string;
+  data: {
+    field: string;
+    value: string;
+  }[];
 }
