@@ -2,12 +2,20 @@
     display: contents;
 }
 
+
 td {
     text-align: center;
     vertical-align: middle;
     padding: 10px;
+    height: 56px;
 
     fa-icon {
         cursor: pointer;
+    }
+
+    img {
+        border: 1px solid transparent;
+        border-radius: 5px;
+        width: 100px;
     }
 }
