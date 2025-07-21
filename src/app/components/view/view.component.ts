@@ -163,9 +163,9 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   async loadTable(table: string, isToggle = false) {
-    if (!isToggle) {
-      this.viewMetaData.loaded = false;
-    }
+    // if (!isToggle) {
+    //   this.viewMetaData.loaded = false;
+    // }
 
     if (this.tableName == 'items') {
       const totalStockData: StockTotals[] = await this.dataService.processGet('total-stock', undefined, true);
