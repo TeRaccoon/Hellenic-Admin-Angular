@@ -7,3 +7,8 @@ export interface StockTotals {
   item_id: string;
   total_quantity: string;
 }
+
+export interface ReloadEvent {
+  loadTable: boolean;
+  isToggle: boolean;
+}

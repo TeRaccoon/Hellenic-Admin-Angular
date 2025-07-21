@@ -13,8 +13,9 @@ import { TableService } from '../../services/table.service';
 import { UrlService } from '../../services/url.service';
 import { FormService } from '../form/service';
 import { EditableData } from '../form/types';
+import { DEFAULT_RELOAD_EVENT } from './consts';
 import { ViewService } from './service';
-import { ItemImage, StockTotals } from './types';
+import { ItemImage, ReloadEvent, StockTotals } from './types';
 
 @Component({
   selector: 'app-view',
@@ -161,8 +162,10 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  async loadTable(table: string) {
-    this.viewMetaData.loaded = false;
+  async loadTable(table: string, isToggle = false) {
+    if (!isToggle) {
+      this.viewMetaData.loaded = false;
+    }
 
     if (this.tableName == 'items') {
       const totalStockData: StockTotals[] = await this.dataService.processGet('total-stock', undefined, true);
@@ -203,7 +206,11 @@ export class ViewComponent implements OnInit, OnDestroy {
 
       this.changePage(this.viewMetaData.currentPage);
 
-      this.viewMetaData.loaded = true;
+      if (!isToggle) {
+        this.viewMetaData.loaded = true;
+      } else {
+        this.viewService.setToggleLoading(false);
+      }
     }
   }
 
@@ -486,10 +493,10 @@ export class ViewComponent implements OnInit, OnDestroy {
     return temporaryData;
   }
 
-  async reloadTable(loadTable = false) {
+  async reloadTable(event: ReloadEvent = DEFAULT_RELOAD_EVENT) {
     this.loadPage();
-    if (loadTable) {
-      await this.loadTable(String(this.tableName));
+    if (event.loadTable) {
+      await this.loadTable(String(this.tableName), event.isToggle);
     }
   }
 

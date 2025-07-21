@@ -3,6 +3,7 @@ import { TableName, TableTypeMap } from '../../../../common/types/tables';
 import { FilterService } from '../../../../services/filter.service';
 import { FormService } from '../../../form/service';
 import { FormType } from '../../../form/types';
+import { ReloadEvent } from '../../types';
 import { TABLE_FILTER_ICONS } from './icons';
 import { ColumnFilterOptions } from './types';
 
@@ -17,7 +18,7 @@ export class TableFilterComponent {
   @Input() filter!: ColumnFilterOptions;
   @Input() displayNames!: string[];
 
-  @Output() reloadTable = new EventEmitter<boolean>();
+  @Output() reloadTable = new EventEmitter<ReloadEvent>();
   @Output() clearFilterEmitter = new EventEmitter<{ filter: string; reload: boolean }>();
 
   icons = TABLE_FILTER_ICONS;
@@ -36,13 +37,19 @@ export class TableFilterComponent {
     this.filterService.removeColumnFilter(this.filter.column[columnFilterIndex].filter);
     this.filter.column = this.filterService.getColumnFilter();
 
-    this.reloadTable.emit(true);
+    this.reloadTable.emit({
+      loadTable: true,
+      isToggle: false,
+    });
   }
 
   removeColumnDateFilter(columnFilterIndex: number) {
     this.filterService.removeColumnDateFilter(this.filter.columnDate[columnFilterIndex]);
     this.filter.columnDate = this.filterService.getColumnDateFilter();
-    this.reloadTable.emit(true);
+    this.reloadTable.emit({
+      loadTable: true,
+      isToggle: false,
+    });
   }
 
   showAdvancedFilter() {
@@ -63,6 +70,9 @@ export class TableFilterComponent {
       searchFilter: this.searchFilter,
       searchFilterApplied: true,
     });
-    this.reloadTable.emit(false);
+    this.reloadTable.emit({
+      loadTable: false,
+      isToggle: false,
+    });
   }
 }

@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, Input, Output } from '@angular/core';
 import { TABLE_ICONS } from '../../../../common/icons/table-icons';
 import { FormSubmission } from '../../../../common/types/data-service/types';
 import { SubmissionData, TableName, TableNameEnum, TableTypeMap } from '../../../../common/types/tables';
 import { DataService } from '../../../../services/data.service';
 import { FormService } from '../../../form/service';
 import { ViewService } from '../../service';
+import { ReloadEvent } from '../../types';
 
 @Component({
   selector: 'app-table-data',
@@ -12,12 +13,6 @@ import { ViewService } from '../../service';
   styleUrl: './table-data.component.scss',
 })
 export class TableDataComponent<T extends keyof TableTypeMap> {
-  constructor(
-    private dataService: DataService,
-    private formService: FormService,
-    private service: ViewService
-  ) {}
-
   @Input() column!: keyof TableTypeMap[T];
   @Input() data!: TableTypeMap[TableName][];
   @Input() tableName!: TableName;
@@ -26,11 +21,27 @@ export class TableDataComponent<T extends keyof TableTypeMap> {
   @Input() imageUrlBase!: string;
   @Input() columnIndex!: number;
 
-  @Output() reloadEvent = new EventEmitter<boolean>();
+  @Output() reloadEvent = new EventEmitter<ReloadEvent>();
 
   icon = TABLE_ICONS.lock;
+  loading = false;
+
+  constructor(
+    private dataService: DataService,
+    private formService: FormService,
+    private service: ViewService
+  ) {
+    effect(() => {
+      // this.loading = this.loading && this.service.getToggleLoading();
+    });
+  }
 
   async changeCheckBox<T extends TableName>(event: Event, key: number, columnName: keyof TableTypeMap[T]) {
+    this.loading = true;
+    this.service.setToggleLoading(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Gives time for the animation to finish
+
     const dataArray = this.data as TableTypeMap[T][];
 
     const originalItem = dataArray.find((item) => item.id === key);
@@ -49,7 +60,10 @@ export class TableDataComponent<T extends keyof TableTypeMap> {
     data.table_name = String(this.tableName);
 
     await this.dataService.submitFormData(data as FormSubmission);
-    this.reloadEvent.emit(true);
+    this.reloadEvent.emit({
+      loadTable: true,
+      isToggle: true,
+    });
   }
 
   getCurrencyCode<T extends TableName>(column: keyof TableTypeMap[T]) {
@@ -95,7 +109,10 @@ export class TableDataComponent<T extends keyof TableTypeMap> {
 
         const submissionResponse = await this.dataService.submitFormData(data as FormSubmission);
         if (submissionResponse.success) {
-          this.reloadEvent.emit(true);
+          this.reloadEvent.emit({
+            loadTable: true,
+            isToggle: false,
+          });
         } else {
           this.formService.setMessageFormData({
             title: 'Error!',

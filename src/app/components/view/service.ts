@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import {
   ADDRESS_COLUMNS,
   CREDIT_NOTE_COLUMNS,
@@ -37,12 +37,26 @@ export class ViewService {
     this._filteredDisplayData = value;
   }
 
+  private toggleLoading = signal(false);
+
   constructor(
     private authService: AuthService,
     private dataService: DataService,
     private formService: FormService,
     private optionsService: TableOptionsService
   ) {}
+
+  getToggleLoadingSignal() {
+    return this.toggleLoading;
+  }
+
+  getToggleLoading() {
+    return this.toggleLoading();
+  }
+
+  setToggleLoading(loading: boolean) {
+    this.toggleLoading.set(loading);
+  }
 
   async stockSearch(data: any, itemId: string) {
     const row = data.filter((row: any) => row.id == itemId)[0];
