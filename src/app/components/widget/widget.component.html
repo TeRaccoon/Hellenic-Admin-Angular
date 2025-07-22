@@ -1,13 +1,13 @@
 @if (visible) {
   <div class="container" [class.hidden]="!visible">
-    <div class="content">
+    <div class="content" [class.no-data]="!hasData()">
       <div class="header-section">
         <h1>{{ tableData.title }}</h1>
         <a (click)="hide()">
           <fa-icon [icon]="icons.x" />
         </a>
       </div>
-      @if (tableData.rows && tableData.rows.length > 0 && tableData.rows[0] !== null) {
+      @if (hasData()) {
         <div class="table-container">
           @if (tableData.disabled.value) {
             <p class="warning-message">{{ tableData.disabled.message }}</p>
@@ -87,7 +87,7 @@
         </div>
       } @else {
         <div class="error-container">
-          <p>Error! There is no data. Would you like to add some?</p>
+          <p>There is no data for the selected row. Would you like to add some?</p>
           <button (click)="!tableData.disabled.value && addRow()" class="button">Add Data</button>
         </div>
       }

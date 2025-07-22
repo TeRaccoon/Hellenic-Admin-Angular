@@ -185,4 +185,8 @@ export class WidgetComponent {
         })
       ).total_quantity ?? 0;
   }
+
+  hasData() {
+    return this.tableData.rows && this.tableData.rows.length > 0 && this.tableData.rows[0] !== null;
+  }
 }
