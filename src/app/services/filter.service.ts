@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { TableName, TableTypeMap } from '../common/types/tables';
 import { FilterData } from '../common/types/view/types';
 import { TableColumns } from '../components/filter-form/types';
+import { ViewService } from '../components/view/service';
+import { ColumnDateFilter } from '../components/view/types';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +31,7 @@ export class FilterService {
   private filterData: FilterData;
   private protectFilterData = false;
 
-  constructor() {
+  constructor(private viewService: ViewService) {
     this.filterData = {
       searchFilter: '',
       searchFilterApplied: false,
@@ -113,5 +115,38 @@ export class FilterService {
 
   getTableColumns(): TableColumns {
     return this.tableColumns;
+  }
+
+  applyTemporaryFilter() {
+    const temporaryData: Record<string, unknown>[] = [];
+    if (this.getFilterData().searchFilter != '') {
+      this.viewService.displayData.forEach((data) => {
+        if (this.objectValuesContains(data)) {
+          temporaryData.push(data);
+        }
+      });
+    }
+    this.viewService.filteredDisplayData = temporaryData;
+  }
+
+  filterDateColumns(columnDateFilter: ColumnDateFilter) {
+    const column = columnDateFilter.column;
+
+    return this.viewService.displayData.filter((data) => {
+      if (columnDateFilter != null && data[column] != null) {
+        const dataDate = new Date(data[column]);
+        const startDate = new Date(columnDateFilter.startDate);
+        const endDate = new Date(columnDateFilter.endDate);
+
+        return dataDate >= startDate && dataDate <= endDate;
+      }
+      return false;
+    });
+  }
+
+  private objectValuesContains(data: any) {
+    return Object.values(data).some((property) =>
+      String(property).toUpperCase().includes(String(this.getFilterData().searchFilter).toUpperCase())
+    );
   }
 }

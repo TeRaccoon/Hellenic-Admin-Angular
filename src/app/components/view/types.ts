@@ -12,3 +12,9 @@ export interface ReloadEvent {
   loadTable: boolean;
   isToggle: boolean;
 }
+
+export interface ColumnDateFilter {
+  column: string;
+  startDate: Date;
+  endDate: Date;
+}

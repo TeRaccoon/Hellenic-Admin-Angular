@@ -430,4 +430,27 @@ export class ViewService {
       return Math.ceil(this.filteredDisplayData.length / entryLimit);
     }
   }
+
+  getPageRange(currentPage: number, pageCount: number): number[] {
+    const range = [];
+    let start = currentPage;
+
+    if (currentPage > pageCount - 2 && pageCount - 2 > 0) {
+      start = pageCount - 2;
+    }
+    if (start == 1 && pageCount > 1) {
+      start += 2;
+    } else if (start == 2 && pageCount > 1) {
+      start += 1;
+    }
+    for (let i = start - 1; i < start + 2 && i < pageCount && pageCount > 1; i++) {
+      range.push(i);
+    }
+
+    if (pageCount > 1) {
+      range.push(pageCount);
+    }
+
+    return range;
+  }
 }

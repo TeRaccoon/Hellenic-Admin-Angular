@@ -15,7 +15,7 @@ import { FormService } from '../form/service';
 import { EditableData } from '../form/types';
 import { DEFAULT_RELOAD_EVENT } from './consts';
 import { ViewService } from './service';
-import { ItemImage, ReloadEvent, StockTotals } from './types';
+import { ColumnDateFilter, ItemImage, ReloadEvent, StockTotals } from './types';
 
 @Component({
   selector: 'app-view',
@@ -162,28 +162,42 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  async loadItemsTable() {
+    const totalStockData: StockTotals[] = await this.dataService.processGet('total-stock', undefined, true);
+
+    totalStockData.forEach((stock) => {
+      this.stockData[stock.item_id] = stock.total_quantity;
+    });
+  }
+
+  async loadStockedItemsTable() {
+    const images: ItemImage[] = await this.dataService.processGet('stocked-item-images', undefined, true);
+
+    if (images != null) {
+      images.forEach((imageData) => {
+        this.images[imageData.item_id] = imageData.file_name;
+      });
+    }
+  }
+
+  async switchTable() {
+    switch (this.tableName) {
+      case 'items':
+        await this.loadItemsTable();
+        break;
+
+      case 'stocked_items':
+        await this.loadStockedItemsTable();
+        break;
+    }
+  }
+
   async loadTable(table: string, isToggle = false) {
     // if (!isToggle) {
     //   this.viewMetaData.loaded = false;
     // }
 
-    if (this.tableName == 'items') {
-      const totalStockData: StockTotals[] = await this.dataService.processGet('total-stock', undefined, true);
-
-      totalStockData.forEach((stock) => {
-        this.stockData[stock.item_id] = stock.total_quantity;
-      });
-    }
-
-    if (this.tableName == 'stocked_items') {
-      const images: ItemImage[] = await this.dataService.processGet('stocked-item-images', undefined, true);
-
-      if (images != null) {
-        images.forEach((imageData) => {
-          this.images[imageData.item_id] = imageData.file_name;
-        });
-      }
-    }
+    await this.switchTable();
 
     const tableData = await this.dataService.processGet('table', {
       filter: table,
@@ -303,12 +317,12 @@ export class ViewComponent implements OnInit, OnDestroy {
   loadPage() {
     const start = (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
     const end = start + this.viewMetaData.entryLimit;
-    console.log(this.filterService.getFilterData());
+
     if (this.filterService.getFilterData().searchFilter === '') {
       this.viewMetaData.pageCount = this.viewService.calculatePageCount(true, this.viewMetaData.entryLimit);
       this.viewService.filteredDisplayData = this.viewService.displayData.slice(start, end);
     } else {
-      this.viewService.filteredDisplayData = this.applyTemporaryFilter();
+      this.filterService.applyTemporaryFilter();
       this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
       this.viewService.filteredDisplayData = this.viewService.filteredDisplayData.slice(start, end);
     }
@@ -321,29 +335,6 @@ export class ViewComponent implements OnInit, OnDestroy {
     this.viewMetaData.currentPage = 1;
     this.selectedRows = [];
     this.sortedColumn.columnName = '';
-  }
-
-  getPageRange(): number[] {
-    const range = [];
-    let start = this.viewMetaData.currentPage;
-
-    if (this.viewMetaData.currentPage > this.viewMetaData.pageCount - 2 && this.viewMetaData.pageCount - 2 > 0) {
-      start = this.viewMetaData.pageCount - 2;
-    }
-    if (start == 1 && this.viewMetaData.pageCount > 1) {
-      start += 2;
-    } else if (start == 2 && this.viewMetaData.pageCount > 1) {
-      start += 1;
-    }
-    for (let i = start - 1; i < start + 2 && i < this.viewMetaData.pageCount && this.viewMetaData.pageCount > 1; i++) {
-      range.push(i);
-    }
-
-    if (this.viewMetaData.pageCount > 1) {
-      range.push(this.viewMetaData.pageCount);
-    }
-
-    return range;
   }
 
   selectRow(event: Event, rowId: number) {
@@ -360,6 +351,10 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   canDisplayColumn(column: string) {
     return this.viewService.canDisplayColumn(column, this.tableName);
+  }
+
+  getPageRange() {
+    return this.viewService.getPageRange(this.viewMetaData.currentPage, this.viewMetaData.pageCount);
   }
 
   //Filter
@@ -404,19 +399,8 @@ export class ViewComponent implements OnInit, OnDestroy {
     this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
   }
 
-  filterDateColumns(columnDateFilter: { column: any; startDate: Date; endDate: Date }) {
-    const column = columnDateFilter.column;
-
-    this.viewService.displayData = this.viewService.displayData.filter((data) => {
-      if (columnDateFilter != null && data[column] != null) {
-        const dataDate = new Date(data[column]);
-        const startDate = new Date(columnDateFilter.startDate);
-        const endDate = new Date(columnDateFilter.endDate);
-
-        return dataDate >= startDate && dataDate <= endDate;
-      }
-      return false;
-    });
+  filterDateColumns(columnDateFilter: ColumnDateFilter) {
+    this.viewService.displayData = this.filterService.filterDateColumns(columnDateFilter);
     this.viewService.filteredDisplayData = this.viewService.displayData;
   }
 
@@ -473,24 +457,6 @@ export class ViewComponent implements OnInit, OnDestroy {
       searchFilterApplied: true,
     });
     this.loadPage();
-  }
-
-  applyTemporaryFilter() {
-    const temporaryData: Record<string, unknown>[] = [];
-    if (this.filterService.getFilterData().searchFilter != '') {
-      this.viewService.displayData.forEach((data) => {
-        if (
-          Object.values(data).some((property) =>
-            String(property)
-              .toUpperCase()
-              .includes(String(this.filterService.getFilterData().searchFilter).toUpperCase())
-          )
-        ) {
-          temporaryData.push(data);
-        }
-      });
-    }
-    return temporaryData;
   }
 
   async reloadTable(event: ReloadEvent = DEFAULT_RELOAD_EVENT) {
