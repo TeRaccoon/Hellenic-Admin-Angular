@@ -3,7 +3,7 @@ import { TableName, TableTypeMap } from '../common/types/tables';
 import { FilterData } from '../common/types/view/types';
 import { TableColumns } from '../components/filter-form/types';
 import { ViewService } from '../components/view/service';
-import { ColumnDateFilter } from '../components/view/types';
+import { ColumnDateFilter, SortedColumn } from '../components/view/types';
 
 @Injectable({
   providedIn: 'root',
@@ -148,5 +148,25 @@ export class FilterService {
     return Object.values(data).some((property) =>
       String(property).toUpperCase().includes(String(this.getFilterData().searchFilter).toUpperCase())
     );
+  }
+
+  sortColumn(dataName: string, sortedColumn: SortedColumn, column: string) {
+    if (sortedColumn.columnName == column) {
+      sortedColumn.ascending = !sortedColumn.ascending;
+    } else {
+      sortedColumn = { columnName: column, ascending: false };
+    }
+
+    if (sortedColumn.ascending) {
+      this.viewService.filteredDisplayData = this.viewService.sortAscending(
+        dataName,
+        this.viewService.filteredDisplayData
+      );
+    } else {
+      this.viewService.filteredDisplayData = this.viewService.sortDescending(
+        dataName,
+        this.viewService.filteredDisplayData
+      );
+    }
   }
 }

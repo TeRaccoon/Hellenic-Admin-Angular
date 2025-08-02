@@ -18,3 +18,8 @@ export interface ColumnDateFilter {
   startDate: Date;
   endDate: Date;
 }
+
+export interface SortedColumn {
+  columnName: string;
+  ascending: boolean;
+}

@@ -15,7 +15,7 @@ import { FormService } from '../form/service';
 import { EditableData } from '../form/types';
 import { DEFAULT_RELOAD_EVENT } from './consts';
 import { ViewService } from './service';
-import { ColumnDateFilter, ItemImage, ReloadEvent, StockTotals } from './types';
+import { ColumnDateFilter, ItemImage, ReloadEvent, SortedColumn, StockTotals } from './types';
 
 @Component({
   selector: 'app-view',
@@ -58,7 +58,7 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   tabs: { displayName: string; tableName: string }[] = [];
 
-  sortedColumn: any = { columnName: '', ascending: false };
+  sortedColumn: SortedColumn = { columnName: '', ascending: false };
 
   get filteredDisplayData() {
     return this.viewService.filteredDisplayData;
@@ -193,9 +193,9 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   async loadTable(table: string, isToggle = false) {
-    // if (!isToggle) {
-    //   this.viewMetaData.loaded = false;
-    // }
+    if (!isToggle) {
+      this.viewMetaData.loaded = false;
+    }
 
     await this.switchTable();
 
@@ -241,23 +241,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     const dataName: string =
       this.editable.columns.filter((_, index) => this.editable.names[index] === column)[0] ?? 'id';
 
-    if (this.sortedColumn.columnName == column) {
-      this.sortedColumn.ascending = !this.sortedColumn.ascending;
-    } else {
-      this.sortedColumn = { columnName: column, ascending: false };
-    }
-
-    if (this.sortedColumn.ascending) {
-      this.viewService.filteredDisplayData = this.viewService.sortAscending(
-        dataName,
-        this.viewService.filteredDisplayData
-      );
-    } else {
-      this.viewService.filteredDisplayData = this.viewService.sortDescending(
-        dataName,
-        this.viewService.filteredDisplayData
-      );
-    }
+    this.filterService.sortColumn(dataName, this.sortedColumn, column);
 
     this.changePage(1);
   }

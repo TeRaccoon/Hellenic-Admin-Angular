@@ -6,7 +6,6 @@ import {
   SUPPLIER_INVOICE_COLUMNS,
 } from '../../common/constants';
 import { INVOICE_COLUMNS, STOCK_COLUMNS } from '../../common/consts/table-options';
-import { TableName, TableNameEnum, TableTypeMap } from '../../common/types/tables';
 import { DEFAULT_DISABLED_WIDGET_DATA } from '../../common/types/widget/const';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
@@ -397,14 +396,6 @@ export class ViewService {
       this.formService.processAddFormData(editFormData);
       this.optionsService.prepareAddFormService(table);
     }
-  }
-
-  getCurrencyCode<T extends TableName>(column: keyof TableTypeMap[T], tableName: T) {
-    return (tableName == TableNameEnum.SupplierInvoices &&
-      (column == 'net_value' || column == 'VAT' || column == 'total_eur' || column == 'outstanding_balance')) ||
-      column == 'amount_eur'
-      ? 'EUR'
-      : 'GBP';
   }
 
   shouldColourCell(data: string, tableName: string) {
