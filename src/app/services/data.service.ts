@@ -39,6 +39,12 @@ export class DataService {
     return response;
   }
 
+  async processGetASP(query: string) {
+    const url = new URL('https://localhost:7018/api/' + query);
+
+    return await lastValueFrom(this.http.get(url.toString()));
+  }
+
   async processPost(body: Record<string, any>, makeArray = false): Promise<any> {
     const url = this.urlService.getUrl('admin');
     let response = await lastValueFrom(this.http.post(url, { body }));

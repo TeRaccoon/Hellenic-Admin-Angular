@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
   }
 
   async loadWidgets() {
-    let data = await this.dataService.processGet('total-invoices-month');
+    let data = await this.dataService.processGetASP('invoice/total-invoices-month');
     this.widgetData.push(data);
 
     data = await this.dataService.processGet('invoices-due-today');
