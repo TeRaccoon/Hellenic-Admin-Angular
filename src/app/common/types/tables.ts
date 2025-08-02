@@ -2063,6 +2063,9 @@ export interface WishlistWithDefaults {
 
 export type TableName = keyof TableTypeMap;
 
+export type Column = keyof TableTypeMap[TableName];
+export type ColumnKey<T extends TableName> = keyof TableTypeMap[T];
+
 export interface TableTypeMap {
   allergen_information: AllergenInformation;
   bands: Bands;

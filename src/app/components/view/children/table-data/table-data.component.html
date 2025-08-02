@@ -1,11 +1,8 @@
-<td [ngClass]="shouldColourCell(item[column]) + (displayWithIcon(item) ? ' icon-data-container' : '')">
+<td [ngClass]="getCellClasses(item, column)">
   <div class="container" [class.icon]="displayWithIcon(item)">
     @switch (dataTypes[columnIndex]) {
       @case ('file') {
-        <img
-          [src]="item[column] === null ? imageUrlBase + 'placeholder.jpg' : imageUrlBase + item[column]"
-          [alt]="item[column]"
-        />
+        <img [src]="getImageSource(item[column])" [alt]="placeholderImage" />
       }
       @case ("enum('No','Yes')") {
         <div>
@@ -13,30 +10,18 @@
             (change)="changeCheckBox($event, item.id, column)"
             type="checkbox"
             class="checkbox"
-            [class]="loading ? 'loading' : ''"
+            [class.loading]="loading"
             [checked]="item[column] === 'Yes'"
           />
         </div>
-      }
-      @case ('float') {
-        {{ item[column] === null ? '---' : (item[column] | currency: getCurrencyCode(column)) }}
-      }
-      @case ('decimal(19,2)') {
-        {{ item[column] === null ? '---' : (item[column] | currency: getCurrencyCode(column)) }}
-      }
-      @case ('double') {
-        {{ item[column] === null ? '---' : item[column] + '%' }}
       }
       @case ('text') {
         <div class="text-container">
           {{ item[column] === null ? '---' : item[column] }}
         </div>
       }
-      @case ('date') {
-        {{ item[column] === null ? '---' : (item[column] | date: 'dd/MM/yyyy') }}
-      }
       @default {
-        {{ item[column] === null ? '---' : item[column] }}
+        {{ getValue(dataTypes[columnIndex], item, column) }}
         @if (displayWithIcon(item)) {
           <ng-container class="icon-container">
             <fa-icon class="row-icon" (click)="iconClick(item)" [icon]="icon"></fa-icon>

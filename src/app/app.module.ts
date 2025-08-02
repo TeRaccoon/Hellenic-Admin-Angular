@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -135,6 +135,8 @@ export function initConfig(configService: ConfigService) {
       useFactory: (configService: ConfigService) => configService.reCAPTCHASiteKey,
       deps: [ConfigService],
     },
+    CurrencyPipe,
+    DatePipe,
   ],
   bootstrap: [AppComponent],
 })
