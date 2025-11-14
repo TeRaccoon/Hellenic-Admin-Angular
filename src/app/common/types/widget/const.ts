@@ -25,5 +25,6 @@ export const DEFAULT_WIDGET_DATA: WidgetData = {
     totalGross: 0,
     totalVAT: 0,
     totalNet: 0,
+    delivery: 0,
   },
 };

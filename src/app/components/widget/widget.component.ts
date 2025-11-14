@@ -105,6 +105,7 @@ export class WidgetComponent {
       this.tableData.extra = {
         totalGross: totalGross,
         totalVAT: totalVAT,
+        delivery: delivery,
         totalNet: totalNet,
       };
     }

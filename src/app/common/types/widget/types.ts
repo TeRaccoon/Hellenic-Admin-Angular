@@ -17,6 +17,7 @@ export interface TableExtra {
   totalGross: number;
   totalVAT: number;
   totalNet: number;
+  delivery: number;
 }
 
 export interface WidgetData {

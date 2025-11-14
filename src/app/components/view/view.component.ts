@@ -362,7 +362,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     this.displayColumnFilters = [];
 
     if (this.columnFilters.length + this.columnDateFilters.length == 1) {
-      this.filteredDisplayData = this.displayData;
+      this.viewService.filteredDisplayData = this.viewService.displayData;
     }
 
     this.columnFilters.forEach((filter: any) => {
