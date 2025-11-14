@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ChangePasswordFormComponent } from './change-password-form.component';
 
 describe('ChangePasswordFormComponent', () => {
@@ -8,10 +9,10 @@ describe('ChangePasswordFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChangePasswordFormComponent]
-    })
-    .compileComponents();
-    
+      declarations: [ChangePasswordFormComponent],
+      imports: [HttpClientTestingModule],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ChangePasswordFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

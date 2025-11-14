@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SearchContainerComponent } from './search-container.component';
 
 describe('SearchContainerComponent', () => {
@@ -8,10 +10,10 @@ describe('SearchContainerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchContainerComponent]
-    })
-    .compileComponents();
-    
+      declarations: [SearchContainerComponent],
+      imports: [FormsModule, FontAwesomeModule],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(SearchContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

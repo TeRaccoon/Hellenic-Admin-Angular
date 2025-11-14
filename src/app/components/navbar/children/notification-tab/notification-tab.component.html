@@ -1,0 +1,25 @@
+<div
+  #notificationDropdown
+  class="notification-dropdown-container"
+  [class.notifications-hidden]="!visible"
+  [class.interactive]="interactive"
+  (click)="stopEvent($event)"
+>
+  @if (this.notificationKeys().length > 0) {
+    @for (key of this.notificationKeys(); track key) {
+      <div class="section">
+        <h2>{{ key }}</h2>
+        @for (notification of notifications[key]; track notification) {
+          <div class="notification-container">
+            <p>{{ notification }}</p>
+            <fa-icon (click)="removeNotification(key, notification)" [icon]="icons.x" />
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <div class="empty-section">
+      <p>You have no new notifications. Check back later!</p>
+    </div>
+  }
+</div>

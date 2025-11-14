@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
+import { COLUMN_TYPES, CONFIG, CREDITOR_HEADERS, DEBTOR_HEADERS } from './consts';
 
 @Component({
   selector: 'app-debtor-creditor-widget',
@@ -7,12 +8,12 @@ import { DataService } from '../../services/data.service';
   styleUrls: ['./debtor-creditor-widget.component.scss'],
 })
 export class DebtorCreditorWidgetComponent {
-  tableData: any[] = [];
+  config = CONFIG;
 
   constructor(private dataService: DataService) {}
 
   async submitQuery(type: string, startDay: number, endDay: number | null) {
-    let debtorCreditorData = await this.dataService.processGet(
+    const debtorCreditorData = await this.dataService.processGet(
       type,
       {
         'start-day': startDay,
@@ -23,13 +24,8 @@ export class DebtorCreditorWidgetComponent {
 
     this.dataService.storeData({
       Data: debtorCreditorData,
-      Headers: [
-        'Reference',
-        'Account Name',
-        type == 'debtor' ? 'Total Debt' : 'Total Credit',
-        'Last Transaction',
-      ],
-      columnTypes: ['string', 'string', 'currency', 'date'],
+      headers: type === 'debtor' ? DEBTOR_HEADERS : CREDITOR_HEADERS,
+      columnTypes: COLUMN_TYPES,
     });
   }
 }

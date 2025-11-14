@@ -1,0 +1,225 @@
+<div class="container" [class.hidden]="!formState.visible">
+  <div class="content">
+    <div class="header-section">
+      <h1>Edit {{ displayTableName }}</h1>
+      <div class="popup-options">
+        <a (click)="minimize()">
+          <fa-icon class="icons.fa-icon" [icon]="icons.minus" />
+        </a>
+        <a (click)="hide()">
+          <fa-icon class="icons.fa-icon" [icon]="icons.x" />
+        </a>
+      </div>
+    </div>
+    <div class="content-section">
+      @if (formState.error && formState.submitted) {
+        <div class="error-section">{{ formState.error }}</div>
+      }
+      @if (mappedFormData && formState.loaded) {
+        <form [formGroup]="editForm" class="form-container">
+          @for (key of mappedFormDataKeys; track key) {
+            <div class="input-container" [ngClass]="mappedFormData.get(key)?.inputType">
+              <div class="label-container">
+                <label
+                  >{{ key }}
+                  @if (mappedFormData.get(key)?.required) {
+                    <fa-icon class="asterisk" [icon]="icons.asterisk" />
+                  }
+                </label>
+                @if ((key === 'Delivery Address' || key === 'Billing Address') && !formState.submitted) {
+                  <label class="label-link" (click)="addressNotListed(key)"><a>Address not listed?</a></label>
+                }
+              </div>
+              @switch (mappedFormData.get(key)?.inputType) {
+                @case ('file') {
+                  @if (imageReplacements.length > 0) {
+                    <div class="drop-select-container">
+                      <input
+                        [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
+                        type="text"
+                        (focus)="onInputFocus(key)"
+                        (blur)="onInputBlur(key)"
+                        [attr.required]="mappedFormData.get(key)?.required ? true : null"
+                        [formControlName]="mappedFormData.get(key)!.field"
+                        [(ngModel)]="selectedImage"
+                      />
+                      <div
+                        class="drop-select"
+                        [ngClass]="selectOpen[key]?.opened ? 'input-visible' : 'input-hidden'"
+                        [attr.required]="mappedFormData.get(key)?.required ? true : null"
+                      >
+                        @for (image of imageReplacements; track image) {
+                          <div (click)="updateImageSelection(image)" class="image-row">
+                            <p>{{ image }}</p>
+                            <img [src]="imageUrlBase + image" />
+                          </div>
+                        }
+                      </div>
+                      <div class="image-preview-container">
+                        @if (selectedImage) {
+                          <img [src]="imageUrlBase + selectedImage" />
+                        }
+                        @if (selectedImage) {
+                          <button class="delete-button" (click)="deleteImage(selectedImage)">Remove</button>
+                        }
+                      </div>
+                    </div>
+                  } @else {
+                    <app-file-upload
+                      [class]="inputHasError(mappedFormData.get(key)!.field)"
+                      [file]="file"
+                      [required]="mappedFormData.get(key)!.required ? true : false"
+                      (primeImageEmitter)="primeImage($event)"
+                    />
+                  }
+                }
+                @case ('alternative-select') {
+                  <app-dropselect
+                    [selectData]="alternativeSelectedData[key].selectData"
+                    [replacementData]="alternativeSelectData[key].data"
+                    [disabled]="formState.locked"
+                    [class]="inputHasError(mappedFormData.get(key)!.field)"
+                    [field]="mappedFormData.get(key)!.field"
+                    [alternative]="true"
+                    [text]="true"
+                    [key]="key"
+                    (updateText)="updateAlternativeSelectDataFromKeyEvent($event)"
+                  />
+                }
+                @case ('select') {
+                  <select
+                    [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
+                    type="text"
+                    class="select-input"
+                    [attr.required]="mappedFormData.get(key)?.required ? true : null"
+                    [formControlName]="mappedFormData.get(key)!.field"
+                  >
+                    @for (option of selectDataFromKey(key); track option) {
+                      <option [value]="option" [selected]="mappedFormData.get(key)?.value == option">
+                        {{ option }}
+                      </option>
+                    }
+                  </select>
+                }
+                @case ('replacement') {
+                  @if (
+                    (key === 'Delivery Address' || key === 'Billing Address') && addressNotListedKeys.includes(key)
+                  ) {
+                    <div class="input-container">
+                      <label>Line 1 <fa-icon class="asterisk" [icon]="icons.asterisk" /></label>
+                      <input class="text" type="text" (input)="updateAddressValues(key, 'line1', $event)" />
+                    </div>
+                    <div class="input-container">
+                      <label>Line 2</label>
+                      <input class="text" type="text" (input)="updateAddressValues(key, 'line2', $event)" />
+                    </div>
+                    <div class="input-container">
+                      <label>Line 3</label>
+                      <input class="text" type="text" (input)="updateAddressValues(key, 'line3', $event)" />
+                    </div>
+                    <div class="input-container">
+                      <label>Postcode <fa-icon class="asterisk" [icon]="icons.asterisk" /></label>
+                      <input class="text" type="text" (input)="updateAddressValues(key, 'postcode', $event)" />
+                    </div>
+                    <div class="footer-options">
+                      <div>
+                        <label>Save address?</label>
+                        <input type="checkbox" (input)="updateAddressValues(key, 'save', $event)" />
+                      </div>
+                      <button class="button" type="button" (click)="addAddressToBook(key)">Add</button>
+                    </div>
+                  } @else {
+                    <app-dropselect
+                      [selectData]="selectedReplacementData[key]?.selectData ?? ''"
+                      [replacementData]="replacementData[key]"
+                      [disabled]="formState.locked"
+                      [class]="inputHasError(mappedFormData.get(key)!.field)"
+                      [field]="mappedFormData.get(key)!.field"
+                      [alternative]="false"
+                      [key]="key"
+                      (update)="updateSelectedReplacementDataFromKeyEvent($event)"
+                    />
+                  }
+                  @if (key === 'Invoice ID' && tableName === 'customer_payments') {
+                    <div class="invoice-details-container">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Due date</th>
+                            <th>Total</th>
+                            <th>Outstanding balance</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{{ invoiceDetails['delivery_date'] }}</td>
+                            <td>
+                              {{ invoiceDetails['total'] | currency: 'GBP' }}
+                            </td>
+                            <td>
+                              {{ invoiceDetails['outstanding_balance'] | currency: 'GBP' }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  }
+                }
+                @case ('replacement-text') {
+                  <app-dropselect
+                    [selectData]="selectedTextReplacementData[key]"
+                    [replacementData]="replacementData[key]"
+                    [disabled]="formState.locked"
+                    [class]="inputHasError(mappedFormData.get(key)!.field)"
+                    [field]="mappedFormData.get(key)!.field"
+                    [key]="key"
+                    [text]="true"
+                    (updateText)="updateSelectedTextReplacementDataFromKeyEvent($event)"
+                  />
+                }
+                @case ('textarea') {
+                  <quill-editor
+                    [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
+                    [styles]="{
+                      height: '300px',
+                      backgroundColor: 'white',
+                      borderRadius: '5px'
+                    }"
+                    [formControlName]="mappedFormData.get(key)!.field"
+                  ></quill-editor>
+                }
+                @default {
+                  <input
+                    [class]="inputHasError(mappedFormData.get(key)!.field) ? 'error-input' : ''"
+                    [attr.required]="mappedFormData.get(key)?.required ? true : null"
+                    [type]="mappedFormData.get(key)?.inputType"
+                    [formControlName]="mappedFormData.get(key)!.field"
+                    [value]="mappedFormData.get(key)?.value"
+                  />
+                }
+              }
+            </div>
+          }
+          @if (canUploadImages()) {
+            <div class="image-upload-container">
+              <input accept="image/*" type="file" (change)="primeImage($event)" />
+              <fa-icon [icon]="icons.cloud" [ngClass]="file == null ? '' : 'success'" />
+              {{ file ? '' : 'Drop Image Here to Upload' }}
+              @if (file) {
+                <button class="button" (click)="submitImageOnly()">Click to upload</button>
+              }
+            </div>
+          }
+          <div class="form-footer">
+            <button class="button" name="action" value="append" (click)="formSubmit(true)" type="submit">Save</button>
+          </div>
+        </form>
+      }
+      <ng-template #loading>
+        <div class="loading-container">
+          <fa-icon class="loading-icon" [icon]="icons.loading" spinPulse [spin]="true" />
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

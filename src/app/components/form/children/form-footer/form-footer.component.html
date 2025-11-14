@@ -1,0 +1,23 @@
+<div class="form-footer">
+  @if (withWidget) {
+    <button
+      class="button"
+      [ngClass]="success ? 'button-success' : ''"
+      (click)="submit(false)"
+      type="submit"
+    >
+      @if (success) {
+        <fa-icon [icon]="tick" />
+      } @else {
+        Create
+      }
+    </button>
+  } @else {
+    <button class="button" (click)="submit(true)" type="submit">Submit</button>
+  }
+  @if (addMore) {
+    <button class="button" (click)="submit(false)" type="submit">
+      Add more
+    </button>
+  }
+</div>

@@ -1,0 +1,39 @@
+<app-generic-searcher #searchComponent>
+  <ng-container class="search-input">
+    <!-- The &#8204; is to prevent autofill on the input -->
+    <input
+      [(ngModel)]="searchInput"
+      (input)="searchTables($event)"
+      (focus)="searchComponent.open()"
+      placeholder="Sea&#8204;rch..."
+      autocomplete="off"
+      id="get-got-autofill"
+    />
+  </ng-container>
+  <ng-container class="search-options">
+    @if (filteredTableOptions.length > 0 || searchResults.length > 0) {
+      @for (table of filteredTableOptions; track table) {
+        <div class="search-option" (click)="changeTable(table.actual)">
+          <p>{{ table.display }}</p>
+        </div>
+      }
+      @for (results of searchResults; track results) {
+        <div class="search-option" (click)="goToRow(results.tableName, results.matchedValue)">
+          <div class="results-container">
+            <p class="bold">{{ results.tableName }}:</p>
+            <p class="display-value">{{ results.displayValue }}</p>
+          </div>
+        </div>
+      }
+    } @else {
+      @if (!searchComponent.searching) {
+        <div class="search-option">
+          <p>
+            There were no results
+            <fa-icon [icon]="icons.noResults" />
+          </p>
+        </div>
+      }
+    }
+  </ng-container>
+</app-generic-searcher>

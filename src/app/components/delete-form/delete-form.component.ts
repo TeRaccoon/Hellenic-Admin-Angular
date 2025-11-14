@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { FormService } from '../../services/form.service';
+import { Component, effect } from '@angular/core';
 import { faX } from '@fortawesome/free-solid-svg-icons';
-import { Subscription } from 'rxjs';
+import { DataService } from '../../services/data.service';
+import { FormService } from '../form/service';
+import { FormType } from '../form/types';
 
 @Component({
   selector: 'app-delete-form',
@@ -10,11 +10,9 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./delete-form.component.scss'],
 })
 export class DeleteFormComponent {
-  private readonly subscriptions = new Subscription();
-
-  formVisible = 'hidden';
+  visible = false;
   ids: number[] = [];
-  tableName: string = '';
+  tableName = '';
 
   formText: string;
 
@@ -27,15 +25,12 @@ export class DeleteFormComponent {
     private formService: FormService
   ) {
     this.formText = 'Are you sure you want to delete this row?';
-  }
 
-  ngOnInit() {
-    this.subscriptions.add(
-      this.formService.getDeleteFormVisibility().subscribe((visible) => {
-        this.formVisible = visible ? 'visible' : 'hidden';
-        this.load();
-      })
-    );
+    effect(() => {
+      const visible = this.formService.getFormVisibilitySignal(FormType.Delete)();
+      this.visible = visible;
+      this.load();
+    });
   }
 
   load() {
@@ -49,25 +44,21 @@ export class DeleteFormComponent {
     }
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
   hide() {
     this.confirm = false;
-    this.formService.hideDeleteForm();
+    this.formService.setFormVisibility(FormType.Delete, false);
   }
 
   async deleteRow() {
-    let idString = this.setIdString();
+    const idString = this.getIdString();
 
-    let deletionResponse = await this.dataService.submitFormData({
+    const deletionResponse = await this.dataService.submitFormData({
       action: 'delete',
       id: idString,
       table_name: this.tableName,
     });
 
-    if ((deletionResponse.error == 'FOREIGN_KEY')) {
+    if (deletionResponse.error == 'FOREIGN_KEY') {
       if (this.ids.length == 1) {
         this.confirm = true;
       }
@@ -84,9 +75,9 @@ export class DeleteFormComponent {
   }
 
   async deleteRowHard() {
-    let idString = this.setIdString();
+    const idString = this.getIdString();
 
-    let referencedColumns = await this.dataService.processPost({
+    const referencedColumns = await this.dataService.processPost({
       action: 'column-usage',
       table_name: this.tableName,
       id: idString,
@@ -100,7 +91,7 @@ export class DeleteFormComponent {
       });
     }
 
-    let deletionResponse = await this.dataService.submitFormData({
+    const deletionResponse = await this.dataService.submitFormData({
       action: 'delete',
       id: idString,
       table_name: this.tableName,
@@ -115,14 +106,9 @@ export class DeleteFormComponent {
     this.formService.requestReload('hard');
   }
 
-  setIdString() {
+  getIdString() {
     if (this.ids.length > 1) {
-      let idString = '';
-
-      this.ids.forEach((id) => {
-        idString += id + ', ';
-      });
-      return idString.substring(0, idString.length - 2);
+      return this.ids.join(', ');
     } else {
       return String(this.ids[0]);
     }

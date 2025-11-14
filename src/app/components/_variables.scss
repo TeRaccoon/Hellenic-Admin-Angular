@@ -1,29 +1,5 @@
 $hellenicblue: rgb(0, 140, 255);
 
-.button {
-    border-radius: 5px;
-    padding: 5px;
-    outline: none;
-    background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
-    border: none;
-    color: white;
-    cursor: pointer;
-
-    &:hover {
-        background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
-    }
-}
-
-.button:disabled {
-    cursor: default;
-    color: #eaeef3;
-    background-image: linear-gradient(to right, rgb(186, 186, 186), rgb(87, 87, 87));
-
-    &:hover {
-        background-image: linear-gradient(to right, rgb(186, 186, 186), rgb(87, 87, 87));
-    }
-}
-
 .sidebar-button {
     color: white;
     display: flex;
@@ -34,9 +10,11 @@ $hellenicblue: rgb(0, 140, 255);
     background-image: linear-gradient(to right, rgb(34, 130, 255), rgb(6, 63, 167));
     width: 90%;
     text-align: left;
+    transition: background-image 0.5s ease;
 
     &:hover {
         background-image: linear-gradient(to right, rgb(27, 109, 217), rgb(8, 54, 141));
+        transition: background-image 0.5s ease;
     }
 }
 
@@ -44,7 +22,7 @@ $hellenicblue: rgb(0, 140, 255);
     border-radius: 8px;
     outline: none;
     border: 1px solid rgb(215, 215, 215);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     font-size: 16px;
     padding: 8px;
     background-color: white;
@@ -69,7 +47,7 @@ $hellenicblue: rgb(0, 140, 255);
 .drop-select {
     background-color: white;
     border-radius: 0 0 8px 8px;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 400px;
     width: 100%;
     z-index: 2;
@@ -99,6 +77,7 @@ input[type="checkbox"] {
     outline: none;
     border-radius: 20px;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: left 0.5s ease;
 }
 
 input[type="checkbox"]:before {
@@ -112,6 +91,7 @@ input[type="checkbox"]:before {
     background-color: #fff;
     transform: scale(1.1);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: left 0.5s ease;
 }
 
 input:checked[type="checkbox"] {
@@ -120,4 +100,33 @@ input:checked[type="checkbox"] {
 
 input:checked[type="checkbox"]:before {
     left: 20px;
+    transition: left 0.5s ease;
 }
+
+// input[type="checkbox"].loading {
+//     background-color: #ccc !important;
+//     pointer-events: none;
+//     transition: left 0.5s ease;
+// }
+
+// input[type="checkbox"].loading:before {
+//     left: 12px;
+//     top: 1px;
+//     width: 16px;
+//     height: 16px;
+//     background-color: #fff;
+//     animation: loadingPulse 1s infinite ease-in-out;
+//     transition: left 0.5s ease;
+// }
+
+// @keyframes loadingPulse {
+
+//     0%,
+//     100% {
+//         transform: scale(1);
+//     }
+
+//     50% {
+//         transform: scale(0.8);
+//     }
+// }

@@ -1,6 +1,4 @@
 <div class="container">
-  <!-- Implement header section component here -->
-  <h1>Dashboard</h1>
   <div class="widget-container">
     @for (widget of widgetData; track widget; let i = $index) {
       <div class="widget">
@@ -15,9 +13,9 @@
     }
   </div>
   <div class="quick-view-container">
-    <div class="table-container">
-      <h1>Invoices Due Today</h1>
-      @if (invoiceDueData.length != 0) {
+    @if (invoiceDueData.length !== 0) {
+      <div class="table-container">
+        <h1>Invoices Due Today</h1>
         <table>
           <thead>
             <tr>
@@ -37,19 +35,17 @@
             }
           </tbody>
         </table>
-      } @else {
-        <p>There are no invoices due today</p>
-      }
-    </div>
-    <div class="table-container">
-      <h1>Products Expiring Soon</h1>
-      @if (productsExpiringData.length != 0) {
+      </div>
+    }
+    @if (productsExpiringData.length !== 0) {
+      <div class="table-container">
+        <h1>Products Expiring Soon</h1>
         <table>
           <thead>
             <tr>
               <th>Item Name</th>
               <th>Expiry Date</th>
-              <th>Quantiy</th>
+              <th>Quantity</th>
               <th>Warehouse Location</th>
             </tr>
           </thead>
@@ -63,13 +59,11 @@
             }
           </tbody>
         </table>
-      } @else {
-        <p>There is no stock expiring soon</p>
-      }
-    </div>
-    <div class="table-container">
-      <h1>Low Stock</h1>
-      @if (lowStockData.length != 0) {
+      </div>
+    }
+    @if (lowStockData.length !== 0) {
+      <div class="table-container">
+        <h1>Low Stock</h1>
         <table>
           <thead>
             <tr>
@@ -88,10 +82,8 @@
             }
           </tbody>
         </table>
-      } @else {
-        <p>There are no stock low on quantity</p>
-      }
-    </div>
+      </div>
+    }
   </div>
 </div>
 <app-message-form></app-message-form>

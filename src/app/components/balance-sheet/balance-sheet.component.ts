@@ -1,42 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+import { DATE_RANGES } from '../../common/consts/const';
+import { CUSTOMER_QUERIES, SUPPLIER_QUERIES } from '../../common/types/data-service/const';
+import { BalanceSheetData, BalanceSheetQueries } from '../../common/types/data-service/types';
+import { SelectedDate } from '../../common/types/statistics/types';
 import { DataService } from '../../services/data.service';
-import {
-  BalanceSheetData,
-  BalanceSheetQueries,
-  Response,
-} from '../../common/types/data-service/types';
+import { MailService } from '../../services/mail.service';
+import { PDFService } from '../../services/pdf.service';
+import { UrlService } from '../../services/url.service';
+import { FormService } from '../form/service';
+import { ICONS } from './icons';
 import {
   CreditNote,
   InvoiceSummary,
   Order,
   Payment,
   PaymentStatus,
+  Transaction,
+  TransactionData,
   TransactionType,
-} from '../../common/types/balance-sheet/types';
-import { SelectedDate } from '../../common/types/statistics/types';
-import dayjs from 'dayjs';
-import isBetween from 'dayjs/plugin/isBetween';
-import { UrlService } from '../../services/url.service';
-import {
-  CUSTOMER_QUERIES,
-  SUPPLIER_QUERIES,
-} from '../../common/types/data-service/const';
-import { faEnvelope, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FormService } from '../../services/form.service';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import { MailService } from '../../services/mail.service';
+} from './types';
 
 dayjs.extend(isBetween);
-
-type Transaction = Order | Payment | CreditNote;
-
 @Component({
   selector: 'app-balance-sheet',
   templateUrl: './balance-sheet.component.html',
   styleUrl: './balance-sheet.component.scss',
 })
-export class BalanceSheetComponent {
+export class BalanceSheetComponent implements OnInit {
   paymentStatus = PaymentStatus;
   inputData!: BalanceSheetData;
   queries!: BalanceSheetQueries;
@@ -49,40 +41,25 @@ export class BalanceSheetComponent {
   imageUrlBase;
 
   invoiceSummary: InvoiceSummary | null = null;
-
   transactions: Transaction[] = [];
   filteredTransactions: Transaction[] = [];
 
-  email = faEnvelope;
-  loading = faSpinner;
+  icons = ICONS;
+  ranges = DATE_RANGES;
 
   isLoading = false;
-
-  ranges: any = {
-    Yesterday: [dayjs().subtract(1, 'days'), dayjs().subtract(1, 'days')],
-    Today: [dayjs(), dayjs()],
-    'Last 3 Days': [dayjs().subtract(3, 'days'), dayjs()],
-    'Last 7 Days': [dayjs().subtract(6, 'days'), dayjs()],
-    'Last 30 Days': [dayjs().subtract(29, 'days'), dayjs()],
-    'This Month': [dayjs().startOf('month'), dayjs().endOf('month')],
-    'Last Month': [
-      dayjs().subtract(1, 'month').startOf('month'),
-      dayjs().subtract(1, 'month').endOf('month'),
-    ],
-    'This Year': [dayjs().startOf('year'), dayjs().endOf('year')],
-  };
 
   constructor(
     private dataService: DataService,
     private urlService: UrlService,
     private formService: FormService,
-    private mailService: MailService
+    private mailService: MailService,
+    private pdfService: PDFService
   ) {
     this.imageUrlBase = this.urlService.getUrl('uploads');
 
-    this.inputData = this.dataService.retrieveBalanceSheetData();
-    this.queries =
-      this.inputData.table == 'customers' ? CUSTOMER_QUERIES : SUPPLIER_QUERIES;
+    this.inputData = this.dataService.getBalanceSheetData();
+    this.queries = this.inputData.table == 'customers' ? CUSTOMER_QUERIES : SUPPLIER_QUERIES;
   }
 
   ngOnInit() {
@@ -90,32 +67,24 @@ export class BalanceSheetComponent {
   }
 
   async gatherData() {
-    let orders: Order[] = await this.processData(
-      this.queries.orders,
-      TransactionType.Order
-    );
+    const orders: Order[] = await this.processData(this.queries.orders, TransactionType.Order);
     await this.processData(this.queries.payments, TransactionType.Payment);
-    await this.processData(
-      this.queries.creditNotes,
-      TransactionType.CreditNote
-    );
+    await this.processData(this.queries.creditNotes, TransactionType.CreditNote);
 
     this.sortTransactions();
-    let outstandingBalance = this.processOutstandingBalance();
+    const outstandingBalance = this.processOutstandingBalance();
     this.processSummary(orders, outstandingBalance);
   }
 
   sortTransactions() {
-    this.transactions = this.transactions.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
+    this.transactions = this.transactions.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     this.filteredTransactions = this.transactions;
   }
 
   processOutstandingBalance() {
     let outstandingBalance = 0;
 
-    for (let transaction of this.transactions) {
+    for (const transaction of this.transactions) {
       if (transaction.type == 'order') {
         outstandingBalance += transaction.total || 0;
       } else {
@@ -131,11 +100,9 @@ export class BalanceSheetComponent {
   }
 
   processSummary(orders: Order[], outstandingBalance: number) {
-    let totalOrders = orders.length;
+    const totalOrders = orders.length;
 
-    let totalOutstandingInvoices = orders!.filter(
-      (order) => order.payment_status != PaymentStatus.Yes
-    ).length;
+    const totalOutstandingInvoices = orders!.filter((order) => order.payment_status != PaymentStatus.Yes).length;
     this.invoiceSummary = {
       orders: totalOrders,
       outstanding_orders: totalOutstandingInvoices,
@@ -144,16 +111,10 @@ export class BalanceSheetComponent {
   }
 
   async processData(query: string, type: TransactionType) {
-    let data = await this.dataService.processGet(
-      query,
-      { filter: this.inputData.customerId },
-      true
-    );
-
+    const data = await this.dataService.processGet(query, { filter: this.inputData.customerId }, true);
     if (data != null) {
-      data.forEach((dataItem: any) => {
-        let transaction: Transaction = { ...dataItem, type: type };
-        this.transactions.push(transaction);
+      data.forEach((dataItem: TransactionData) => {
+        this.transactions.push(this.toTransaction(dataItem, type));
       });
     }
 
@@ -167,27 +128,31 @@ export class BalanceSheetComponent {
   updateDateRange() {
     if (this.dateRange.startDate && this.dateRange.endDate) {
       this.filteredTransactions = this.transactions.filter((transaction) =>
-        dayjs(transaction.date).isBetween(
-          this.dateRange.startDate,
-          this.dateRange.endDate,
-          null,
-          '[]'
-        )
+        dayjs(transaction.date).isBetween(this.dateRange.startDate, this.dateRange.endDate, null, '[]')
       );
     }
   }
 
   changePaymentType(event: Event) {
-    let value = (event.target as HTMLInputElement).value;
+    const value = (event.target as HTMLInputElement).value;
 
     this.filteredTransactions = this.transactions.filter(
       (transaction) =>
         transaction.type == 'order' ||
         (transaction.type == 'payment' &&
-          (transaction.type == value ||
-            value == 'Both' ||
-            (value != 'Cash' && transaction.payment_type != 'Cash')))
+          (transaction.type == value || value == 'Both' || (value != 'Cash' && transaction.payment_type != 'Cash')))
     );
+  }
+
+  toTransaction(dataItem: TransactionData, type: TransactionType): Transaction {
+    switch (type) {
+      case TransactionType.Order:
+        return { ...dataItem, type: 'order' } as Order;
+      case TransactionType.Payment:
+        return { ...dataItem, type: 'payment' } as Payment;
+      case TransactionType.CreditNote:
+        return { ...dataItem, type: 'credit-note' } as CreditNote;
+    }
   }
 
   async emailSupplier() {
@@ -196,7 +161,7 @@ export class BalanceSheetComponent {
     if (this.inputData.email == '' || this.inputData.email == null) {
       this.formService.setMessageFormData({
         title: 'Error!',
-        message: 'There is no email linked to this account!'
+        message: 'There is no email linked to this account!',
       });
       return;
     }
@@ -217,32 +182,8 @@ export class BalanceSheetComponent {
     this.isLoading = false;
   }
 
-  constructPDF(data: HTMLElement): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-      html2canvas(data, { useCORS: true, allowTaint: true })
-        .then((canvas) => {
-          const imgWidth = 210.5;
-          const pageHeight = 295;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          let heightLeft = imgHeight;
-
-          const pdf = new jsPDF('p', 'mm', 'a4');
-          let position = 0;
-
-          const imgData = canvas.toDataURL('image/png');
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-
-          while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-          }
-
-          resolve(pdf.output('blob'));
-        })
-    });
+  async constructPDF(data: HTMLElement): Promise<Blob> {
+    return (await this.pdfService.generatePDF(data)).output('blob');
   }
 
   async constructEmail(pdf: Blob) {

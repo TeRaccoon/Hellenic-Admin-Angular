@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MessageFormComponent } from './message-form.component';
 
 describe('MessageFormComponent', () => {
@@ -8,10 +9,10 @@ describe('MessageFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MessageFormComponent]
-    })
-    .compileComponents();
-    
+      declarations: [MessageFormComponent],
+      imports: [HttpClientTestingModule],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(MessageFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

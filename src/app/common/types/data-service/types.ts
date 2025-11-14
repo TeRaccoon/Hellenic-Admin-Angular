@@ -19,4 +19,13 @@ export interface BalanceSheetQueries {
 export interface Response {
   success: boolean;
   message: string;
+  id?: number;
+  error?: string;
+  data?: string;
+}
+
+export interface FormSubmission {
+  action: string;
+  table_name: string;
+  [key: string]: any;
 }

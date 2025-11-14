@@ -5,15 +5,22 @@
   <div class="options-container">
     @for (category of getTableCategories(tables); track category) {
       <div>
-        <button class="sidebar-button" (click)="toggleDropdown(category)">{{ category }}
-          <fa-icon [icon]="isDropdownVisible[category] ? faCaretDown : faCaretRight"></fa-icon>
+        <button class="sidebar-button" (click)="toggleDropdown(category)">
+          {{ category }}
+          <fa-icon [class.open]="isDropdownVisible[category]" [icon]="faCaretRight"></fa-icon>
         </button>
-        <div class="dropdown-container" [ngClass]="{'hidden': !isDropdownVisible[category]}">
+        <div
+          class="dropdown-container"
+          [class.visible]="isDropdownVisible[category]"
+          [class.hidden]="!isDropdownVisible[category]"
+        >
           @for (table of tables[category]; track table) {
             @if (canDisplayTable(table.tableName)) {
               <a
-                [class]="table.tableName == selectedTable ? 'selected-tab' : ''"
-              (click)="changeTable(table.tableName)">{{ table.displayName }}</a>
+                [class]="table.tableName === selectedTable ? 'selected-tab' : ''"
+                (click)="changeTable(table.tableName)"
+                >{{ table.displayName }}</a
+              >
             }
           }
         </div>

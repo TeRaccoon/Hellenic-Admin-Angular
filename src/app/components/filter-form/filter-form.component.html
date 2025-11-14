@@ -1,82 +1,85 @@
-<div class="container" [class]="formVisible">
-  <div class="content">
-    <div class="header-section">
-      <h1>Advanced Filter</h1>
-      <a (click)="hide()">
-        <fa-icon class="fa-icon" [icon]="faX" />
-      </a>
-    </div>
-    @if (errorMsg != null) {
-      <div class="error-section">
-        <p>{{ errorMsg }}</p>
+@if (visible) {
+  <div class="container">
+    <div class="content">
+      <div class="header-section">
+        <h1>Advanced Filter</h1>
+        <a (click)="hide()">
+          <fa-icon class="icon" [icon]="icons.x" />
+        </a>
       </div>
-    }
-    <div class="content-section">
-      <label>Select Column</label>
-      <select [class]="columnInput == '' && errorMsg != null ? 'error' : ''" (change)="getColumnType()"
-        [(ngModel)]="columnInput">
-        @for (column of tableColumns.columnNames; track column; let i = $index) {
-          <option
-          [value]="tableColumns.columns[i]">{{column}}</option>
-        }
-      </select>
-      <div class="input-container">
-        @switch (columnType) {
-          @case ('date') {
-            <label>Start date:</label>
-            <input [class]="startDate == null && errorMsg != null ? 'error' : ''" requried type="date"
-              [(ngModel)]="startDate">
-            <label>End date:</label>
-            <input [class]="endDate == null && errorMsg != null ? 'error' : ''" requried type="date"
-              [(ngModel)]="endDate">
-          }
-          @case ('enum') {
-            <div class="drop-select-container">
-              <input type="text" (focus)="openDropdown()" (blur)="closeDropdown()"
-                [(ngModel)]="searchInput">
-              <div class="drop-select" [ngClass]="columnIndex == open ? 'input-visible' : 'input-hidden'">
-                @for (option of options; track option) {
-                  <p (click)="selectOption(option)">{{ option }}</p>
+      @if (error) {
+        <div class="error-section">
+          <p>{{ error }}</p>
+        </div>
+      }
+      <div class="content-section">
+        <div class="input-container">
+          <label>Select Column</label>
+          <app-generic-searcher #searchComponent [dropdownWidth]="'calc(30% - 66px)'">
+            <ng-container class="search-input">
+              <div class="input">
+                @if (columnInput === '' || columnInput === undefined) {
+                  Select column...
+                } @else {
+                  {{ columnInput }}
                 }
               </div>
-            </div>
-          }
-          @default {
-            <input [class]="searchInput == '' && errorMsg != null ? 'error' : ''" [(ngModel)]="searchInput"
-              required type="text" placeholder="Search..." />
-            <div class="case-option-container">
-              <label>Case Sensitive?</label>
-              <input [(ngModel)]="caseSensitive" type="checkbox" />
-            </div>
-          }
-        }
-        <!-- <ng-container *ngIf="columnType == 'date' else elseBlock">
-        <label>Start date:</label>
-        <input [class]="startDate == null && errorMsg != null ? 'error' : ''" requried type="date"
-          [(ngModel)]="startDate">
-        <label>End date:</label>
-        <input [class]="endDate == null && errorMsg != null ? 'error' : ''" requried type="date"
-          [(ngModel)]="endDate">
-      </ng-container>
-      <ng-template #elseBlock>
-        <input [class]="searchInput == '' && errorMsg != null ? 'error' : ''" [(ngModel)]="searchInput"
-          required type="text" placeholder="Search..." />
-        <div class="case-option-container">
-          <label>Case Sensitive?</label>
-          <input [(ngModel)]="caseSensitive" type="checkbox" />
+            </ng-container>
+            <ng-container class="search-options">
+              @for (column of tableColumns.columnNames; track column; let i = $index) {
+                <div class="search-option" (click)="setColumnInput(i)">{{ column }}</div>
+              }
+            </ng-container>
+          </app-generic-searcher>
         </div>
-      </ng-template> -->
-      <div class="button-container">
-        <button class="button" (click)="search(false)">
-          <fa-icon class="fa-icon" [icon]="faPlus" />
-          Add
-        </button>
-        <button class="button" (click)="search(true)">
-          <fa-icon class="fa-icon" [icon]="faSearch" />
-          Search
-        </button>
+        <div class="input-container">
+          @switch (columnType) {
+            @case ('date') {
+              <label>Start date:</label>
+              <input [class.error]="hasError(startDate)" required type="date" [(ngModel)]="startDate" />
+              <label>End date:</label>
+              <input [class.error]="hasError(endDate)" required type="date" [(ngModel)]="endDate" />
+            }
+            @case ('enum') {
+              <div class="drop-select-container">
+                <input type="text" (focus)="openDropdown()" (blur)="closeDropdown()" [(ngModel)]="searchInput" />
+                <div class="drop-select" [ngClass]="columnIndex === open ? 'input-visible' : 'input-hidden'">
+                  @for (option of options; track option) {
+                    <p (click)="selectOption(option)">{{ option }}</p>
+                  }
+                </div>
+              </div>
+            }
+            @default {
+              <input
+                [class]="searchInput === '' && error !== null ? 'error' : ''"
+                [(ngModel)]="searchInput"
+                required
+                type="text"
+                placeholder="Search..."
+              />
+            }
+          }
+          <div class="button-container">
+            <div>
+              <div class="case-option-container">
+                <label>Case Sensitive?</label>
+                <input [(ngModel)]="caseSensitive" type="checkbox" />
+              </div>
+            </div>
+            <div>
+              <button class="button" (click)="search(false)">
+                <fa-icon class="icon" [icon]="icons.plus" />
+                Add
+              </button>
+              <button class="button" (click)="search(true)">
+                <fa-icon class="icon" [icon]="icons.search" />
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-</div>
+}

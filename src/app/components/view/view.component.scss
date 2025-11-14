@@ -1,5 +1,9 @@
 @import "../variables";
 
+:host {
+    overflow-y: hidden;
+}
+
 .checkbox {
     cursor: pointer;
 }
@@ -11,44 +15,11 @@
     height: 85vh;
 }
 
-.filter-container {
-    .advanced-filter-container {
-        .button {
-            padding: 6px;
-            margin-right: 5px;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-    }
-
-    .filter {
-        background-color: white;
-        font-size: 16px;
-        outline: none;
-        border: 1px solid #000000;
-        border-radius: 5px;
-        margin: 5px;
-        padding: 6px;
-
-        fa-icon {
-            margin-left: 5px;
-            font-size: 12px;
-        }
-
-        p {
-            margin: 0;
-        }
-
-        &:hover {
-            fa-icon {
-                color: #0740a9;
-            }
-        }
-    }
-}
-
 .container {
-    margin: 15px 15px 15px 16%;
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    margin: 15px 5px 15px 15.5%;
 
     h2 {
         margin-left: 15px;
@@ -60,7 +31,7 @@
         margin: 10px;
         border-radius: 15px;
         overflow-x: auto;
-        overflow-y: scroll;
+        overflow-y: hidden;
 
         .options-container {
             display: flex;
@@ -74,15 +45,6 @@
                 flex-direction: row;
                 justify-content: flex-start;
                 gap: 8px;
-
-                >button {
-                    align-self: flex-start;
-                    border-radius: 5px;
-                    padding: 8px;
-                    margin-top: 20px;
-                    font-weight: bold;
-                    font-size: 17px;
-                }
             }
 
             div {
@@ -96,35 +58,6 @@
                     border: 1px solid black;
                     border-radius: 5px;
                     cursor: pointer;
-                }
-            }
-
-            .search-container {
-                border-radius: 5px;
-                border-style: solid;
-                border-color: black;
-                border-width: 1px;
-                padding: 6px;
-
-                button {
-                    background-color: transparent;
-                    border: none;
-                    background: none;
-                    outline: none;
-                    cursor: pointer;
-                }
-
-                input {
-                    border: none;
-
-                    &:active,
-                    &:focus-visible {
-                        outline: none;
-                    }
-
-                    &::placeholder {
-                        font-size: 16px;
-                    }
                 }
             }
         }

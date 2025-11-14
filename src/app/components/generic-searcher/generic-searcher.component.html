@@ -1,0 +1,21 @@
+<div class="search-container">
+  <div class="search-bar" [class.visible]="searchDropdownVisible" (click)="open()">
+    <ng-content select=".search-input"></ng-content>
+    <button (click)="searchDropdownVisible = true">
+      @if (!searching) {
+        <fa-icon [icon]="icons.search"></fa-icon>
+      }
+      @if (searching) {
+        <fa-icon [icon]="icons.loading" spinPulse [spin]="true" />
+      }
+    </button>
+  </div>
+  <div
+    class="search-dropdown-container"
+    [class.visible]="searchDropdownVisible"
+    [class.hidden]="!searchDropdownVisible"
+    [style.width]="dropdownWidth"
+  >
+    <ng-content select=".search-options"></ng-content>
+  </div>
+</div>

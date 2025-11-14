@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { lastValueFrom, Subscription } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
   loginForm: FormGroup;
@@ -51,17 +51,12 @@ export class LoginComponent {
   async formSubmit() {
     if (this.loginForm.valid) {
       try {
-        const token = await lastValueFrom(
-          this.recaptchaV3Service.execute('loginAction')
-        );
+        const token = await lastValueFrom(this.recaptchaV3Service.execute('loginAction'));
         this.loginForm.value.recaptchaToken = token;
 
-        const loginResponse = await this.dataService.submitFormData(
-          this.loginForm.value
-        );
+        const loginResponse = await this.dataService.submitFormData(this.loginForm.value);
         if (loginResponse.success) {
-          const accessLevel =
-            loginResponse.data == null ? 'Low' : loginResponse.data;
+          const accessLevel = loginResponse.data == null ? 'Low' : loginResponse.data;
           this.authService.login(accessLevel);
           this.router.navigate(['/home']);
         } else {

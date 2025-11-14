@@ -1,10 +1,12 @@
 @import '../variables';
+
 .container {
     text-align: center;
     width: 90%;
     margin-left: auto;
     margin-right: auto;
     display: flex;
+
     .no-data {
         background-color: #eaeef3;
         padding: 10px;
@@ -13,10 +15,12 @@
         width: 30%;
         text-align: center;
         height: 100px;
+
         h1 {
             font-size: 18px;
         }
     }
+
     table {
         margin-left: 20px;
         margin-right: auto;
@@ -25,25 +29,31 @@
         overflow: hidden;
         border-radius: 15px;
     }
+
     tr {
         height: 56px;
     }
+
     th,
     td {
         padding: 10px;
         text-align: left;
         font-size: 16px;
     }
+
     thead {
         background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
         color: white;
     }
+
     .data-row {
         background-color: #eaeef3;
     }
+
     tr:nth-child(even) {
         background-color: white;
     }
+
     .date-select-container {
         display: flex;
         flex-direction: column;
@@ -52,17 +62,20 @@
         border-radius: 10px;
         padding: 15px;
         background-color: #eaeef3;
+
         input {
             padding: 10px;
             border-radius: 5px;
             border: none;
             outline: none;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
+
         label {
             margin: 10px;
         }
     }
+
     button {
         padding: 10px;
         margin: 20px;
@@ -72,5 +85,5 @@
 }
 
 .error {
-    border: 1px solid red!important;
+    border: 1px solid red !important;
 }

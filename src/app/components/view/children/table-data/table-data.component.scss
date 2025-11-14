@@ -1,0 +1,41 @@
+@import "../../../variables";
+
+:host {
+    display: contents;
+}
+
+td {
+    padding: 10px;
+    text-align: left;
+    font-size: 16px;
+    vertical-align: middle;
+
+    .text-container {
+        max-height: 100px;
+        width: 200px;
+        overflow-y: scroll;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    img {
+        border: 1px solid transparent;
+        border-radius: 5px;
+        width: 100px;
+    }
+
+    .ng-fa-icon {
+        cursor: pointer;
+    }
+
+    .icon {
+        display: flex;
+        gap: 6px;
+    }
+
+    .loading {
+        pointer-events: none;
+    }
+}

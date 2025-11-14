@@ -1,0 +1,20 @@
+<button class="button" (click)="addRow(null)">
+  Add New
+  @if (addLoading) {
+    <app-loading-spinner />
+  } @else {
+    <fa-icon [icon]="icons.faPlus" />
+  }
+</button>
+@for (button of buttonConfigs; track button) {
+  @if (button.condition()) {
+    <button class="button" (click)="button.action()">
+      @if (button.icon) {
+        <fa-icon [icon]="getIcon(button)" [spin]="button.spin ? button.spin() : false" />
+      }
+      @if (button.label) {
+        <span>{{ button.label }}</span>
+      }
+    </button>
+  }
+}

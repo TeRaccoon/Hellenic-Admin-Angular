@@ -5,7 +5,7 @@ import {
     faFileCircleXmark
 } from '@fortawesome/free-solid-svg-icons';
 
-export const widgetIcons = {
+export const WIDGET_ICONS = {
     x: faX,
     bin: faTrashCan,
     edit: faPenToSquare,

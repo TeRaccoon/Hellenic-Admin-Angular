@@ -1,0 +1,8 @@
+<label class="file-upload">
+  <input [class]="class" accept="image/*" type="file" [attr.required]="required" (change)="primeImage($event)" />
+  <fa-icon [class.success]="file !== null" [icon]="icons.cloud" />
+  {{ file === null ? 'Upload Image' : file.name }}
+  @if (file === null) {
+    <label class="upload-size-warning">(8mb max)</label>
+  }
+</label>

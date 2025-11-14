@@ -24,6 +24,7 @@ export const TABLE_NAMES = [
   'expired_items',
   'invoiced_items',
   'expense_options',
+  'allergen_information',
 ];
 
 export const TABLE_NAME_PAIRS = [
@@ -52,6 +53,7 @@ export const TABLE_NAME_PAIRS = [
   { expired_items: 'Expired Items' },
   { invoiced_items: 'Invoiced Items' },
   { expense_options: 'Expense Options' },
+  { allergen_information: 'Allergen Information' },
 ];
 
 export const TABLE_CATEGORIES = {
@@ -163,5 +165,15 @@ export const PRICE_LIST_ITEM_COLUMNS = [
   { name: 'ID', type: 'number' },
   { name: 'Item', type: 'string' },
   { name: 'Price', type: 'currency' },
-  { name: 'Date Added', type: 'date' }
+  { name: 'Date Added', type: 'date' },
+];
+
+export const EXTRA_COLUMN_TABLES = [
+  'items',
+  'stocked_items',
+  'supplier_invoices',
+  'suppliers',
+  'invoices',
+  'customers',
+  'price_list',
 ];

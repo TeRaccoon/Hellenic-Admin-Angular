@@ -1,20 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { faAsterisk, faCloudUpload, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { DataService } from '../../services/data.service';
-import {
-  faSpinner,
-  faAsterisk,
-  faCloudUpload,
-} from '@fortawesome/free-solid-svg-icons';
-import { FormService } from '../../services/form.service';
+import { FormService } from '../form/service';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent {
-  settings: {
-    [key: string]: {
+export class SettingsComponent implements OnInit {
+  settings: Record<
+    string,
+    {
       id: number;
       name: string;
       data: string;
@@ -22,8 +19,8 @@ export class SettingsComponent {
       type: string;
       key: string;
       description: string;
-    };
-  } = {};
+    }
+  > = {};
 
   bands: any = [];
   faSpinner = faSpinner;
@@ -38,7 +35,7 @@ export class SettingsComponent {
   constructor(
     private dataService: DataService,
     private formService: FormService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.build();
@@ -47,14 +44,12 @@ export class SettingsComponent {
   async build() {
     await this.collectSettings();
     this.changes = Object.values(this.settings).map((setting) => setting.data);
-    this.originalValues = Object.values(this.settings).map(
-      (setting) => setting.data
-    );
+    this.originalValues = Object.values(this.settings).map((setting) => setting.data);
     this.loaded = true;
   }
 
   async collectSettings() {
-    let settingsRaw = await this.dataService.processGet('table', {
+    const settingsRaw = await this.dataService.processGet('table', {
       filter: 'settings',
     });
 
@@ -72,12 +67,12 @@ export class SettingsComponent {
       };
     });
 
-    let data = await this.dataService.processGet('table', { filter: 'bands' });
+    const data = await this.dataService.processGet('table', { filter: 'bands' });
     this.bands = data['display_data'];
   }
 
   updateInput(key: string, event: Event) {
-    let value: string = (event.target as HTMLInputElement).value;
+    const value: string = (event.target as HTMLInputElement).value;
     this.update(key, value);
   }
 
@@ -92,15 +87,15 @@ export class SettingsComponent {
     this.changes[key] = value;
   }
 
-  getColumnHeaders(obj: { [key: string]: any }): string[] {
+  getColumnHeaders(obj: Record<string, any>): string[] {
     return obj ? Object.keys(obj) : [];
   }
 
   async formSubmit() {
-    let responses = [];
-    let keys = Object.keys(this.settings);
+    const responses = [];
+    const keys = Object.keys(this.settings);
     for (let i = 0; i < keys.length; i++) {
-      let key = keys[i];
+      const key = keys[i];
 
       if (this.settings[key].data != '') {
         responses[i] = (
@@ -123,8 +118,7 @@ export class SettingsComponent {
 
   endSubmission(responses: boolean[]) {
     let title = 'Error!';
-    let message =
-      'There was an issue saving the settings! Make sure everything is correct before trying to save.';
+    let message = 'There was an issue saving the settings! Make sure everything is correct before trying to save.';
 
     if (!responses.includes(false)) {
       title = 'Success!';
@@ -138,7 +132,7 @@ export class SettingsComponent {
   }
 
   async saveBand(index: number, minWeight: any, maxWeight: any, price: any) {
-    let formData = {
+    const formData = {
       id: index + 1,
       name: this.bands[index]['name'],
       min_weight: minWeight,
@@ -148,7 +142,7 @@ export class SettingsComponent {
       table_name: 'bands',
     };
 
-    let response = await this.dataService.submitFormData(formData);
+    const response = await this.dataService.submitFormData(formData);
     this.formService.setMessageFormData({
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,
@@ -160,7 +154,7 @@ export class SettingsComponent {
     const formData = new FormData();
     formData.append('document', file, documentType + '.html');
 
-    let response = await this.dataService.uploadDocument(formData);
+    const response = await this.dataService.uploadDocument(formData);
     this.formService.setMessageFormData({
       title: response.success ? 'Success!' : 'Error!',
       message: response.message,

@@ -1,230 +1,118 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  Renderer2,
-  ViewChild,
-} from '@angular/core';
-import { navbarIcons } from '../../common/icons/navbar-icons';
-import { DataService } from '../../services/data.service';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { FormService } from '../../services/form.service';
-import { SearchService } from '../../services/search.service';
-import _ from 'lodash';
-import { SearchResult } from '../../common/types/table';
-import { FilterService } from '../../services/filter.service';
-import { TableService } from '../../services/table.service';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { FormService } from '../form/service';
+import { FormType } from '../form/types';
+import { ICONS } from './icons';
+import { NavbarService } from './service';
+import { Notifications } from './types';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   @ViewChild('notificationDropdown') notificationDropdown!: ElementRef;
   @ViewChild('notificationIcon') notificationIcon!: ElementRef;
 
   @ViewChild('userOptions') userOptions!: ElementRef;
   @ViewChild('userIcon') userIcon!: ElementRef;
 
-  icons = navbarIcons;
-
-  debounceSearch: (filter: string) => void = _.debounce(
-    (filter: string) => this.performSearch(filter),
-    750
-  );
+  icons = ICONS;
 
   tablelessOptions: string[] = [];
-  tableOptions = [
-    { display: 'Allergen Information', actual: 'allergen_information' },
-    { display: 'Customer Address', actual: 'customer_address' },
-    { display: 'Customer Payments', actual: 'customer_payments' },
-    { display: 'Customers', actual: 'customers' },
-    { display: 'Expired Items', actual: 'expired_items' },
-    { display: 'General Ledger', actual: 'general_ledger' },
-    { display: 'Image Locations', actual: 'image_locations' },
-    { display: 'Interest Charges', actual: 'interest_charges' },
-    { display: 'Invoiced Items', actual: 'invoiced_items' },
-    { display: 'Invoices', actual: 'invoices' },
-    { display: 'Items', actual: 'items' },
-    { display: 'Nutrition Information', actual: 'nutrition_info' },
-    { display: 'Offers', actual: 'offers' },
-    { display: 'Page Section Text', actual: 'page_section_text' },
-    { display: 'Page Sections', actual: 'page_sections' },
-    { display: 'Payments', actual: 'payments' },
-    { display: 'Retail Item Images', actual: 'retail_item_images' },
-    { display: 'Retail Users', actual: 'retail_users' },
-    { display: 'Stocked Items', actual: 'stocked_items' },
-    { display: 'Supplier Invoices', actual: 'supplier_invoices' },
-    { display: 'Suppliers', actual: 'suppliers' },
-    { display: 'Users', actual: 'users' },
-    { display: 'Warehouse', actual: 'warehouse' },
-  ];
-  filteredTableOptions = this.tableOptions;
-  searchResults: SearchResult[] = [];
-
-  searching = false;
-
-  searchInput: string = '';
 
   notificationVisible = false;
   userOptionsVisible = false;
   searchDropdownVisible = false;
-  searchDropdownFocus = false;
+  interactive = false;
 
-  notifications: { header: string; data: any[] }[] = [];
+  notifications: Notifications = {};
 
   constructor(
-    private tableService: TableService,
-    private filterService: FilterService,
-    private searchService: SearchService,
-    private dataService: DataService,
-    private router: Router,
-    private authService: AuthService,
     private formService: FormService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private service: NavbarService
   ) {
     this.renderer.listen('window', 'click', (e: Event) => {
-      const notificationClicked =
-        this.notificationDropdown?.nativeElement.contains(e.target);
+      const target = e.target as Node;
 
-      const bellClicked =
-        this.notificationIcon.nativeElement.contains(e.target) ||
-        (this.notificationIcon.nativeElement.querySelector('svg') &&
-          this.notificationIcon.nativeElement
-            .querySelector('svg')
-            .contains(e.target));
+      const clickedInsideNotification =
+        this.notificationDropdown?.nativeElement.contains(target) ||
+        this.notificationIcon?.nativeElement.contains(target);
 
-      if (!notificationClicked && !bellClicked) {
+      if (!clickedInsideNotification) {
         this.notificationVisible = false;
       }
 
-      const userOptionsClicked = this.userOptions?.nativeElement.contains(
-        e.target
-      );
+      const clickedInsideUser =
+        this.userOptions?.nativeElement.contains(target) || this.userIcon?.nativeElement.contains(target);
 
-      const userClicked =
-        this.userIcon.nativeElement.contains(e.target) ||
-        (this.userIcon.nativeElement.querySelector('svg') &&
-          this.userIcon.nativeElement.querySelector('svg').contains(e.target));
-
-      if (!userOptionsClicked && !userClicked) {
+      if (!clickedInsideUser) {
         this.userOptionsVisible = false;
+        this.interactive = false;
       }
     });
   }
 
   ngOnInit() {
-    this.debounceSearch = _.debounce(this.performSearch.bind(this), 750);
+    this.getNotifications();
   }
 
   toggleNotificationDropdown() {
     this.userOptionsVisible = false;
     this.notificationVisible = !this.notificationVisible;
+    if (this.notificationVisible) {
+      setTimeout(() => {
+        this.interactive = this.notificationVisible;
+      }, 1000);
+    } else {
+      this.interactive = false;
+    }
   }
 
   toggleUserOptions() {
     this.notificationVisible = false;
     this.userOptionsVisible = !this.userOptionsVisible;
+    if (this.userOptionsVisible) {
+      setTimeout(() => {
+        this.interactive = this.userOptionsVisible;
+      }, 1000);
+    } else {
+      this.interactive = false;
+    }
   }
 
   async getNotifications() {
-    let invoicesDue = await this.dataService.processGet(
-      'invoices-due',
-      { filter: '1' },
-      true
-    );
+    await this.getPendingCustomers();
+    await this.getNewInvoices();
+  }
 
-    if (invoicesDue.length != 0) {
-      var invoiceDataArray: any[] = [];
-      invoicesDue.forEach((invoiceData: any) => {
-        invoiceDataArray.push(`Invoice: ${invoiceData.title}`);
-      });
-
-      this.notifications.push({
-        header: 'Invoices Due Today',
-        data: invoiceDataArray,
-      });
+  private async getPendingCustomers() {
+    const pendingCustomers = await this.service.getPendingCustomers();
+    if (pendingCustomers.length > 0) {
+      this.notifications['Customers pending approval'] = pendingCustomers;
     }
   }
 
-  searchTables(event: Event) {
-    this.searching = true;
-    const filter = String((event.target as HTMLInputElement).value);
-    this.filteredTableOptions = this.tableOptions.filter(
-      (option) =>
-        option.display &&
-        option.display.toUpperCase().includes(filter.toUpperCase())
-    );
-    this.debounceSearch(filter);
-  }
-
-  async performSearch(filter: string) {
-    if (filter != '') {
-      this.searchResults = await this.searchService.search(filter);
-    } else {
-      this.searchResults = [];
+  private async getNewInvoices() {
+    const invoices = await this.service.getNewInvoices();
+    if (invoices.length > 0) {
+      this.notifications['New invoices'] = invoices;
     }
-
-    this.searchDropdownVisible = true;
-    this.searching = false;
-  }
-
-  changeTable(table: string) {
-    this.searchDropdownFocus = false;
-    this.searchDropdownVisible = false;
-    this.tableService.changeTable(table);
-  }
-
-  goToRow(table: string, matchedValue: string) {
-    this.filterService.setFilterData({
-      searchFilter: matchedValue,
-      searchFilterApplied: true,
-    });
-
-    this.filterService.setFilterProtection(true);
-    this.tableService.changeTable(this.tableService.getTableName(table) ?? '');
-
-    this.searchDropdownVisible = false;
   }
 
   async logout() {
     this.userOptionsVisible = false;
 
-    const logoutResponse = await this.authService.logout();
-    if (logoutResponse) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    this.formService.setMessageFormData({
-      title: 'Whoops!',
-      message: 'Something went wrong! Please try again',
-    });
+    await this.service.logout();
   }
 
   changePassword() {
     this.userOptionsVisible = false;
-    this.formService.showChangePasswordForm();
+    this.formService.setFormVisibility(FormType.ChangePassword, true);
   }
 
-  @HostListener('document:click', ['$event'])
-  clickOutside(event: MouseEvent) {
-    const clickedElement = event.target as HTMLElement;
-    if (!this.isDescendantOfSearchContainer(clickedElement)) {
-      this.searchDropdownVisible = false;
-    }
-  }
-
-  private isDescendantOfSearchContainer(element: HTMLElement): boolean {
-    let currentElement: HTMLElement | null = element;
-    while (currentElement) {
-      if (currentElement.classList.contains('search-container')) {
-        return true;
-      }
-      currentElement = currentElement?.parentElement;
-    }
-    return false;
+  notificationKeys() {
+    return Object.keys(this.notifications);
   }
 }

@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
-import { FormService } from '../../services/form.service';
+import { Component, effect, ViewChild } from '@angular/core';
 import { FilterService } from '../../services/filter.service';
-import { faSearch, faPlus, faX } from '@fortawesome/free-solid-svg-icons';
-import { Subscription } from 'rxjs';
+import { FormService } from '../form/service';
+import { FormType } from '../form/types';
+import { GenericSearcherComponent } from '../generic-searcher/generic-searcher.component';
+import { ICONS } from './icons';
+import { TableColumns } from './types';
 
 @Component({
   selector: 'app-filter-form',
@@ -10,20 +12,14 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./filter-form.component.scss'],
 })
 export class FilterFormComponent {
-  private readonly subscriptions = new Subscription();
+  @ViewChild('searchComponent') searchComponent!: GenericSearcherComponent;
 
-  faSearch = faSearch;
-  faPlus = faPlus;
-  faX = faX;
+  icons = ICONS;
 
-  formVisible = 'hidden';
-  tableColumns: {
-    columnNames: { [key: string]: any }[];
-    columns: string[];
-    dataTypes: string[];
-  } = {
+  visible = false;
+  tableColumns: TableColumns = {
     columnNames: [],
-    columns: [],
+    columns: null,
     dataTypes: [],
   };
 
@@ -31,75 +27,74 @@ export class FilterFormComponent {
   selectedOption = '';
   open = -1;
 
-  searchInput: string = '';
-  columnInput: string = '';
-  columnType: string = '';
+  searchInput = '';
+  columnInput = '';
+  columnType = '';
   columnIndex = 0;
-  caseSensitive: boolean = false;
+  caseSensitive = false;
   startDate: Date | null = null;
   endDate: Date | null = null;
 
-  errorMsg: string | null = null;
+  error: string | null = null;
 
   constructor(
     private formService: FormService,
     private filterService: FilterService
-  ) {}
-
-  ngOnInit() {
-    this.subscriptions.add(
-      this.formService.getFilterFormVisibility().subscribe(async (visible) => {
-        this.formVisible = visible ? 'visible' : 'hidden';
-        this.tableColumns = this.filterService.getTableColumns();
-        this.errorMsg = null;
-      })
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+  ) {
+    effect(() => {
+      const visible = this.formService.getFormVisibilitySignal(FormType.Filter)();
+      this.visible = visible;
+      this.tableColumns = this.filterService.getTableColumns();
+      this.error = null;
+    });
   }
 
   hide() {
-    this.formService.hideFilterForm();
+    this.formService.setFormVisibility(FormType.Filter, false);
   }
 
-  search(hide: boolean) {
-    if (
-      this.columnInput != '' &&
-      ((this.columnType == 'date' &&
-        this.startDate != null &&
-        this.endDate != null) ||
-        (this.columnType != 'date' && this.searchInput != ''))
-    ) {
-      if (
-        this.columnType == 'date' &&
-        this.startDate != null &&
-        this.endDate != null
-      ) {
-        this.filterService.setColumnDateFilter({
-          column: this.columnInput,
-          startDate: this.startDate,
-          endDate: this.endDate,
-        });
-      } else {
-        this.filterService.setColumnFilter({
-          column: this.columnInput,
-          filter: this.searchInput,
-          caseSensitive: this.caseSensitive,
-        });
-      }
-      this.formService.setReloadType('filter');
-      this.formService.requestReload();
-      hide && this.hide();
-      this.resetForm();
-    } else {
-      this.errorMsg = 'Please fill in all required fields';
+  isValid() {
+    switch (this.columnType) {
+      case 'date':
+        return this.startDate != null || this.startDate != undefined;
+
+      default:
+        return this.searchInput != null && this.searchInput != undefined && this.searchInput != '';
     }
   }
 
+  search(hide: boolean) {
+    if (!this.isValid()) {
+      this.error = 'Please fill in all required fields';
+      return;
+    }
+
+    if (this.isDateSearch()) {
+      this.filterService.setColumnDateFilter({
+        column: Object.keys(this.tableColumns.columns!)[this.columnIndex],
+        startDate: this.startDate!,
+        endDate: this.endDate!,
+      });
+    } else {
+      this.filterService.setColumnFilter({
+        column: Object.keys(this.tableColumns.columns!)[this.columnIndex],
+        filter: this.searchInput,
+        caseSensitive: this.caseSensitive,
+      });
+    }
+
+    this.formService.setReloadType('filter');
+    this.formService.requestReload();
+
+    if (hide) {
+      this.hide();
+    }
+
+    this.resetForm();
+  }
+
   getColumnType() {
-    var index = this.tableColumns.columns.indexOf(this.columnInput);
+    const index = this.tableColumns.columnNames.indexOf(this.columnInput);
     this.columnType = this.tableColumns.dataTypes[index];
     this.columnIndex = index;
     if (this.tableColumns.dataTypes[index].includes('enum')) {
@@ -109,10 +104,8 @@ export class FilterFormComponent {
   }
 
   deriveEnumOptions() {
-    var index = this.tableColumns.columns.indexOf(this.columnInput);
-    this.options = this.formService.deriveEnumOptions(
-      this.tableColumns.dataTypes[index]
-    );
+    const index = this.tableColumns.columnNames.indexOf(this.columnInput);
+    this.options = this.formService.deriveEnumOptions(this.tableColumns.dataTypes[index]);
   }
 
   openDropdown() {
@@ -133,6 +126,21 @@ export class FilterFormComponent {
     this.columnType = '';
     this.startDate = null;
     this.endDate = null;
-    this.errorMsg = null;
+    this.error = null;
+  }
+
+  hasError(value: any) {
+    return (value != null || value != '') && this.error != null;
+  }
+
+  isDateSearch() {
+    return this.columnType == 'date' && this.startDate != null && this.endDate != null;
+  }
+
+  setColumnInput(index: number) {
+    this.columnInput = this.tableColumns.columnNames[index];
+    this.columnIndex = index;
+    this.getColumnType();
+    this.searchComponent.close();
   }
 }

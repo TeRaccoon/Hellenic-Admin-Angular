@@ -9,7 +9,7 @@ import {
   faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 
-export const chartIcons = {
+export const CHART_ICONS = {
   faFileContract,
   x: faX,
   faFilter,

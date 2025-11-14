@@ -1,16 +1,19 @@
 @import '../variables';
+
 .container {
     display: flex;
     margin: 15px 15px 15px 16%;
+
     .widget-container {
         display: flex;
         background-color: white;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         padding: 10px;
         margin: 10px;
         border-radius: 15px;
         flex-direction: column;
         width: 15%;
+
         button {
             width: 90%;
             margin: 5px auto;
@@ -20,6 +23,7 @@
             border-radius: 5px;
             background-color: #eaeef3;
             font-size: 16px;
+
             &:hover {
                 background-color: #d1d6db;
             }
@@ -30,6 +34,7 @@
 @media screen and (min-width: 768px) and (max-width: 1024px) {
     .container {
         margin: 15px 15px 15px 23%;
+
         .widget-container {
             width: 50%;
         }

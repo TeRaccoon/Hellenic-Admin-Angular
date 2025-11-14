@@ -1,0 +1,113 @@
+@import "../../../variables";
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.notification-dropdown-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: absolute;
+    top: 80px;
+    right: 15px;
+    background-color: #fff;
+    border-top: 2px solid #ccc;
+    border-radius: 0 0 15px 15px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 3;
+    width: 25%;
+    pointer-events: none;
+    max-height: 300px;
+    transition:
+        max-height 1s ease 0.2s,
+        opacity 0s ease 0.2s,
+        padding 1s ease 0s;
+
+    &.interactive {
+        pointer-events: auto;
+    }
+
+    .empty-section {
+        p {
+            font-size: 18px;
+        }
+    }
+
+    .section {
+        border: 2px solid rgb(0, 140, 255);
+        border-radius: 10px;
+        padding: 10px;
+
+        transition: border-color 0.5s ease 0.8s;
+
+        h2 {
+            font-size: 18px;
+            text-decoration: underline;
+        }
+
+        .notification-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 5px;
+            padding: 2px;
+            margin: 5px;
+            transition: background-color 0.5s ease;
+
+            p {
+                padding: 4px;
+                font-size: 16px;
+            }
+
+            &:hover {
+
+                fa-icon {
+                    color: red;
+                    transition: color 0.5s ease;
+                }
+            }
+        }
+    }
+
+    fa-icon {
+        cursor: pointer;
+        transition: color 0.5s ease;
+        margin-right: 5px;
+    }
+
+    p,
+    h2,
+    fa-icon {
+        transition: opacity 0.5s ease 0.8s;
+    }
+}
+
+.notifications-hidden {
+    max-height: 0;
+    padding: 0px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+    transition:
+        opacity 0.5s ease 1.5s,
+        padding 0.5s ease 0.8s,
+        max-height 0.5s ease 0.5s;
+
+    p,
+    h2,
+    fa-icon {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .section {
+        border-color: transparent;
+        transition: border-color 0.5s ease;
+    }
+}

@@ -1,34 +1,29 @@
-import { Injectable } from '@angular/core';
-import {
-  REVERSE_TABLE_NAME_MAP,
-  TABLE_NAME_MAP,
-  TABLE_CATEGORIES,
-} from '../common/constants';
-import { DataService } from './data.service';
-import { AuthService } from './auth.service';
-import { FormService } from './form.service';
+import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { REVERSE_TABLE_NAME_MAP, TABLE_CATEGORIES, TABLE_NAME_MAP } from '../common/constants';
+import { FormService } from '../components/form/service';
+import { AuthService } from './auth.service';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TableService {
-  private selectedTable = new BehaviorSubject<string>('');
+  private selectedTable = signal<string>('');
 
   constructor(
     private router: Router,
     private authService: AuthService,
     private formService: FormService,
     private dataService: DataService
-  ) { }
+  ) {}
 
   getSelectedTable() {
-    return this.selectedTable.asObservable();
+    return this.selectedTable();
   }
 
   setSelectedTable(table: string) {
-    this.selectedTable.next(table);
+    this.selectedTable.set(table);
   }
 
   getTableDisplayName(tableName: string) {
@@ -49,7 +44,7 @@ export class TableService {
       return;
     }
 
-    if (this.selectedTable.getValue() == table) {
+    if (this.selectedTable() == table) {
       this.formService.requestReload('hard');
     }
 
@@ -57,7 +52,6 @@ export class TableService {
     switch (table) {
       case 'customers':
       case 'invoices':
-      case 'payments':
       case 'price_list':
       case 'credit_notes_customers':
         this.dataService.setTabs(TABLE_CATEGORIES['Customers']);
@@ -69,7 +63,6 @@ export class TableService {
         this.dataService.setTabs(TABLE_CATEGORIES['Products']);
         break;
 
-      case 'stocked_items':
       case 'supplier_invoices':
       case 'credit_notes':
       case 'suppliers':

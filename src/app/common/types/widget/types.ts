@@ -1,4 +1,4 @@
-export interface TableHeader {
+export interface TableColumns {
   name: string;
   type: string;
 }
@@ -20,7 +20,7 @@ export interface TableExtra {
 }
 
 export interface WidgetData {
-  headers: TableHeader[];
+  headers: TableColumns[];
   rows: any[];
   tableName: string;
   title: string;
@@ -28,4 +28,13 @@ export interface WidgetData {
   query: string;
   disabled: TableDisabled;
   extra: TableExtra | undefined;
+}
+
+export enum ColumnTypes {
+  Number = 'number',
+  String = 'string',
+  Image = 'image',
+  Percent = 'percent',
+  Currency = 'currency',
+  Date = 'date',
 }

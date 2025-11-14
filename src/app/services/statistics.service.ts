@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import dayjs, { Dayjs } from 'dayjs';
-import { BehaviorSubject } from 'rxjs';
 import { DataService } from './data.service';
 import { ChartConfiguration } from 'chart.js';
 import {
@@ -20,9 +19,6 @@ import {
   providedIn: 'root',
 })
 export class StatisticsService {
-  private dateRange = new BehaviorSubject<{ startDate: Dayjs; endDate: Dayjs }>(
-    { startDate: dayjs().startOf('month'), endDate: dayjs().endOf('month') }
-  );
   private months = [
     'Jan',
     'Feb',
