@@ -66,11 +66,10 @@
             }
 
             &:hover {
-                background-color: #f8f8f8;
-                transition: background-color 0.5s ease;
 
                 fa-icon {
                     color: red;
+                    transition: color 0.5s ease;
                 }
             }
         }

@@ -32,13 +32,13 @@ export class HomeComponent implements OnInit {
     let data = await this.dataService.processGetASP('invoice/total-invoices-month');
     this.widgetData.push(data);
 
-    data = await this.dataService.processGet('invoices-due-today');
+    data = await this.dataService.processGetASP('invoice/invoices-due-today');
     this.widgetData.push(data);
 
-    data = await this.dataService.processGet('total-customers');
+    data = await this.dataService.processGetASP('customers/total-customers');
     this.widgetData.push(data);
 
-    data = await this.dataService.processGet('new-customers');
+    data = await this.dataService.processGetASP('customers/new-customers');
     this.widgetData.push(data);
   }
 

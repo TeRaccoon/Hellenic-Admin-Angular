@@ -3,12 +3,12 @@
 .quick-view-container {
     display: flex;
     flex-wrap: wrap;
+    flex: 1;
     gap: 15px;
     width: calc(100% - 115px);
 
     .table-container {
         border-collapse: collapse;
-        border-radius: 15px;
         overflow-x: auto;
         border-radius: 15px;
         width: 100%;
@@ -82,7 +82,6 @@
 .container {
     display: flex;
     margin: 15px 15px 15px 16%;
-    gap: 15px;
 
     h1 {
         margin: 5px 0 20px 0;
