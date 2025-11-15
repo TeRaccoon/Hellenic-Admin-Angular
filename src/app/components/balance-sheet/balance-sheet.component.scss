@@ -47,7 +47,7 @@ body {
     }
 }
 
-.container {
+.balance-sheet-container {
     width: 21cm;
     margin-left: auto;
     margin-right: auto;
@@ -117,82 +117,8 @@ body {
             font-size: 1.5em;
         }
 
-        .transaction {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
-            padding: 15px;
-            border-bottom: 1px solid $accent-color;
-            height: auto;
-            align-items: center;
-            page-break-inside: avoid;
-            break-inside: avoid;
 
-            &:last-child {
-                border-bottom: none;
-            }
-
-            .transaction-date,
-            .transaction-title,
-            .transaction-total,
-            .transaction-outstanding,
-            .transaction-amount,
-            .transaction-reference,
-            .transaction-type {
-                margin: 0;
-                padding: 0 10px;
-            }
-
-            .unpaid {
-                background-color: red;
-                padding: 12px;
-                border-radius: 5px;
-            }
-        }
-
-        .order,
-        .payment,
-        .credit-note {
-            display: flex;
-            align-items: center;
-            page-break-inside: avoid;
-            break-inside: avoid;
-            grid-column: span 5;
-
-            &:last-child {
-                border-bottom: none;
-            }
-
-            .transaction-title,
-            .transaction-amount {
-                font-size: 1.2em;
-                font-weight: bold;
-                margin-bottom: 5px;
-            }
-
-            .transaction-status,
-            .transaction-payment-status {
-                font-style: italic;
-                margin-bottom: 5px;
-            }
-
-            .transaction-gross,
-            .transaction-vat,
-            .transaction-total,
-            .transaction-outstanding,
-            .transaction-amount,
-            .transaction-vat,
-            .transaction-net,
-            .transaction-reference {
-                margin-bottom: 5px;
-            }
-        }
     }
-}
-
-.bold {
-    font-weight: bold;
-    margin: 0;
 }
 
 @media print {
