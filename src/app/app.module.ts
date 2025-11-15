@@ -12,6 +12,8 @@ import { QuillModule } from 'ngx-quill';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.component';
+import { InvoiceSummaryComponent } from './components/balance-sheet/children/invoice-summary/invoice-summary.component';
+import { TransactionComponent } from './components/balance-sheet/children/transaction/transaction.component';
 import { ChangePasswordFormComponent } from './components/change-password-form/change-password-form.component';
 import { DebtorCreditorWidgetComponent } from './components/debtor-creditor-widget/debtor-creditor-widget.component';
 import { DeleteFormComponent } from './components/delete-form/delete-form.component';
@@ -87,6 +89,8 @@ export function initConfig(configService: ConfigService) {
     TableWidgetComponent,
     VatViewComponent,
     BalanceSheetComponent,
+    TransactionComponent,
+    InvoiceSummaryComponent,
     SearchContainerComponent,
     NoTableDataComponent,
     TableFooterComponent,

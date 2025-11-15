@@ -1,0 +1,9 @@
+<div class="invoice-summary">
+  <h2>Invoice Summary</h2>
+  <div class="summary-item">Total Invoices: {{ InvoiceSummary.orders }}</div>
+  <div class="summary-item">Outstanding Invoices: {{ InvoiceSummary.outstanding_orders }}</div>
+  <div class="summary-item">
+    Outstanding Balance:
+    {{ InvoiceSummary.outstanding_balance | currency: 'EUR' }}
+  </div>
+</div>

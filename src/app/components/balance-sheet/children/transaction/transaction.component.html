@@ -1,0 +1,53 @@
+<div class="transaction">
+  @switch (Transaction.type) {
+    @case (TransactionType.Order) {
+      <div class="order">
+        <div class="transaction-date">Invoice: {{ Transaction.date | date: 'dd/MM/yyyy' }}</div>
+        <div
+          class="transaction-title"
+          [ngClass]="{
+            unpaid: Transaction.payment_status === PaymentStatus.No
+          }"
+        >
+          {{ Transaction.title }}
+        </div>
+        <div class="transaction-total">Total: {{ (Transaction.total | currency: 'EUR') ?? 'N/A' }}</div>
+        <div class="transaction-outstanding">
+          Outstanding Balance:
+          {{ Transaction.outstanding_balance | currency: 'EUR' }}
+        </div>
+      </div>
+    }
+
+    @case (TransactionType.Payment) {
+      <div class="payment">
+        <div class="transaction-date">Payment: {{ Transaction.date | date: 'dd/MM/yyyy' }}</div>
+        <div class="transaction-amount">Amount: {{ Transaction.amount | currency: 'EUR' }}</div>
+
+        <div class="transaction-reference">
+          Reference:
+          <p class="bold">{{ Transaction.reference }}</p>
+        </div>
+        @if (Transaction.payment_type) {
+          <div class="transaction-type">
+            Type:
+            <p class="bold">{{ Transaction.payment_type }}</p>
+          </div>
+        }
+        <div class="transaction-type">
+          Outstanding Balance:
+          <p class="bold">
+            {{ Transaction.outstanding_balance | currency: 'EUR' }}
+          </p>
+        </div>
+      </div>
+    }
+
+    @case (TransactionType.CreditNote) {
+      <div class="credit-note">
+        <div class="transaction-date">Credit Note: {{ Transaction.date | date: 'dd/MM/yyyy' }}</div>
+        <div class="transaction-amount">Amount: £{{ Transaction.amount.toFixed(2) }}</div>
+      </div>
+    }
+  }
+</div>
