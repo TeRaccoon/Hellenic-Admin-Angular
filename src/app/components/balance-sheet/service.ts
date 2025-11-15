@@ -27,20 +27,20 @@ export class BalanceSheetService {
   toTransaction(dataItem: TransactionData, type: TransactionType): Transaction {
     switch (type) {
       case TransactionType.Order:
-        return { ...dataItem, type: 'order' } as Order;
+        return { ...dataItem, type: TransactionType.Order } as Order;
 
       case TransactionType.Payment:
         return {
           ...dataItem,
           amount: Number((dataItem as PaymentData).amount.toFixed(2)),
-          type: 'payment',
+          type: TransactionType.Payment,
         } as Payment;
 
       case TransactionType.CreditNote:
         return {
           ...dataItem,
           amount: Number((dataItem as CreditNoteData).amount.toFixed(2)),
-          type: 'credit-note',
+          type: TransactionType.CreditNote,
         } as CreditNote;
     }
   }
@@ -49,13 +49,13 @@ export class BalanceSheetService {
     let outstandingBalance = 0;
 
     for (const transaction of transactions) {
-      if (transaction.type == 'order') {
-        outstandingBalance += transaction.total || 0;
+      if (transaction.type == TransactionType.Order) {
+        outstandingBalance += transaction.total;
       } else {
-        outstandingBalance -= transaction.amount || 0;
+        outstandingBalance -= transaction.amount;
       }
 
-      if (transaction.type == 'order' || transaction.type == 'payment') {
+      if (transaction.type == TransactionType.Order || transaction.type == TransactionType.Payment) {
         transaction.outstanding_balance = outstandingBalance;
       }
     }

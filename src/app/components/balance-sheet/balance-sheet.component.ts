@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { DATE_RANGES } from '../../common/consts/const';
 import { CUSTOMER_QUERIES, SUPPLIER_QUERIES } from '../../common/types/data-service/const';
-import { BalanceSheetData, BalanceSheetQueries } from '../../common/types/data-service/types';
+import { BalanceSheetData, BalanceSheetQueries, BalanceSheetTable } from '../../common/types/data-service/types';
 import { SelectedDate } from '../../common/types/statistics/types';
 import { DataService } from '../../services/data.service';
 import { MailService } from '../../services/mail.service';
@@ -12,7 +12,15 @@ import { UrlService } from '../../services/url.service';
 import { FormService } from '../form/service';
 import { ICONS } from './icons';
 import { BalanceSheetService } from './service';
-import { InvoiceSummary, Order, PaymentStatus, Transaction, TransactionData, TransactionType } from './types';
+import {
+  InvoiceSummary,
+  Order,
+  PaymentStatus,
+  PaymentType,
+  Transaction,
+  TransactionData,
+  TransactionType,
+} from './types';
 
 dayjs.extend(isBetween);
 @Component({
@@ -54,7 +62,7 @@ export class BalanceSheetComponent implements OnInit {
     this.imageUrlBase = this.urlService.getUrl('uploads');
 
     this.inputData = this.dataService.getBalanceSheetData();
-    this.queries = this.inputData.table == 'customers' ? CUSTOMER_QUERIES : SUPPLIER_QUERIES;
+    this.queries = this.inputData.table == BalanceSheetTable.Customers ? CUSTOMER_QUERIES : SUPPLIER_QUERIES;
   }
 
   ngOnInit() {
@@ -111,14 +119,17 @@ export class BalanceSheetComponent implements OnInit {
   }
 
   changePaymentType(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
+    const newPaymentType = (event.target as HTMLInputElement).value;
 
-    this.filteredTransactions = this.transactions.filter(
-      (transaction) =>
-        transaction.type == 'order' ||
-        (transaction.type == 'payment' &&
-          (transaction.type == value || value == 'Both' || (value != 'Cash' && transaction.payment_type != 'Cash')))
-    );
+    this.filteredTransactions = this.transactions.filter((transaction) => {
+      return (
+        transaction.type == TransactionType.Order ||
+        (transaction.type == TransactionType.Payment &&
+          (transaction.type == newPaymentType ||
+            newPaymentType == 'Both' ||
+            (newPaymentType != PaymentType.Cash && transaction.payment_type != PaymentType.Cash)))
+      );
+    });
   }
 
   async emailSupplier() {
