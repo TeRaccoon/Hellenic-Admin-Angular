@@ -83,3 +83,14 @@ export enum TransactionType {
 
 export type Transaction = Order | Payment | CreditNote;
 export type TransactionData = OrderData | PaymentData | CreditNoteData;
+
+export interface EmailData {
+  action: string;
+  mail_type: string;
+  subject: string;
+  attachment: string;
+  email_HTML: string;
+  address: string;
+  name: string;
+  filename: string;
+}
