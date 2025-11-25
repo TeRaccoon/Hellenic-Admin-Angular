@@ -2,19 +2,23 @@
   @switch (Transaction.type) {
     @case (TransactionType.Order) {
       <div class="order">
-        <div class="transaction-date">Invoice: {{ Transaction.date | date: 'dd/MM/yyyy' }}</div>
+        <div class="date">Invoice: {{ Transaction.date | date: 'dd/MM/yyyy' }}</div>
+        <div class="amount">Amount: {{ Transaction.total | currency: 'GBP' }}</div>
         <div
           class="transaction-title"
           [ngClass]="{
             unpaid: Transaction.payment_status === PaymentStatus.No
           }"
         >
-          {{ Transaction.title }}
+          Reference:
+          <p class="bold">{{ Transaction.title }}</p>
         </div>
-        <div class="transaction-total">Total: {{ (Transaction.total | currency: 'EUR') ?? 'N/A' }}</div>
+        <span></span>
         <div class="transaction-outstanding">
           Outstanding Balance:
-          {{ Transaction.outstanding_balance | currency: 'EUR' }}
+          <p class="bold">
+            {{ Transaction.outstanding_balance | currency: 'GBP' }}
+          </p>
         </div>
       </div>
     }
@@ -22,7 +26,7 @@
     @case (TransactionType.Payment) {
       <div class="payment">
         <div class="transaction-date">Payment: {{ Transaction.date | date: 'dd/MM/yyyy' }}</div>
-        <div class="transaction-amount">Amount: {{ Transaction.amount | currency: 'EUR' }}</div>
+        <div class="amount">Amount: {{ Transaction.amount | currency: 'GBP' }}</div>
 
         <div class="transaction-reference">
           Reference:
@@ -37,7 +41,7 @@
         <div class="transaction-type">
           Outstanding Balance:
           <p class="bold">
-            {{ Transaction.outstanding_balance | currency: 'EUR' }}
+            {{ Transaction.outstanding_balance | currency: 'GBP' }}
           </p>
         </div>
       </div>
@@ -45,8 +49,8 @@
 
     @case (TransactionType.CreditNote) {
       <div class="credit-note">
-        <div class="transaction-date">Credit Note: {{ Transaction.date | date: 'dd/MM/yyyy' }}</div>
-        <div class="transaction-amount">Amount: £{{ Transaction.amount.toFixed(2) }}</div>
+        <div class="date">Credit Note: {{ Transaction.date | date: 'dd/MM/yyyy' }}</div>
+        <div class="amount">Amount: £{{ Transaction.amount.toFixed(2) }}</div>
       </div>
     }
   }

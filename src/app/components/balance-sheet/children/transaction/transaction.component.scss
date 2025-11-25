@@ -1,30 +1,7 @@
 $accent-color: #3498db;
 
 .transaction {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
-    padding: 15px;
-    border-bottom: 1px solid $accent-color;
-    height: auto;
-    align-items: center;
-    page-break-inside: avoid;
-    break-inside: avoid;
-
-    &:last-child {
-        border-bottom: none;
-    }
-
-    .transaction-date,
-    .transaction-title,
-    .transaction-total,
-    .transaction-outstanding,
-    .transaction-amount,
-    .transaction-reference,
-    .transaction-type {
-        margin: 0;
-        padding: 0 10px;
-    }
+    margin: 5px;
 
     .unpaid {
         background-color: red;
@@ -35,43 +12,26 @@ $accent-color: #3498db;
     .order,
     .payment,
     .credit-note {
-        display: flex;
+        width: 100%;
+        display: grid;
         align-items: center;
-        page-break-inside: avoid;
-        break-inside: avoid;
-        grid-column: span 5;
+        grid-template-columns: 15% 25% 30% 15% 15%;
+        border-bottom: 2px solid black;
+        padding: 5px;
+        column-gap: 5px;
 
-        &:last-child {
-            border-bottom: none;
-        }
-
-        .transaction-title,
-        .transaction-amount {
-            font-size: 1.2em;
+        .amount,
+        .date {
             font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .transaction-status,
-        .transaction-payment-status {
-            font-style: italic;
-            margin-bottom: 5px;
-        }
-
-        .transaction-gross,
-        .transaction-vat,
-        .transaction-total,
-        .transaction-outstanding,
-        .transaction-amount,
-        .transaction-vat,
-        .transaction-net,
-        .transaction-reference {
             margin-bottom: 5px;
         }
     }
 }
 
+p {
+    margin: 0;
+}
+
 .bold {
     font-weight: bold;
-    margin: 0;
 }
