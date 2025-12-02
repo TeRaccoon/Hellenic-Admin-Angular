@@ -1,3 +1,5 @@
+import { TableName, TableTypeMap } from '../../common/types/tables';
+
 export interface ItemImage {
   item_id: number;
   file_name: string;
@@ -22,4 +24,21 @@ export interface ColumnDateFilter {
 export interface SortedColumn {
   columnName: string;
   ascending: boolean;
+}
+
+export interface TableData {
+  data: TableTypeMap[TableName][];
+  display_data: TableTypeMap[TableName][];
+  display_names: string[];
+  editable: EditableData;
+  types: string[];
+}
+
+export interface EditableData {
+  columns: string[];
+  types: string[];
+  names: string[];
+  required: boolean[];
+  fields: string[];
+  values: string[];
 }

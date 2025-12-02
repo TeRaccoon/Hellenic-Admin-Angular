@@ -27,7 +27,7 @@ export class TableService {
   }
 
   getTableDisplayName(tableName: string) {
-    return TABLE_NAME_MAP.get(tableName);
+    return TABLE_NAME_MAP.get(tableName) ?? '';
   }
 
   getTableName(displayName: string) {

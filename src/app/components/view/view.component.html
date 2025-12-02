@@ -25,13 +25,13 @@
             </p>
             <app-table-filter
               [columns]="data[0]"
-              [dataTypes]="dataTypes"
+              [dataTypes]="tableData!.types"
               [filter]="{
                 displayColumn: displayColumnFilters,
                 column: columnFilters,
                 columnDate: columnDateFilters
               }"
-              [displayNames]="displayNames"
+              [displayNames]="tableData!.display_names"
               (reloadTable)="reloadTable($event)"
               (clearFilterEmitter)="clearFilterEmitter($event)"
             />
@@ -53,7 +53,7 @@
                 @if (data[0]) {
                   <tr>
                     <th>Select</th>
-                    @for (column of displayNames; track column; let key = $index) {
+                    @for (column of tableData?.display_names; track column; let key = $index) {
                       @if (key === 2) {
                         @for (header of getCustomColumnHeadersFromTable(); track header) {
                           <th>{{ header }}</th>
@@ -110,7 +110,7 @@
                             [data]="data"
                             [tableName]="tableName"
                             [item]="item"
-                            [dataTypes]="dataTypes"
+                            [dataTypes]="tableData!.types"
                             [imageUrlBase]="imageUrlBase"
                             [columnIndex]="columnIndex"
                             (reloadEvent)="reloadTable($event)"

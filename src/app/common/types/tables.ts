@@ -465,13 +465,6 @@ export interface Customers {
   vat_type: 'UK Standard' | 'UK Zero Rate' | 'UK Exempt' | 'EU Export' | 'Non EU Export';
 }
 
-/**
- * Exposes the same fields as Customers,
- * but makes every field containing a DEFAULT value optional.
- *
- * This is especially useful when generating inserts, as you
- * should be able to omit these fields if you'd like
- */
 export interface CustomersWithDefaults {
   /** Account Name  */
   account_name?: string | null;
@@ -519,10 +512,7 @@ export interface CustomersWithDefaults {
   /** VAT Type Defaults to: UK Standard. */
   vat_type?: 'UK Standard' | 'UK Zero Rate' | 'UK Exempt' | 'EU Export' | 'Non EU Export';
 }
-/**
- * Exposes all fields present in discount_codes as a typescript
- * interface.
- */
+
 export interface DiscountCodes {
   /** Discount Amount  */
   amount: number;

@@ -12,10 +12,9 @@ import { TableOptionsService } from '../../services/table-options.service';
 import { TableService } from '../../services/table.service';
 import { UrlService } from '../../services/url.service';
 import { FormService } from '../form/service';
-import { EditableData } from '../form/types';
 import { DEFAULT_RELOAD_EVENT } from './consts';
 import { ViewService } from './service';
-import { ColumnDateFilter, ItemImage, ReloadEvent, SortedColumn, StockTotals } from './types';
+import { ColumnDateFilter, EditableData, ItemImage, ReloadEvent, SortedColumn, StockTotals, TableData } from './types';
 
 @Component({
   selector: 'app-view',
@@ -39,9 +38,8 @@ export class ViewComponent implements OnInit, OnDestroy {
   columnFilters: columnFilter[] = [];
   columnDateFilters: columnDateFilter[] = [];
 
+  tableData?: TableData;
   data: TableTypeMap[TableName][] = [];
-  displayNames: string[] = [];
-  dataTypes: any[] = [];
   editable: EditableData;
   stockData: Record<string, string> = {};
 
@@ -199,20 +197,19 @@ export class ViewComponent implements OnInit, OnDestroy {
 
     await this.switchTable();
 
-    const tableData = await this.dataService.processGet('table', {
+    this.tableData = await this.dataService.processGet('table', {
       filter: table,
     });
 
-    if (tableData != null) {
-      this.data = Array.isArray(tableData.data) ? tableData.data : ([tableData.data] as TableTypeMap[]);
-      this.viewService.displayData = Array.isArray(tableData.display_data)
-        ? tableData.display_data
-        : [tableData.display_data];
+    if (this.tableData != null) {
+      this.data = Array.isArray(this.tableData.data) ? this.tableData.data : [this.tableData.data];
+      this.viewService.displayData = Array.isArray(this.tableData.display_data)
+        ? this.tableData.display_data
+        : [this.tableData.display_data];
       this.viewService.filteredDisplayData = this.viewService.displayData;
 
-      this.dataTypes = this.viewService.mapDataTypes(tableData.types);
-      this.displayNames = tableData.display_names;
-      this.editable = tableData.editable;
+      this.tableData.types = this.viewService.mapDataTypes(this.tableData.types);
+      this.editable = this.tableData.editable;
 
       this.applyFilter();
 
