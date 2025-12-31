@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { EXTRA_COLUMN_TABLES } from '../../common/constants';
 import { TABLE_ICONS } from '../../common/icons/table-icons';
 import { TableName, TableNameEnum, TableTypeMap } from '../../common/types/tables';
-import { ColumnDateFilter, ExtraColumns, ReloadType, ViewMetadata } from '../../common/types/view/types';
+import { ExtraColumns, ReloadType, ViewMetadata } from '../../common/types/view/types';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
 import { FilterService } from '../../services/filter.service';
@@ -30,9 +30,6 @@ export class ViewComponent implements OnInit, OnDestroy {
   TableNames = TableNameEnum;
   ExtraColumns = ExtraColumns;
 
-  get apiUrlBase() {
-    return this.urlService.getUrl();
-  }
   get imageUrlBase() {
     return this.urlService.getUrl('uploads');
   }
@@ -109,7 +106,7 @@ export class ViewComponent implements OnInit, OnDestroy {
 
       if (reloadType == ReloadType.Hard) {
         this.selectedRows = [];
-        this.sortedColumn = DEFAULT_SORTED_COLUMN;
+        this.resetSortedColumn();
         this.loadTable(this.tableName);
       } else if (reloadType == ReloadType.Filter) {
         this.applyFilter();
@@ -327,11 +324,6 @@ export class ViewComponent implements OnInit, OnDestroy {
     this.viewService.calculatePageCount(false, this.viewService.ViewMetadata.entryLimit);
   }
 
-  filterDateColumns(columnDateFilter: ColumnDateFilter) {
-    this.tableData!.display_data = this.filterService.filterDateColumns(columnDateFilter);
-    this.viewService.filteredDisplayData = this.tableData!.display_data;
-  }
-
   clearFilterEmitter(event: { filter: string; reload: boolean }) {
     this.clearFilter(event.filter, event.reload);
   }
@@ -346,14 +338,6 @@ export class ViewComponent implements OnInit, OnDestroy {
     if (reload) {
       this.reloadTable();
     }
-  }
-
-  setTableFilter() {
-    this.filterService.setFilterData({
-      searchFilter: this.filterService.getFilterData().searchFilter,
-      searchFilterApplied: true,
-    });
-    this.loadPage();
   }
 
   async reloadTable(event: ReloadEvent = DEFAULT_RELOAD_EVENT) {
