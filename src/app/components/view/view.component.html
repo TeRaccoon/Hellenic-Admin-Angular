@@ -1,30 +1,21 @@
 @if (accessible) {
   <div class="container">
-    @if (viewMetaData.loaded) {
+    @if (viewMetadata.loaded) {
       <h2>Data for {{ displayName }}</h2>
       <div class="table-container">
         <div class="options-container">
           <div class="row">
             <app-table-buttons
-              [data]="data"
-              [editable]="editable"
+              [data]="tableData!.data"
+              [editable]="tableData!.editable"
               [selectedRows]="selectedRows"
               [tableName]="tableName"
             />
           </div>
           <div>
-            <p>
-              Show
-              <select (change)="changeEntries($event)">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-              entries
-            </p>
+            <app-entry-selector [viewMetadata]="viewMetadata" (loadPage)="pageEvent($event)" />
             <app-table-filter
-              [columns]="data[0]"
+              [columns]="tableData!.data[0]"
               [dataTypes]="tableData!.types"
               [filter]="{
                 displayColumn: displayColumnFilters,
@@ -38,22 +29,16 @@
           </div>
         </div>
         @if (tabs.length > 0) {
-          <div class="tab-parent">
-            @for (tab of tabs; track tab) {
-              <div (click)="changeTab(tab.tableName)" [class]="tableName === tab.tableName ? 'active-tab' : 'tab'">
-                {{ tab.displayName }}
-              </div>
-            }
-          </div>
+          <app-table-tabs />
         }
         <div class="table-wrapper">
-          @if (data && data.length > 0) {
+          @if (tableData!.data && tableData!.data.length > 0) {
             <table>
               <thead>
-                @if (data[0]) {
+                @if (tableData!.data[0]) {
                   <tr>
                     <th>Select</th>
-                    @for (column of tableData?.display_names; track column; let key = $index) {
+                    @for (column of tableData.display_names; track column; let key = $index) {
                       @if (key === 2) {
                         @for (header of getCustomColumnHeadersFromTable(); track header) {
                           <th>{{ header }}</th>
@@ -63,26 +48,26 @@
                         <th (click)="sortColumn(column)">
                           {{ column }}
                           @if (this.sortedColumn.columnName === column.toString()) {
-                            <fa-icon [icon]="this.sortedColumn.ascending ? icons.faArrowUp : icons.faArrowDown" />
+                            <fa-icon [icon]="this.sortedColumn.ascending ? ICONS.arrowUp : ICONS.arrowDown" />
                           }
                         </th>
                       }
                     }
-                    @if (tableName === 'items') {
+                    @if (tableName === TableNames.Items) {
                       <th>Allergen Information</th>
                       <th>Nutrition Information</th>
                     }
-                    @if (canDisplayColumn('edit-row')) {
+                    @if (canDisplayColumn(ExtraColumns.EditRow)) {
                       <th>Edit</th>
                     }
-                    @if (canDisplayColumn('delete-row')) {
+                    @if (canDisplayColumn(ExtraColumns.DeleteRow)) {
                       <th>Delete</th>
                     }
                   </tr>
                 }
               </thead>
               <tbody>
-                @for (item of filteredDisplayData.slice(0, viewMetaData.entryLimit); track item; let key = $index) {
+                @for (item of filteredDisplayData.slice(0, viewMetadata.entryLimit); track item; let key = $index) {
                   <tr class="data-row">
                     @if (itemContainsFilter(item)) {
                       <td>
@@ -93,11 +78,11 @@
                           [checked]="selectedRows.indexOf(item['id']) !== -1"
                         />
                       </td>
-                      @for (column of getColumnHeaders(data[0]); track column; let columnIndex = $index) {
+                      @for (column of getColumnHeaders(tableData!.data[0]); track column; let columnIndex = $index) {
                         @if (columnIndex === 2 && needsExtraColumn(tableName)) {
                           <app-extra-column
                             [tableName]="tableName"
-                            [data]="data"
+                            [data]="tableData!.data"
                             [stockData]="stockData"
                             [images]="images"
                             [item]="item"
@@ -107,7 +92,7 @@
                         @if (canDisplayColumn(column)) {
                           <app-table-data
                             [column]="column"
-                            [data]="data"
+                            [data]="tableData!.data"
                             [tableName]="tableName"
                             [item]="item"
                             [dataTypes]="tableData!.types"
@@ -117,29 +102,29 @@
                           />
                         }
                       }
-                      @if (tableName === 'items') {
-                        <td (click)="editRow(item['id'], 'allergen_information')">
-                          <fa-icon [icon]="icons.faBookMedical"></fa-icon>
+                      @if (tableName === TableNames.Items) {
+                        <td (click)="editRow(item['id'], TableNames.AllergenInformation)">
+                          <fa-icon [icon]="ICONS.medicalBook"></fa-icon>
                         </td>
-                        <td (click)="editRow(item['id'], 'nutrition_info')">
-                          <fa-icon [icon]="icons.faBookOpen"></fa-icon>
+                        <td (click)="editRow(item['id'], TableNames.NutritionInfo)">
+                          <fa-icon [icon]="ICONS.openBook"></fa-icon>
                         </td>
                       }
-                      @if (canDisplayColumn('edit-row')) {
+                      @if (canDisplayColumn(ExtraColumns.EditRow)) {
                         <td>
                           <a (click)="editRow(item['id'], '')">
                             @if (isEditLoading(item['id'])) {
                               <app-loading-spinner />
                             } @else {
-                              <fa-icon [icon]="icons.faPencil"></fa-icon>
+                              <fa-icon [icon]="ICONS.pencil"></fa-icon>
                             }
                           </a>
                         </td>
                       }
-                      @if (canDisplayColumn('delete-row')) {
+                      @if (canDisplayColumn(ExtraColumns.DeleteRow)) {
                         <td class="bin">
                           <a (click)="deleteRow(item['id'])">
-                            <fa-icon [icon]="icons.faTrashCan"></fa-icon>
+                            <fa-icon [icon]="ICONS.bin"></fa-icon>
                           </a>
                         </td>
                       }
@@ -149,29 +134,29 @@
               </tbody>
             </table>
           } @else {
-            @if (data.length === 0 && viewMetaData.loaded) {
+            @if (tableData!.data.length === 0 && viewMetadata.loaded) {
               <app-no-table-data (addRowEmitter)="addRow(null)" [displayName]="displayName" />
             }
           }
         </div>
-        <app-table-footer [viewMetadata]="viewMetaData" [pageRange]="getPageRange()" (loadPage)="pageEvent($event)" />
+        <app-table-footer [viewMetadata]="viewMetadata" [pageRange]="getPageRange()" (loadPage)="pageEvent($event)" />
         @switch (tableName) {
-          @case ('general_ledger') {
+          @case (TableNames.GeneralLedger) {
             <app-ledger-widget></app-ledger-widget>
           }
         }
       </div>
     } @else {
-      @if (!viewMetaData.loaded) {
+      @if (!viewMetadata.loaded) {
         <div class="loading-container">
-          <fa-icon class="loading-icon" [icon]="icons.faSpinner" spinPulse [spin]="true" />
+          <fa-icon class="loading-icon" [icon]="ICONS.spinner" spinPulse [spin]="true" />
         </div>
       }
     }
     <ng-template #loading>
-      @if (!viewMetaData.loaded) {
+      @if (!viewMetadata.loaded) {
         <div class="loading-container">
-          <fa-icon class="loading-icon" [icon]="icons.faSpinner" spinPulse [spin]="true" />
+          <fa-icon class="loading-icon" [icon]="ICONS.spinner" spinPulse [spin]="true" />
         </div>
       }
     </ng-template>

@@ -4,14 +4,15 @@
   "configurations": [
     {
       "name": "ng serve",
-      "type": "msedge",
+      "type": "pwa-msedge",
       "request": "launch",
       "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200/"
+      "url": "http://localhost:4200/",
+      "timeout": 30000
     },
     {
       "name": "ng test",
-      "type": "msedge",
+      "type": "pwa-msedge",
       "request": "launch",
       "preLaunchTask": "npm: test",
       "url": "http://localhost:9876/debug.html"

@@ -4,6 +4,7 @@ import { Observable, Subject, lastValueFrom } from 'rxjs';
 import { DEFAULT_BALANCE_SHEET } from '../common/types/data-service/const';
 import { BalanceSheetData, FormSubmission, Response } from '../common/types/data-service/types';
 import { WidgetData } from '../common/types/widget/types';
+import { Tab } from '../components/view/types';
 import { UrlService } from './url.service';
 
 @Injectable({
@@ -16,7 +17,7 @@ export class DataService {
   private balanceSheetData: BalanceSheetData;
   altTableData: any = {};
   invoiceIds: any[] = [];
-  tabs: { displayName: string; tableName: string }[] = [];
+  private _tabs: Tab[] = [];
 
   private widgetData = signal<WidgetData | null>(null);
 
@@ -153,10 +154,11 @@ export class DataService {
     return this.altTableData;
   }
 
-  setTabs(tabs: { displayName: string; tableName: string }[]) {
-    this.tabs = tabs;
+  set Tabs(tabs: { displayName: string; tableName: string }[]) {
+    this._tabs = tabs;
   }
-  getTabs() {
-    return this.tabs;
+
+  get Tabs() {
+    return this._tabs;
   }
 }

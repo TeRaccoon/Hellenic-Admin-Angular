@@ -1,10 +1,10 @@
 import { Component, effect, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { EXTRA_COLUMN_TABLES } from '../../common/constants';
 import { TABLE_ICONS } from '../../common/icons/table-icons';
 import { TableName, TableNameEnum, TableTypeMap } from '../../common/types/tables';
-import { columnDateFilter, columnFilter, FilterData, viewMetadata } from '../../common/types/view/types';
+import { ColumnDateFilter, ExtraColumns, ReloadType, ViewMetadata } from '../../common/types/view/types';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
 import { FilterService } from '../../services/filter.service';
@@ -12,9 +12,10 @@ import { TableOptionsService } from '../../services/table-options.service';
 import { TableService } from '../../services/table.service';
 import { UrlService } from '../../services/url.service';
 import { FormService } from '../form/service';
-import { DEFAULT_RELOAD_EVENT } from './consts';
+import { DEFAULT_RELOAD_EVENT, DEFAULT_SORTED_COLUMN, DEFAULT_TABLE_DATA } from './consts';
 import { ViewService } from './service';
-import { ColumnDateFilter, EditableData, ItemImage, ReloadEvent, SortedColumn, StockTotals, TableData } from './types';
+import { TableDataService } from './table-data';
+import { ItemImage, ReloadEvent, SortedColumn, StockTotals, TableData } from './types';
 
 @Component({
   selector: 'app-view',
@@ -24,48 +25,67 @@ import { ColumnDateFilter, EditableData, ItemImage, ReloadEvent, SortedColumn, S
 export class ViewComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
-  icons = TABLE_ICONS;
+  ICONS = TABLE_ICONS;
 
-  accessible = false;
+  TableNames = TableNameEnum;
+  ExtraColumns = ExtraColumns;
 
-  apiUrlBase;
-  imageUrlBase;
+  get apiUrlBase() {
+    return this.urlService.getUrl();
+  }
+  get imageUrlBase() {
+    return this.urlService.getUrl('uploads');
+  }
 
-  tableName: TableName;
-  displayName = '';
-  displayColumnFilters: string[] = [];
+  tableName: TableName = TableNameEnum.Invoices;
+  tableData: TableData = DEFAULT_TABLE_DATA;
 
-  columnFilters: columnFilter[] = [];
-  columnDateFilters: columnDateFilter[] = [];
-
-  tableData?: TableData;
-  data: TableTypeMap[TableName][] = [];
-  editable: EditableData;
   stockData: Record<string, string> = {};
 
   selectedRows: number[] = [];
 
   images: Record<string, string> = {};
 
-  distanceLoading = false;
   editLoading = { id: '', loading: false };
 
   filter = '';
 
-  viewMetaData: viewMetadata;
+  get displayColumnFilters() {
+    return this.filterService.DisplayColumnFilters;
+  }
+  get columnFilters() {
+    return this.filterService.ColumnFilters;
+  }
+  get columnDateFilters() {
+    return this.filterService.ColumnDateFilters;
+  }
 
-  tabs: { displayName: string; tableName: string }[] = [];
+  get viewMetadata() {
+    return this.viewService.ViewMetadata;
+  }
 
-  sortedColumn: SortedColumn = { columnName: '', ascending: false };
+  get tabs() {
+    return this.dataService.Tabs;
+  }
+
+  sortedColumn: SortedColumn = DEFAULT_SORTED_COLUMN;
 
   get filteredDisplayData() {
     return this.viewService.filteredDisplayData;
   }
 
+  get displayName() {
+    return this.tableDataService.displayName;
+  }
+
+  get accessible() {
+    return this.authService.returnAccess();
+  }
+
   constructor(
+    private tableDataService: TableDataService,
     private tableService: TableService,
     private authService: AuthService,
-    private router: Router,
     private filterService: FilterService,
     private formService: FormService,
     private route: ActivatedRoute,
@@ -74,29 +94,6 @@ export class ViewComponent implements OnInit, OnDestroy {
     private optionsService: TableOptionsService,
     private viewService: ViewService
   ) {
-    this.apiUrlBase = this.urlService.getUrl();
-    this.imageUrlBase = this.urlService.getUrl('uploads');
-
-    this.accessible = this.authService.returnAccess();
-
-    this.viewMetaData = {
-      loaded: false,
-      entryLimit: 10,
-      pageCount: 0,
-      currentPage: 1,
-    };
-
-    this.editable = {
-      columns: [],
-      types: [],
-      names: [],
-      required: [],
-      fields: [],
-      values: [],
-    };
-
-    this.tableName = (this.route.snapshot.queryParamMap.get('table') as TableName) ?? TableNameEnum.Invoices;
-
     effect(() => {
       const loading = this.formService.getEditFormLoading();
       this.editLoading = { id: loading.id.toString(), loading: loading.signal() };
@@ -110,11 +107,11 @@ export class ViewComponent implements OnInit, OnDestroy {
 
       const reloadType = this.formService.getReloadType();
 
-      if (reloadType == 'hard') {
+      if (reloadType == ReloadType.Hard) {
         this.selectedRows = [];
-        this.sortedColumn = { columnName: '', ascending: false };
+        this.sortedColumn = DEFAULT_SORTED_COLUMN;
         this.loadTable(this.tableName);
-      } else if (reloadType == 'filter') {
+      } else if (reloadType == ReloadType.Filter) {
         this.applyFilter();
       }
 
@@ -135,11 +132,10 @@ export class ViewComponent implements OnInit, OnDestroy {
         this.tableName = params['table'] || null;
         if (this.tableName != null) {
           this.resetTable();
-          this.displayName = this.tableService.getTableDisplayName(this.tableName) ?? '';
+          this.tableDataService.displayName = this.tableService.getTableDisplayName(this.tableName) ?? '';
           this.formService.setSelectedTable(String(this.tableName));
           this.loadTable(this.tableName);
           this.loadPage();
-          this.tabs = this.dataService.getTabs();
         }
       })
     );
@@ -148,16 +144,6 @@ export class ViewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
     this.reloadEffect.destroy();
-  }
-
-  changeTab(tableName: string) {
-    if (tableName != 'debtor_creditor' && tableName != 'statistics') {
-      this.router.navigate(['/view'], { queryParams: { table: tableName } });
-    } else if (tableName == 'statistics') {
-      this.router.navigate(['/statistics']);
-    } else {
-      this.router.navigate(['/page'], { queryParams: { table: tableName } });
-    }
   }
 
   async loadItemsTable() {
@@ -180,11 +166,11 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   async switchTable() {
     switch (this.tableName) {
-      case 'items':
+      case TableNameEnum.Items:
         await this.loadItemsTable();
         break;
 
-      case 'stocked_items':
+      case TableNameEnum.StockedItems:
         await this.loadStockedItemsTable();
         break;
     }
@@ -192,33 +178,27 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   async loadTable(table: string, isToggle = false) {
     if (!isToggle) {
-      this.viewMetaData.loaded = false;
+      this.viewService.ViewMetadata.loaded = false;
     }
 
+    await this.tableDataService.initialize(table as TableName);
     await this.switchTable();
 
-    this.tableData = await this.dataService.processGet('table', {
-      filter: table,
-    });
+    this.tableData = this.tableDataService.data;
 
     if (this.tableData != null) {
-      this.data = Array.isArray(this.tableData.data) ? this.tableData.data : [this.tableData.data];
-      this.viewService.displayData = Array.isArray(this.tableData.display_data)
-        ? this.tableData.display_data
-        : [this.tableData.display_data];
-      this.viewService.filteredDisplayData = this.viewService.displayData;
+      this.viewService.filteredDisplayData = this.tableData!.display_data;
 
       this.tableData.types = this.viewService.mapDataTypes(this.tableData.types);
-      this.editable = this.tableData.editable;
 
       this.applyFilter();
 
-      this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
+      this.viewService.calculatePageCount(false, this.viewService.ViewMetadata.entryLimit);
 
-      this.changePage(this.viewMetaData.currentPage);
+      this.changePage(this.viewService.ViewMetadata.currentPage);
 
       if (!isToggle) {
-        this.viewMetaData.loaded = true;
+        this.viewService.ViewMetadata.loaded = true;
       } else {
         this.viewService.setToggleLoading(false);
       }
@@ -233,96 +213,85 @@ export class ViewComponent implements OnInit, OnDestroy {
     return this.viewService.getCustomColumnHeadersFromTable(this.tableName);
   }
 
-  sortColumn(column: any) {
-    this.viewService.filteredDisplayData = this.viewService.displayData;
+  sortColumn(column: string) {
+    this.viewService.filteredDisplayData = this.tableData!.display_data;
     const dataName: string =
-      this.editable.columns.filter((_, index) => this.editable.names[index] === column)[0] ?? 'id';
+      this.tableData!.editable.columns.filter((_, index) => this.tableData!.editable.names[index] === column)[0] ??
+      'id';
 
     this.filterService.sortColumn(dataName, this.sortedColumn, column);
 
     this.changePage(1);
   }
 
+  resetSortedColumn() {
+    this.sortedColumn = DEFAULT_SORTED_COLUMN;
+  }
+
   changePage(page: number) {
-    this.viewMetaData.currentPage = page;
+    this.viewService.ViewMetadata.currentPage = page;
     this.loadPage();
   }
 
   getRow(id: number) {
-    return this.data.filter((row: any) => row.id == id)[0];
+    return this.tableData!.data.filter((row) => row.id == id)[0];
   }
 
   duplicate() {
     const row = this.getRow(this.selectedRows[0]);
 
-    this.formService.processAddFormData(this.editable, row);
+    this.formService.processAddFormData(this.tableData!.editable, row);
     this.optionsService.prepareAddFormService(this.tableName);
   }
 
-  addRow(values: any) {
-    this.optionsService.addRow(this.editable, values, this.tableName);
+  addRow(values: TableTypeMap[TableName][] | null) {
+    this.optionsService.addRow(this.tableData!.editable, values, this.tableName);
   }
 
-  async editRow(id: any, table: string) {
-    const row = this.data.filter((row: any) => row.id == id)[0];
+  async editRow(id: number, table: string) {
+    const row = this.tableData!.data.filter((row) => row.id == id)[0];
 
-    this.viewService.editRow(row, id, table, this.tableName, this.editable);
+    this.viewService.editRow(row, id.toString(), table, this.tableName, this.tableData!.editable);
   }
 
   deleteRow(id: number) {
-    const row = this.data.filter((row: any) => row.id == id)[0];
+    const row = this.tableData!.data.filter((row) => row.id == id)[0];
 
     if (this.optionsService.canDelete(row, this.tableName)) {
       this.optionsService.performDelete([id], this.tableName);
     }
   }
 
-  changeEntries(event: Event) {
-    const option = event.target as HTMLInputElement;
-    this.viewMetaData.entryLimit = Number(option.value);
-    this.viewMetaData.currentPage = 1;
-    this.loadPage();
-  }
-
-  itemContainsFilter(item: any) {
+  itemContainsFilter(item: TableTypeMap[TableName]) {
     return (
       this.filter != null && item != null && Object.values(item).some((value) => String(value).includes(this.filter))
     );
   }
 
-  pageEvent(viewMetaData: viewMetadata) {
-    this.viewMetaData = viewMetaData;
+  pageEvent(viewMetaData: ViewMetadata) {
+    this.viewService.ViewMetadata = viewMetaData;
     this.loadPage();
   }
 
   loadPage() {
-    const start = (this.viewMetaData.currentPage - 1) * this.viewMetaData.entryLimit;
-    const end = start + this.viewMetaData.entryLimit;
+    const start = (this.viewService.ViewMetadata.currentPage - 1) * this.viewService.ViewMetadata.entryLimit;
+    const end = start + this.viewService.ViewMetadata.entryLimit;
 
     if (this.filterService.getFilterData().searchFilter === '') {
-      this.viewMetaData.pageCount = this.viewService.calculatePageCount(true, this.viewMetaData.entryLimit);
-      this.viewService.filteredDisplayData = this.viewService.displayData.slice(start, end);
+      this.viewService.calculatePageCount(true, this.viewService.ViewMetadata.entryLimit);
+      this.viewService.filteredDisplayData = this.tableData!.display_data.slice(start, end);
     } else {
       this.filterService.applyTemporaryFilter();
-      this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
+      this.viewService.calculatePageCount(false, this.viewService.ViewMetadata.entryLimit);
       this.viewService.filteredDisplayData = this.viewService.filteredDisplayData.slice(start, end);
     }
   }
 
-  checkForObsolete(data: any[], columns: any[]) {
-    if (!columns.includes('Obsolete')) {
-      return data;
-    }
-    return data.filter((row) => {
-      return row['obsolete'] != 'Yes';
-    });
-  }
-
   resetTable() {
     this.clearFilter('all', true);
-    this.filterService.clearFilter();
-    this.viewMetaData.pageCount = 0;
-    this.viewMetaData.currentPage = 1;
+    this.filterService.clearTableFilter();
+    this.viewService.ViewMetadata.pageCount = 0;
+    this.viewService.ViewMetadata.currentPage = 1;
     this.selectedRows = [];
     this.sortedColumn.columnName = '';
   }
@@ -344,59 +313,23 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   getPageRange() {
-    return this.viewService.getPageRange(this.viewMetaData.currentPage, this.viewMetaData.pageCount);
+    return this.viewService.getPageRange(
+      this.viewService.ViewMetadata.currentPage,
+      this.viewService.ViewMetadata.pageCount
+    );
   }
 
   //Filter
 
-  getFilterData(): FilterData {
-    return this.filterService.getFilterData();
-  }
-
   applyFilter() {
-    this.columnFilters = this.filterService.getColumnFilter();
-    this.columnDateFilters = this.filterService.getColumnDateFilter();
-    this.displayColumnFilters = [];
+    this.filterService.applyFilter(this.tableData.display_data);
 
-    if (this.columnFilters.length + this.columnDateFilters.length == 1) {
-      this.viewService.filteredDisplayData = this.viewService.displayData;
-    }
-
-    this.columnFilters.forEach((filter: any) => {
-      this.filterColumns(filter);
-    });
-
-    this.columnDateFilters.forEach((filter: any) => {
-      this.filterDateColumns(filter);
-    });
-
-    this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
-  }
-
-  filterColumns(columnFilter: any) {
-    const isCaseSensitive = columnFilter.caseSensitive;
-    const column = columnFilter.column;
-    const filter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
-    this.displayColumnFilters.push(column + ': ' + columnFilter.filter);
-
-    this.viewService.displayData = this.viewService.displayData.filter((data) => {
-      if (
-        filter != null &&
-        data[column] != null &&
-        String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(filter)
-      ) {
-        return true;
-      }
-      return false;
-    });
-
-    this.viewService.filteredDisplayData = this.viewService.displayData;
-    this.viewMetaData.pageCount = this.viewService.calculatePageCount(false, this.viewMetaData.entryLimit);
+    this.viewService.calculatePageCount(false, this.viewService.ViewMetadata.entryLimit);
   }
 
   filterDateColumns(columnDateFilter: ColumnDateFilter) {
-    this.viewService.displayData = this.filterService.filterDateColumns(columnDateFilter);
-    this.viewService.filteredDisplayData = this.viewService.displayData;
+    this.tableData!.display_data = this.filterService.filterDateColumns(columnDateFilter);
+    this.viewService.filteredDisplayData = this.tableData!.display_data;
   }
 
   clearFilterEmitter(event: { filter: string; reload: boolean }) {
@@ -404,46 +337,15 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   clearFilter(filter: string, reload: boolean) {
-    if (filter === 'all' || filter === 'column-date') {
-      this.filterService.clearColumnDateFilter();
-      this.columnDateFilters = [];
-    }
-
-    if (filter === 'all' || filter === 'column') {
-      this.filterService.clearColumnFilter();
-      this.displayColumnFilters = [];
-    }
+    this.filterService.clearFilter(filter);
 
     if (filter === 'all' || filter === 'table') {
-      if (filter == 'table') {
-        this.filterService.setFilterProtection(false);
-      }
-      this.filterService.setFilterData({
-        searchFilter: '',
-        searchFilterApplied: false,
-      });
       this.changePage(1);
     }
 
     if (reload) {
       this.reloadTable();
     }
-  }
-
-  removeColumnFilter(columnFilterIndex: number) {
-    this.displayColumnFilters = this.displayColumnFilters.filter(
-      (filter) => filter != this.displayColumnFilters[columnFilterIndex]
-    );
-    this.filterService.removeColumnFilter(this.columnFilters[columnFilterIndex].filter);
-    this.columnFilters = this.filterService.getColumnFilter();
-
-    this.reloadTable();
-  }
-
-  removeColumnDateFilter(columnFilterIndex: number) {
-    this.filterService.removeColumnDateFilter(this.columnDateFilters[columnFilterIndex]);
-    this.columnDateFilters = this.filterService.getColumnDateFilter();
-    this.reloadTable();
   }
 
   setTableFilter() {
@@ -465,7 +367,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     return EXTRA_COLUMN_TABLES.includes(table);
   }
 
-  isEditLoading(id: string) {
+  isEditLoading(id: number) {
     return this.editLoading.id === id.toString() && this.editLoading.loading;
   }
 }

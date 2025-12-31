@@ -54,13 +54,13 @@ export class TableService {
       case 'invoices':
       case 'price_list':
       case 'credit_notes_customers':
-        this.dataService.setTabs(TABLE_CATEGORIES['Customers']);
+        this.dataService.Tabs = TABLE_CATEGORIES['Customers'];
         break;
 
       case 'items':
       case 'stocked_items':
       case 'invoiced_items':
-        this.dataService.setTabs(TABLE_CATEGORIES['Products']);
+        this.dataService.Tabs = TABLE_CATEGORIES['Products'];
         break;
 
       case 'supplier_invoices':
@@ -69,7 +69,7 @@ export class TableService {
       case 'supplier_types':
       case 'warehouse':
       case 'expired_items':
-        this.dataService.setTabs(TABLE_CATEGORIES['Supply']);
+        this.dataService.Tabs = TABLE_CATEGORIES['Supply'];
         break;
 
       case 'general_ledger':
@@ -77,7 +77,7 @@ export class TableService {
       case 'customer_payments':
       case 'supplier_payments':
       case 'expense_options':
-        this.dataService.setTabs(TABLE_CATEGORIES['Finance']);
+        this.dataService.Tabs = TABLE_CATEGORIES['Finance'];
         break;
 
       case 'page_section_text':
@@ -86,11 +86,11 @@ export class TableService {
       case 'offers':
       case 'categories':
       case 'sub_categories':
-        this.dataService.setTabs(TABLE_CATEGORIES['Website']);
+        this.dataService.Tabs = TABLE_CATEGORIES['Website'];
         break;
 
       default:
-        this.dataService.setTabs([]);
+        this.dataService.Tabs = [];
         break;
     }
     if (

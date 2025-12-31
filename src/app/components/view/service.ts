@@ -6,34 +6,37 @@ import {
   SUPPLIER_INVOICE_COLUMNS,
 } from '../../common/constants';
 import { INVOICE_COLUMNS, STOCK_COLUMNS } from '../../common/consts/table-options';
+import { TableName, TableTypeMap } from '../../common/types/tables';
+import { ViewMetadata } from '../../common/types/view/types';
 import { DEFAULT_DISABLED_WIDGET_DATA } from '../../common/types/widget/const';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
 import { TableOptionsService } from '../../services/table-options.service';
 import { FormService } from '../form/service';
 import { FormType } from '../form/types';
+import { DEFAULT_VIEW_METADATA } from './consts';
+import { TableDataService } from './table-data';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ViewService {
-  private _displayData: any[] = [];
-  private _filteredDisplayData: Record<string, any>[] = [];
+  private _filteredDisplayData: TableTypeMap[TableName][] = [];
+  private _viewMetadata: ViewMetadata = DEFAULT_VIEW_METADATA;
 
-  get displayData(): any[] {
-    return this._displayData;
-  }
-
-  set displayData(value: any[]) {
-    this._displayData = value;
-  }
-
-  get filteredDisplayData(): Record<string, any>[] {
+  get filteredDisplayData(): TableTypeMap[TableName][] {
     return this._filteredDisplayData;
   }
 
-  set filteredDisplayData(value: Record<string, any>[]) {
+  set filteredDisplayData(value: TableTypeMap[TableName][]) {
     this._filteredDisplayData = value;
+  }
+
+  get ViewMetadata() {
+    return this._viewMetadata;
+  }
+  set ViewMetadata(viewMetadata) {
+    this._viewMetadata = viewMetadata;
   }
 
   private toggleLoading = signal(false);
@@ -42,7 +45,8 @@ export class ViewService {
     private authService: AuthService,
     private dataService: DataService,
     private formService: FormService,
-    private optionsService: TableOptionsService
+    private optionsService: TableOptionsService,
+    private tableDataService: TableDataService
   ) {}
 
   getToggleLoadingSignal() {
@@ -416,9 +420,9 @@ export class ViewService {
 
   calculatePageCount(useDisplayData = false, entryLimit: number) {
     if (useDisplayData) {
-      return Math.ceil(this.displayData.length / entryLimit);
+      this.ViewMetadata.pageCount = Math.ceil(this.tableDataService.data?.display_data.length ?? 1 / entryLimit);
     } else {
-      return Math.ceil(this.filteredDisplayData.length / entryLimit);
+      this.ViewMetadata.pageCount = Math.ceil(this.filteredDisplayData.length / entryLimit);
     }
   }
 

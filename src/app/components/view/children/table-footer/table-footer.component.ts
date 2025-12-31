@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { viewMetadata } from '../../../../common/types/view/types';
+import { ViewMetadata } from '../../../../common/types/view/types';
 
 @Component({
   selector: 'app-table-footer',
@@ -7,10 +7,10 @@ import { viewMetadata } from '../../../../common/types/view/types';
   styleUrl: './table-footer.component.scss',
 })
 export class TableFooterComponent {
-  @Input() viewMetadata!: viewMetadata;
+  @Input() viewMetadata!: ViewMetadata;
   @Input() pageRange!: number[];
 
-  @Output() loadPage = new EventEmitter<viewMetadata>();
+  @Output() loadPage = new EventEmitter<ViewMetadata>();
 
   changePage(pageNumber: number) {
     this.viewMetadata.currentPage = pageNumber;

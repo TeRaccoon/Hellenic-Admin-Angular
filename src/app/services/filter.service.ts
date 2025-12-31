@@ -1,26 +1,41 @@
 import { Injectable } from '@angular/core';
 import { TableName, TableTypeMap } from '../common/types/tables';
-import { FilterData } from '../common/types/view/types';
+import { ColumnFilter, FilterData } from '../common/types/view/types';
 import { TableColumns } from '../components/filter-form/types';
 import { ViewService } from '../components/view/service';
+import { TableDataService } from '../components/view/table-data';
 import { ColumnDateFilter, SortedColumn } from '../components/view/types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FilterService {
-  private tableFilter: string | null = null;
-  private columnFilter: {
-    column: string;
-    filter: string;
-    caseSensitive: boolean;
-  }[] = [];
+  private _displayColumnFilters: string[] = [];
+  private _columnFilters: ColumnFilter[] = [];
+  private _columnDateFilters: ColumnDateFilter[] = [];
 
-  private columnDateFilter: {
-    column: string;
-    startDate: Date;
-    endDate: Date;
-  }[] = [];
+  get DisplayColumnFilters() {
+    return this._displayColumnFilters;
+  }
+  set DisplayColumnFilters(displayColumnFilters: string[]) {
+    this._displayColumnFilters = displayColumnFilters;
+  }
+
+  get ColumnFilters() {
+    return this._columnFilters;
+  }
+  set ColumnFilters(columnFilters: ColumnFilter[]) {
+    this._columnFilters = columnFilters;
+  }
+
+  get ColumnDateFilters() {
+    return this._columnDateFilters;
+  }
+  set ColumnDateFilters(columnDateFilters: ColumnDateFilter[]) {
+    this._columnDateFilters = columnDateFilters;
+  }
+
+  private tableFilter: string | null = null;
 
   private tableColumns: TableColumns = {
     columnNames: [],
@@ -31,11 +46,53 @@ export class FilterService {
   private filterData: FilterData;
   private protectFilterData = false;
 
-  constructor(private viewService: ViewService) {
+  constructor(
+    private viewService: ViewService,
+    private tableDataService: TableDataService
+  ) {
     this.filterData = {
       searchFilter: '',
       searchFilterApplied: false,
     };
+  }
+
+  applyFilter(displayData: any) {
+    this._columnFilters = this.getColumnFilter();
+    this._columnDateFilters = this.getColumnDateFilter();
+    this._displayColumnFilters = [];
+
+    if (this._columnFilters.length + this._columnDateFilters.length == 1) {
+      this.viewService.filteredDisplayData = displayData;
+    }
+
+    this._columnFilters.forEach((filter: any) => {
+      this.filterColumns(filter, displayData);
+    });
+
+    this._columnDateFilters.forEach((filter: any) => {
+      this.filterDateColumns(filter);
+    });
+  }
+
+  filterColumns(columnFilter: any, displayData: any) {
+    const isCaseSensitive = columnFilter.caseSensitive;
+    const column = columnFilter.column as keyof TableTypeMap[TableName];
+    const filter = isCaseSensitive ? columnFilter.filter : String(columnFilter.filter).toLowerCase();
+    this._displayColumnFilters.push(column + ': ' + columnFilter.filter);
+
+    displayData = displayData.filter((data: any) => {
+      if (
+        filter != null &&
+        data[column] != null &&
+        String(isCaseSensitive ? data[column] : String(data[column]).toLowerCase()).includes(filter)
+      ) {
+        return true;
+      }
+      return false;
+    });
+
+    this.viewService.filteredDisplayData = displayData;
+    this.viewService.calculatePageCount(false, this.viewService.ViewMetadata.entryLimit);
   }
 
   setFilterData(filterData: FilterData) {
@@ -55,26 +112,26 @@ export class FilterService {
   }
 
   setColumnFilter(columnFilter: { column: string; filter: string; caseSensitive: boolean }) {
-    if (this.columnFilter && this.columnFilter.length > 0) {
-      this.columnFilter.push(columnFilter);
+    if (this._columnFilters && this._columnFilters.length > 0) {
+      this._columnFilters.push(columnFilter);
     } else {
-      this.columnFilter = [columnFilter];
+      this._columnFilters = [columnFilter];
     }
   }
   getColumnFilter() {
-    return this.columnFilter;
+    return this._columnFilters;
   }
 
   setColumnDateFilter(columnDateFilter: { column: string; startDate: Date; endDate: Date }) {
-    if (this.columnDateFilter && this.columnDateFilter.length > 0) {
-      this.columnDateFilter.push(columnDateFilter);
+    if (this._columnDateFilters && this._columnDateFilters.length > 0) {
+      this._columnDateFilters.push(columnDateFilter);
     } else {
-      this.columnDateFilter = [columnDateFilter];
+      this._columnDateFilters = [columnDateFilter];
     }
   }
 
   getColumnDateFilter() {
-    return this.columnDateFilter;
+    return this._columnDateFilters;
   }
 
   setTableFilter(filter: string) {
@@ -85,28 +142,54 @@ export class FilterService {
     return this.tableFilter;
   }
 
-  clearFilter() {
+  clearFilter(filter: string) {
+    if (filter === 'all' || filter === 'column-date') {
+      this._columnDateFilters = [];
+    }
+
+    if (filter === 'all' || filter === 'column') {
+      this.clearColumnFilter();
+    }
+
+    if (filter === 'all' || filter === 'table') {
+      if (filter == 'table') {
+        this.protectFilterData = false;
+      }
+      this.setFilterData({
+        searchFilter: '',
+        searchFilterApplied: false,
+      });
+    }
+  }
+
+  clearTableFilter() {
     this.tableFilter = null;
   }
 
   clearColumnFilter() {
-    this.columnFilter = [];
+    this._columnFilters = [];
+    this._displayColumnFilters = [];
   }
 
-  removeColumnFilter(columnFilter: string) {
-    if (this.columnFilter) {
-      this.columnFilter = this.columnFilter.filter((filter: any) => filter.filter != columnFilter);
+  removeColumnFilter(filterIndex: number) {
+    const columnFilter = this._columnFilters[filterIndex];
+
+    this._displayColumnFilters = this._displayColumnFilters.filter(
+      (filter) => filter != this._displayColumnFilters[filterIndex]
+    );
+    if (this._columnFilters) {
+      this._columnFilters = this._columnFilters.filter((filter: any) => filter.filter != columnFilter);
     }
   }
 
   removeColumnDateFilter(columnDateFilter: { column: string; startDate: Date; endDate: Date }) {
     if (columnDateFilter) {
-      this.columnDateFilter = this.columnDateFilter.filter((filter: any) => filter != columnDateFilter);
+      this._columnDateFilters = this._columnDateFilters.filter((filter: any) => filter != columnDateFilter);
     }
   }
 
   clearColumnDateFilter() {
-    this.columnDateFilter = [];
+    this._columnDateFilters = [];
   }
 
   setTableColumns(columnNames: string[], columns: TableTypeMap[TableName], dataTypes: string[]) {
@@ -118,9 +201,9 @@ export class FilterService {
   }
 
   applyTemporaryFilter() {
-    const temporaryData: Record<string, unknown>[] = [];
+    const temporaryData: TableTypeMap[TableName][] = [];
     if (this.getFilterData().searchFilter != '') {
-      this.viewService.displayData.forEach((data) => {
+      this.tableDataService.data.display_data.forEach((data) => {
         if (this.objectValuesContains(data)) {
           temporaryData.push(data);
         }
@@ -130,9 +213,9 @@ export class FilterService {
   }
 
   filterDateColumns(columnDateFilter: ColumnDateFilter) {
-    const column = columnDateFilter.column;
+    const column = columnDateFilter.column as keyof TableTypeMap[TableName];
 
-    return this.viewService.displayData.filter((data) => {
+    return this.tableDataService.data.display_data.filter((data) => {
       if (columnDateFilter != null && data[column] != null) {
         const dataDate = new Date(data[column]);
         const startDate = new Date(columnDateFilter.startDate);

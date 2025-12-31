@@ -42,3 +42,8 @@ export interface EditableData {
   fields: string[];
   values: string[];
 }
+
+export interface Tab {
+  displayName: string;
+  tableName: string;
+}

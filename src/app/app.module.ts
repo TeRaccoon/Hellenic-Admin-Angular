@@ -49,12 +49,14 @@ import { TableCellComponent } from './components/table-cell/table-cell.component
 import { TableWidgetComponent } from './components/table-widget/table-widget.component';
 import { TablelessViewComponent } from './components/tableless-view/tableless-view.component';
 import { VatViewComponent } from './components/vat-view/vat-view.component';
+import { EntrySelectorComponent } from './components/view/children/entry-selector/entry-selector.component';
 import { ExtraColumnComponent } from './components/view/children/extra-column/extra-column.component';
 import { NoTableDataComponent } from './components/view/children/no-table-data/no-table-data.component';
 import { TableButtonsComponent } from './components/view/children/table-buttons/table-buttons.component';
 import { TableDataComponent } from './components/view/children/table-data/table-data.component';
 import { TableFilterComponent } from './components/view/children/table-filter/table-filter.component';
 import { TableFooterComponent } from './components/view/children/table-footer/table-footer.component';
+import { TableTabsComponent } from './components/view/children/table-tabs/table-tabs.component';
 import { ViewComponent } from './components/view/view.component';
 import { WidgetComponent } from './components/widget/widget.component';
 import { ConfigService } from './services/config.service';
@@ -125,6 +127,8 @@ export function initConfig(configService: ConfigService) {
     NgxDaterangepickerMd.forRoot(),
     QuillModule.forRoot(),
     RecaptchaV3Module,
+    TableTabsComponent,
+    EntrySelectorComponent,
   ],
   providers: [
     ConfigService,

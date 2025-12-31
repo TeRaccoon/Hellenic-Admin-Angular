@@ -1,12 +1,12 @@
 import { TableTypeMap } from '../tables';
 
-export interface columnFilter {
+export interface ColumnFilter {
   column: string;
   filter: string;
   caseSensitive: boolean;
 }
 
-export interface columnDateFilter {
+export interface ColumnDateFilter {
   column: string;
   startDate: Date;
   endDate: Date;
@@ -17,7 +17,7 @@ export interface SortedColumn<T extends keyof TableTypeMap> {
   ascending: boolean;
 }
 
-export interface viewMetadata {
+export interface ViewMetadata {
   loaded: boolean;
   entryLimit: number;
   pageCount: number;
@@ -27,4 +27,14 @@ export interface viewMetadata {
 export interface FilterData {
   searchFilter: string;
   searchFilterApplied: boolean;
+}
+
+export enum ExtraColumns {
+  EditRow = 'edit-row',
+  DeleteRow = 'delete-row',
+}
+
+export enum ReloadType {
+  Hard = 'hard',
+  Filter = 'filter',
 }

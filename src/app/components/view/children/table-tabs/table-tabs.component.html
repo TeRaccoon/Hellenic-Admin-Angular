@@ -1,0 +1,7 @@
+<div class="tab-parent">
+  @for (tab of tabs; track tab) {
+    <div (click)="changeTab(tab.tableName)" [class]="tableName === tab.tableName ? 'active-tab' : 'tab'">
+      {{ tab.displayName }}
+    </div>
+  }
+</div>

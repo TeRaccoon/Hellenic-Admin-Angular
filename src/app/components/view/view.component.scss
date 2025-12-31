@@ -62,27 +62,6 @@
             }
         }
 
-        .tab-parent {
-            display: flex;
-            width: 90%;
-            margin: 0 auto;
-
-            .tab,
-            .active-tab {
-                background-image: linear-gradient(to top, #42424a, #191919);
-                color: white;
-                padding: 15px;
-                font-weight: bold;
-                border-radius: 10px 30px 0px 0px;
-                width: 150px;
-                cursor: pointer;
-            }
-
-            .active-tab {
-                background-image: linear-gradient(to top, rgb(34, 130, 255), rgb(6, 63, 167));
-            }
-        }
-
         .table-wrapper {
             width: 90%;
             border-collapse: collapse;

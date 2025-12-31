@@ -31,10 +31,7 @@ export class TableFilterComponent {
   ) {}
 
   removeColumnFilter(columnFilterIndex: number) {
-    this.filter.displayColumn = this.filter.displayColumn.filter(
-      (filter) => filter != this.filter.displayColumn[columnFilterIndex]
-    );
-    this.filterService.removeColumnFilter(this.filter.column[columnFilterIndex].filter);
+    this.filterService.removeColumnFilter(columnFilterIndex);
     this.filter.column = this.filterService.getColumnFilter();
 
     this.reloadTable.emit({

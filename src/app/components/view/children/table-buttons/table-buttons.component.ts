@@ -27,22 +27,22 @@ export class TableButtonsComponent {
   buttonConfigs = [
     {
       condition: () => this.selectedRows.length > 0 && this.tableName === 'invoices',
-      icon: this.icons.faPrint,
+      icon: this.icons.print,
       action: () => this.print(),
     },
     {
       condition: () => this.canShowMultipleDelete(),
-      icon: this.icons.faTrashCan,
+      icon: this.icons.bin,
       action: () => this.deleteRows(),
     },
     {
       condition: () => this.selectedRows.length === 1,
-      icon: this.icons.faCopy,
+      icon: this.icons.copy,
       action: () => this.duplicate(),
     },
     {
       condition: () => this.tableName === 'suppliers',
-      icon: this.icons.faFileInvoice,
+      icon: this.icons.fileInvoice,
       action: () => this.createCreditNote(),
     },
     {
@@ -53,7 +53,7 @@ export class TableButtonsComponent {
     },
     {
       condition: () => this.selectedRows.length === 1 && this.tableName === 'invoices',
-      icon: () => (this.distanceLoading ? this.icons.faSpinner : this.icons.faTruckFront),
+      icon: () => (this.distanceLoading ? this.icons.spinner : this.icons.truck),
       action: () => this.calculateDistance(),
       spin: () => this.distanceLoading,
     },
