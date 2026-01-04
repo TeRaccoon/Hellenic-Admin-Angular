@@ -184,8 +184,13 @@ export class FilterService {
 
   removeColumnDateFilter(columnDateFilter: { column: string; startDate: Date; endDate: Date }) {
     if (columnDateFilter) {
-      this._columnDateFilters = this._columnDateFilters.filter((filter: any) => filter != columnDateFilter);
+      this._columnDateFilters = this._columnDateFilters.filter((filter) => filter != columnDateFilter);
     }
+  }
+
+  removeColumnDateFilterByIndex(filterIndex: number) {
+    const filterToExclude = this._columnDateFilters[filterIndex];
+    this._columnDateFilters = this._columnDateFilters.filter((filter) => filter != filterToExclude);
   }
 
   clearColumnDateFilter() {

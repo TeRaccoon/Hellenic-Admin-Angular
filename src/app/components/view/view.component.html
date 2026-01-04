@@ -17,11 +17,6 @@
             <app-table-filter
               [columns]="tableData!.data[0]"
               [dataTypes]="tableData!.types"
-              [filter]="{
-                displayColumn: displayColumnFilters,
-                column: columnFilters,
-                columnDate: columnDateFilters
-              }"
               [displayNames]="tableData!.display_names"
               (reloadTable)="reloadTable($event)"
               (clearFilterEmitter)="clearFilterEmitter($event)"

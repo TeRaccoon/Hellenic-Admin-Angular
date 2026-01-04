@@ -47,16 +47,6 @@ export class ViewComponent implements OnInit, OnDestroy {
 
   filter = '';
 
-  get displayColumnFilters() {
-    return this.filterService.DisplayColumnFilters;
-  }
-  get columnFilters() {
-    return this.filterService.ColumnFilters;
-  }
-  get columnDateFilters() {
-    return this.filterService.ColumnDateFilters;
-  }
-
   get viewMetadata() {
     return this.viewService.ViewMetadata;
   }

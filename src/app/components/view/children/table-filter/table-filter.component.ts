@@ -5,7 +5,6 @@ import { FormService } from '../../../form/service';
 import { FormType } from '../../../form/types';
 import { ReloadEvent } from '../../types';
 import { TABLE_FILTER_ICONS } from './icons';
-import { ColumnFilterOptions } from './types';
 
 @Component({
   selector: 'app-table-filter',
@@ -15,7 +14,6 @@ import { ColumnFilterOptions } from './types';
 export class TableFilterComponent {
   @Input() columns!: TableTypeMap[TableName];
   @Input() dataTypes!: string[];
-  @Input() filter!: ColumnFilterOptions;
   @Input() displayNames!: string[];
 
   @Output() reloadTable = new EventEmitter<ReloadEvent>();
@@ -25,6 +23,16 @@ export class TableFilterComponent {
 
   searchFilter = '';
 
+  get displayColumnFilters() {
+    return this.filterService.DisplayColumnFilters;
+  }
+  get columnFilters() {
+    return this.filterService.ColumnFilters;
+  }
+  get columnDateFilters() {
+    return this.filterService.ColumnDateFilters;
+  }
+
   constructor(
     private filterService: FilterService,
     private formService: FormService
@@ -32,7 +40,6 @@ export class TableFilterComponent {
 
   removeColumnFilter(columnFilterIndex: number) {
     this.filterService.removeColumnFilter(columnFilterIndex);
-    this.filter.column = this.filterService.getColumnFilter();
 
     this.reloadTable.emit({
       loadTable: true,
@@ -41,8 +48,7 @@ export class TableFilterComponent {
   }
 
   removeColumnDateFilter(columnFilterIndex: number) {
-    this.filterService.removeColumnDateFilter(this.filter.columnDate[columnFilterIndex]);
-    this.filter.columnDate = this.filterService.getColumnDateFilter();
+    this.filterService.removeColumnDateFilterByIndex(columnFilterIndex);
     this.reloadTable.emit({
       loadTable: true,
       isToggle: false,

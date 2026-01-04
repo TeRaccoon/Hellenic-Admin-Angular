@@ -1,6 +1,6 @@
 <div class="filter-container">
-  @if (filter.displayColumn) {
-    @for (filter of filter.displayColumn; track filter; let i = $index) {
+  @if (displayColumnFilters) {
+    @for (filter of displayColumnFilters; track filter; let i = $index) {
       <div class="filter" (click)="removeColumnFilter(i)">
         <p>{{ filter }}</p>
         <fa-icon [icon]="icons.x" />
@@ -13,8 +13,8 @@
       <fa-icon [icon]="icons.x" />
     </div>
   }
-  @if (filter.columnDate.length > 0) {
-    @for (filter of filter.columnDate; track filter; let i = $index) {
+  @if (columnDateFilters.length > 0) {
+    @for (filter of columnDateFilters; track filter; let i = $index) {
       <div class="filter" (click)="removeColumnDateFilter(i)">
         <p>{{ filter.startDate }}</p>
         <fa-icon [icon]="icons.arrows" />
